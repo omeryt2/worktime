@@ -47,6 +47,7 @@ public class HomeActivityTest extends ActivityTestCase<HomeActivity> {
     public void testClickReportingButton() {
         solo.assertCurrentActivity("The home activity is expected", HomeActivity.class);
         solo.clickOnButton(2);
+        solo.waitForActivity(ReportingCriteriaActivity.class.getSimpleName());
         solo.assertCurrentActivity("The reporting criteria activity is expected", ReportingCriteriaActivity.class);
     }
 
