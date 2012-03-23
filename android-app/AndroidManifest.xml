@@ -16,7 +16,7 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="eu.vranckaert.worktime"
-      android:versionCode="141"
+      android:versionCode="142"
       android:versionName="1.1.3 - UNSTABLE">
     <application android:label="WorkTime" android:icon="@drawable/logo" android:name=".guice.Application" android:debuggable="false">
         <!-- Widget configuration -->
