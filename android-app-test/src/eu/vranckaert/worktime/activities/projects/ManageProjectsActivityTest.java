@@ -18,6 +18,10 @@ package eu.vranckaert.worktime.activities.projects;
 import android.app.ListActivity;
 import android.widget.EditText;
 import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.dao.CommentHistoryDao;
+import eu.vranckaert.worktime.dao.ProjectDao;
+import eu.vranckaert.worktime.dao.TaskDao;
+import eu.vranckaert.worktime.dao.TimeRegistrationDao;
 import eu.vranckaert.worktime.test.cases.ActivityTestCase;
 import eu.vranckaert.worktime.test.utils.TestUtil;
 
@@ -32,6 +36,10 @@ public class ManageProjectsActivityTest extends ActivityTestCase<ManageProjectsA
     
     public ManageProjectsActivityTest() {
         super(ManageProjectsActivity.class);
+    }
+
+    @Override
+    public void beforeTestInsertData(TimeRegistrationDao trDao, ProjectDao pDao, TaskDao tDao, CommentHistoryDao cDao) {
     }
 
     public void testDefaults() {

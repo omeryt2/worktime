@@ -19,8 +19,12 @@ import eu.vranckaert.worktime.activities.about.AboutActivity;
 import eu.vranckaert.worktime.activities.preferences.PreferencesActivity;
 import eu.vranckaert.worktime.activities.projects.ManageProjectsActivity;
 import eu.vranckaert.worktime.activities.reporting.ReportingCriteriaActivity;
-import eu.vranckaert.worktime.test.cases.ActivityTestCase;
 import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationsActivity;
+import eu.vranckaert.worktime.dao.CommentHistoryDao;
+import eu.vranckaert.worktime.dao.ProjectDao;
+import eu.vranckaert.worktime.dao.TaskDao;
+import eu.vranckaert.worktime.dao.TimeRegistrationDao;
+import eu.vranckaert.worktime.test.cases.ActivityTestCase;
 
 /**
  * User: DIRK VRANCKAERT
@@ -32,15 +36,21 @@ public class HomeActivityTest extends ActivityTestCase<HomeActivity> {
         super(HomeActivity.class);
     }
 
+    @Override
+    public void beforeTestInsertData(TimeRegistrationDao trDao, ProjectDao pDao, TaskDao tDao, CommentHistoryDao cDao) {
+    }
+
     public void testClickTimeRegistrationsButton() {
         solo.assertCurrentActivity("The home activity is expected", HomeActivity.class);
         solo.clickOnButton(0);
+        solo.waitForActivity(TimeRegistrationsActivity.class.getSimpleName());
         solo.assertCurrentActivity("The time registrations activity is expected", TimeRegistrationsActivity.class);
     }
 
     public void testClickProjectsButton() {
         solo.assertCurrentActivity("The home activity is expected", HomeActivity.class);
         solo.clickOnButton(1);
+        solo.waitForActivity(ManageProjectsActivity.class.getSimpleName());
         solo.assertCurrentActivity("The projects activity is expected", ManageProjectsActivity.class);
     }
 
@@ -54,12 +64,14 @@ public class HomeActivityTest extends ActivityTestCase<HomeActivity> {
     public void testClickPreferencesButton() {
         solo.assertCurrentActivity("The home activity is expected", HomeActivity.class);
         solo.clickOnButton(3);
+        solo.waitForActivity(PreferencesActivity.class.getSimpleName());
         solo.assertCurrentActivity("The preferences activity is expected", PreferencesActivity.class);
     }
 
     public void testClickAboutButton() {
         solo.assertCurrentActivity("The home activity is expected", HomeActivity.class);
         solo.clickOnButton(4);
+        solo.waitForActivity(AboutActivity.class.getSimpleName());
         solo.assertCurrentActivity("The about activity is expected", AboutActivity.class);
     }
 }

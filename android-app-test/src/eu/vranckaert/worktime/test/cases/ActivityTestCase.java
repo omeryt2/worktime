@@ -20,6 +20,14 @@ import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import com.jayway.android.robotium.solo.Solo;
+import eu.vranckaert.worktime.dao.CommentHistoryDao;
+import eu.vranckaert.worktime.dao.ProjectDao;
+import eu.vranckaert.worktime.dao.TaskDao;
+import eu.vranckaert.worktime.dao.TimeRegistrationDao;
+import eu.vranckaert.worktime.dao.impl.CommentHistoryDaoImpl;
+import eu.vranckaert.worktime.dao.impl.ProjectDaoImpl;
+import eu.vranckaert.worktime.dao.impl.TaskDaoImpl;
+import eu.vranckaert.worktime.dao.impl.TimeRegistrationDaoImpl;
 import eu.vranckaert.worktime.test.utils.ScreenshotUtil;
 import eu.vranckaert.worktime.test.utils.TestUtil;
 
@@ -28,7 +36,7 @@ import eu.vranckaert.worktime.test.utils.TestUtil;
  * Date: 24/02/12
  * Time: 9:31
  */
-public class ActivityTestCase<V extends Activity> extends ActivityInstrumentationTestCase2<V> {
+public abstract class ActivityTestCase<V extends Activity> extends ActivityInstrumentationTestCase2<V> {
     private final String LOG_TAG = ActivityTestCase.class.getSimpleName();
     private Class testClass;
     private int screenshotCountNumber;
@@ -54,6 +62,7 @@ public class ActivityTestCase<V extends Activity> extends ActivityInstrumentatio
     protected void setUp() throws Exception {
         beforeTestBeforeActivityLaunch();
         super.setUp();
+        triggerDatabaseInitialInsert();
 
         if (customIntent != null) {
             setActivityIntent(customIntent);
@@ -83,6 +92,33 @@ public class ActivityTestCase<V extends Activity> extends ActivityInstrumentatio
     private void beforeTestBeforeActivityLaunch() {
         TestUtil.cleanUpDatabase(getInstrumentation().getTargetContext());
     }
+    
+    private void triggerDatabaseInitialInsert() {
+        TimeRegistrationDao timeRegistrationDao = TestUtil.getDaoForClass(
+                getInstrumentation().getTargetContext(),
+                TimeRegistrationDao.class,
+                TimeRegistrationDaoImpl.class
+        );
+        ProjectDao projectDao = TestUtil.getDaoForClass(
+                getInstrumentation().getTargetContext(),
+                ProjectDao.class,
+                ProjectDaoImpl.class
+        );
+        TaskDao taskDao = TestUtil.getDaoForClass(
+                getInstrumentation().getTargetContext(),
+                TaskDao.class,
+                TaskDaoImpl.class
+        );
+        CommentHistoryDao commentHistoryDao = TestUtil.getDaoForClass(
+                getInstrumentation().getTargetContext(),
+                CommentHistoryDao.class,
+                CommentHistoryDaoImpl.class
+        );
+
+        beforeTestInsertData(timeRegistrationDao, projectDao, taskDao, commentHistoryDao);
+    }
+
+    public abstract void beforeTestInsertData(TimeRegistrationDao trDao, ProjectDao pDao, TaskDao tDao, CommentHistoryDao cDao);
 
     /**
      * Everything to be done before the test starts, but after the activity is launched. In here you can call the 
