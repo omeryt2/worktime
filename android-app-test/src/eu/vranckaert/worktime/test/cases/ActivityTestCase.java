@@ -54,8 +54,12 @@ public class ActivityTestCase<V extends Activity> extends ActivityInstrumentatio
     protected void setUp() throws Exception {
         beforeTestBeforeActivityLaunch();
         super.setUp();
-        launchActivity();
-        TestUtil.removeAllPreferences(getActivity());
+
+        if (customIntent != null) {
+            setActivityIntent(customIntent);
+        }
+
+        TestUtil.removeAllPreferences(getInstrumentation().getTargetContext());
         solo = new Solo(getInstrumentation(), getActivity());
         beforeTestAfterActivityLaunch();
     }
@@ -78,17 +82,6 @@ public class ActivityTestCase<V extends Activity> extends ActivityInstrumentatio
      */
     private void beforeTestBeforeActivityLaunch() {
         TestUtil.cleanUpDatabase(getInstrumentation().getTargetContext());
-    }
-
-    /**
-     * Launches the activity. If the {@link ActivityTestCase#customIntent} is empty it will just start the activity.
-     * If the intent is available it will use start the activity with the provided intent!
-     */
-    private void launchActivity() {
-        if (customIntent != null) {
-            setActivityIntent(customIntent);
-        }
-        getActivity();
     }
 
     /**
@@ -161,7 +154,7 @@ public class ActivityTestCase<V extends Activity> extends ActivityInstrumentatio
         if (solo.getViews().size() > 0) {
             try {
                 ScreenshotUtil.takeScreenShot(
-                        getActivity(),
+                        getInstrumentation().getTargetContext(),
                         solo.getViews().get(0),
                         getFullTestClassName(),
                         getName(),

@@ -45,6 +45,8 @@ public class TestUtil {
         public static final Long TWENTY_SECONDS = 20000L;
         public static final Long THIRTY_SECONDS = 30000L;
         public static final Long SIXTY_SECONDS = 60000L;
+
+        public static final Long TWO_MINUTES = 120000L;
     }
 
     /**

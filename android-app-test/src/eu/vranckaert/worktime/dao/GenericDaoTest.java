@@ -20,6 +20,7 @@ import eu.vranckaert.worktime.dao.impl.CommentHistoryDaoImpl;
 import eu.vranckaert.worktime.model.CommentHistory;
 import eu.vranckaert.worktime.test.cases.DaoTestCase;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -104,5 +105,122 @@ public class GenericDaoTest extends DaoTestCase<CommentHistoryDaoImpl> {
         assertFalse(getGenericDao().contains(-9000));
         assertFalse(getGenericDao().contains(4322));
         assertTrue(getGenericDao().contains(o3.getId()));
+    }
+    
+    public void testUpdateExistingEntity() {
+        String test1 = "TEST";
+        String test2 = "updated!";
+        
+        CommentHistory o = new CommentHistory(test1);
+        o = getGenericDao().save(o);
+        
+        o.setComment(test2);
+        CommentHistory updated = getGenericDao().update(o);
+
+        assertNotNull(updated);
+        assertNotNull(updated.getId());
+        assertEquals(o.getId(), updated.getId());
+        assertEquals(test2, updated.getComment());
+    }
+    
+    public void testUpdateNewEntity() {
+        CommentHistory o = new CommentHistory("TEST");
+
+        CommentHistory updated = getGenericDao().update(o);
+        assertNotNull(updated);
+        assertNull(updated.getId());
+    }
+
+    public void testDelete() {
+        List list = getGenericDao().findAll();
+        assertEquals("No items should be found", 0, list.size());
+
+        CommentHistory o1 = new CommentHistory("TEST");
+        o1.setEntranceDate(new Date());
+        o1 = getGenericDao().save(o1);
+
+        CommentHistory o2 = new CommentHistory("TEST");
+        o2.setEntranceDate(new Date());
+        o2 = getGenericDao().save(o2);
+
+        CommentHistory ghostEntity = new CommentHistory("TEST");
+
+        list = getGenericDao().findAll();
+        assertEquals("Two items should be found", 2, list.size());
+
+        getGenericDao().delete(o1);
+
+        list = getGenericDao().findAll();
+        assertEquals("One item should be found", 1, list.size());
+
+        getGenericDao().delete(o2);
+
+        list = getGenericDao().findAll();
+        assertEquals("No items should be found", 0, list.size());
+        
+        getGenericDao().delete(ghostEntity);
+
+        list = getGenericDao().findAll();
+        assertEquals("No items should be found", 0, list.size());
+    }
+
+    public void testCount() {
+        List list = getGenericDao().findAll();
+        assertEquals("No items should be found", 0, list.size());
+        long count = getGenericDao().count();
+        assertEquals("Count should be zero", 0l, count);
+
+        CommentHistory o1 = new CommentHistory("TEST");
+        o1.setEntranceDate(new Date());
+        o1 = getGenericDao().save(o1);
+
+        list = getGenericDao().findAll();
+        assertEquals("One item should be found", 1, list.size());
+        count = getGenericDao().count();
+        assertEquals("Count should be one", 1l, count);
+
+        CommentHistory o2 = new CommentHistory("TEST");
+        o2.setEntranceDate(new Date());
+        o2 = getGenericDao().save(o2);
+
+        list = getGenericDao().findAll();
+        assertEquals("Two items should be found", 2, list.size());
+        count = getGenericDao().count();
+        assertEquals("Count should be two", 2l, count);
+
+        CommentHistory o3 = new CommentHistory("TEST");
+        o3.setEntranceDate(new Date());
+        o3 = getGenericDao().save(o3);
+
+        list = getGenericDao().findAll();
+        assertEquals("Three items should be found", 3, list.size());
+        count = getGenericDao().count();
+        assertEquals("Count should be three", 3, count);
+    }
+    
+    public void testRefresh() {
+        CommentHistory o = new CommentHistory("TEST");
+        o.setEntranceDate(new Date());
+        getGenericDao().save(o);
+        
+        CommentHistory r = getGenericDao().findById(o.getId());
+        assertEquals(o.getId(), r.getId());
+        assertEquals(o.getComment(), r.getComment());
+        assertEquals(o.getEntranceDate(), r.getEntranceDate());
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, 2000);
+        r.setEntranceDate(cal.getTime());
+        r.setComment(r.getComment() + " UPDATED IN TEST");
+
+        assertEquals(o.getId(), r.getId());
+        assertTrue(!o.getComment().equals(r.getComment()));
+        assertTrue(!o.getEntranceDate().equals(r.getEntranceDate()));
+
+        int c = getGenericDao().refresh(r);
+        assertEquals("Number of refreshed entities should always be one", 1, c);
+        assertEquals(o.getId(), r.getId());
+        assertEquals(o.getComment(), r.getComment());
+        assertEquals(o.getEntranceDate(), r.getEntranceDate());
     }
 }
