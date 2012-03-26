@@ -24,7 +24,7 @@ import eu.vranckaert.worktime.test.utils.TestUtil;
  * Date: 20/01/12
  * Time: 14:27
  */
-public abstract class TestCase extends AndroidTestCase {
+public class TestCase extends AndroidTestCase {
     /**
      * The context that is used to execute the test.
      */
