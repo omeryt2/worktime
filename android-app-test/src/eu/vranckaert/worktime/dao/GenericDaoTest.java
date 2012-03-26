@@ -29,13 +29,13 @@ import java.util.List;
  * Date: 22/03/12
  * Time: 21:07
  */
-public class GenericDaoTest extends DaoTestCase<CommentHistoryDaoImpl> {
+public class GenericDaoTest extends DaoTestCase<CommentHistoryDao, CommentHistoryDaoImpl> {
     public GenericDaoTest() {
         super(CommentHistoryDaoImpl.class);
     }
 
     @Deprecated
-    public CommentHistoryDaoImpl getDao() {
+    public CommentHistoryDao getDao() {
         return super.getDao();
     }
 

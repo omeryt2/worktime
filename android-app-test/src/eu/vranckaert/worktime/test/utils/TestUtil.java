@@ -23,12 +23,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.j256.ormlite.support.ConnectionSource;
 import eu.vranckaert.worktime.constants.Constants;
+import eu.vranckaert.worktime.dao.generic.GenericDao;
+import eu.vranckaert.worktime.dao.generic.GenericDaoImpl;
 import eu.vranckaert.worktime.dao.utils.DatabaseHelper;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
+import static junit.framework.Assert.fail;
 
 /**
  * User: DIRK VRANCKAERT
@@ -130,5 +135,26 @@ public class TestUtil {
             editor.putString(key, value.toString());
         }
         editor.commit();
+    }
+
+    /**
+     * Get an instance for a certain DAO implementation class.
+     * @param ctx The context.
+     * @param daoInterface The interface class reference of the DAO to load.
+     * @param daoClass The implementation class reference of the DAO to load.
+     * @param <F> The interface class.
+     * @param <D> The implementation class.
+     * @return A DAO instance that extends {@link GenericDaoImpl}.
+     * @throws Exception If the DAO cannot be resolved.
+     */
+    public static <F extends GenericDao, D extends GenericDaoImpl> F getDaoForClass(Context ctx, Class<F> daoInterface, Class<D> daoClass) {
+        try {
+            Constructor<D> constructor = daoClass.getConstructor(Context.class);
+            return (F) constructor.newInstance(ctx);
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Could not create DAO class!", e);
+            fail();
+        }
+        return null;
     }
 }

@@ -17,6 +17,7 @@ package eu.vranckaert.worktime.test.cases;
 
 import android.content.Context;
 import android.test.AndroidTestCase;
+import eu.vranckaert.worktime.dao.generic.GenericDao;
 import eu.vranckaert.worktime.dao.generic.GenericDaoImpl;
 import eu.vranckaert.worktime.test.utils.TestUtil;
 
@@ -27,31 +28,35 @@ import java.lang.reflect.Constructor;
  * Date: 22/03/12
  * Time: 14:58
  */
-public class DaoTestCase<T extends GenericDaoImpl> extends AndroidTestCase {
+public class DaoTestCase<I extends GenericDao, T extends GenericDaoImpl> extends AndroidTestCase {
     /**
      * The context that is used to execute the test.
      */
     public Context ctx;
     
-    private T dao;
+    private I dao;
     private Class daoClass;
     
-    public DaoTestCase(Class<T> daoClass) {
-        this.daoClass = daoClass;
+    public DaoTestCase(Class<T> daoImplClass) {
+        this.daoClass = daoImplClass;
     }
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
         ctx = getContext();
-        
+
         Constructor<T> constructor = daoClass.getConstructor(Context.class);
-        dao = constructor.newInstance(ctx);
+        dao = (I) constructor.newInstance(ctx);
         
         TestUtil.cleanUpDatabase(getContext());
     }
     
-    public T getDao() {
+    public I getDao() {
         return dao;
+    }
+    
+    public <F extends GenericDao, D extends GenericDaoImpl> F getDaoForClass(Class<F> daoInterface, Class<D> daoClass) {
+        return TestUtil.getDaoForClass(ctx, daoInterface, daoClass);
     }
 }

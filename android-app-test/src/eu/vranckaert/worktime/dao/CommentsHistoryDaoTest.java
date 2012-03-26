@@ -26,7 +26,7 @@ import java.util.List;
  * Date: 22/03/12
  * Time: 15:23
  */
-public class CommentsHistoryDaoTest extends DaoTestCase<CommentHistoryDaoImpl> {
+public class CommentsHistoryDaoTest extends DaoTestCase<CommentHistoryDao, CommentHistoryDaoImpl> {
     public CommentsHistoryDaoTest() {
         super(CommentHistoryDaoImpl.class);
     }
