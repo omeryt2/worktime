@@ -18,8 +18,9 @@ package eu.vranckaert.worktime.dao.impl;
 import android.content.Context;
 import android.util.Log;
 import com.google.inject.Inject;
-import com.j256.ormlite.dao.GenericRawResults;
-import com.j256.ormlite.stmt.*;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import eu.vranckaert.worktime.comparators.timeregistration.TimeRegistrationDescendingByStartdate;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
 import eu.vranckaert.worktime.dao.generic.GenericDaoImpl;
@@ -28,7 +29,11 @@ import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * User: DIRK VRANCKAERT
@@ -175,7 +180,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             qb.orderBy("startTime", false);
 
             Where where = qb.where();
-            where.lt("endTime", timeRegistration.getStartTime());
+            where.le("endTime", timeRegistration.getStartTime());
             qb.setWhere(where);
 
             PreparedQuery<TimeRegistration> pq = qb.prepare();
@@ -196,7 +201,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             qb.orderBy("startTime", true);
 
             Where where = qb.where();
-            where.gt("startTime", timeRegistration.getEndTime());
+            where.ge("startTime", timeRegistration.getEndTime());
             qb.setWhere(where);
 
             PreparedQuery<TimeRegistration> pq = qb.prepare();

@@ -16,7 +16,6 @@
 package eu.vranckaert.worktime.dao;
 
 import eu.vranckaert.worktime.dao.generic.GenericDao;
-import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 
@@ -65,7 +64,7 @@ public interface TimeRegistrationDao extends GenericDao<TimeRegistration, Intege
      * Find all time registrations within a certain limit.
      * @param lowerLimit The lower limit to find the time registrations for
      * @param maxRows The maximum number of rows to be loaded
-     * @return A list of time registrations of count lowerLimit - higherLimit.
+     * @return A list of time registrations.
      */
     List<TimeRegistration> findAll(int lowerLimit, int maxRows);
 
