@@ -103,12 +103,14 @@ public class TimeRegistrationTestData {
         tr0DefaultTask.setTask(defaultTask);
         tr0DefaultTask.setStartTime(getDateTime(2011, 10, 22, 9, 54, 0, 0));
         tr0DefaultTask.setEndTime(getDateTime(2011, 10, 22, 10, 11, 0, 0));
+	tr0DefaultTask.setComment("0");
         trsForDefaultTask.add(trDao.save(tr0DefaultTask));
 
         TimeRegistration tr1DefaultTask = new TimeRegistration();
         tr1DefaultTask.setTask(defaultTask);
         tr1DefaultTask.setStartTime(getDateTime(2011, 10, 22, 10, 11, 0, 0));
         tr1DefaultTask.setEndTime(getDateTime(2011, 10, 22, 12, 0, 0, 0));
+	tr1DefaultTask.setComment("1");
         trsForDefaultTask.add(trDao.save(tr1DefaultTask));
 
         // create 1 TR for task1
@@ -116,6 +118,7 @@ public class TimeRegistrationTestData {
         tr0Task1.setTask(task1);
         tr0Task1.setStartTime(getDateTime(2011, 10, 22, 13, 0, 0, 0));
         tr0Task1.setEndTime(getDateTime(2011, 10, 22, 14, 1, 30, 0));
+	tr0Task1.setComment("2");
         trsForTask1.add(trDao.save(tr0Task1));
 
         // create 3 TR's for task2
@@ -123,18 +126,21 @@ public class TimeRegistrationTestData {
         tr0Task2.setTask(task2);
         tr0Task2.setStartTime(getDateTime(2011, 10, 22, 14, 1, 30, 0));
         tr0Task2.setEndTime(getDateTime(2011, 10, 22, 16, 0, 30, 0));
+	tr0Task2.setComment("3");
         trsForTask2.add(trDao.save(tr0Task2));
 
         TimeRegistration tr1Task2 = new TimeRegistration();
         tr1Task2.setTask(task2);
         tr1Task2.setStartTime(getDateTime(2011, 10, 23, 8, 0, 0, 0));
         tr1Task2.setEndTime(getDateTime(2011, 10, 23, 12, 0, 0, 0));
+	tr1Task2.setComment("4");
         trsForTask2.add(trDao.save(tr1Task2));
 
         TimeRegistration tr2Task2 = new TimeRegistration();
         tr2Task2.setTask(task2);
         tr2Task2.setStartTime(getDateTime(2011, 10, 23, 12, 30, 30, 0));
         tr2Task2.setEndTime(getDateTime(2011, 10, 23, 16, 0, 30, 0));
+	tr2Task2.setComment("5");
         trsForTask2.add(trDao.save(tr2Task2));
         
         allTimeRegistrations.addAll(trsForDefaultTask);
