@@ -111,7 +111,7 @@ public class StopTimeRegistrationActivity extends GuiceActivity {
                 } else {
                     latestRegistration.setEndTime(endTime);
                     // Issue 102 - If no comment is entered when ending TR (and thus the parameter 'comment' is null),
-                    // then the already entered comment is gone...
+                    // then the already entered comment is gone
                     // latestRegistration.setComment(null);
                     if (StringUtils.isNotBlank(comment)) {
                         latestRegistration.setComment(comment);
