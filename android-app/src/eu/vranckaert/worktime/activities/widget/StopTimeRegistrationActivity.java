@@ -28,7 +28,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.HomeActivity;
@@ -108,7 +110,9 @@ public class StopTimeRegistrationActivity extends GuiceActivity {
                     return new Object();
                 } else {
                     latestRegistration.setEndTime(endTime);
-                    latestRegistration.setComment(null);
+                    // Issue 102 - If no comment is entered when ending TR (and thus the parameter 'comment' is null),
+                    // then the already entered comment is gone...
+                    // latestRegistration.setComment(null);
                     if (StringUtils.isNotBlank(comment)) {
                         latestRegistration.setComment(comment);
                         tracker.trackEvent(
