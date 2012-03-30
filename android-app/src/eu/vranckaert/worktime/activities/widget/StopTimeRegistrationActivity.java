@@ -1,17 +1,17 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package eu.vranckaert.worktime.activities.widget;
 
@@ -111,7 +111,7 @@ public class StopTimeRegistrationActivity extends GuiceActivity {
                 } else {
                     latestRegistration.setEndTime(endTime);
                     // Issue 102 - If no comment is entered when ending TR (and thus the parameter 'comment' is null),
-                    // then the already entered comment is gone
+                    // then the already entered comment is gone.
                     // latestRegistration.setComment(null);
                     if (StringUtils.isNotBlank(comment)) {
                         latestRegistration.setComment(comment);
