@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
@@ -81,15 +80,15 @@ public class ExportServiceImpl implements ExportService {
 	    throw new GeneralExportException("Probably a file-system issue...", e);
 	}
 
-	PrintWriter out = null;
 	FileOutputStream fos = null;
 	try {
-	    String stringResult = result.toString();
-	    stringResult = "   " + stringResult;
-	    byte[] byteResult = Encoding.UTF_8.encodeString(stringResult);
+	    Encoding encoding = Encoding.UTF_8;
+	    byte[] textBytes = encoding.encodeString(result.toString());
+	    byte[] bom = encoding.getByteOrderMarker();
 
 	    fos = new FileOutputStream(file);
-	    fos.write(byteResult);
+	    fos.write(bom);
+	    fos.write(textBytes);
 	} catch (FileNotFoundException e) {
 	    Log.e(LOG_TAG, "The file is not found", e);
 	    throw new GeneralExportException("The file is not found, probably a file-system issue...", e);
@@ -97,14 +96,11 @@ public class ExportServiceImpl implements ExportService {
 	    Log.e(LOG_TAG, "Exception occurred during export...", e);
 	    throw new GeneralExportException("Exception occurred during export", e);
 	} finally {
-	    if (out != null) {
-		out.close();
-	    }
 	    if (fos != null) {
 		try {
 		    fos.close();
 		} catch (IOException e) {
-		    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		    Log.e(LOG_TAG, "Could not close the stream", e);
 		}
 	    }
 	}
