@@ -66,6 +66,7 @@ public class Constants {
         public static final int BACKUP_SEND_FILE_SEARCH_SHOW_LIST = 48;
         public static final int BACKUP_SEND_FILE_SEARCH_NOTHING_FOUND = 49;
         public static final int BACKUP_SEND_FILE_SEARCH_NO_SD = 50;
+	public static final int REPORTING_EXPORT_ERROR = 51;
     }
     public class IntentRequestCodes {
         public static final int ADD_PROJECT = 0;

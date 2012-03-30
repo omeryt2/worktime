@@ -42,6 +42,8 @@
     <!-- GENERAL - OTHERS -->
     <string name="lbl_delete_all">Delete all</string>
     <string name="lbl_do_nothing">Do nothing</string>
+	<!-- GENERAL - DIALOG -->
+	<string name="dialog_title_error">Error</string>
 
     <!-- DEFUALT VALUES DB -->
     <string name="default_project_name">Default Project</string>
@@ -240,7 +242,8 @@
     <string name="lbl_reporting_export_csv_separator_semicolon">Semicolon (;)</string>
     <string name="lbl_reporting_export_csv_separator_chooser_title">Select CSV Separator</string>
     <string name="msg_reporting_export_saving_sd">Exporting to SD-card</string>
-    <string name="msg_reporting_export_done">Export successful to location: %1$s</string>
+	<string name="msg_reporting_export_done">Export successful to location: %1$s</string>
+	<string name="msg_reporting_export_error">Exporting the report failed. Check if the SD-card is mounted and if the SD-memory is writable!</string>
     <string name="msg_reporting_export_sd_unavailable">Export is not available</string>
     <string name="msg_reporting_export_sd_unavailable_detail">You do not have an SD-card or any other external storage possibilities or the storage is read-only.</string>
     <string name="msg_reporting_export_share_file">Share...</string>

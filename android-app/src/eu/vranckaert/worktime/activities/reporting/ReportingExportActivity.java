@@ -33,6 +33,7 @@ import com.google.inject.internal.Nullable;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.enums.export.CsvSeparator;
+import eu.vranckaert.worktime.exceptions.export.GeneralExportException;
 import eu.vranckaert.worktime.service.ExportService;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
@@ -205,6 +206,20 @@ public class ReportingExportActivity extends GuiceActivity {
 				dialog = alertExportDone.create();
                 break;
             }
+	    case Constants.Dialog.REPORTING_EXPORT_ERROR: {
+		AlertDialog.Builder alertExportError = new AlertDialog.Builder(this);
+		alertExportError
+		    .setTitle(R.string.dialog_title_error)
+		    .setMessage(R.string.msg_reporting_export_error)
+		    .setCancelable(true)
+		    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+			    removeDialog(Constants.Dialog.REPORTING_EXPORT_ERROR);
+			}
+		    });
+		dialog = alertExportError.create();
+		break;
+	    }
             default:
                 Log.d(LOG_TAG, "Dialog id " + id + " is not supported in this activity!");
         }
@@ -261,8 +276,13 @@ public class ReportingExportActivity extends GuiceActivity {
                 Log.d(LOG_TAG, "Starting export background process...");
                 String filename = fileNameInput.getText().toString();
                 CsvSeparator separator = Preferences.getReportingExportCsvSeparator(ReportingExportActivity.this);
-                File file = exportService.exportCsvFile(ReportingExportActivity.this, filename, exportHeaders, exportValues, separator);
-                Log.d(LOG_TAG, "Disk in background process finished!");
+		File file = null;
+		try {
+		    file = exportService.exportCsvFile(ReportingExportActivity.this, filename, exportHeaders, exportValues, separator);
+		} catch (GeneralExportException e) {
+		    Log.e(LOG_TAG, "A general exception occured during export!", e);
+		}
+		Log.d(LOG_TAG, "Disk in background process finished!");
                 return file;
             }
 
@@ -271,6 +291,12 @@ public class ReportingExportActivity extends GuiceActivity {
                 Log.d(LOG_TAG, "About to remove loading dialog for export");
                 removeDialog(Constants.Dialog.REPORTING_EXPORT_LOADING);
                 Log.d(LOG_TAG, "Loading dialog for export removed!");
+		
+		if (o == null) {
+		    showDialog(Constants.Dialog.REPORTING_EXPORT_ERROR);
+		    return;
+		}
+
                 exportedFile = (File) o;
                 showDialog(Constants.Dialog.REPORTING_EXPORT_DONE);
             }
