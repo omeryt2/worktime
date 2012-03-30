@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
-    Copyright 2011 Dirk Vranckaert
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
+  ~ Copyright 2012 Dirk Vranckaert
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 <resources>
     <!-- APP -->
     <string name="app_name">Work Time</string>
@@ -166,6 +167,12 @@
     <string name="lbl_registration_split_validation_less_than">The specified date and time needs to be before the limit. Limit is %1$s</string>
     <string name="lbl_registration_split_validation_less_than_equal_to">The specified date and time needs to be before or equal to the limit. Limit is %1$s</string>
     <string name="lbl_registration_split_validation_original_time_registration">Time registrations with a duration of less than 2 minutes cannot be split!</string>
+    <string name="lbl_registration_split_part_three_tr1">Time Registration 1</string>
+    <string name="lbl_registration_split_part_three_tr2">Time Registration 2</string>
+    <string name="lbl_registration_split_part_three_gap">Gap between Time Registrations</string>
+    <string name="lbl_registration_split_part_three_starts_on">Starts on:</string>
+    <string name="lbl_registration_split_part_three_ends_on">Ends on:</string>
+    <string name="lbl_registration_split_part_three_duration">Duration:</string>
     <!-- EXPORT FILE STRINGS -->
     <string name="lbl_registrations_export_file_csv_starttime">Starttime</string>
     <string name="lbl_registrations_export_file_csv_endtime">Endtime</string>
