@@ -84,7 +84,7 @@ in between standard targets -->
 
     <target name="-remove-emulator-dialogs" description="Execute five times a press on the DPAD center button of the emulator to make sure that any open apps/dialogs are gone!">
         <echo>Executing keyvent 23 = KEYCODE_DPAD_CENTER</echo>
-        <exec executable="${adb}" failonerror="true">
+        <exec executable="${adb}" failonerror="false">
             <arg line="${adb.device.arg}" />
             <arg value="shell" />
             <arg value="input" />
@@ -92,7 +92,7 @@ in between standard targets -->
             <arg value="23" />
         </exec>
         <echo>Executing keyvent 23 = KEYCODE_DPAD_CENTER</echo>
-        <exec executable="${adb}" failonerror="true">
+        <exec executable="${adb}" failonerror="false">
             <arg line="${adb.device.arg}" />
             <arg value="shell" />
             <arg value="input" />
@@ -100,7 +100,7 @@ in between standard targets -->
             <arg value="23" />
         </exec>
         <echo>Executing keyvent 23 = KEYCODE_DPAD_CENTER</echo>
-        <exec executable="${adb}" failonerror="true">
+        <exec executable="${adb}" failonerror="false">
             <arg line="${adb.device.arg}" />
             <arg value="shell" />
             <arg value="input" />
@@ -108,7 +108,7 @@ in between standard targets -->
             <arg value="23" />
         </exec>
         <echo>Executing keyvent 23 = KEYCODE_DPAD_CENTER</echo>
-        <exec executable="${adb}" failonerror="true">
+        <exec executable="${adb}" failonerror="false">
             <arg line="${adb.device.arg}" />
             <arg value="shell" />
             <arg value="input" />
@@ -116,7 +116,7 @@ in between standard targets -->
             <arg value="23" />
         </exec>
         <echo>Executing keyvent 23 = KEYCODE_DPAD_CENTER</echo>
-        <exec executable="${adb}" failonerror="true">
+        <exec executable="${adb}" failonerror="false">
             <arg line="${adb.device.arg}" />
             <arg value="shell" />
             <arg value="input" />
