@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Dirk Vranckaert
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <project name="WorkTime for Android" default="help" xmlns:zaa="antlib:com.zutubi.android.ant">
 
     <!--
@@ -70,6 +86,17 @@
             <commit file="AndroidManifest.xml" message="Auto commit from Ant script for release"/>
             <update dir="."/>
         </svn>
+    </target>
+
+    <!-- Run Lint -->
+    <target name="lint" description="Android Lint for code control">
+        <echo>Running Lint...</echo>
+        <exec executable="${sdk.dir}\tools\lint.bat" failonerror="true">
+            <arg value="--xml"/>
+            <arg value="lint-report.xml" />
+
+            <arg value="."/>
+        </exec>
     </target>
 
     <!-- The local.properties file is created and updated by the 'android' tool.
