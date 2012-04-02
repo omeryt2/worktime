@@ -16,6 +16,7 @@
 
 package eu.vranckaert.worktime.utils.date;
 
+import android.util.SparseArray;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.enums.reporting.ReportingDisplayDuration;
@@ -26,7 +27,10 @@ import eu.vranckaert.worktime.utils.preferences.TimePrecisionPreference;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * User: DIRK VRANCKAERT
@@ -52,7 +56,7 @@ public class DateUtilsTimeCalculatorTest extends TestCase {
         int expectedMonth2 = 10;
         int expectedYear2 = 2011;
 
-        Map<Integer, Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(weekDiff, queryCalendar.getTime(), ctx);
+        SparseArray<Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(weekDiff, queryCalendar.getTime(), ctx);
 
         assertTrue("Exactly 2 map-items are expected", result.size() == 2);
 
@@ -98,7 +102,7 @@ public class DateUtilsTimeCalculatorTest extends TestCase {
         int expectedMonth2 = 1;
         int expectedYear2 = 2011;
 
-        Map<Integer, Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(weekDiff, queryCalendar.getTime(), ctx);
+        SparseArray<Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(weekDiff, queryCalendar.getTime(), ctx);
 
         assertTrue("Exactly 2 map-items are expected", result.size() == 2);
 
@@ -144,7 +148,7 @@ public class DateUtilsTimeCalculatorTest extends TestCase {
         int expectedMonth2 = 1;
         int expectedYear2 = 2012;
 
-        Map<Integer, Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(weekDiff, queryCalendar.getTime(), ctx);
+        SparseArray<Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(weekDiff, queryCalendar.getTime(), ctx);
 
         assertTrue("Exactly 2 map-items are expected", result.size() == 2);
 
@@ -190,7 +194,7 @@ public class DateUtilsTimeCalculatorTest extends TestCase {
         int expectedMonth2 = 10;
         int expectedYear2 = 2011;
 
-        Map<Integer, Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(weekDiff, queryCalendar.getTime(), ctx);
+        SparseArray<Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(weekDiff, queryCalendar.getTime(), ctx);
 
         assertTrue("Exactly 2 map-items are expected", result.size() == 2);
 
@@ -236,7 +240,7 @@ public class DateUtilsTimeCalculatorTest extends TestCase {
         int expectedMonth2 = 10;
         int expectedYear2 = 2011;
 
-        Map<Integer, Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(weekDiff, queryCalendar.getTime(), ctx);
+        SparseArray<Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(weekDiff, queryCalendar.getTime(), ctx);
 
         assertTrue("Exactly 2 map-items are expected", result.size() == 2);
 

@@ -1,22 +1,24 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package eu.vranckaert.worktime.utils.date;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.SparseArray;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.enums.reporting.ReportingDisplayDuration;
 import eu.vranckaert.worktime.model.TimeRegistration;
@@ -24,11 +26,19 @@ import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.preferences.TimePrecisionPreference;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import org.joda.time.*;
+import org.joda.time.DateTimeFieldType;
+import org.joda.time.Duration;
+import org.joda.time.Interval;
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Date utils.
@@ -448,7 +458,7 @@ public class DateUtils {
          * @return A map containing two keys: {@link DateConstants#FIRST_DAY_OF_WEEK) and
          * {@link DateConstants#LAST_DAY_OF_WEEK).
          */
-        public static Map<Integer, Date> calculateWeekBoundaries(final int weekDiff, final Context ctx) {
+        public static SparseArray<Date> calculateWeekBoundaries(final int weekDiff, final Context ctx) {
             return calculateWeekBoundaries(weekDiff, new Date(), ctx);
         }
 
@@ -461,10 +471,10 @@ public class DateUtils {
          * @param weekDiff The week difference to calculate the boundaries from.
          * @param date The date to start calculating from.
          * @param ctx The context.
-         * @return A map containing two keys: {@link DateConstants#FIRST_DAY_OF_WEEK) and
+         * @return A {@link SparseArray} containing two keys: {@link DateConstants#FIRST_DAY_OF_WEEK) and
          * {@link DateConstants#LAST_DAY_OF_WEEK).
          */
-        public static Map<Integer, Date> calculateWeekBoundaries(final int weekDiff, final Date date, final Context ctx) {
+        public static SparseArray<Date> calculateWeekBoundaries(final int weekDiff, final Date date, final Context ctx) {
             int weekStartsOn = Preferences.getWeekStartsOn(ctx);
 
             Date dateWithWeeks = addWeeksToDate(date, weekDiff);
@@ -489,7 +499,8 @@ public class DateUtils {
             lastDayOfWeek.setTime(addWeeksToDate(firstDayOfWeek.toDate(), 1));
             lastDayOfWeek.add(Calendar.DAY_OF_YEAR, -1);
 
-            Map<Integer, Date> result = new HashMap<Integer, Date>();
+            SparseArray<Date> result = new SparseArray<Date>();
+
             result.put(DateConstants.FIRST_DAY_OF_WEEK, firstDayOfWeek.toDate());
             result.put(DateConstants.LAST_DAY_OF_WEEK, lastDayOfWeek.getTime());
 

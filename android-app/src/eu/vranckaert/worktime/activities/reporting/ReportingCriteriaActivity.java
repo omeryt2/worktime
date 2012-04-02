@@ -1,18 +1,19 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package eu.vranckaert.worktime.activities.reporting;
 
 import android.app.AlertDialog;
@@ -22,8 +23,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
 import com.google.inject.Inject;
 import com.google.inject.internal.Nullable;
 import eu.vranckaert.worktime.R;
@@ -53,7 +62,13 @@ import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 /**
  * User: DIRK VRANCKAERT
@@ -319,7 +334,7 @@ public class ReportingCriteriaActivity extends GuiceActivity {
             dateRangeStartButton.setEnabled(false);
             dateRangeEndButton.setEnabled(false);
         } else if (ReportingDateRange.THIS_WEEK.getOrder() == index) {
-            Map<Integer, Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(0, ReportingCriteriaActivity.this);
+            SparseArray<Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(0, ReportingCriteriaActivity.this);
             Date firstDay = result.get(DateConstants.FIRST_DAY_OF_WEEK);
             Date lastDay = result.get(DateConstants.LAST_DAY_OF_WEEK);
 
@@ -335,7 +350,7 @@ public class ReportingCriteriaActivity extends GuiceActivity {
             dateRangeStartButton.setEnabled(false);
             dateRangeEndButton.setEnabled(false);
         } else if (ReportingDateRange.LAST_WEEK.getOrder() == index) {
-            Map<Integer, Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(-1, ReportingCriteriaActivity.this);
+            SparseArray<Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(-1, ReportingCriteriaActivity.this);
             Date firstDay = result.get(DateConstants.FIRST_DAY_OF_WEEK);
             Date lastDay = result.get(DateConstants.LAST_DAY_OF_WEEK);
 
@@ -565,7 +580,7 @@ public class ReportingCriteriaActivity extends GuiceActivity {
                                    startDateString
                            ))
 						   .setCancelable(false)
-						   .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+						   .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                public void onClick(DialogInterface dialog, int which) {
                                    dialog.cancel();
                                    showDialog(Constants.Dialog.REPORTING_CRITERIA_SELECT_END_DATE);
@@ -602,7 +617,7 @@ public class ReportingCriteriaActivity extends GuiceActivity {
                                    }
                                }
                        )
-                       .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                       .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                            @Override
                            public void onClick(DialogInterface dialogInterface, int i) {
                                Log.d(LOG_TAG, "Continuing to batch share with " + selectedDocuments.size() + " document(s)");
@@ -615,7 +630,7 @@ public class ReportingCriteriaActivity extends GuiceActivity {
                                batchShareDocuments(selectedDocuments);
                            }
                        })
-                       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                       .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                            @Override
                            public void onClick(DialogInterface dialogInterface, int i) {
                                Log.d(LOG_TAG, "Stopping the batch share procedure using the cancel button");

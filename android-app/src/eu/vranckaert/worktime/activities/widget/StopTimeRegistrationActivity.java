@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.activities.widget;
 
 import android.app.AlertDialog;
@@ -236,7 +237,7 @@ public class StopTimeRegistrationActivity extends GuiceActivity {
                         finish();
                     }
                 });
-                enterComment.setNegativeButton(R.string.cancel, new AlertDialog.OnClickListener() {
+                enterComment.setNegativeButton(android.R.string.cancel, new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Log.d(LOG_TAG, "Cancelled ending TR when about to enter comment...");
                         removeDialog(Constants.Dialog.ENTER_COMMENT_FOR_TR);

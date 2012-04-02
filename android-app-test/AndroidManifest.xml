@@ -20,12 +20,6 @@
           package="eu.vranckaert.worktime.tests"
           android:versionCode="1"
           android:versionName="1.0">
-    <!-- We add an application tag here just so that we can indicate that
-         this package needs to link against the android.test library,
-         which is needed when building test cases. -->
-    <application>
-        <uses-library android:name="android.test.runner" />
-    </application>
     <!--
     This declares that this application uses the instrumentation test runner targeting
     the package of eu.vranckaert.worktime.  To run the tests use the command:
@@ -34,4 +28,13 @@
     <instrumentation android:name="com.zutubi.android.junitreport.JUnitReportTestRunner"
                      android:targetPackage="eu.vranckaert.worktime"
                      android:label="Tests for the WorkTime Android app"/>
+
+    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="14"/>
+
+    <!-- We add an application tag here just so that we can indicate that
+         this package needs to link against the android.test library,
+         which is needed when building test cases. -->
+    <application>
+        <uses-library android:name="android.test.runner" />
+    </application>
 </manifest>
