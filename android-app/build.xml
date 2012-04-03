@@ -228,10 +228,10 @@
     <!-- Run Lint -->
     <target name="lint" description="Android Lint for code control">
         <echo>Running Lint...</echo>
-        <condition property="ext" value="bat" else="sh">
+        <condition property="ext" value=".bat" else="">
             <os family="windows"/>
         </condition>
-        <property name="runLint" value="${sdk.dir}\tools\lint.${ext}"/>
+        <property name="runLint" value="${sdk.dir}\tools\lint${ext}"/>
         <echo>Lint executable: ${runLint}</echo>
         <exec executable="${runLint}" failonerror="false">
             <!-- Specify the output -->
