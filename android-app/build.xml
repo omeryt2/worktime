@@ -228,10 +228,17 @@
     <!-- Run Lint -->
     <target name="lint" description="Android Lint for code control">
         <echo>Running Lint...</echo>
-        <exec executable="${sdk.dir}\tools\lint.bat" failonerror="true">
+        <condition property="ext" value="bat" else="sh">
+            <os family="windows"/>
+        </condition>
+        <property name="runLint" value="${sdk.dir}\tools\lint.${ext}"/>
+        <echo>Lint executable: ${runLint}</echo>
+        <exec executable="${runLint}" failonerror="false">
+            <!-- Specify the output -->
             <arg value="--xml"/>
             <arg value="lint-report.xml" />
 
+            <!-- The directory to run lint on -->
             <arg value="."/>
         </exec>
     </target>
