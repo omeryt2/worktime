@@ -130,8 +130,8 @@
         <echo>Creating branches</echo>
         <antcall target="svn-update"/>
         <antcall target="svn-branch-trunk">
-            <param name="trunk.url" value="http://worktime.googlecode.com/svn/trunk/"/>
-            <param name="branch.dir" value="http://worktime.googlecode.com/svn/branches/"/>
+            <param name="trunk.url" value="https://worktime.googlecode.com/svn/trunk/"/>
+            <param name="branch.dir" value="https://worktime.googlecode.com/svn/branches/"/>
             <param name="branch.name" value="${prodVersionName}"/>
             <param name="message" value="Creating branch for production release ${prodVersionCode}/${prodVersionName}"/>
         </antcall>
