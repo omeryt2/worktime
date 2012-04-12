@@ -130,8 +130,8 @@
         <echo>Creating branches</echo>
         <antcall target="svn-update"/>
         <antcall target="svn-branch-trunk">
-            <param name="trunk.url" value="https://worktime.googlecode.com/svn/trunk/"/>
-            <param name="branch.dir" value="https://worktime.googlecode.com/svn/branches/"/>
+            <param name="trunk.url" value="http://worktime.googlecode.com/svn/trunk/"/>
+            <param name="branch.dir" value="http://worktime.googlecode.com/svn/branches/"/>
             <param name="branch.name" value="${prodVersionName}"/>
             <param name="message" value="Creating branch for production release ${prodVersionCode}/${prodVersionName}"/>
         </antcall>
@@ -177,12 +177,15 @@
         <antcall target="svn-update"/>
     </target>
 
-    <!-- SVN ANT library-->
+    <!-- SVN ANT library -->
     <path id="svnant.classpath">
         <fileset dir="ant-libs/svn/">
             <include name="**/*.jar"/>
         </fileset>
     </path>
+    <!-- SVN ANT settings -->
+    <svnSetting javahl="false" svnkit="true" username="${svn.repository.username}" password="${svn.repository.password}" id="svn.settings"/>
+
 
     <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" />
 
@@ -198,29 +201,30 @@
     </target>
 
     <target name="svn-commit" depends="svn-check-dependencies">
-        <echo>Ready to commit file ${file}</echo>
-        <svn javahl="false" svnkit="true" username="${svn.repository.username}" password="${svn.repository.password}">
+        <echo>Committing file ${file}</echo>
+        <svn refid="svn.settings">
             <commit file="${file}" message="${message}"/>
             <update dir="."/>
         </svn>
     </target>
 
     <target name="svn-update" depends="svn-check-dependencies">
-        <svn javahl="false" svnkit="true" username="${svn.repository.username}" password="${svn.repository.password}">
+        <echo>Updating working copy</echo>
+        <svn refid="svn.settings">
             <update dir="."/>
         </svn>
     </target>
 
     <target name="svn-revert" depends="svn-check-dependencies">
-        <echo>About to revert file ${file}</echo>
-        <svn javahl="false" svnkit="true" username="${svn.repository.username}" password="${svn.repository.password}">
+        <echo>Reverting file ${file}</echo>
+        <svn refid="svn.settings">
             <revert file="${file}"/>
         </svn>
     </target>
 
     <target name="svn-branch-trunk" depends="svn-check-dependencies">
-        <echo>Ready to create branch for trunk (${trunk.url}) to url ${branch.dir} with name ${branch.name}</echo>
-        <svn javahl="false" svnkit="true" username="${svn.repository.username}" password="${svn.repository.password}">
+        <echo>Creating branch for trunk (${trunk.url}) to url ${branch.dir} with name ${branch.name}</echo>
+        <svn refid="svn.settings">
             <copy srcUrl="${trunk.url}" desturl="${branch.dir}/${branch.name}" message="${message}" makeparents="true"/>
         </svn>
     </target>
