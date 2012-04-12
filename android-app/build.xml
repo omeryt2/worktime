@@ -221,6 +221,7 @@
     <target name="svn-branch-trunk" depends="svn-check-dependencies">
         <echo>Ready to create branch for trunk (${trunk.url}) to url ${branch.dir} with name ${branch.name}</echo>
         <svn javahl="false" svnkit="true" username="${svn.repository.username}" password="${svn.repository.password}">
+            <mkdir url="${branch.dir}/${branch.name}" message="Creating directory ${branch.dir}/${branch.name} before creating branch"/>
             <copy srcUrl="${trunk.url}" desturl="${branch.dir}/${branch.name}" message="${message}"/>
         </svn>
     </target>
