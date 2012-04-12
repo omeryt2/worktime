@@ -76,15 +76,13 @@
         <mkdir dir="./bin/release"/>
         <copy file="./bin/${ant.project.name}-release.apk" tofile="./bin/release/${app.name}-${versionName} - Build${versionCode}.apk"/>
 
-        <!-- TODO
         <echo>Ready to commit all changes made to the AndroidManifest.xml</echo>
         <antcall target="svn-commit">
             <param name="file" value="AndroidManifest.xml"/>
-            <param name="message" value="Auto commit for AndroidManifest.xml while release new version for Nightly Build"/>
+            <param name="message" value="Auto commit for AndroidManifest.xml while releasing a new Nightly Build"/>
         </antcall>
 
         <antcall target="svn-update"/>
-        -->
     </target>
 
     <!-- Change the name of the generated release APK-file to a name keeping in mind production naming conventions-->
@@ -126,7 +124,7 @@
         <echo>Committing production changes</echo>
         <antcall target="svn-commit">
             <param name="file" value="AndroidManifest.xml"/>
-            <param name="message" value="Auto commit for AndroidManifest.xml while releasing new version in production"/>
+            <param name="message" value="Auto commit for AndroidManifest.xml while releasing a new Production build"/>
         </antcall>
         <!-- Create a branch for the trunk directory -->
         <echo>Creating branches</echo>
@@ -134,7 +132,7 @@
             <param name="trunk.url" value="http://worktime.googlecode.com/svn/trunk/"/>
             <param name="branch.dir" value="http://worktime.googlecode.com/svn/trunk/"/>
             <param name="branch.name" value="prodVersionName"/>
-            <param name="message" value="Branching for version ${prodVersionCode}/${prodVersionName}"/>
+            <param name="message" value="Creating branch for production release ${prodVersionCode}/${prodVersionName}"/>
         </antcall>
 
         <!-- Revert the changes in order to have the original versionCode (to prepare for the next dev version)
@@ -170,7 +168,7 @@
         <echo>Ready to commit all changes made to the AndroidManifest.xml</echo>
         <antcall target="svn-commit">
             <param name="file" value="AndroidManifest.xml"/>
-            <param name="message" value="Auto commit for AndroidManifest.xml while release new version in production"/>
+            <param name="message" value="Preparing trunk environment for development of new version ${finalManifestFile.manifest.android:versionName}"/>
         </antcall>
 
         <!-- Update the entire directory -->
