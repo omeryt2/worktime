@@ -183,11 +183,10 @@
             <include name="**/*.jar"/>
         </fileset>
     </path>
+    <!-- SVN ANT taskdef -->
+    <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" />
     <!-- SVN ANT settings -->
     <svnSetting javahl="false" svnkit="true" username="${svn.repository.username}" password="${svn.repository.password}" id="svn.settings"/>
-
-
-    <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" />
 
     <target name="svn-check-dependencies">
         <fail message="The property svn.repository.username is missing" unless="svn.repository.username"/>
