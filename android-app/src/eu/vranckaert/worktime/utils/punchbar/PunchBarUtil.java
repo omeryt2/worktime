@@ -1,17 +1,17 @@
 /*
- *  Copyright 2012 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package eu.vranckaert.worktime.utils.punchbar;
 
@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.HomeActivity;
+import eu.vranckaert.worktime.activities.punchbar.PunchBarClickListener;
 import eu.vranckaert.worktime.activities.widget.StartTimeRegistrationActivity;
 import eu.vranckaert.worktime.activities.widget.StopTimeRegistrationActivity;
 import eu.vranckaert.worktime.constants.Constants;
@@ -39,13 +40,13 @@ import eu.vranckaert.worktime.utils.preferences.Preferences;
 public class PunchBarUtil {
     /**
      * Configure the punch bar to be shown correctly.
-     * @param ctx The activity from which the bar should be created.
+     *
+     * @param ctx                     The activity from which the bar should be created.
      * @param timeRegistrationService A reference to the {@link TimeRegistrationService}.
-     * @param taskService A reference to the {@link TaskService}.
-     * @param projectService A reference to the {@link ProjectService}.
+     * @param taskService             A reference to the {@link TaskService}.
+     * @param projectService          A reference to the {@link ProjectService}.
      */
-    public static void configurePunchBar(Activity ctx,
-            TimeRegistrationService timeRegistrationService, TaskService taskService, ProjectService projectService) {
+    public static void configurePunchBar(Activity ctx, TimeRegistrationService timeRegistrationService, TaskService taskService, ProjectService projectService) {
         View bar = ctx.findViewById(R.id.punch_bar_container);
         if (Preferences.getTimeRegistrationPunchBarEnabledFromHomeScreen(ctx) &&
                 (ctx.getClass().equals(HomeActivity.class) || Preferences.getTimeRegistrationPunchBarEnabledOnAllScreens(ctx))) {
@@ -61,6 +62,9 @@ public class PunchBarUtil {
         TextView footerText = (TextView) ctx.findViewById(R.id.punch_bar_text);
 
         if (lastTimeRegistration != null && lastTimeRegistration.isOngoingTimeRegistration()) {
+            TimeRegistration previousTimeRegistration = timeRegistrationService.getPreviousTimeRegistration(lastTimeRegistration);
+            TimeRegistration nextTimeRegistration = null;
+            setPunchBarClickActions(bar, new PunchBarClickListener(ctx, lastTimeRegistration, previousTimeRegistration, nextTimeRegistration));
             taskService.refresh(lastTimeRegistration.getTask());
             projectService.refresh(lastTimeRegistration.getTask().getProject());
 
@@ -71,14 +75,26 @@ public class PunchBarUtil {
             );
             actionButton.setImageResource(R.drawable.ic_stop);
         } else {
+            setPunchBarClickActions(bar, null);
             footerText.setText(R.string.home_comp_start_stop_time_registration_no_ongoing);
             actionButton.setImageResource(R.drawable.ic_play);
         }
     }
 
+    private static void setPunchBarClickActions(View punchBar, PunchBarClickListener clickListener) {
+        if (clickListener != null) {
+            punchBar.setClickable(true);
+            punchBar.setOnClickListener(clickListener);
+        } else {
+            punchBar.setClickable(false);
+            punchBar.setOnClickListener(null);
+        }
+    }
+
     /**
      * Handles the click on a punch in/out in the punch-bar.
-     * @param ctx The activity from which the punch in/out action is invoked.
+     *
+     * @param ctx                     The activity from which the punch in/out action is invoked.
      * @param timeRegistrationService A reference to the {@link TimeRegistrationService}.
      */
     public static void onPunchButtonClick(Activity ctx, TimeRegistrationService timeRegistrationService) {

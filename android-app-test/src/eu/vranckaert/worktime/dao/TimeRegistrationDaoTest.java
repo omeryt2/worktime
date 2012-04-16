@@ -40,7 +40,7 @@ public class TimeRegistrationDaoTest extends DaoTestCase<TimeRegistrationDao, Ti
     public TimeRegistrationDaoTest() {
         super(TimeRegistrationDaoImpl.class);
     }
-    
+
     private void setupDatabase() {
         ProjectDao projectDao = getDaoForClass(ProjectDao.class, ProjectDaoImpl.class);
         TaskDao taskDao = getDaoForClass(TaskDao.class, TaskDaoImpl.class);
@@ -60,7 +60,7 @@ public class TimeRegistrationDaoTest extends DaoTestCase<TimeRegistrationDao, Ti
         Assert.assertSameDate(expectedStartTime, startTime);
         Assert.assertSameDate(expectedEndTime, endTime);
     }
-    
+
     public void testFindTimeRegistrationsForTask() {
         setupDatabase();
 
@@ -78,150 +78,161 @@ public class TimeRegistrationDaoTest extends DaoTestCase<TimeRegistrationDao, Ti
     }
 
     public void testFindTimeRegistrationsForTasks() {
-	setupDatabase();
-	
-	List<Task> tasks = new ArrayList<Task>();
-	List<TimeRegistration> timeRegistrations = getDao().findTimeRegistrationsForTaks(tasks);
-	assertNotNull(timeRegistrations);
-	assertEquals("No time registrations should be found", 0, timeRegistrations.size());
+        setupDatabase();
 
-	tasks.add(testData.task2);
-	tasks.add(testData.task1);
-	timeRegistrations = getDao().findTimeRegistrationsForTaks(tasks);
+        List<Task> tasks = new ArrayList<Task>();
+        List<TimeRegistration> timeRegistrations = getDao().findTimeRegistrationsForTaks(tasks);
+        assertNotNull(timeRegistrations);
+        assertEquals("No time registrations should be found", 0, timeRegistrations.size());
 
-	assertNotNull(timeRegistrations);
-	assertEquals(testData.trsForTask2.size() + testData.trsForTask1.size(), timeRegistrations.size());
+        tasks.add(testData.task2);
+        tasks.add(testData.task1);
+        timeRegistrations = getDao().findTimeRegistrationsForTaks(tasks);
+
+        assertNotNull(timeRegistrations);
+        assertEquals(testData.trsForTask2.size() + testData.trsForTask1.size(), timeRegistrations.size());
     }
-    
+
     public void testGetTimeRegistrationsNoTasks() {
-	setupDatabase();
+        setupDatabase();
 
-	List<TimeRegistration> timeRegistrations = getDao().getTimeRegistrations(
-	    testData.getDateTime(2011, 10, 22, 9, 54, 0, 0),
-	    testData.getDateTime(2011, 10, 23, 16, 0, 30, 0),
-	    null
-	);
+        List<TimeRegistration> timeRegistrations = getDao().getTimeRegistrations(
+                testData.getDateTime(2011, 10, 22, 9, 54, 0, 0),
+                testData.getDateTime(2011, 10, 23, 16, 0, 30, 0),
+                null
+        );
 
-	assertNotNull(timeRegistrations);
-	assertEquals(testData.trsForDefaultTask.size() + testData.trsForTask1.size() + testData.trsForTask2.size() + testData.trsForTask3.size(), timeRegistrations.size());
+        assertNotNull(timeRegistrations);
+        assertEquals(testData.trsForDefaultTask.size() + testData.trsForTask1.size() + testData.trsForTask2.size() + testData.trsForTask3.size(), timeRegistrations.size());
     }
-    
+
     public void testGetTimeRegistrationsWithTasks() {
-	setupDatabase();
+        setupDatabase();
 
-	List<Task> tasks = new ArrayList<Task>();
-	tasks.add(testData.defaultTask);
-	tasks.add(testData.task2);
-	List<TimeRegistration> timeRegistrations = getDao().getTimeRegistrations(
-	    testData.getDateTime(2011, 10, 22, 9, 54, 0, 0),
-	    testData.getDateTime(2011, 10, 23, 16, 0, 30, 0),
-	    tasks
-	);
+        List<Task> tasks = new ArrayList<Task>();
+        tasks.add(testData.defaultTask);
+        tasks.add(testData.task2);
+        List<TimeRegistration> timeRegistrations = getDao().getTimeRegistrations(
+                testData.getDateTime(2011, 10, 22, 9, 54, 0, 0),
+                testData.getDateTime(2011, 10, 23, 16, 0, 30, 0),
+                tasks
+        );
 
-	assertNotNull(timeRegistrations);
-	assertEquals(testData.trsForDefaultTask.size() + testData.trsForTask2.size(), timeRegistrations.size());
+        assertNotNull(timeRegistrations);
+        assertEquals(testData.trsForDefaultTask.size() + testData.trsForTask2.size(), timeRegistrations.size());
     }
-    
+
     public void testGetTimeRegistrationsWithSpecificDateRange() {
-	setupDatabase();
+        setupDatabase();
 
-	// Exactly two time registrations are queried. The one from task 1 and the first one of task 2
-	List<TimeRegistration> timeRegistrations = getDao().getTimeRegistrations(
-	    testData.getDateTime(2011, 10, 22, 10, 35, 11, 0),
-	    testData.getDateTime(2011, 10, 22, 23, 0, 0, 0),
-	    null
-	);
+        // Exactly two time registrations are queried. The one from task 1 and the first one of task 2
+        List<TimeRegistration> timeRegistrations = getDao().getTimeRegistrations(
+                testData.getDateTime(2011, 10, 22, 10, 35, 11, 0),
+                testData.getDateTime(2011, 10, 22, 23, 0, 0, 0),
+                null
+        );
 
-	assertNotNull(timeRegistrations);
-	assertEquals("Exactly four time registrations should be found!", 4, timeRegistrations.size());
-	for (TimeRegistration timeRegistration : timeRegistrations) {
-	    assertTrue(
-		timeRegistration.getTask().getId().equals(testData.defaultTask.getId())
-		|| timeRegistration.getTask().getId().equals(testData.task1.getId())
-		|| timeRegistration.getTask().getId().equals(testData.task2.getId())
-	    );
-	}
+        assertNotNull(timeRegistrations);
+        assertEquals("Exactly four time registrations should be found!", 4, timeRegistrations.size());
+        for (TimeRegistration timeRegistration : timeRegistrations) {
+            assertTrue(
+                    timeRegistration.getTask().getId().equals(testData.defaultTask.getId())
+                            || timeRegistration.getTask().getId().equals(testData.task1.getId())
+                            || timeRegistration.getTask().getId().equals(testData.task2.getId())
+            );
+        }
     }
 
     public void testFindAll() {
-	setupDatabase();
+        setupDatabase();
 
-	int lowerLimit = 0;
-	int maxRows = 3;
-	List<TimeRegistration> timeRegistrations = getDao().findAll(lowerLimit, maxRows);
-	assertNotNull(timeRegistrations);
-	assertEquals("Exactly " + maxRows + " time registrations should be found!", maxRows, timeRegistrations.size());
-	for (TimeRegistration timeRegistration : timeRegistrations) {
-	    assertTrue(
-		timeRegistration.getTask().getId().equals(testData.task2.getId())
-	    );
-	}
+        int lowerLimit = 0;
+        int maxRows = 3;
+        List<TimeRegistration> timeRegistrations = getDao().findAll(lowerLimit, maxRows);
+        assertNotNull(timeRegistrations);
+        assertEquals("Exactly " + maxRows + " time registrations should be found!", maxRows, timeRegistrations.size());
+        for (TimeRegistration timeRegistration : timeRegistrations) {
+            assertTrue(
+                    timeRegistration.getTask().getId().equals(testData.task2.getId())
+            );
+        }
 
-	lowerLimit = 6;
-	maxRows = 10;
-	timeRegistrations = getDao().findAll(lowerLimit, maxRows);
-	assertNotNull(timeRegistrations);
-	assertEquals("Exactly zero time registrations should be found!", 0, timeRegistrations.size());
+        lowerLimit = 6;
+        maxRows = 10;
+        timeRegistrations = getDao().findAll(lowerLimit, maxRows);
+        assertNotNull(timeRegistrations);
+        assertEquals("Exactly zero time registrations should be found!", 0, timeRegistrations.size());
 
-	lowerLimit = 5;
-	maxRows = 10;
-	timeRegistrations = getDao().findAll(lowerLimit, maxRows);
-	assertNotNull(timeRegistrations);
-	assertEquals("Exactly one time registrations should be found!", 1, timeRegistrations.size());
-	for (TimeRegistration timeRegistration : timeRegistrations) {
-	    assertTrue(timeRegistration.getTask().getId().equals(testData.defaultTask.getId()));
-	}
+        lowerLimit = 5;
+        maxRows = 10;
+        timeRegistrations = getDao().findAll(lowerLimit, maxRows);
+        assertNotNull(timeRegistrations);
+        assertEquals("Exactly one time registrations should be found!", 1, timeRegistrations.size());
+        for (TimeRegistration timeRegistration : timeRegistrations) {
+            assertTrue(timeRegistration.getTask().getId().equals(testData.defaultTask.getId()));
+        }
     }
 
     public void testGetPreviousTimeRegistration() {
-	setupDatabase();
+        setupDatabase();
 
-	TimeRegistration previousTimeRegistration = getDao().getPreviousTimeRegistration(testData.trsForTask2.get(0));
-	assertNotNull(previousTimeRegistration);
-	Assert.assertSameDate(testData.getDateTime(2011, 10, 22, 13, 0, 0, 0), previousTimeRegistration.getStartTime());
-	Assert.assertSameDate(testData.getDateTime(2011, 10, 22, 14, 1, 30, 0), previousTimeRegistration.getEndTime());
+        TimeRegistration previousTimeRegistration = getDao().getPreviousTimeRegistration(testData.trsForTask2.get(0));
+        assertNotNull(previousTimeRegistration);
+        Assert.assertSameDate(testData.getDateTime(2011, 10, 22, 13, 0, 0, 0), previousTimeRegistration.getStartTime());
+        Assert.assertSameDate(testData.getDateTime(2011, 10, 22, 14, 1, 30, 0), previousTimeRegistration.getEndTime());
     }
 
     public void testGetPreviousTimeRegistrationForFirstTimeRegistration() {
-	setupDatabase();
+        setupDatabase();
 
-	TimeRegistration previousTimeRegistration = getDao().getPreviousTimeRegistration(testData.trsForDefaultTask.get(0));
-	assertNull(previousTimeRegistration);
+        TimeRegistration previousTimeRegistration = getDao().getPreviousTimeRegistration(testData.trsForDefaultTask.get(0));
+        assertNull(previousTimeRegistration);
     }
 
     public void testGetPreviousTimeRegistrationForLastTimeRegistration() {
-	setupDatabase();
+        setupDatabase();
 
-	TimeRegistration expectedTimeRegistration = testData.trsForTask2.get(testData.trsForTask2.size()-2);
+        TimeRegistration expectedTimeRegistration = testData.trsForTask2.get(testData.trsForTask2.size() - 2);
 
-	TimeRegistration previousTimeRegistration = getDao().getPreviousTimeRegistration(testData.trsForTask2.get(testData.trsForTask2.size()-1));
-	assertNotNull(previousTimeRegistration);
-	assertEquals(expectedTimeRegistration.getId(), previousTimeRegistration.getId());
+        TimeRegistration previousTimeRegistration = getDao().getPreviousTimeRegistration(testData.trsForTask2.get(testData.trsForTask2.size() - 1));
+        assertNotNull(previousTimeRegistration);
+        assertEquals(expectedTimeRegistration.getId(), previousTimeRegistration.getId());
     }
 
     public void testGetNextTimeRegistration() {
-	setupDatabase();
+        setupDatabase();
 
-	TimeRegistration expectedTimeRegistration = testData.trsForTask2.get(1);
+        TimeRegistration expectedTimeRegistration = testData.trsForTask2.get(1);
 
-	TimeRegistration nextTimeRegistration = getDao().getNextTimeRegistration(testData.trsForTask2.get(0));
-	assertNotNull(nextTimeRegistration);
-	assertEquals(expectedTimeRegistration.getId(), nextTimeRegistration.getId());
+        TimeRegistration nextTimeRegistration = getDao().getNextTimeRegistration(testData.trsForTask2.get(0));
+        assertNotNull(nextTimeRegistration);
+        assertEquals(expectedTimeRegistration.getId(), nextTimeRegistration.getId());
     }
 
     public void testGetNextTimeRegistrationForLastTimeRegistration() {
-	setupDatabase();
-	TimeRegistration nextTimeRegistration = getDao().getNextTimeRegistration(testData.trsForTask2.get(testData.trsForTask2.size()-1));
-	assertNull(nextTimeRegistration);
+        setupDatabase();
+        TimeRegistration nextTimeRegistration = getDao().getNextTimeRegistration(testData.trsForTask2.get(testData.trsForTask2.size() - 1));
+        assertNull(nextTimeRegistration);
     }
 
     public void testGetNextTimeRegistrationForFirstTimeRegistration() {
-	setupDatabase();
+        setupDatabase();
 
-	TimeRegistration expectedTimeRegistration = testData.trsForDefaultTask.get(1);
+        TimeRegistration expectedTimeRegistration = testData.trsForDefaultTask.get(1);
 
-	TimeRegistration nextTimeRegistration = getDao().getNextTimeRegistration(testData.trsForDefaultTask.get(0));
-	assertNotNull(nextTimeRegistration);
-	assertEquals(expectedTimeRegistration.getId(), nextTimeRegistration.getId());
+        TimeRegistration nextTimeRegistration = getDao().getNextTimeRegistration(testData.trsForDefaultTask.get(0));
+        assertNotNull(nextTimeRegistration);
+        assertEquals(expectedTimeRegistration.getId(), nextTimeRegistration.getId());
+    }
+
+    public void testGetNextTimeRegistrationForOngoingTimeRegistration() {
+        TimeRegistration ongoingTimeRegistration = new TimeRegistration();
+        ongoingTimeRegistration.setStartTime(new Date(0));
+        ongoingTimeRegistration.setEndTime(null);
+        ongoingTimeRegistration.setTask(testData.defaultTask);
+        getDao().save(ongoingTimeRegistration);
+
+        TimeRegistration nextTimeRegistration = getDao().getNextTimeRegistration(ongoingTimeRegistration);
+        assertNotNull(nextTimeRegistration);
     }
 }
