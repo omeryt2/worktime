@@ -226,6 +226,8 @@ public class TimeRegistrationDaoTest extends DaoTestCase<TimeRegistrationDao, Ti
     }
 
     public void testGetNextTimeRegistrationForOngoingTimeRegistration() {
+        setupDatabase();
+
         TimeRegistration ongoingTimeRegistration = new TimeRegistration();
         ongoingTimeRegistration.setStartTime(new Date(0));
         ongoingTimeRegistration.setEndTime(null);
@@ -233,6 +235,6 @@ public class TimeRegistrationDaoTest extends DaoTestCase<TimeRegistrationDao, Ti
         getDao().save(ongoingTimeRegistration);
 
         TimeRegistration nextTimeRegistration = getDao().getNextTimeRegistration(ongoingTimeRegistration);
-        assertNotNull(nextTimeRegistration);
+        assertNull(nextTimeRegistration);
     }
 }
