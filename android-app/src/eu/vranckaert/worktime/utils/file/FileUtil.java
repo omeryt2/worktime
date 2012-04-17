@@ -1,17 +1,17 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package eu.vranckaert.worktime.utils.file;
 
@@ -24,7 +24,10 @@ import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.OSContants;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.channels.FileChannel;
 
 /**
@@ -104,10 +107,15 @@ public class FileUtil {
             }
         }
 
-        if (externalDirFile != null)
+        if (externalDirFile != null) {
+            if (!externalDirFile.exists()) {
+                Log.d(LOG_TAG, "The external files directory structure (" + externalDirFile.getAbsolutePath() + ") does not yet exists, creating it now...");
+                externalDirFile.mkdirs();
+            }
             Log.d(LOG_TAG, "External files directory: " + externalDirFile.getAbsolutePath());
-        else
+        } else {
             Log.d(LOG_TAG, "No external files directory found!");
+        }
 
         return externalDirFile;
     }
