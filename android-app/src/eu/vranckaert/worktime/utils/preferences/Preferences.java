@@ -1,17 +1,17 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package eu.vranckaert.worktime.utils.preferences;
 
@@ -19,7 +19,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import eu.vranckaert.worktime.constants.Constants;
-import eu.vranckaert.worktime.enums.export.CsvSeparator;
+import eu.vranckaert.worktime.enums.export.ExportCsvSeparator;
+import eu.vranckaert.worktime.enums.export.ExportData;
+import eu.vranckaert.worktime.enums.export.ExportType;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.HourPreference12Or24;
 import eu.vranckaert.worktime.utils.string.StringUtils;
@@ -354,34 +356,6 @@ public class Preferences {
     }
 
     /**
-     * Get the preference for key {@link Constants.Preferences.Keys#REPORTING_EXPORT_CSV_SEPARATOR}.
-     * @param ctx The context when accessing the preference.
-     * @return The {@link CsvSeparator} represented by the value in the preferences. If the value in the preferences
-     * could not be matched on any instance of the enum it will return null.
-     */
-    public static CsvSeparator getReportingExportCsvSeparator(Context ctx) {
-        String separator = getSharedPreferences(ctx).getString(
-                Constants.Preferences.Keys.REPORTING_EXPORT_CSV_SEPARATOR,
-                String.valueOf(CsvSeparator.SEMICOLON.getSeperator())
-        );
-        return CsvSeparator.matchFileType(separator);
-    }
-
-    /**
-     * Updates the preference {@link Constants.Preferences.Keys#REPORTING_EXPORT_CSV_SEPARATOR}.
-     * @param ctx The context when updating the preference.
-     * @param separator The {@link CsvSeparator} to store in the preferences.
-     */
-    public static void setReportingExportCsvSeparator(Context ctx, CsvSeparator separator) {
-        if(separator == null) {
-            return;
-        }
-        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
-        editor.putString(Constants.Preferences.Keys.REPORTING_EXPORT_CSV_SEPARATOR, String.valueOf(separator.getSeperator()));
-        editor.commit();
-    }
-
-    /**
      * Get the preference for key {@link Constants.Preferences.Keys#TIME_REGISTRATION_AUTO_CLOSE_60S_GAP}. If no value
      * is found for the preference the default value will be
      * {@link Constants.Preferences#TIME_REGISTRATION_AUTO_CLOSE_60S_GAP_DEFAULT_VALUE}.
@@ -508,6 +482,85 @@ public class Preferences {
     public static void setTimeRegistrationPunchBarEnabledOnAllScreens(Context ctx, boolean hideFinished) {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
         editor.putBoolean(Constants.Preferences.Keys.TIME_REGISTRATION_PUNCH_BAR_ENABLED_ON_ALL_SCREENS, hideFinished);
+        editor.commit();
+    }
+
+    /**
+     * Get the preference for key {@link Constants.Preferences.Keys#EXPORT_TYPE}. If no value is found for the
+     * preference the default value will be {@link ExportType#XLS}.
+     * @param ctx The context when getting the preference for the export type to use.
+     * @return The {@link ExportType} that represents the user's choice (or if no choice available the system's default)
+     * for the export type to use.
+     */
+    public static ExportType getPreferredExportType(Context ctx) {
+        String exportType = getSharedPreferences(ctx).getString(
+                Constants.Preferences.Keys.EXPORT_TYPE,
+                ExportType.XLS.toString()
+        );
+        return ExportType.valueOf(exportType);
+    }
+
+    /**
+     * Updates the preference {@link Constants.Preferences.Keys#EXPORT_TYPE}.
+     * @param ctx The context when updating the preference.
+     * @param exportType The {@link ExportType} which represents the users' choice for the export type to use.
+     */
+    public static void setPreferredExportType(Context ctx, ExportType exportType) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(Constants.Preferences.Keys.EXPORT_TYPE, exportType.toString());
+        editor.commit();
+    }
+
+    /**
+     * Get the preference for key {@link Constants.Preferences.Keys#EXPORT_CSV_SEPARATOR}. If no value is found for the
+     * preference the default value will be {@link ExportCsvSeparator#SEMICOLON}.
+     * @param ctx The context when getting the preference for the CSV separator to use during export.
+     * @return The {@link ExportCsvSeparator} that represents the user's choice (or if no choice available the system's
+     * default) for the CSV separator to use during the export.
+     */
+    public static ExportCsvSeparator getPreferredExportCSVSeparator(Context ctx) {
+        String exportType = getSharedPreferences(ctx).getString(
+                Constants.Preferences.Keys.EXPORT_CSV_SEPARATOR,
+                ExportCsvSeparator.SEMICOLON.toString()
+        );
+        return ExportCsvSeparator.valueOf(exportType);
+    }
+
+    /**
+     * Updates the preference {@link Constants.Preferences.Keys#EXPORT_CSV_SEPARATOR}.
+     * @param ctx The context when updating the preference.
+     * @param exportType The {@link ExportCsvSeparator} which represents the users' choice for the CSV separator to use
+     * during the export.
+     */
+    public static void setPreferredExportCSVSeparator(Context ctx, ExportCsvSeparator exportType) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(Constants.Preferences.Keys.EXPORT_CSV_SEPARATOR, exportType.toString());
+        editor.commit();
+    }
+
+    /**
+     * Get the preference for key {@link Constants.Preferences.Keys#EXPORT_DATA}. If no value is found for the
+     * preference the default value will be {@link ExportData#REPORT}.
+     * @param ctx The context when getting the preference for the data to be exported.
+     * @return The {@link ExportData} that represents the user's choice (or if no choice available the system's default)
+     * for the data to be exported.
+     */
+    public static ExportData getPreferredExportData(Context ctx) {
+        String exportData = getSharedPreferences(ctx).getString(
+                Constants.Preferences.Keys.EXPORT_DATA,
+                ExportData.REPORT.toString()
+        );
+        return ExportData.valueOf(exportData);
+    }
+
+    /**
+     * Updates the preference {@link Constants.Preferences.Keys#EXPORT_DATA}.
+     * @param ctx The context when updating the preference.
+     * @param exportData The {@link ExportData} which represents the users' choice for the data to be exported.
+     */
+    public static void setPreferredExportData(Context ctx, ExportData exportData) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(Constants.Preferences.Keys.EXPORT_DATA, exportData.toString());
         editor.commit();
     }
 }

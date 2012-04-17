@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
   ~ Copyright 2012 Dirk Vranckaert
   ~
@@ -39,6 +40,16 @@
         <LinearLayout android:layout_width="fill_parent"
                       android:layout_height="wrap_content"
                       android:orientation="vertical">
+            <!-- Spinner for selecting export type (CSV, Excel,...) -->
+            <TextView android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:text="@string/lbl_reporting_export_type"/>
+            <Spinner android:layout_width="fill_parent"
+                     android:layout_height="wrap_content"
+                     android:drawSelectorOnTop="true"
+                     android:id="@+id/reporting_export_type"
+                     android:prompt="@string/lbl_reporting_export_type_prompt"/>
+
             <!-- Filename -->
             <TextView android:layout_width="fill_parent"
                       android:layout_height="wrap_content"
@@ -53,22 +64,39 @@
                       android:id="@+id/reporting_export_filename"
                       android:inputType="text"/>
 
-            <!-- TODO: dropdown for selection of CSV or Excel -->
-
             <!-- In case of CSV: CSV seperator -->
             <LinearLayout android:layout_width="fill_parent"
                           android:layout_height="wrap_content"
-                          android:orientation="vertical">
+                          android:orientation="vertical"
+                          android:id="@+id/reporting_export_csv_separator_container"
+                          android:visibility="gone">
                 <ImageView style="@style/WorkTimeListSeparator" />
                 <TextView android:layout_width="fill_parent"
                           android:layout_height="wrap_content"
                           android:text="@string/lbl_reporting_export_csv_separator"/>
-                <Button android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/reporting_export_csv_separator_btn"/>
+                <Spinner android:layout_width="fill_parent"
+                         android:layout_height="wrap_content"
+                         android:drawSelectorOnTop="true"
+                         android:id="@+id/reporting_export_csv_separator"
+                         android:prompt="@string/reporting_export_csv_separator_prompt"/>
             </LinearLayout>
 
-            <!-- TODO: In case of CSV: Dropdown for data (raw or table) -->
+            <!-- Spinner for selecting the data to be used in the CSV export (raw or table) -->
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:id="@+id/reporting_export_data_container"
+                          android:visibility="gone">
+                <ImageView style="@style/WorkTimeListSeparator" />
+                <TextView android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:text="@string/lbl_reporting_export_data"/>
+                <Spinner android:layout_width="fill_parent"
+                         android:layout_height="wrap_content"
+                         android:drawSelectorOnTop="true"
+                         android:id="@+id/reporting_export_data"
+                         android:prompt="@string/lbl_reporting_export_data_prompt"/>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

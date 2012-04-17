@@ -1,30 +1,33 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package eu.vranckaert.worktime.activities.reporting;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.*;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import com.google.inject.Inject;
 import com.google.inject.internal.Nullable;
 import eu.vranckaert.worktime.R;
@@ -40,29 +43,23 @@ import eu.vranckaert.worktime.enums.reporting.ReportingDisplayDuration;
 import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
+import eu.vranckaert.worktime.model.dto.export.ExportDTO;
+import eu.vranckaert.worktime.model.dto.reporting.ReportingTableRecord;
+import eu.vranckaert.worktime.model.dto.reporting.ReportingTableRecordLevel;
+import eu.vranckaert.worktime.model.dto.reporting.datalevels.ReportingDataLvl0;
+import eu.vranckaert.worktime.model.dto.reporting.datalevels.ReportingDataLvl1;
+import eu.vranckaert.worktime.model.dto.reporting.datalevels.ReportingDataLvl2;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
-import eu.vranckaert.worktime.ui.quickaction.ActionItem;
-import eu.vranckaert.worktime.ui.quickaction.QuickAction;
-import eu.vranckaert.worktime.ui.quickaction.QuickActionIds;
-import eu.vranckaert.worktime.ui.reporting.ReportingTableRecord;
-import eu.vranckaert.worktime.ui.reporting.ReportingTableRecordLevel;
-import eu.vranckaert.worktime.ui.reporting.datalevels.ReportingDataLvl0;
-import eu.vranckaert.worktime.ui.reporting.datalevels.ReportingDataLvl1;
-import eu.vranckaert.worktime.ui.reporting.datalevels.ReportingDataLvl2;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
-import eu.vranckaert.worktime.utils.date.TimeFormat;
-import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import roboguice.activity.GuiceActivity;
 import roboguice.inject.InjectExtra;
-import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -105,12 +102,6 @@ public class ReportingResultActivity extends GuiceActivity {
 
     @InjectView(R.id.reporting_result_includes_ongoing_tr_label)
     private TextView resultIncludesOngoingTrsLabel;
-
-    @InjectResource(R.drawable.quickaction_export_table_data)
-    private Drawable quickactionExportTableData;
-
-    @InjectResource(R.drawable.quickaction_export_raw_data)
-    private Drawable quickactionExportRawData;
 
     private AnalyticsTracker tracker;
 
@@ -409,11 +400,22 @@ public class ReportingResultActivity extends GuiceActivity {
                 TrackerConstants.EventActions.EXPORT_RESULT
         );
 
-        //Source:
-        //http://mobilegui.net/how-to-create-quickaction-dialog-in-android/
-        //http://www.londatiga.net/it/how-to-create-quickaction-dialog-in-android/
+        if (timeRegistrations == null) {
+            timeRegistrations = new ArrayList<TimeRegistration>();
+        }
+        if (tableRecords == null) {
+            tableRecords = new ArrayList<ReportingTableRecord>();
+        }
 
-        ActionItem exportData = new ActionItem(QuickActionIds.EXPORT_TABLE_DATA, getString(R.string.lbl_reporting_results_export_table_data));
+        ExportDTO exportDto = new ExportDTO();
+        exportDto.setTimeRegistrations(timeRegistrations);
+        exportDto.setTableRecords(tableRecords);
+
+        Intent intent = new Intent(ReportingResultActivity.this, ReportingExportActivity.class);
+        intent.putExtra(Constants.Extras.EXPORT_DTO, exportDto);
+        startActivity(intent);
+
+        /*ActionItem exportData = new ActionItem(QuickActionIds.EXPORT_TABLE_DATA, getString(R.string.lbl_reporting_results_export_table_data));
         exportData.setIcon(quickactionExportTableData);
         ActionItem exportRaw = new ActionItem(QuickActionIds.EXPORT_RAW_DATA, getString(R.string.lbl_reporting_results_export_raw_data));
         exportRaw.setIcon(quickactionExportRawData);
@@ -495,13 +497,13 @@ public class ReportingResultActivity extends GuiceActivity {
                 }
 
                 Intent intent = new Intent(ReportingResultActivity.this, ReportingExportActivity.class);
-                intent.putExtra(Constants.Extras.EXPORT_HEADERS, (Serializable) headers);
-                intent.putExtra(Constants.Extras.EXPORT_VALUES, (Serializable) values);
+                intent.putExtra(Constants.Extras.TIME_REGISTRATIONS, (Serializable) headers);
+                intent.putExtra(Constants.Extras.TABLE_RECORDS, (Serializable) values);
                 startActivity(intent);
             }
         });
 
-        quickAction.show(view);
+        quickAction.show(view);*/
     }
 
     public void onHomeClick(View view) {

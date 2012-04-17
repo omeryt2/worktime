@@ -1,34 +1,35 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package eu.vranckaert.worktime.ui.reporting.datalevels;
+package eu.vranckaert.worktime.model.dto.reporting.datalevels;
 
 import eu.vranckaert.worktime.model.TimeRegistration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReportingDataLvl2 {
+public class ReportingDataLvl1 {
 	private Object key;
+	private List<ReportingDataLvl2> reportingDataLvl2 = new ArrayList<ReportingDataLvl2>();
 	private List<TimeRegistration> timeRegistrations;
 
-	public ReportingDataLvl2() {
+	public ReportingDataLvl1() {
 		super();
 	}
 
-	public ReportingDataLvl2(Object key) {
+	public ReportingDataLvl1(Object key) {
 		super();
 		this.key = key;
 	}
@@ -39,6 +40,14 @@ public class ReportingDataLvl2 {
 
 	public void setKey(Object key) {
 		this.key = key;
+	}
+
+	public List<ReportingDataLvl2> getReportingDataLvl2() {
+		return reportingDataLvl2;
+	}
+
+	public void setReportingDataLvl2(List<ReportingDataLvl2> reportingDataLvl2) {
+		this.reportingDataLvl2 = reportingDataLvl2;
 	}
 
 	public List<TimeRegistration> getTimeRegistrations() {
@@ -73,7 +82,7 @@ public class ReportingDataLvl2 {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ReportingDataLvl2 other = (ReportingDataLvl2) obj;
+		ReportingDataLvl1 other = (ReportingDataLvl1) obj;
 		if (key == null) {
 			if (other.key != null)
 				return false;

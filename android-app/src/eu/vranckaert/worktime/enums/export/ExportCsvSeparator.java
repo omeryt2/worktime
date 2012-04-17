@@ -13,32 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package eu.vranckaert.worktime.enums.export;
 
 /**
  * User: DIRK VRANCKAERT
  * Date: 19/02/11
- * Time: 19:29
+ * Time: 17:35
  */
-public enum ExportType {
-    XLS(0), CSV(1);
+public enum ExportCsvSeparator {
+    COMMA(',', 0),
+    SEMICOLON(';', 1);
 
-    ExportType(int position) {
+    private char separator;
+    private int position;
+
+    private ExportCsvSeparator(char separator, int position) {
+        this.separator = separator;
         this.position = position;
     }
-
-    private int position;
 
     public int getPosition() {
         return position;
     }
 
-    public static ExportType getByIndex(int index) {
-        ExportType[] exportTypes = ExportType.values();
-        for (ExportType exportType : exportTypes) {
-            if (exportType.getPosition() == index) {
-                return exportType;
+    public char getSeparator() {
+        return separator;
+    }
+
+    public static ExportCsvSeparator getByIndex(int index) {
+        ExportCsvSeparator[] exportCsvSeparators = ExportCsvSeparator.values();
+        for (ExportCsvSeparator exportCsvSeparator : exportCsvSeparators) {
+            if (exportCsvSeparator.getPosition() == index) {
+                return exportCsvSeparator;
             }
         }
 

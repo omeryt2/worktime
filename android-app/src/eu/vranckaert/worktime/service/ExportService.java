@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.service;
 
 import android.content.Context;
-import eu.vranckaert.worktime.enums.export.CsvSeparator;
+import eu.vranckaert.worktime.enums.export.ExportCsvSeparator;
 import eu.vranckaert.worktime.exceptions.export.GeneralExportException;
 import jxl.format.Colour;
 
@@ -53,12 +54,12 @@ public interface ExportService {
      * @param headers   A list of strings with the values to be shown in the headers.
      * @param values    A list with string-arrays containing all the values to be printed. No check is executed if the
      *                  number of values horizontally equals the number of headers you specified. This may be different!
-     * @param separator The {@link CsvSeparator} to be used in the file. Comma is used for MAC/UNIX systems
+     * @param separatorExport The {@link eu.vranckaert.worktime.enums.export.ExportCsvSeparator} to be used in the file. Comma is used for MAC/UNIX systems
      * @return The exported file.
      * @throws GeneralExportException This exception means that something went wrong during export but we don't know
      *                                exactly what. Most likely it's due to a file-system issue (SD-card not mounted or not writable).
      */
-    File exportCsvFile(Context ctx, String filename, List<String> headers, List<String[]> values, CsvSeparator separator) throws GeneralExportException;
+    File exportCsvFile(Context ctx, String filename, List<String> headers, List<String[]> values, ExportCsvSeparator separatorExport) throws GeneralExportException;
 
     /**
      * Write some data to an Excel file. The exported data will be stored locally.

@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.service.impl;
 
 import android.content.Context;
 import android.util.Log;
 import eu.vranckaert.worktime.constants.TextConstants;
 import eu.vranckaert.worktime.enums.Encoding;
-import eu.vranckaert.worktime.enums.export.CsvSeparator;
+import eu.vranckaert.worktime.enums.export.ExportCsvSeparator;
 import eu.vranckaert.worktime.exceptions.export.GeneralExportException;
 import eu.vranckaert.worktime.service.ExportService;
 import eu.vranckaert.worktime.utils.file.FileUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
+import jxl.CellView;
 import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableCellFormat;
@@ -48,8 +50,8 @@ public class ExportServiceImpl implements ExportService {
     private static final String LOG_TAG = ExportServiceImpl.class.getSimpleName();
 
     @Override
-    public File exportCsvFile(Context ctx, String filename, List<String> headers, List<String[]> values, CsvSeparator separator) throws GeneralExportException {
-        Character separatorChar = separator.getSeperator();
+    public File exportCsvFile(Context ctx, String filename, List<String> headers, List<String[]> values, ExportCsvSeparator separatorExport) throws GeneralExportException {
+        Character separatorChar = separatorExport.getSeparator();
         String emptyValue = "\"\"";
 
         StringBuilder result = new StringBuilder();
@@ -145,6 +147,7 @@ public class ExportServiceImpl implements ExportService {
         WritableWorkbook workbook = null;
         try {
             workbook = Workbook.createWorkbook(file);
+            Log.d(LOG_TAG, "Excel workbook created for file " + file.getAbsolutePath());
         } catch (IOException e) {
             String msg = "Something went wrong during the export";
             Log.e(LOG_TAG, msg, e);
@@ -156,12 +159,15 @@ public class ExportServiceImpl implements ExportService {
             List<Object[]> sheetValues = entry.getValue();
 
             WritableSheet sheet = workbook.createSheet(sheetName, sheetIndex);
+            Log.d(LOG_TAG, "Sheet with name " + sheetName + " created for workbook at index " + sheetIndex);
             sheetIndex++;
 
             int firstDataRow = 1;
             if (headers == null || headers.get(sheetName) == null || headers.get(sheetName).size() == 0) {
                 firstDataRow = 0;
+                Log.d(LOG_TAG, "No headers information found so the headers will start at row 0");
             } else {
+                Log.d(LOG_TAG, "Header information found, processing headers now...");
                 List<String> headerValues = headers.get(sheetName);
 
                 WritableCellFormat headerCellFormat = new WritableCellFormat();
@@ -173,29 +179,65 @@ public class ExportServiceImpl implements ExportService {
 
                 for (int i = 0; i < headerValues.size(); i++) {
                     Label headerCell = new Label(i, 0, headerValues.get(i), headerCellFormat);
+                    Log.d(LOG_TAG, "Writing content to header cell at column " + i + ", row 0. Data is: " + headerValues.get(i));
                     try {
                         sheet.addCell(headerCell);
                     } catch (WriteException e) {
                         Log.w(LOG_TAG, "For some reason the header cell for column " + i + " cannot be added", e);
                     }
                 }
+                Log.d(LOG_TAG, "Header takes all place at row 0, data will start at row 1");
             }
 
             int row = firstDataRow;
+            int maxColumnNumber = 0;
+
             for (Object[] sheetRowValues : sheetValues) {
                 int column = 0;
                 for (Object cellValue : sheetRowValues) {
-                    Label headerCell = new Label(column, row, cellValue.toString());
-                    try {
-                        sheet.addCell(headerCell);
-                    } catch (WriteException e) {
-                        Log.w(LOG_TAG, "For some reason the header cell for column " + column + " and row " + row + " cannot be added", e);
+                    if (row > maxColumnNumber)
+                        maxColumnNumber = row;
+                    if (cellValue != null) {
+                        Label headerCell = new Label(column, row, cellValue.toString());
+                        Log.d(LOG_TAG, "Writing data to Excel workbook at sheet " + sheetName + " in cell at column " + column + " and row " + row + " Data is: " + cellValue.toString());
+                        try {
+                            sheet.addCell(headerCell);
+                        } catch (WriteException e) {
+                            Log.w(LOG_TAG, "For some reason the header cell for column " + column + " and row " + row + " cannot be added", e);
+                        }
+                    } else {
+                        Log.d(LOG_TAG, "No data found to be displayed in cell at column " + column + " and row " + row);
                     }
+                    column++;
                 }
+                row++;
+            }
+
+            // Auto-size all columns in which we entered data on all the sheets we created to match the content of the
+            // cells...
+            CellView autoSizingCellView = new CellView();
+            autoSizingCellView.setAutosize(true);
+            for (int i=1; i <= maxColumnNumber; i++) {
+                Log.d(LOG_TAG, "Auosizing cells in column " + i + " on sheet " + sheetName);
+                sheet.setColumnView(i, autoSizingCellView);
             }
         }
 
-        return null;
+        Log.d(LOG_TAG, "Writing workbook to local storage at " + file.getAbsolutePath());
+        try {
+            workbook.write();
+            workbook.close();
+        } catch (IOException e) {
+            String msg = "A general IO Exception occured!";
+            Log.e(LOG_TAG, msg, e);
+            throw new GeneralExportException(msg, e);
+        } catch (WriteException e) {
+            String msg = "Could not write the Excel file to disk!";
+            Log.e(LOG_TAG, msg, e);
+            throw new GeneralExportException(msg, e);
+        }
+
+        return file;
     }
 
     final byte[] HEX_CHAR_TABLE = {

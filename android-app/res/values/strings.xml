@@ -95,7 +95,7 @@
     <string name="lbl_tasks_menu_add">Add new task</string>
     <!-- COPY WIZARD -->
     <string name="lbl_copy_project_title">Copy Project</string>
-    <string name="lbl_copy_project_part_one_content">In order to copy a project you will have to provide a new, unique, name on the next screen. Pay attention because the project will be copied (with the new name) and together all of it\'s tasks. But time registrations for the project and tasks will not be copied!\n\nPress \'Next\' to continue with the copy.</string>
+    <string name="lbl_copy_project_part_one_content">In position to copy a project you will have to provide a new, unique, name on the next screen. Pay attention because the project will be copied (with the new name) and together all of it\'s tasks. But time registrations for the project and tasks will not be copied!\n\nPress \'Next\' to continue with the copy.</string>
     <string name="lbl_copy_project_part_two_title">Set a project name</string>
     <string name="lbl_copy_project_part_two_copy_all_tasks_chekced">Copy all tasks</string>
     <string name="lbl_copy_project_part_two_copy_all_tasks_unchekced">Only copy unfinished tasks</string>
@@ -203,7 +203,7 @@
         <item>By Project</item>
     </string-array>
     <string name="lbl_reporting_criteria_data_order">Data Order</string>
-    <string name="lbl_reporting_criteria_data_order_prompt">Select the data order</string>
+    <string name="lbl_reporting_criteria_data_order_prompt">Select the data position</string>
     <string-array name="lbl_reporting_criteria_data_order_spinner">
         <item>Ascending</item>
         <item>Descending</item>
@@ -229,12 +229,26 @@
     <string name="lbl_reporting_results_export_raw_data">Raw Data</string>
     <!-- EXPORT -->
     <string name="lbl_reporting_export_title">Export Result</string>
+    <string name="lbl_reporting_export_type">Export Type</string>
+    <string name="lbl_reporting_export_type_prompt">Select an export type</string>
+    <string-array name="array_reporting_export_type_options">
+        <item>Excel</item>
+        <item>CSV (Excel compatible)</item>
+    </string-array>
     <string name="lbl_reporting_export_filename">Filename</string>
     <string name="lbl_reporting_export_filename_required">The filename is required and should contain at least 3 characters</string>
     <string name="lbl_reporting_export_csv_separator">CSV Seperator</string>
-    <string name="lbl_reporting_export_csv_separator_comma">Comma (,)</string>
-    <string name="lbl_reporting_export_csv_separator_semicolon">Semicolon (;)</string>
-    <string name="lbl_reporting_export_csv_separator_chooser_title">Select CSV Separator</string>
+    <string name="reporting_export_csv_separator_prompt">Select CSV Separator</string>
+    <string-array name="array_reporting_export_csv_separator_options">
+        <item>Comma (,)</item>
+        <item>Semicolon (;)</item>
+    </string-array>
+    <string name="lbl_reporting_export_data">Data to export</string>
+    <string name="lbl_reporting_export_data_prompt">Select which data to use</string>
+    <string-array name="array_reporting_export_data_options">
+        <item>Report</item>
+        <item>Raw Data</item>
+    </string-array>
     <string name="msg_reporting_export_saving_sd">Exporting to SD-card</string>
 	<string name="msg_reporting_export_done">Export successful to location: %1$s</string>
 	<string name="msg_reporting_export_error">Exporting the report failed. Check if the SD-card is mounted and if the SD-memory is writable!</string>

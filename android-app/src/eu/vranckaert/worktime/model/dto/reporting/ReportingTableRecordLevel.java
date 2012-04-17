@@ -13,35 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package eu.vranckaert.worktime.model.dto.reporting;
 
-package eu.vranckaert.worktime.enums.export;
+import java.io.Serializable;
 
 /**
  * User: DIRK VRANCKAERT
- * Date: 19/02/11
- * Time: 19:29
+ * Date: 01/10/11
+ * Time: 16:44
  */
-public enum ExportType {
-    XLS(0), CSV(1);
+public enum ReportingTableRecordLevel implements Serializable {
+    LVL0, LVL1, LVL2, LVL3;
 
-    ExportType(int position) {
-        this.position = position;
-    }
-
-    private int position;
-
-    public int getPosition() {
-        return position;
-    }
-
-    public static ExportType getByIndex(int index) {
-        ExportType[] exportTypes = ExportType.values();
-        for (ExportType exportType : exportTypes) {
-            if (exportType.getPosition() == index) {
-                return exportType;
-            }
-        }
-
-        return null;
-    }
+    ReportingTableRecordLevel() {}
 }

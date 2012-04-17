@@ -1,17 +1,17 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package eu.vranckaert.worktime.constants;
 
@@ -56,7 +56,6 @@ public class Constants {
         public static final int REPORTING_CRITERIA_SELECT_END_DATE = 37;
         public static final int REPORTING_CRITERIA_SELECT_END_DATE_ERROR_BEFORE_START_DATE = 38;
         public static final int LOADING_REPORTING_RESULTS = 39;
-        public static final int REPORTING_EXPORT_CHOOSE_CSV_SEPARATOR = 41;
         public static final int REPORTING_EXPORT_DONE = 42;
         public static final int REPORTING_EXPORT_LOADING = 43;
         public static final int REPORTING_EXPORT_UNAVAILABLE = 44;
@@ -118,11 +117,13 @@ public class Constants {
             public static final String SELECT_PROJECT_HIDE_FINISHED = "selectProjectHideFinished";
             public static final String WEEK_STARTS_ON = "weekStartsOn";
             public static final String REPORTING_EXPORT_FILE_NAME = "reportingExportFileName";
-            public static final String REPORTING_EXPORT_CSV_SEPARATOR = "reportingExportCsvSeparator";
             public static final String TIME_REGISTRATION_AUTO_CLOSE_60S_GAP = "timeRegistrationAutoClose60sGap";
             public static final String TIME_PRECISION = "timePrecision";
             public static final String TIME_REGISTRATION_PUNCH_BAR_ENABLED_FROM_HOME_SCREEN = "timeRegistrationPunchBarEnabledFromHomeScreen";
             public static final String TIME_REGISTRATION_PUNCH_BAR_ENABLED_ON_ALL_SCREENS = "timeRegistrationPunchBarEnabledOnAllScreens";
+            public static final String EXPORT_TYPE = "exportType";
+            public static final String EXPORT_DATA = "exportData";
+            public static final String EXPORT_CSV_SEPARATOR = "exportCsvSeparator";
         }
     }
     public class Disk {
@@ -138,11 +139,10 @@ public class Constants {
         public static final String TIME_REGISTRATION_START_DATE = "timeRegistrationStartDate";
         public static final String TIME_REGISTRATION_END_DATE = "timeRegistrationEndDate";
         public static final String TIME_REGISTRATION_START_ASK_FOR_PROJECT = "timeRegistrationStartAskForProject";
-        public static final String EXPORT_HEADERS = "exportHeaders";
-        public static final String EXPORT_VALUES = "exportValues";
         public static final String DATA_GROUPING = "dataGrouping";
         public static final String DISPLAY_DURATION = "displayDuration";
         public static final String DATA_ORDER = "dataOrder";
+        public static final String EXPORT_DTO = "exportDTO";
     }
     public class ContentMenuItemIds {
         public static final int PROJECT_DETAILS = 1;
