@@ -21,7 +21,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.test.AndroidTestCase;
 import eu.vranckaert.worktime.constants.Constants;
-import eu.vranckaert.worktime.enums.export.CsvSeparator;
+import eu.vranckaert.worktime.enums.export.ExportCsvSeparator;
+import eu.vranckaert.worktime.enums.export.ExportData;
+import eu.vranckaert.worktime.enums.export.ExportType;
 import eu.vranckaert.worktime.utils.date.HourPreference12Or24;
 
 /**
@@ -219,26 +221,6 @@ public class PreferencesTest extends AndroidTestCase {
         assertEquals("No preference should be found!", Constants.Preferences.REPORTING_EXPORT_FILE_NAME_DEFAULT_VALUE, preferenceDeleted);
     }
 
-    public void testReportingExportCsvSeparator() {
-        Preferences.removePreference(ctx, Constants.Preferences.Keys.REPORTING_EXPORT_CSV_SEPARATOR);
-
-        CsvSeparator preferenceNotFound = Preferences.getReportingExportCsvSeparator(ctx);
-        assertEquals("No preference should be found!", CsvSeparator.SEMICOLON, preferenceNotFound);
-
-        CsvSeparator preference = CsvSeparator.COMMA;
-        Preferences.setReportingExportCsvSeparator(ctx, preference);
-        CsvSeparator preferenceFound = Preferences.getReportingExportCsvSeparator(ctx);
-        assertEquals("A preference should be found (" + preference + ")", preference, preferenceFound);
-
-        Preferences.setReportingExportCsvSeparator(ctx, null);
-        preferenceFound = Preferences.getReportingExportCsvSeparator(ctx);
-        assertEquals("A preference should be found (" + preference + ")", preference, preferenceFound);
-
-        Preferences.removePreference(ctx, Constants.Preferences.Keys.REPORTING_EXPORT_CSV_SEPARATOR);
-        CsvSeparator preferenceDeleted = Preferences.getReportingExportCsvSeparator(ctx);
-        assertEquals("No preference should be found!", CsvSeparator.SEMICOLON, preferenceDeleted);
-    }
-
     public void testTimeRegistrationsAutoClose60sGap() {
         Preferences.removePreference(ctx, Constants.Preferences.Keys.TIME_REGISTRATION_AUTO_CLOSE_60S_GAP);
 
@@ -333,5 +315,53 @@ public class PreferencesTest extends AndroidTestCase {
         Preferences.removePreference(ctx, Constants.Preferences.Keys.TIME_REGISTRATION_PUNCH_BAR_ENABLED_ON_ALL_SCREENS);
         boolean preferenceDeleted = Preferences.getTimeRegistrationPunchBarEnabledOnAllScreens(ctx);
         assertEquals("No preference should be found!", Constants.Preferences.TIME_REGISTRATION_PUNCH_BAR_ENABLED_ON_ALL_SCREENS_DEFAULT_VALUE, preferenceDeleted);
+    }
+
+    public void testPreferredExportType() {
+        Preferences.removePreference(ctx, Constants.Preferences.Keys.EXPORT_TYPE);
+
+        ExportType preferenceNotFound = Preferences.getPreferredExportType(ctx);
+        assertEquals("No preference should be found!", ExportType.XLS, preferenceNotFound);
+
+        ExportType preference = ExportType.CSV;
+        Preferences.setPreferredExportType(ctx, preference);
+        ExportType preferenceFound = Preferences.getPreferredExportType(ctx);
+        assertEquals("A preference should be found", preference, preferenceFound);
+
+        Preferences.removePreference(ctx, Constants.Preferences.Keys.EXPORT_TYPE);
+        ExportType preferenceDeleted = Preferences.getPreferredExportType(ctx);
+        assertEquals("No preference should be found!", ExportType.XLS, preferenceDeleted);
+    }
+
+    public void testPreferredExportData() {
+        Preferences.removePreference(ctx, Constants.Preferences.Keys.EXPORT_DATA);
+
+        ExportData preferenceNotFound = Preferences.getPreferredExportData(ctx);
+        assertEquals("No preference should be found!", ExportData.REPORT, preferenceNotFound);
+
+        ExportData preference = ExportData.RAW_DATA;
+        Preferences.setPreferredExportData(ctx, preference);
+        ExportData preferenceFound = Preferences.getPreferredExportData(ctx);
+        assertEquals("A preference should be found", preference, preferenceFound);
+
+        Preferences.removePreference(ctx, Constants.Preferences.Keys.EXPORT_DATA);
+        ExportData preferenceDeleted = Preferences.getPreferredExportData(ctx);
+        assertEquals("No preference should be found!", ExportData.REPORT, preferenceDeleted);
+    }
+
+    public void testPreferredExportCSVSeparator() {
+        Preferences.removePreference(ctx, Constants.Preferences.Keys.EXPORT_CSV_SEPARATOR);
+
+        ExportCsvSeparator preferenceNotFound = Preferences.getPreferredExportCSVSeparator(ctx);
+        assertEquals("No preference should be found!", ExportCsvSeparator.SEMICOLON, preferenceNotFound);
+
+        ExportCsvSeparator preference = ExportCsvSeparator.COMMA;
+        Preferences.setPreferredExportCSVSeparator(ctx, preference);
+        ExportCsvSeparator preferenceFound = Preferences.getPreferredExportCSVSeparator(ctx);
+        assertEquals("A preference should be found", preference, preferenceFound);
+
+        Preferences.removePreference(ctx, Constants.Preferences.Keys.EXPORT_CSV_SEPARATOR);
+        ExportCsvSeparator preferenceDeleted = Preferences.getPreferredExportCSVSeparator(ctx);
+        assertEquals("No preference should be found!", ExportCsvSeparator.SEMICOLON, preferenceDeleted);
     }
 }
