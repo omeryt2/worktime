@@ -350,15 +350,14 @@ public class DateUtils {
         }
 
         /**
-         * Calculates the time between the start and end time of a list of {@link eu.vranckaert.worktime.model.TimeRegistration} instances in days,
-         * hours, minutes and seconds (short-text: 1d 4h 13m 0s)
-         *
-         * @param ctx The context.
+         * Calculates the time between the start and end time of a list of
+         * {@link eu.vranckaert.worktime.model.TimeRegistration} instances.
+         * @param ctx           The context.
          * @param registrations A list of {@link eu.vranckaert.worktime.model.TimeRegistration} instances.
-         * @param displayDuration The format that defines the output.
-         * @return The formatted string that represents the sum of the duration for each {@link eu.vranckaert.worktime.model.TimeRegistration}.
+         * @return The {@link Period} instance that represents the time between the first and last time registration of
+         *         the list.
          */
-        public static final String calculatePeriod(Context ctx, List<TimeRegistration> registrations, ReportingDisplayDuration displayDuration) {
+        public static final Period calculatePeriod(Context ctx, List<TimeRegistration> registrations) {
             Long duration = 0L;
 
             Log.d(LOG_TAG, "Calculating period for " + registrations.size() + " TR's...");
@@ -379,6 +378,20 @@ public class DateUtils {
             Log.d(LOG_TAG, "Total duration created from milis: " + totalDuration);
             Period period = totalDuration.toPeriod(PeriodType.time());
             Log.d(LOG_TAG,  "Total period: " + period);
+            return period;
+        }
+
+        /**
+         * Calculates the time between the start and end time of a list of {@link eu.vranckaert.worktime.model.TimeRegistration} instances in days,
+         * hours, minutes and seconds (short-text: 1d 4h 13m 0s)
+         *
+         * @param ctx The context.
+         * @param registrations A list of {@link eu.vranckaert.worktime.model.TimeRegistration} instances.
+         * @param displayDuration The format that defines the output.
+         * @return The formatted string that represents the sum of the duration for each {@link eu.vranckaert.worktime.model.TimeRegistration}.
+         */
+        public static final String calculatePeriod(Context ctx, List<TimeRegistration> registrations, ReportingDisplayDuration displayDuration) {
+            Period period = calculatePeriod(ctx, registrations);
 
             int days = 0;
             int hours = period.getHours();

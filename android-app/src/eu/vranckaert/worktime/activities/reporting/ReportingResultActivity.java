@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.activities.reporting;
 
 import android.app.Dialog;
@@ -107,6 +108,7 @@ public class ReportingResultActivity extends GuiceActivity {
 
     private List<TimeRegistration> timeRegistrations = new ArrayList<TimeRegistration>();
     private List<ReportingTableRecord> tableRecords = new ArrayList<ReportingTableRecord>();
+    private List<ReportingDataLvl0> reportingDataLevels = new ArrayList<ReportingDataLvl0>();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -241,7 +243,7 @@ public class ReportingResultActivity extends GuiceActivity {
         totalRecord.setLevel(ReportingTableRecordLevel.LVL0);
         tableRecords.add(totalRecord);
 
-        List<ReportingDataLvl0> reportingDataLevels = buildReportingDataLevels(timeRegistrations, reportingDataGrouping);
+        reportingDataLevels = buildReportingDataLevels(timeRegistrations, reportingDataGrouping);
 
         for (ReportingDataLvl0 lvl0 : reportingDataLevels) {
         	ReportingTableRecord lvl0Record = new ReportingTableRecord();
@@ -410,6 +412,7 @@ public class ReportingResultActivity extends GuiceActivity {
         ExportDTO exportDto = new ExportDTO();
         exportDto.setTimeRegistrations(timeRegistrations);
         exportDto.setTableRecords(tableRecords);
+        exportDto.setReportingDataLevels(reportingDataLevels);
 
         Intent intent = new Intent(ReportingResultActivity.this, ReportingExportActivity.class);
         intent.putExtra(Constants.Extras.EXPORT_DTO, exportDto);

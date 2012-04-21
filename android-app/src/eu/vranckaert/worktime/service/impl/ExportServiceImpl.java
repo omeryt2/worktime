@@ -27,7 +27,12 @@ import eu.vranckaert.worktime.utils.file.FileUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import jxl.CellView;
 import jxl.Workbook;
+import jxl.WorkbookSettings;
+import jxl.biff.DisplayFormat;
+import jxl.format.Colour;
+import jxl.write.Formula;
 import jxl.write.Label;
+import jxl.write.WritableCell;
 import jxl.write.WritableCellFormat;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
@@ -38,7 +43,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -114,6 +123,158 @@ public class ExportServiceImpl implements ExportService {
         return file;
     }
 
+    @Override
+    public File exportXlsFile(Context ctx, String filename, Map<String, List<Object>> headers, Map<String, List<Object[]>> values, Map<String, Map<Integer, DisplayFormat>> headersColumnFormat, Map<String, Map<Integer, DisplayFormat>> valuesColumnFormat, Map<String, List<Integer>> hiddenColumns, boolean autoSizeColumns) throws GeneralExportException {
+        File file = getExportFile(ctx, filename, XLS_EXTENSTION);
+
+        int sheetIndex = 0;
+        WritableWorkbook workbook = null;
+
+        WorkbookSettings settings = new WorkbookSettings();
+        settings.setLocale(Locale.US);
+
+        try {
+            workbook = Workbook.createWorkbook(file, settings);
+            Log.d(LOG_TAG, "Excel workbook created for file " + file.getAbsolutePath());
+        } catch (IOException e) {
+            String msg = "Something went wrong during the export";
+            Log.e(LOG_TAG, msg, e);
+            throw new GeneralExportException(msg + ": " + e.getMessage(), e);
+        }
+
+        for (Map.Entry<String, List<Object[]>> entry : values.entrySet()) {
+            String sheetName = entry.getKey();
+            List<Object[]> sheetValues = entry.getValue();
+
+            WritableSheet sheet = workbook.createSheet(sheetName, sheetIndex);
+            Log.d(LOG_TAG, "Sheet with name " + sheetName + " created for workbook at index " + sheetIndex);
+            sheetIndex++;
+
+            // Get the maps of display formats for this sheet
+            Map<Integer, DisplayFormat> headerDisplayFormats = headersColumnFormat !=null ? headersColumnFormat.get(sheetName) : new HashMap<Integer, DisplayFormat>();
+            if (headerDisplayFormats == null)
+                headerDisplayFormats = new HashMap<Integer, DisplayFormat>();
+            Map<Integer, DisplayFormat> valuesDisplayFormats = valuesColumnFormat !=null ? valuesColumnFormat.get(sheetName) : new HashMap<Integer, DisplayFormat>();
+            if (valuesDisplayFormats == null)
+                valuesDisplayFormats = new HashMap<Integer, DisplayFormat>();
+            // Get the hidden column numbers for this sheet
+            List<Integer> hiddenColumnNumbers = hiddenColumns.get(sheetName);
+            if (hiddenColumnNumbers == null) {
+                hiddenColumnNumbers = new ArrayList<Integer>();
+            }
+
+            final int headerRow = 0;
+            int firstDataRow = 1;
+
+            if (headers == null || headers.get(sheetName) == null || headers.get(sheetName).size() == 0) {
+                firstDataRow = headerRow;
+                Log.d(LOG_TAG, "No headers information found so the headers will start at row " + firstDataRow);
+            } else {
+                Log.d(LOG_TAG, "Header information found, processing headers now...");
+                List<Object> headerValues = headers.get(sheetName);
+
+                for (int i = 0; i < headerValues.size(); i++) {
+                    // Find the formatting for this header cell
+                    DisplayFormat headerDisplayFormat = null;
+                    if (headerDisplayFormats.containsKey(i)) {
+                        headerDisplayFormat = headerDisplayFormats.get(i);
+                    }
+
+                    WritableCell headerCell = createExcelCell(i, headerRow, headerValues.get(i), headerDisplayFormat, ExportService.EXCEL_HEADER_COLOR);
+                    if (headerCell != null) {
+                        Log.d(LOG_TAG, "Writing content to header cell at column " + i + ", row " + headerRow + ".");
+                        try {
+                            sheet.addCell(headerCell);
+                        } catch (WriteException e) {
+                            Log.w(LOG_TAG, "For some reason the header cell for column " + i + " and row " + headerRow + " cannot be added", e);
+                        }
+                    } else {
+                        Log.d(LOG_TAG, "No header data found to be displayed in cell with column " + i + " and row " + headerRow);
+                    }
+                }
+                Log.d(LOG_TAG, "Header takes all place at row " + headerRow + ", data will start at row " + firstDataRow);
+            }
+
+            int row = firstDataRow;
+            int highestColumnNumberInUse = 0;
+
+            for (Object[] sheetRowValues : sheetValues) {
+                int column = 0;
+                for (Object cellValue : sheetRowValues) {
+                    if (row > highestColumnNumberInUse)
+                        highestColumnNumberInUse = row;
+
+                    // Find the formatting for this value cell
+                    DisplayFormat valueDisplayFormat = null;
+                    if (valuesDisplayFormats.containsKey(column)) {
+                        valueDisplayFormat = valuesDisplayFormats.get(column);
+                    }
+
+                    WritableCell cell = createExcelCell(column, row, cellValue, valueDisplayFormat, null);
+                    if (cell != null) {
+                        Log.d(LOG_TAG, "Writing data to Excel workbook at sheet " + sheetName + " in cell at column " + column + " and row " + row);
+                        try {
+                            sheet.addCell(cell);
+                        } catch (WriteException e) {
+                            Log.w(LOG_TAG, "For some reason the cell for column " + column + " and row " + row + " cannot be added", e);
+                        }
+                    } else {
+                        Log.d(LOG_TAG, "No data found to be displayed in cell at column " + column + " and row " + row);
+                    }
+                    column++;
+                }
+                row++;
+            }
+
+            if (autoSizeColumns) {
+                // Auto-size all columns in which we entered data on all the sheets we created to match the content of the
+                // cells...
+                CellView autoSizingCellView = new CellView();
+                autoSizingCellView.setAutosize(true);
+                for (int column = 0; column < highestColumnNumberInUse; column++) {
+                    if (!hiddenColumnNumbers.contains(column)) {
+                        Log.d(LOG_TAG, "Auosizing cells in column " + column + " on sheet " + sheetName);
+                        sheet.setColumnView(column, autoSizingCellView);
+                    }
+                }
+            }
+
+            // Hide all columns for which the column number has been defined
+            for (Integer column : hiddenColumnNumbers) {
+                CellView hiddenCellView = new CellView();
+                hiddenCellView.setHidden(true);
+                Log.d(LOG_TAG, "Hiding column " + column + " on sheet " + sheetName);
+                sheet.setColumnView(column, hiddenCellView);
+            }
+        }
+
+        Log.d(LOG_TAG, "Writing workbook to local storage at " + file.getAbsolutePath());
+        try {
+            workbook.write();
+            workbook.close();
+        } catch (IOException e) {
+            String msg = "A general IO Exception occured!";
+            Log.e(LOG_TAG, msg, e);
+            throw new GeneralExportException(msg, e);
+        } catch (WriteException e) {
+            String msg = "Could not write the Excel file to disk!";
+            Log.e(LOG_TAG, msg, e);
+            throw new GeneralExportException(msg, e);
+        }
+
+        return file;
+    }
+
+    /**
+     * Method to get, based on the filename and the extension, the actual {@link File} instance.
+     *
+     * @param ctx               The context from which this method is launched.
+     * @param filename          The name of the file.
+     * @param filenameExtension The extension of the file.
+     * @return The {@link File} reference to which the content of the export can be written.
+     * @throws GeneralExportException If something goes wrong while checking if the file (and file path) already exists
+     *                                then this exception is thrown.
+     */
     private File getExportFile(Context ctx, String filename, String filenameExtension) throws GeneralExportException {
         File exportDir = FileUtil.getExportDir(ctx);
         FileUtil.enableForMTP(ctx, exportDir);
@@ -139,105 +300,86 @@ public class ExportServiceImpl implements ExportService {
         return file;
     }
 
-    @Override
-    public File exportXlsFile(Context ctx, String filename, Map<String, List<String>> headers, Map<String, List<Object[]>> values) throws GeneralExportException {
-        File file = getExportFile(ctx, filename, XLS_EXTENSTION);
+    /**
+     * Creates an Excel cell for a certain column and row. This method dynamically checks what kind of data to be
+     * entered in the cell and determines how to handle that data (as number, string, date,...). If a
+     * {@link DisplayFormat} is provided it is applied as well as the colour of cell that is set when the
+     * {@link Colour} is provided.
+     *
+     * @param c             The column (zero-based) to enter the data in. Required!
+     * @param r             The row (zero-based) to enter the data in. Required!
+     * @param value         The value to be entered in the cell. Required!
+     * @param displayFormat This parameter is optional. If provided the cell will be formatted to display the data
+     *                      correctly according to the {@link DisplayFormat} specified.
+     * @param cellColor     This parameter is optional. If provided the background of the cell will formatted in the
+     *                      specified {@link Colour}.
+     * @return An instance of {@link WritableCell} containing the data and the cell parameters (row, column). If
+     *         provided it contains also the display format and the cell's background color.
+     */
+    private WritableCell createExcelCell(int c, int r, Object value, DisplayFormat displayFormat, Colour cellColor) {
+        WritableCell cell = null;
 
-        int sheetIndex = 0;
-        WritableWorkbook workbook = null;
-        try {
-            workbook = Workbook.createWorkbook(file);
-            Log.d(LOG_TAG, "Excel workbook created for file " + file.getAbsolutePath());
-        } catch (IOException e) {
-            String msg = "Something went wrong during the export";
-            Log.e(LOG_TAG, msg, e);
-            throw new GeneralExportException(msg + ": " + e.getMessage(), e);
+        if (value == null) {
+            return null;
         }
 
-        for (Map.Entry<String, List<Object[]>> entry : values.entrySet()) {
-            String sheetName = entry.getKey();
-            List<Object[]> sheetValues = entry.getValue();
+        if (value instanceof java.lang.Double) {
+            cell = new jxl.write.Number(c, r, (Double) value);
+        } else if (value instanceof Integer) {
+            Integer iValue = (Integer) value;
+            cell = new jxl.write.Number(c, r, Double.valueOf(iValue.toString()));
+        } else if (value instanceof Boolean) {
+            cell = new jxl.write.Boolean(c, r, (Boolean) value);
+        } else if (value instanceof Date) {
+            cell = new jxl.write.DateTime(c, r, (java.util.Date) value);
+        } else if (value instanceof String && ((String) value).startsWith("=") && ((String) value).length() > 1) {
+            // Now we know it should be a function
+            String formula = (String) value;
+            formula = formula.replace("[CR]", "" + (r+1));
+            formula = formula.replace("[CC]", getExcelColumnName(c));
+            Log.d(LOG_TAG, "Formula for cell with column " + c + " and row " + r + " is " + formula);
+            formula = formula.substring(1);
+            cell = new Formula(c, r, formula);
+        } else {
+            // Default handling as String!
+            cell = new Label(c, r, value.toString());
+        }
 
-            WritableSheet sheet = workbook.createSheet(sheetName, sheetIndex);
-            Log.d(LOG_TAG, "Sheet with name " + sheetName + " created for workbook at index " + sheetIndex);
-            sheetIndex++;
-
-            int firstDataRow = 1;
-            if (headers == null || headers.get(sheetName) == null || headers.get(sheetName).size() == 0) {
-                firstDataRow = 0;
-                Log.d(LOG_TAG, "No headers information found so the headers will start at row 0");
+        if (displayFormat != null || cellColor != null) {
+            WritableCellFormat cellFormat = null;
+            if (displayFormat != null) {
+                cellFormat = new WritableCellFormat(displayFormat);
             } else {
-                Log.d(LOG_TAG, "Header information found, processing headers now...");
-                List<String> headerValues = headers.get(sheetName);
+                cellFormat = new WritableCellFormat();
+            }
 
-                WritableCellFormat headerCellFormat = new WritableCellFormat();
+            if (cellColor != null) {
                 try {
-                    headerCellFormat.setBackground(ExportService.EXCEL_HEADER_COLOR);
+                    cellFormat.setBackground(cellColor);
                 } catch (WriteException e) {
-                    Log.w(LOG_TAG, "Cannot change the background color of the header format!", e);
+                    Log.w(LOG_TAG, "Cannot change the background color of the cell at column " + c + " and row " + r, e);
                 }
-
-                for (int i = 0; i < headerValues.size(); i++) {
-                    Label headerCell = new Label(i, 0, headerValues.get(i), headerCellFormat);
-                    Log.d(LOG_TAG, "Writing content to header cell at column " + i + ", row 0. Data is: " + headerValues.get(i));
-                    try {
-                        sheet.addCell(headerCell);
-                    } catch (WriteException e) {
-                        Log.w(LOG_TAG, "For some reason the header cell for column " + i + " cannot be added", e);
-                    }
-                }
-                Log.d(LOG_TAG, "Header takes all place at row 0, data will start at row 1");
             }
 
-            int row = firstDataRow;
-            int maxColumnNumber = 0;
-
-            for (Object[] sheetRowValues : sheetValues) {
-                int column = 0;
-                for (Object cellValue : sheetRowValues) {
-                    if (row > maxColumnNumber)
-                        maxColumnNumber = row;
-                    if (cellValue != null) {
-                        Label headerCell = new Label(column, row, cellValue.toString());
-                        Log.d(LOG_TAG, "Writing data to Excel workbook at sheet " + sheetName + " in cell at column " + column + " and row " + row + " Data is: " + cellValue.toString());
-                        try {
-                            sheet.addCell(headerCell);
-                        } catch (WriteException e) {
-                            Log.w(LOG_TAG, "For some reason the header cell for column " + column + " and row " + row + " cannot be added", e);
-                        }
-                    } else {
-                        Log.d(LOG_TAG, "No data found to be displayed in cell at column " + column + " and row " + row);
-                    }
-                    column++;
-                }
-                row++;
-            }
-
-            // Auto-size all columns in which we entered data on all the sheets we created to match the content of the
-            // cells...
-            CellView autoSizingCellView = new CellView();
-            autoSizingCellView.setAutosize(true);
-            for (int i=1; i <= maxColumnNumber; i++) {
-                Log.d(LOG_TAG, "Auosizing cells in column " + i + " on sheet " + sheetName);
-                sheet.setColumnView(i, autoSizingCellView);
-            }
+            cell.setCellFormat(cellFormat);
         }
 
-        Log.d(LOG_TAG, "Writing workbook to local storage at " + file.getAbsolutePath());
-        try {
-            workbook.write();
-            workbook.close();
-        } catch (IOException e) {
-            String msg = "A general IO Exception occured!";
-            Log.e(LOG_TAG, msg, e);
-            throw new GeneralExportException(msg, e);
-        } catch (WriteException e) {
-            String msg = "Could not write the Excel file to disk!";
-            Log.e(LOG_TAG, msg, e);
-            throw new GeneralExportException(msg, e);
-        }
+        return cell;
+    }
 
-        return file;
+    public String getExcelColumnName (int columnNumber) {
+        int dividend = columnNumber;
+        int i;
+        String columnName = "";
+        int modulo;
+        while (dividend > 0)
+        {
+            modulo = (dividend - 1) % 26;
+            i = 65 + modulo;
+            columnName = new Character((char)i).toString() + columnName;
+            dividend = (int)((dividend - modulo) / 26);
+        }
+        return columnName;
     }
 
     final byte[] HEX_CHAR_TABLE = {

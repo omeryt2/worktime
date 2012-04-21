@@ -18,6 +18,7 @@ package eu.vranckaert.worktime.model.dto.export;
 
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.model.dto.reporting.ReportingTableRecord;
+import eu.vranckaert.worktime.model.dto.reporting.datalevels.ReportingDataLvl0;
 
 import java.io.Serializable;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.List;
 public class ExportDTO implements Serializable {
     private List<TimeRegistration> timeRegistrations;
     private List<ReportingTableRecord> tableRecords;
+    private List<ReportingDataLvl0> reportingDataLevels;
 
     public List<TimeRegistration> getTimeRegistrations() {
         return timeRegistrations;
@@ -40,5 +42,13 @@ public class ExportDTO implements Serializable {
 
     public void setTableRecords(List<ReportingTableRecord> tableRecords) {
         this.tableRecords = tableRecords;
+    }
+
+    public List<ReportingDataLvl0> getReportingDataLevels() {
+        return reportingDataLevels;
+    }
+
+    public void setReportingDataLevels(List<ReportingDataLvl0> reportingDataLevels) {
+        this.reportingDataLevels = reportingDataLevels;
     }
 }

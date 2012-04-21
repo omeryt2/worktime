@@ -41,6 +41,9 @@ import eu.vranckaert.worktime.exceptions.export.GeneralExportException;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.model.dto.export.ExportDTO;
 import eu.vranckaert.worktime.model.dto.reporting.ReportingTableRecord;
+import eu.vranckaert.worktime.model.dto.reporting.datalevels.ReportingDataLvl0;
+import eu.vranckaert.worktime.model.dto.reporting.datalevels.ReportingDataLvl1;
+import eu.vranckaert.worktime.model.dto.reporting.datalevels.ReportingDataLvl2;
 import eu.vranckaert.worktime.service.ExportService;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
@@ -49,12 +52,17 @@ import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
+import jxl.biff.DisplayFormat;
+import org.joda.time.Period;
 import roboguice.activity.GuiceActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -452,31 +460,20 @@ public class ReportingExportActivity extends GuiceActivity {
     }
 
     private File doExcelExport(String filename) throws GeneralExportException {
-        List<String> reportHeaders = new ArrayList<String>();
+        List<Object> reportHeaders = new ArrayList<Object>();
         List<Object[]> reportValues = new ArrayList<Object[]>();
 
-        List<String> rawHeaders = new ArrayList<String>();
+        List<Object> rawHeaders = new ArrayList<Object>();
         List<Object[]> rawValues = new ArrayList<Object[]>();
 
         //Construct report body
-        for (ReportingTableRecord tableRecord : exportDto.getTableRecords()) {
-            String[] exportLine = {
-                    tableRecord.getColumn1(),
-                    tableRecord.getColumn2(),
-                    tableRecord.getColumn3(),
-                    tableRecord.getColumnTotal()
-            };
-            reportValues.add(exportLine);
-        }
+        reportValues = buildReportBody(exportDto.getTimeRegistrations(), exportDto.getReportingDataLevels());
         //Construct report headers
-        if (exportDto.getTableRecords().size() > 0) {
-            reportHeaders.add(exportDto.getTableRecords().get(0).getColumn1());
-            reportHeaders.add(exportDto.getTableRecords().get(0).getColumn2());
-            reportHeaders.add(exportDto.getTableRecords().get(0).getColumn3());
-            reportHeaders.add(exportDto.getTableRecords().get(0).getColumnTotal());
-
+        if (reportValues.size() > 0) {
+            reportHeaders = Arrays.asList(reportValues.get(0));
             reportValues.remove(0);
         }
+
         //Construct raw headers
         rawHeaders.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_startdate));
         rawHeaders.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_starttime));
@@ -486,23 +483,134 @@ public class ReportingExportActivity extends GuiceActivity {
         rawHeaders.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_project));
         rawHeaders.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_task));
         rawHeaders.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_projectcomment));
+        rawHeaders.add("");
+        rawHeaders.add("");
+        rawHeaders.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_total_time));
         //Construct raw body
-        for (TimeRegistration timeRegistration : exportDto.getTimeRegistrations()) {
-            String startDate = DateUtils.DateTimeConverter.convertDateToString(timeRegistration.getStartTime(), DateFormat.SHORT, ReportingExportActivity.this);
-            String startTime = DateUtils.DateTimeConverter.convertTimeToString(timeRegistration.getStartTime(), TimeFormat.MEDIUM, ReportingExportActivity.this);
-            String endDate = "";
-            String endTime = "";
+        rawValues = buildRawBody(exportDto.getTimeRegistrations());
+
+        Map<String, List<Object>> headers = new HashMap<String, List<Object>>();
+        Map<String, Map<Integer, DisplayFormat>> headersColumnFormat = new HashMap<String, Map<Integer, DisplayFormat>>();
+        Map<String, Map<Integer, DisplayFormat>> valuesColumnFormat = new HashMap<String, Map<Integer, DisplayFormat>>();
+        Map<String, List<Integer>> hiddenColumns = new HashMap<String, List<Integer>>();
+        Map<String, List<Object[]>> values = new HashMap<String, List<Object[]>>();
+
+        // Add all vars for the report sheet
+        // Headers
+        headers.put("Report", reportHeaders);
+        // Values
+        values.put("Report", reportValues);
+        // Headers column formats
+        Map<Integer, DisplayFormat> reportColumnFormat = new HashMap<Integer, DisplayFormat>();
+        reportColumnFormat.put(3, new jxl.write.DateFormat("[h]:mm"));
+        valuesColumnFormat.put("Report", reportColumnFormat);
+        headersColumnFormat.put("Report", reportColumnFormat);
+
+        // Add all vars for the data sheet
+        // Headers
+        headers.put("Data", rawHeaders);
+        // Values
+        values.put("Data", rawValues);
+        // Value column formats
+        Map<Integer, DisplayFormat> dataValuesColumnFormat = new HashMap<Integer, DisplayFormat>();
+        dataValuesColumnFormat.put(0, new jxl.write.DateFormat("dd/mm/yyyy"));
+        dataValuesColumnFormat.put(1, new jxl.write.DateFormat("hh:mm"));
+        dataValuesColumnFormat.put(2, new jxl.write.DateFormat("dd/mm/yyyy"));
+        dataValuesColumnFormat.put(3, new jxl.write.DateFormat("hh:mm"));
+        dataValuesColumnFormat.put(8, new jxl.write.DateFormat("dd/mm/yyyy hh:mm"));
+        dataValuesColumnFormat.put(9, new jxl.write.DateFormat("dd/mm/yyyy hh:mm"));
+        dataValuesColumnFormat.put(10, new jxl.write.DateFormat("[h]:mm"));
+        valuesColumnFormat.put("Data", dataValuesColumnFormat);
+        // Hidden columns
+        hiddenColumns.put("Data", Arrays.asList(new Integer[]{8, 9}));
+
+        try {
+            return exportService.exportXlsFile(ReportingExportActivity.this, filename, headers, values, headersColumnFormat, valuesColumnFormat, hiddenColumns, true);
+        } catch (GeneralExportException e) {
+            throw e;
+        }
+    }
+
+    private List<Object[]> buildReportBody(List<TimeRegistration> timeRegistrations, List<ReportingDataLvl0> reportingDataLevels) {
+        int numberOfColumns = 4;
+        int startRow = 0;
+
+        List<Object[]> tableRecords = new ArrayList<Object[]>();
+
+        Object[] headerRecord = new Object[numberOfColumns];
+        headerRecord[0] = "getText(R.string.lbl_reporting_results_table_total).toString()";
+        headerRecord[1] = "";
+        headerRecord[2] = "";
+        headerRecord[3] = getExcelTimeFromPeriod(DateUtils.TimeCalculator.calculatePeriod(ReportingExportActivity.this, timeRegistrations));
+        // TODO In column 4 (index 3) should be a formula with the sum of lvl-0 fields, should always be the sum of separate fields like =SUM([CC]2+[CC]10)
+        tableRecords.add(headerRecord);
+        List<Integer> totalRowsForLvl1 = new ArrayList<Integer>(); // TODO
+        for (ReportingDataLvl0 lvl0 : reportingDataLevels) {
+            Object[] lvl0Record = new Object[numberOfColumns];
+            lvl0Record[0] = String.valueOf(lvl0.getKey());
+            lvl0Record[1] = "";
+            lvl0Record[2] = "";
+            // lvl0Record[3] = getExcelTimeFromPeriod(DateUtils.TimeCalculator.calculatePeriod(ReportingExportActivity.this, lvl0.getTimeRegistrations()));
+            // TODO In column 4 (index 3) should be a formula with the sum of lvl-1 fields, should always be the sum of separate fields like =SUM([CC]3+[CC]8+[CC]11)
+            tableRecords.add(lvl0Record);
+            List<Integer> totalRowsForLvl0 = new ArrayList<Integer>();
+            for (ReportingDataLvl1 lvl1 : lvl0.getReportingDataLvl1()) {
+                Object[] lvl1Record = new Object[numberOfColumns];
+                lvl1Record[0] = "";
+                lvl1Record[1] = String.valueOf(lvl1.getKey());
+                lvl1Record[2] = "";
+                //lvl1Record[3] = getExcelTimeFromPeriod(DateUtils.TimeCalculator.calculatePeriod(ReportingExportActivity.this, lvl1.getTimeRegistrations()));
+                // TODO In column 4 (index 3) should be a formula with the sum of lvl-2 fields, can always be a sum of a range like =SUM([CC]4:[CC]7)
+                tableRecords.add(lvl1Record);
+                int startRowLvl2 = -1;
+                int endRowLvl2 = -1;
+                for (ReportingDataLvl2 lvl2 : lvl1.getReportingDataLvl2()) {
+                    Object[] lvl2Record = new Object[numberOfColumns];
+                    lvl2Record[0] = "";
+                    lvl2Record[1] = "";
+                    lvl2Record[2] = String.valueOf(lvl2.getKey());
+                    lvl2Record[3] = getExcelTimeFromPeriod(DateUtils.TimeCalculator.calculatePeriod(ReportingExportActivity.this, lvl2.getTimeRegistrations()));
+                    tableRecords.add(lvl2Record);
+
+                    if (startRowLvl2 < 0) {
+                        int detailRow = startRow + tableRecords.size();
+                    }
+                    endRowLvl2 = startRow + (tableRecords.size()-1);
+                }
+                lvl1Record[3] = "=SUM([CC]" + startRowLvl2 + ":[CC]" + endRowLvl2 + ")";
+
+                totalRowsForLvl0.add(startRow + tableRecords.size());
+            }
+            String formulaLvl0 = "=SUM(";
+            for (Integer totalRow : totalRowsForLvl0) {
+                formulaLvl0 += "[CC]" + totalRow + "+";
+            }
+            formulaLvl0 = formulaLvl0.substring(0, formulaLvl0.length()-1);
+            formulaLvl0 += ")";
+            lvl0Record[3] = formulaLvl0;
+        }
+
+        return tableRecords;
+    }
+
+    private List<Object[]> buildRawBody(List<TimeRegistration> timeRegistrations) {
+        List<Object[]> rawValues = new ArrayList<Object[]>();
+        for (TimeRegistration timeRegistration : timeRegistrations) {
+            Date startDate = timeRegistration.getStartTime();
+            Date startTime = timeRegistration.getStartTime();
+            Date endDate = null;
+            Date endTime = null;
             String trComment = "";
             String projectName = timeRegistration.getTask().getProject().getName();
             String taskName = timeRegistration.getTask().getName();
             String projectComment = "";
+            Date startDateTime = timeRegistration.getStartTime();
+            Date endDateTime = null;
 
             if(timeRegistration.getEndTime() != null) {
-                endDate = DateUtils.DateTimeConverter.convertDateToString(timeRegistration.getEndTime(), DateFormat.SHORT, ReportingExportActivity.this);
-                endTime = DateUtils.DateTimeConverter.convertTimeToString(timeRegistration.getEndTime(), TimeFormat.MEDIUM, ReportingExportActivity.this);
-            } else {
-                endDate = getString(R.string.now);
-                endTime = "";
+                endDate = timeRegistration.getEndTime();
+                endTime = timeRegistration.getEndTime();
+                endDateTime = timeRegistration.getEndTime();
             }
             if (StringUtils.isNotBlank(timeRegistration.getComment())) {
                 trComment = timeRegistration.getComment();
@@ -511,26 +619,36 @@ public class ReportingExportActivity extends GuiceActivity {
                 projectComment = timeRegistration.getTask().getProject().getComment();
             }
 
-            String[] exportLine = {
+            String totalDuration = "=IF(J[CR]=\"\",NOW()-I[CR],J[CR]-I[CR])";
+
+            Object[] exportLine = {
                     startDate, startTime, endDate, endTime, trComment,
-                    projectName, taskName, projectComment
+                    projectName, taskName, projectComment, startDateTime, endDateTime, totalDuration
             };
             rawValues.add(exportLine);
         }
+        return rawValues;
+    }
 
-        Map<String, List<String>> headers = new HashMap<String, List<String>>();
-        headers.put("Report", reportHeaders);
-        headers.put("Data", rawHeaders);
+    private static Date getExcelTimeFromPeriod(Period period) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, 1900);
+        cal.set(Calendar.MONTH, 0);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.add(Calendar.HOUR, -36);
 
-        Map<String, List<Object[]>> values = new HashMap<String, List<Object[]>>();
-        values.put("Report", reportValues);
-        values.put("Data", rawValues);
+        int hours = period.getHours();
+        int minutes = period.getMinutes();
+        int seconds = period.getSeconds();
 
-        try {
-            return exportService.exportXlsFile(ReportingExportActivity.this, filename, headers, values);
-        } catch (GeneralExportException e) {
-            throw e;
-        }
+        cal.add(Calendar.HOUR, hours);
+        cal.set(Calendar.MINUTE, minutes);
+        cal.set(Calendar.SECOND, seconds);
+
+        return cal.getTime();
     }
 
     private void sendExportedFileByMail() {
