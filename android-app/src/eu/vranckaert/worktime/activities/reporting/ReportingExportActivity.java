@@ -460,6 +460,9 @@ public class ReportingExportActivity extends GuiceActivity {
     }
 
     private File doExcelExport(String filename) throws GeneralExportException {
+        String reportSheetName = "Report";
+        String dataSheetName = "Data";
+
         List<Object> reportHeaders = new ArrayList<Object>();
         List<Object[]> reportValues = new ArrayList<Object[]>();
 
@@ -497,20 +500,20 @@ public class ReportingExportActivity extends GuiceActivity {
 
         // Add all vars for the report sheet
         // Headers
-        headers.put("Report", reportHeaders);
+        headers.put(reportSheetName, reportHeaders);
         // Values
-        values.put("Report", reportValues);
+        values.put(reportSheetName, reportValues);
         // Headers column formats
         Map<Integer, DisplayFormat> reportColumnFormat = new HashMap<Integer, DisplayFormat>();
         reportColumnFormat.put(3, new jxl.write.DateFormat("[h]:mm"));
-        valuesColumnFormat.put("Report", reportColumnFormat);
-        headersColumnFormat.put("Report", reportColumnFormat);
+        valuesColumnFormat.put(reportSheetName, reportColumnFormat);
+        headersColumnFormat.put(reportSheetName, reportColumnFormat);
 
         // Add all vars for the data sheet
         // Headers
-        headers.put("Data", rawHeaders);
+        headers.put(dataSheetName, rawHeaders);
         // Values
-        values.put("Data", rawValues);
+        values.put(dataSheetName, rawValues);
         // Value column formats
         Map<Integer, DisplayFormat> dataValuesColumnFormat = new HashMap<Integer, DisplayFormat>();
         dataValuesColumnFormat.put(0, new jxl.write.DateFormat("dd/mm/yyyy"));
@@ -520,48 +523,47 @@ public class ReportingExportActivity extends GuiceActivity {
         dataValuesColumnFormat.put(8, new jxl.write.DateFormat("dd/mm/yyyy hh:mm"));
         dataValuesColumnFormat.put(9, new jxl.write.DateFormat("dd/mm/yyyy hh:mm"));
         dataValuesColumnFormat.put(10, new jxl.write.DateFormat("[h]:mm"));
-        valuesColumnFormat.put("Data", dataValuesColumnFormat);
+        valuesColumnFormat.put(dataSheetName, dataValuesColumnFormat);
         // Hidden columns
-        hiddenColumns.put("Data", Arrays.asList(new Integer[]{8, 9}));
+        hiddenColumns.put(dataSheetName, Arrays.asList(new Integer[]{8, 9}));
 
         try {
-            return exportService.exportXlsFile(ReportingExportActivity.this, filename, headers, values, headersColumnFormat, valuesColumnFormat, hiddenColumns, true);
+            return exportService.exportXlsFile(ReportingExportActivity.this, filename, headers, values, headersColumnFormat, valuesColumnFormat, hiddenColumns, null, false);
         } catch (GeneralExportException e) {
             throw e;
         }
     }
 
     private List<Object[]> buildReportBody(List<TimeRegistration> timeRegistrations, List<ReportingDataLvl0> reportingDataLevels) {
+        boolean containsOngoingTr = false;
+        Date ongoingTrEndDate = null;
+
         int numberOfColumns = 4;
         int startRow = 0;
 
         List<Object[]> tableRecords = new ArrayList<Object[]>();
 
         Object[] headerRecord = new Object[numberOfColumns];
-        headerRecord[0] = "getText(R.string.lbl_reporting_results_table_total).toString()";
+        headerRecord[0] = getText(R.string.lbl_reporting_results_export_report_data_total_time).toString();
         headerRecord[1] = "";
         headerRecord[2] = "";
-        headerRecord[3] = getExcelTimeFromPeriod(DateUtils.TimeCalculator.calculatePeriod(ReportingExportActivity.this, timeRegistrations));
-        // TODO In column 4 (index 3) should be a formula with the sum of lvl-0 fields, should always be the sum of separate fields like =SUM([CC]2+[CC]10)
         tableRecords.add(headerRecord);
-        List<Integer> totalRowsForLvl1 = new ArrayList<Integer>(); // TODO
+        List<Integer> totalRowsForHeader = new ArrayList<Integer>();
         for (ReportingDataLvl0 lvl0 : reportingDataLevels) {
             Object[] lvl0Record = new Object[numberOfColumns];
             lvl0Record[0] = String.valueOf(lvl0.getKey());
             lvl0Record[1] = "";
             lvl0Record[2] = "";
-            // lvl0Record[3] = getExcelTimeFromPeriod(DateUtils.TimeCalculator.calculatePeriod(ReportingExportActivity.this, lvl0.getTimeRegistrations()));
-            // TODO In column 4 (index 3) should be a formula with the sum of lvl-1 fields, should always be the sum of separate fields like =SUM([CC]3+[CC]8+[CC]11)
             tableRecords.add(lvl0Record);
+            totalRowsForHeader.add(startRow + tableRecords.size());
             List<Integer> totalRowsForLvl0 = new ArrayList<Integer>();
             for (ReportingDataLvl1 lvl1 : lvl0.getReportingDataLvl1()) {
                 Object[] lvl1Record = new Object[numberOfColumns];
                 lvl1Record[0] = "";
                 lvl1Record[1] = String.valueOf(lvl1.getKey());
                 lvl1Record[2] = "";
-                //lvl1Record[3] = getExcelTimeFromPeriod(DateUtils.TimeCalculator.calculatePeriod(ReportingExportActivity.this, lvl1.getTimeRegistrations()));
-                // TODO In column 4 (index 3) should be a formula with the sum of lvl-2 fields, can always be a sum of a range like =SUM([CC]4:[CC]7)
                 tableRecords.add(lvl1Record);
+                totalRowsForLvl0.add(startRow + tableRecords.size());
                 int startRowLvl2 = -1;
                 int endRowLvl2 = -1;
                 for (ReportingDataLvl2 lvl2 : lvl1.getReportingDataLvl2()) {
@@ -572,22 +574,47 @@ public class ReportingExportActivity extends GuiceActivity {
                     lvl2Record[3] = getExcelTimeFromPeriod(DateUtils.TimeCalculator.calculatePeriod(ReportingExportActivity.this, lvl2.getTimeRegistrations()));
                     tableRecords.add(lvl2Record);
 
-                    if (startRowLvl2 < 0) {
-                        int detailRow = startRow + tableRecords.size();
+                    for (TimeRegistration tr : lvl2.getTimeRegistrations()) {
+                        if (tr.isOngoingTimeRegistration()) {
+                            containsOngoingTr = true;
+                            ongoingTrEndDate = new Date();
+                            break;
+                        }
                     }
-                    endRowLvl2 = startRow + (tableRecords.size()-1);
+
+                    if (startRowLvl2 < 0) {
+                        startRowLvl2 = startRow + tableRecords.size();
+                    }
+                    endRowLvl2 = startRow + tableRecords.size();
+                    Log.d(LOG_TAG, "Start row lvl2 (" + lvl2Record[2] + "): " + startRowLvl2 + " and end row lvl2: " + endRowLvl2);
                 }
                 lvl1Record[3] = "=SUM([CC]" + startRowLvl2 + ":[CC]" + endRowLvl2 + ")";
-
-                totalRowsForLvl0.add(startRow + tableRecords.size());
+                Log.d(LOG_TAG, "Formula for lvl 1 (" + lvl1Record[1] + "): " + lvl1Record[3]);
             }
-            String formulaLvl0 = "=SUM(";
+            String formulaLvl0 = "=";
             for (Integer totalRow : totalRowsForLvl0) {
                 formulaLvl0 += "[CC]" + totalRow + "+";
             }
             formulaLvl0 = formulaLvl0.substring(0, formulaLvl0.length()-1);
-            formulaLvl0 += ")";
             lvl0Record[3] = formulaLvl0;
+        }
+
+        String formulaHeader = "=";
+        for (Integer totalRow : totalRowsForHeader) {
+            formulaHeader += "[CC]" + totalRow + "+";
+        }
+        formulaHeader = formulaHeader.substring(0, formulaHeader.length()-1);
+        headerRecord[3] = formulaHeader;
+
+        if (containsOngoingTr) {
+            // Add an empty row
+            Object[] emptyRecord = new Object[numberOfColumns];
+            tableRecords.add(emptyRecord);
+            // Add the warning row
+            Object[] warningRecord = new Object[numberOfColumns];
+            String reportGenerationDate = DateUtils.DateTimeConverter.convertDateTimeToString(ongoingTrEndDate, DateFormat.SHORT, TimeFormat.MEDIUM, ReportingExportActivity.this);
+            warningRecord[0] = getString(R.string.lbl_reporting_results_export_report_data_warning_ongoing_registration, reportGenerationDate);
+            tableRecords.add(warningRecord);
         }
 
         return tableRecords;
@@ -632,21 +659,26 @@ public class ReportingExportActivity extends GuiceActivity {
 
     private static Date getExcelTimeFromPeriod(Period period) {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, 1900);
-        cal.set(Calendar.MONTH, 0);
-        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.AM_PM, Calendar.AM);
+        cal.set(Calendar.YEAR, 1899);
+        cal.set(Calendar.MONTH, 11);
+        cal.set(Calendar.DAY_OF_MONTH, 31);
         cal.set(Calendar.HOUR, 0);
         cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
-        cal.add(Calendar.HOUR, -36);
+        //cal.add(Calendar.HOUR, -36);
 
         int hours = period.getHours();
         int minutes = period.getMinutes();
         int seconds = period.getSeconds();
 
-        cal.add(Calendar.HOUR, hours);
-        cal.set(Calendar.MINUTE, minutes);
-        cal.set(Calendar.SECOND, seconds);
+        if (hours > 0)
+            cal.add(Calendar.HOUR, hours);
+        if (minutes > 0)
+            cal.set(Calendar.MINUTE, minutes);
+        if (seconds > 0)
+            cal.set(Calendar.SECOND, seconds);
 
         return cal.getTime();
     }

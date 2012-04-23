@@ -259,7 +259,12 @@
     <string name="lbl_reporting_export_share_subject">Sent exported WorkTime report</string>
     <string name="lbl_reporting_export_share_body">\n\nSent using WorkTime for Android</string>
     <!-- TABLE DATA EXPORT -->
+    <!-- REPORT EXPORT -->
+    <string name="lbl_reporting_results_export_report_data_sheet_name">Report</string>
+    <string name="lbl_reporting_results_export_report_data_total_time">Total</string>
+    <string name="lbl_reporting_results_export_report_data_warning_ongoing_registration">This report contains data based on one ongoing time registration! So be careful when using this data! The duration of the ongoing time registration is calculated with the end-date %1$s which is also the generation date of this report</string>
     <!-- RAW DATA EXPORT -->
+    <string name="lbl_reporting_results_export_raw_data_sheet_name">Data</string>
     <string name="lbl_reporting_results_export_raw_data_csv_starttime">Starttime</string>
     <string name="lbl_reporting_results_export_raw_data_csv_endtime">Endtime</string>
     <string name="lbl_reporting_results_export_raw_data_csv_startdate">Startdate</string>

@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.model.dto.reporting.datalevels;
 
 import eu.vranckaert.worktime.model.TimeRegistration;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReportingDataLvl0 {
+public class ReportingDataLvl0 implements Serializable {
 	private Object key;
 	private List<ReportingDataLvl1> reportingDataLvl1 = new ArrayList<ReportingDataLvl1>();
 	private List<TimeRegistration> timeRegistrations;

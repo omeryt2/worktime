@@ -155,6 +155,13 @@ public interface ExportService {
      *                            sheet (the key in the map, should match the sheet-names defined in the values-map) for
      *                            columns that should be hidden on that sheet. <b>Caution: this does not hide the value
      *                            in a single cell but the entire column! Also the header!</b>
+     * @param mergeCells          This map contains a key for the sheet and allows for every sheet you create to merge
+     *                            certain cells together. The value of the map, being an list with {@link Integer}
+     *                            arrays, <b>always</b> needs to contain <b>4 values</b>:<br/>
+     *                            1: The first value being the left upper boundary column of the merge<br/>
+     *                            2: The second value is the left upper boundary row of the merge<br/>
+     *                            3: The third value is the right lower boundary column of the merge<br/>
+     *                            4: The fourth value is the right lower boundary row of the merge
      * @param autoSizeColumns     If {@link Boolean#TRUE} auto-resizing will be applied on all the columns. If
      *                            {@link Boolean#FALSE} the cells will have default width and heights.
      * @return The exported file.
@@ -162,6 +169,6 @@ public interface ExportService {
      *                                exactly what. Most likely it's due to a file-system issue (SD-card not mounted or
      *                                not writable).
      */
-    File exportXlsFile(Context ctx, String filename, Map<String, List<Object>> headers, Map<String, List<Object[]>> values, Map<String, Map<Integer, DisplayFormat>> headersColumnFormat, Map<String, Map<Integer, DisplayFormat>> valuesColumnFormat, Map<String, List<Integer>> hiddenColumns, boolean autoSizeColumns) throws GeneralExportException;
+    File exportXlsFile(Context ctx, String filename, Map<String, List<Object>> headers, Map<String, List<Object[]>> values, Map<String, Map<Integer, DisplayFormat>> headersColumnFormat, Map<String, Map<Integer, DisplayFormat>> valuesColumnFormat, Map<String, List<Integer>> hiddenColumns, Map<String, List<Integer[]>> mergeCells,  boolean autoSizeColumns) throws GeneralExportException;
 
 }

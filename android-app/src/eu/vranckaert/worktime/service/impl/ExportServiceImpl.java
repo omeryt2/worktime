@@ -124,7 +124,7 @@ public class ExportServiceImpl implements ExportService {
     }
 
     @Override
-    public File exportXlsFile(Context ctx, String filename, Map<String, List<Object>> headers, Map<String, List<Object[]>> values, Map<String, Map<Integer, DisplayFormat>> headersColumnFormat, Map<String, Map<Integer, DisplayFormat>> valuesColumnFormat, Map<String, List<Integer>> hiddenColumns, boolean autoSizeColumns) throws GeneralExportException {
+    public File exportXlsFile(Context ctx, String filename, Map<String, List<Object>> headers, Map<String, List<Object[]>> values, Map<String, Map<Integer, DisplayFormat>> headersColumnFormat, Map<String, Map<Integer, DisplayFormat>> valuesColumnFormat, Map<String, List<Integer>> hiddenColumns, Map<String, List<Integer[]>> mergeCells, boolean autoSizeColumns) throws GeneralExportException {
         File file = getExportFile(ctx, filename, XLS_EXTENSTION);
 
         int sheetIndex = 0;
@@ -224,6 +224,23 @@ public class ExportServiceImpl implements ExportService {
                     column++;
                 }
                 row++;
+            }
+
+            if (mergeCells != null) {
+                List<Integer[]> mergeRanges = mergeCells.get(sheetName);
+                if (mergeRanges != null) {
+                    for (Integer[] mergeRange : mergeRanges) {
+                        if (mergeRange != null && mergeRange.length == 4) {
+                            try {
+                                sheet.mergeCells(mergeRange[0], mergeRange[1], mergeRange[2], mergeRange[3]);
+                            } catch (WriteException e) {
+                                Log.w(LOG_TAG, "Cells cannot be merged!");
+                            }
+                        } else {
+                            Log.w(LOG_TAG, "No or not enough data found for merging cells!");
+                        }
+                    }
+                }
             }
 
             if (autoSizeColumns) {
@@ -368,6 +385,7 @@ public class ExportServiceImpl implements ExportService {
     }
 
     public String getExcelColumnName (int columnNumber) {
+        columnNumber++;
         int dividend = columnNumber;
         int i;
         String columnName = "";
