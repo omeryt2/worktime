@@ -31,7 +31,8 @@ import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.exceptions.SDCardUnavailableException;
 import eu.vranckaert.worktime.exceptions.backup.BackupFileCouldNotBeWritten;
 import eu.vranckaert.worktime.service.BackupService;
-import eu.vranckaert.worktime.service.WidgetService;
+import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
+import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import roboguice.activity.GuiceActivity;
 
@@ -52,6 +53,9 @@ public class RestoreActivity extends GuiceActivity {
 
     @Inject
     private WidgetService widgetService;
+
+    @Inject
+    private StatusBarNotificationService statusBarNotificationService;
 
     private File restoreFile;
     private List<File> databaseBackupFiles;
@@ -219,7 +223,10 @@ public class RestoreActivity extends GuiceActivity {
 
                 try {
                     backupService.restore(getApplicationContext(), restoreFile);
-                    widgetService.updateWidget(getApplicationContext());
+                    widgetService.updateWidget();
+                    statusBarNotificationService.removeOngoingTimeRegistrationNotification();
+                    statusBarNotificationService.addOrUpdateNotification(null);
+
                 } catch (BackupFileCouldNotBeWritten e) {
                     error = getString(R.string.msg_backup_restore_sd_card_unavailable);
                 } catch (SDCardUnavailableException e) {

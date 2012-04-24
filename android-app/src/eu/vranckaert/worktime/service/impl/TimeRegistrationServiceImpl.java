@@ -1,25 +1,29 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package eu.vranckaert.worktime.service.impl;
 
+import android.content.Context;
 import android.util.Log;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
+import eu.vranckaert.worktime.dao.impl.ProjectDaoImpl;
+import eu.vranckaert.worktime.dao.impl.TaskDaoImpl;
+import eu.vranckaert.worktime.dao.impl.TimeRegistrationDaoImpl;
 import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
@@ -38,6 +42,9 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
     private static final String LOG_TAG = TimeRegistrationServiceImpl.class.getSimpleName();
 
     @Inject
+    private Context ctx;
+
+    @Inject
     TimeRegistrationDao dao;
 
     @Inject
@@ -45,6 +52,22 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
 
     @Inject
     TaskDao taskDao;
+
+    /**
+     * Enables the use of this service outside of RoboGuice!
+     * @param ctx The context to insert
+     */
+    public TimeRegistrationServiceImpl(Context ctx) {
+        this.ctx = ctx;
+        dao = new TimeRegistrationDaoImpl(ctx);
+        projectDao = new ProjectDaoImpl(ctx);
+        taskDao = new TaskDaoImpl(ctx);
+    }
+
+    /**
+     * Default constructor required by RoboGuice!
+     */
+    public TimeRegistrationServiceImpl() {}
 
     /**
      * {@inheritDoc}

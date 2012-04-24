@@ -187,8 +187,13 @@
     <string name="lbl_reporting_criteria_date_range_spinner_prompt">Select a date range&#8230;</string>
     <string-array name="array_reporting_criteria_date_range_spinner">
         <item>Today</item>
+        <item>Yesterday</item>
         <item>This week</item>
         <item>Last week</item>
+        <item>Two weeks ago</item>
+        <item>This month</item>
+        <item>Last month</item>
+        <item>Two months ago</item>
         <item>All times</item>
         <item>Custom range</item>
     </string-array>

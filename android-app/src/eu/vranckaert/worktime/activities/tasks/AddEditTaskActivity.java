@@ -1,17 +1,17 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package eu.vranckaert.worktime.activities.tasks;
 
@@ -31,7 +31,8 @@ import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
-import eu.vranckaert.worktime.service.WidgetService;
+import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
+import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import roboguice.activity.GuiceActivity;
@@ -75,6 +76,9 @@ public class AddEditTaskActivity extends GuiceActivity {
 
     @Inject
     private WidgetService widgetService;
+
+    @Inject
+    private StatusBarNotificationService statusBarNotificationService;
 
     @Inject
     private TimeRegistrationService timeRegistrationService;
@@ -148,10 +152,9 @@ public class AddEditTaskActivity extends GuiceActivity {
             Log.d(LOG_TAG, "Task with id " + task.getId() + " and name " + task.getName() + " is updated");
             Log.d(LOG_TAG, "About to update the wiget and notifications");
             TimeRegistration tr = timeRegistrationService.getLatestTimeRegistration();
-            // Issue 89 - If we do not check for null on the latest time registration the application crashes when no
-            // time registration are available and you try to edit a task!
             if (tr != null && tr.getTask().getId().equals(task.getId())) {
-                widgetService.updateWidget(getApplicationContext());
+                widgetService.updateWidget();
+                statusBarNotificationService.addOrUpdateNotification(tr);
             }
         }
 

@@ -46,7 +46,7 @@ import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
-import eu.vranckaert.worktime.service.WidgetService;
+import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
@@ -217,12 +217,12 @@ public class ManageProjectsActivity extends GuiceListActivity {
             projectService.update(project);
             projectToUpdate = null;
 
-            if (project.isFinished()) { // Project is marked as finished
+            if (project.isFinished()) { // Project will be marked as not-finished
                 Project defaultProject = projectService.changeDefaultProjectUponProjectMarkedFinished(project);
                 Project selectedWidgetProject = projectService.getSelectedProject();
                 if (selectedWidgetProject.getId().equals(project.getId())) {
                     projectService.setSelectedProject(defaultProject);
-                    widgetService.updateWidget(ManageProjectsActivity.this);
+                    widgetService.updateWidget();
                 }
             }
             

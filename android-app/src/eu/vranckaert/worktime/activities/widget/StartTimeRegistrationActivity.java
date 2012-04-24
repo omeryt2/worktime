@@ -37,10 +37,10 @@ import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
-import eu.vranckaert.worktime.service.WidgetService;
+import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
+import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.date.DateUtils;
-import eu.vranckaert.worktime.utils.notifications.NotificationBarManager;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
@@ -62,6 +62,9 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
 
     @Inject
     private WidgetService widgetService;
+
+    @Inject
+    private StatusBarNotificationService statusBarNotificationService;
 
     @Inject
     private TimeRegistrationService timeRegistrationService;
@@ -173,6 +176,7 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
                     }
                 }
 
+                statusBarNotificationService.addOrUpdateNotification(newTr);
                 timeRegistrationService.create(newTr);
 
                 tracker.trackEvent(
@@ -181,14 +185,8 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
                 );
 
                 projectService.refresh(selectedTask.getProject());
-                NotificationBarManager notificationBarManager =
-                            NotificationBarManager.getInstance(getApplicationContext());
-                notificationBarManager.addOngoingTimeRegistrationMessage(
-                        newTr.getTask().getProject().getName(),
-                        newTr.getTask().getName()
-                );
 
-                widgetService.updateWidget(StartTimeRegistrationActivity.this);
+                widgetService.updateWidget();
 
                 return null;
             }

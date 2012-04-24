@@ -32,7 +32,8 @@ import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
-import eu.vranckaert.worktime.service.WidgetService;
+import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
+import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import roboguice.activity.GuiceActivity;
@@ -61,6 +62,9 @@ public class EditTimeRegistrationProjectAndTask extends GuiceActivity {
 
     @Inject
     private WidgetService widgetService;
+
+    @Inject
+    private StatusBarNotificationService statusBarNotificationService;
 
     @Inject
     private TaskService taskService;
@@ -222,11 +226,12 @@ public class EditTimeRegistrationProjectAndTask extends GuiceActivity {
         timeRegistration.setTask(newSelectedTask);
         timeRegistrationService.update(timeRegistration);
 
-        // If the time registration is currently ongoing we have to update:
-        // The selected project
+        // If the time registration is currently ongoing we have to update
+        // the selected project and the notifications
         if (timeRegistration.isOngoingTimeRegistration()) {
             projectService.setSelectedProject(newSelectedProject);
-            widgetService.updateWidget(getApplicationContext());
+            widgetService.updateWidget();
+            statusBarNotificationService.addOrUpdateNotification(timeRegistration);
         }
 
         setResult(RESULT_OK);

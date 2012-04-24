@@ -1,19 +1,19 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package eu.vranckaert.worktime.service.impl;
+package eu.vranckaert.worktime.service.ui.impl;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -23,12 +23,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
+import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.HomeActivity;
 import eu.vranckaert.worktime.activities.widget.SelectProjectActivity;
 import eu.vranckaert.worktime.activities.widget.StartTimeRegistrationActivity;
 import eu.vranckaert.worktime.activities.widget.StopTimeRegistrationActivity;
-import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
 import eu.vranckaert.worktime.dao.impl.TimeRegistrationDaoImpl;
 import eu.vranckaert.worktime.model.Project;
@@ -36,8 +36,9 @@ import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.providers.WorkTimeWidgetProvider;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
-import eu.vranckaert.worktime.service.WidgetService;
-import eu.vranckaert.worktime.utils.notifications.NotificationBarManager;
+import eu.vranckaert.worktime.service.impl.ProjectServiceImpl;
+import eu.vranckaert.worktime.service.impl.TaskServiceImpl;
+import eu.vranckaert.worktime.service.ui.WidgetService;
 
 /**
  * User: DIRK VRANCKAERT
@@ -47,17 +48,35 @@ import eu.vranckaert.worktime.utils.notifications.NotificationBarManager;
 public class WidgetServiceImpl implements WidgetService {
     private static final String LOG_TAG = WidgetServiceImpl.class.getName();
 
-    TimeRegistrationDao timeRegistrationDao;
-    TaskService taskService;
-    ProjectService projectService;
+    @Inject
+    private Context ctx;
+
+    @Inject
+    private TimeRegistrationDao timeRegistrationDao;
+
+    @Inject
+    private TaskService taskService;
+
+    @Inject
+    private ProjectService projectService;
+
     RemoteViews views;
+
+    public WidgetServiceImpl(Context ctx) {
+        this.ctx = ctx;
+        getServices(ctx);
+        getDaos(ctx);
+    }
+
+    /**
+     * Default constructor required by RoboGuice!
+     */
+    public WidgetServiceImpl() {}
 
     /**
      * {@inheritDoc}
      */
-    public void updateWidget(Context ctx) {
-        getServices(ctx);
-        getDaos(ctx);
+    public void updateWidget() {
         getViews(ctx);
 
         boolean timeRegistrationStarted = false;
@@ -108,38 +127,7 @@ public class WidgetServiceImpl implements WidgetService {
             startBackgroundWorkActivity(ctx, R.id.widget_bgtop, SelectProjectActivity.class, null);
         }
 
-        handleStatusBarNotifications(ctx, lastTimeRegistration, timeRegistrationStarted);
-
         commitView(ctx, views);
-    }
-
-    /**
-     * Handles the resetting of the status bar notifications.
-     * @param ctx The widget's context.
-     * @param registration The registration to create notifications for.
-     * @param isOnGoingRegistration Wheater or not the registration is an ongoing registration.
-     */
-    private void handleStatusBarNotifications(Context ctx, TimeRegistration registration, boolean isOnGoingRegistration) {
-        Log.d(LOG_TAG, "Handling status bar notifications from widget service...");
-
-        //Enable or disable the notification...
-        NotificationBarManager nbm = NotificationBarManager.getInstance(ctx);
-        //Remove the status bar notifications
-        nbm.removeMessage(NotificationBarManager.NotificationIds.ONGOING_TIME_REGISTRATION_MESSAGE);
-        //Re-create the status bar notifications
-        if (isOnGoingRegistration) {
-            Log.d(LOG_TAG, "Ongoing time registration... Refreshing the task and project...");
-            taskService.refresh(registration.getTask());
-            projectService.refresh(registration.getTask().getProject());
-
-            Log.d(LOG_TAG, "Updating the status bar notifications for project '"
-                    + registration.getTask().getProject().getName() + "' and task '"
-                    + registration.getTask().getName() + "'");
-            nbm.updateOngoingTimeRegistrationMessage(
-                    registration.getTask().getProject().getName(),
-                    registration.getTask().getName()
-            );
-        }
     }
 
     /**

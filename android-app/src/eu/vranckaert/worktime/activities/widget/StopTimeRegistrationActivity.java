@@ -42,9 +42,9 @@ import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.CommentHistoryService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
-import eu.vranckaert.worktime.service.WidgetService;
+import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
+import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
-import eu.vranckaert.worktime.utils.notifications.NotificationBarManager;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
@@ -62,6 +62,9 @@ public class StopTimeRegistrationActivity extends GuiceActivity {
 
     @Inject
     private WidgetService widgetService;
+
+    @Inject
+    private StatusBarNotificationService statusBarNotificationService;
 
     @Inject
     private TimeRegistrationService timeRegistrationService;
@@ -128,13 +131,9 @@ public class StopTimeRegistrationActivity extends GuiceActivity {
                             TrackerConstants.EventActions.END_TIME_REGISTRATION
                     );
 
-                    NotificationBarManager notificationBarManager =
-                            NotificationBarManager.getInstance(getApplicationContext());
-                    notificationBarManager.removeMessage(
-                            NotificationBarManager.NotificationIds.ONGOING_TIME_REGISTRATION_MESSAGE
-                    );
+                    statusBarNotificationService.removeOngoingTimeRegistrationNotification();
 
-                    widgetService.updateWidget(StopTimeRegistrationActivity.this);
+                    widgetService.updateWidget();
                 }
 
                 if (StringUtils.isNotBlank(comment)) {

@@ -53,7 +53,7 @@ import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
-import eu.vranckaert.worktime.service.WidgetService;
+import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
@@ -332,7 +332,7 @@ public class ProjectDetailsActivity extends GuiceListActivity {
                 loadProjectTasks(project);
 
                 if (reloadWidget) {
-                    widgetService.updateWidget(ProjectDetailsActivity.this);
+                    widgetService.updateWidget();
                 }
             } catch (TaskStillInUseException e) {
                 if (force) {

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.constants;
 
 /**
@@ -167,5 +168,11 @@ public class Constants {
         public static final int PROJECT_MARK_FINISHED = 20;
         public static final int PROJECT_MARK_UNFINISHED = 21;
         public static final int PROJECT_COPY = 22;
+    }
+    /**
+     * This class specifies some constants which represent each message id.
+     */
+    public class StatusBarNotificationIds {
+        public static final int ONGOING_TIME_REGISTRATION_MESSAGE = 1;
     }
 }

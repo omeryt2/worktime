@@ -1,17 +1,17 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package eu.vranckaert.worktime.guice;
 
@@ -24,8 +24,22 @@ import eu.vranckaert.worktime.dao.impl.CommentHistoryDaoImpl;
 import eu.vranckaert.worktime.dao.impl.ProjectDaoImpl;
 import eu.vranckaert.worktime.dao.impl.TaskDaoImpl;
 import eu.vranckaert.worktime.dao.impl.TimeRegistrationDaoImpl;
-import eu.vranckaert.worktime.service.*;
-import eu.vranckaert.worktime.service.impl.*;
+import eu.vranckaert.worktime.service.BackupService;
+import eu.vranckaert.worktime.service.CommentHistoryService;
+import eu.vranckaert.worktime.service.ExportService;
+import eu.vranckaert.worktime.service.ProjectService;
+import eu.vranckaert.worktime.service.TaskService;
+import eu.vranckaert.worktime.service.TimeRegistrationService;
+import eu.vranckaert.worktime.service.impl.CommentHistoryServiceImpl;
+import eu.vranckaert.worktime.service.impl.DatabaseFileBackupServiceImpl;
+import eu.vranckaert.worktime.service.impl.ExportServiceImpl;
+import eu.vranckaert.worktime.service.impl.ProjectServiceImpl;
+import eu.vranckaert.worktime.service.impl.TaskServiceImpl;
+import eu.vranckaert.worktime.service.impl.TimeRegistrationServiceImpl;
+import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
+import eu.vranckaert.worktime.service.ui.WidgetService;
+import eu.vranckaert.worktime.service.ui.impl.StatusBarNotificationServiceImpl;
+import eu.vranckaert.worktime.service.ui.impl.WidgetServiceImpl;
 import roboguice.config.AbstractAndroidModule;
 
 public class Module extends AbstractAndroidModule {
@@ -55,7 +69,8 @@ public class Module extends AbstractAndroidModule {
         bind(CommentHistoryService.class).to(CommentHistoryServiceImpl.class);
         bind(BackupService.class).to(DatabaseFileBackupServiceImpl.class);
         bind(ExportService.class).to(ExportServiceImpl.class);
-        //Widget service
+        //UI services
         bind(WidgetService.class).to(WidgetServiceImpl.class);
+        bind(StatusBarNotificationService.class).to(StatusBarNotificationServiceImpl.class);
     }
 }
