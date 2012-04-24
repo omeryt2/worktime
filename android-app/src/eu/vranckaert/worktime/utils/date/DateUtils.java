@@ -536,6 +536,25 @@ public class DateUtils {
 
             return cal.getTime();
         }
+
+        /**
+         * Calculates the point in time between two given dates. The first argument should be before the second, if not
+         * they will be swapped!
+         * @param date1 The first date.
+         * @param date2 The second date.
+         * @return The point in time that represents the middle of the two given dates.
+         */
+        public static Date calculateMiddle(Date date1, Date date2) {
+            if (date2.before(date1)) {
+                Date tmp = date1;
+                date1 = date2;
+                date2 = tmp;
+            }
+            long timeInMillis = date1.getTime() + date2.getTime();
+            long middle = timeInMillis / 2;
+            Date middleDate = new Date(middle);
+            return middleDate;
+        }
     }
 
     /**

@@ -373,6 +373,10 @@
     <string name="pref_time_registrations_punch_bar_enabled_on_all_screens_title">Punch-bar on all screens</string>
     <string name="pref_time_registrations_punch_bar_enabled_on_all_screens_summary_on">The punch-bar will be shown on all screens</string>
     <string name="pref_time_registrations_punch_bar_enabled_on_all_screens_summary_off">The punch-bar will only be shown on the main screen</string>
+    <string name="pref_time_registrations_split_default_gap_title">Default gap when splitting</string>
+    <string name="pref_time_registrations_split_default_gap_summary">Gap in minutes:</string>
+    <string name="pref_time_registrations_split_default_gap_summary_text">Define the default gap in minutes when splitting two time registrations</string>
+    <string name="pref_time_registrations_split_default_gap_units_right">min</string>
     <!-- BACKUP -->
     <string name="lbl_backup_restore_writing_backup_sd">Writing backup to SD-card</string>
     <string name="msg_backup_restore_writing_backup_sd_success">The backup is written to your SD-card: %1$s</string>

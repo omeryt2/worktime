@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.utils.preferences;
 
 import android.app.Activity;
@@ -561,6 +562,32 @@ public class Preferences {
     public static void setPreferredExportData(Context ctx, ExportData exportData) {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
         editor.putString(Constants.Preferences.Keys.EXPORT_DATA, exportData.toString());
+        editor.commit();
+    }
+
+    /**
+     * Get the preference for key {@link Constants.Preferences.Keys#TIME_REGISTRATION_SPLIT_DEFAULT_GAP}. If no value is
+     * found for the preference the default value will be
+     * {@link Constants.Preferences#TIME_REGISTRATION_SPLIT_DEFAULT_GAP_DEFAULT_VALUE}.
+     * @param ctx The context when getting the preference for default split-gap in minutes.
+     * @return The integer value that represents the user's choice (or if no choice available the system's default)
+     * for the default split-gap in minutes.
+     */
+    public static int getTimeRegistrationSplitDefaultGap(Context ctx) {
+        return getSharedPreferences(ctx).getInt(
+                Constants.Preferences.Keys.TIME_REGISTRATION_SPLIT_DEFAULT_GAP,
+                Constants.Preferences.TIME_REGISTRATION_SPLIT_DEFAULT_GAP_DEFAULT_VALUE
+        );
+    }
+
+    /**
+     * Updates the preference {@link Constants.Preferences.Keys#TIME_REGISTRATION_SPLIT_DEFAULT_GAP}.
+     * @param ctx The context when updating the preference.
+     * @param minutes The integer value that represents the user's choice for the default split-gap in minutes.
+     */
+    public static void setTimeRegistrationSplitDefaultGap(Context ctx, int minutes) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.putInt(Constants.Preferences.Keys.TIME_REGISTRATION_SPLIT_DEFAULT_GAP, minutes);
         editor.commit();
     }
 }

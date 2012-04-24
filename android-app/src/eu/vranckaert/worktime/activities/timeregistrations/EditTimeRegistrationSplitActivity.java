@@ -51,6 +51,7 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
     private static final String LOG_TAG = EditTimeRegistrationSplitActivity.class.getSimpleName();
 
     private TimeRegistration originalTimeRegistration;
+    private int defaultSplitGap;
 
     private Calendar endPart1;
     private Calendar startPart2;
@@ -78,6 +79,8 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
         setInitialDataForTimeRegistrationParts();
 
         setContentViews(layouts);
+
+        defaultSplitGap = Preferences.getTimeRegistrationSplitDefaultGap(EditTimeRegistrationSplitActivity.this);
 
         super.setFinishButtonText(R.string.save);
         setCancelDialog(R.string.lbl_registration_split_cancel_dialog, R.string.msg_registration_split_cancel_dialog);
@@ -120,7 +123,6 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
      */
     private void setInitialDataForTimeRegistrationParts() {
         Log.d(LOG_TAG, "Setting initial data for the different parts");
-        Calendar partTime = Calendar.getInstance();
 
         endPart1 = Calendar.getInstance();
         startPart2 = Calendar.getInstance();
@@ -129,13 +131,10 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
         if (!originalTimeRegistration.isOngoingTimeRegistration()) {
             endTime = originalTimeRegistration.getEndTime();
         }
-        partTime.setTime(endTime);
-        partTime.set(Calendar.SECOND, 0);
-        partTime.set(Calendar.MILLISECOND, 0);
-        partTime.add(Calendar.MINUTE, -1);
+        Date middlePoint = DateUtils.TimeCalculator.calculateMiddle(originalTimeRegistration.getStartTime(), endTime);
 
-        endPart1.setTime(partTime.getTime());
-        startPart2.setTime(partTime.getTime());
+        endPart1.setTime(middlePoint);
+        startPart2.setTime(middlePoint);
 
         Log.d(LOG_TAG, "The default value for the end of part 1 is: " +
                 DateUtils.DateTimeConverter.convertDateTimeToString(endPart1.getTime(), DateFormat.MEDIUM, TimeFormat.SHORT, EditTimeRegistrationSplitActivity.this));
@@ -225,6 +224,11 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
                 }
 
                 endPart1 = tmpPart;
+
+                // Add a default gap of x minutes between the two parts
+                startPart2.setTimeInMillis(endPart1.getTimeInMillis());
+                startPart2.add(Calendar.MINUTE, defaultSplitGap);
+
                 break;
             }
             case 1: {

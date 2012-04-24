@@ -104,6 +104,7 @@ public class Constants {
         public static final boolean TIME_REGISTRATION_AUTO_CLOSE_60S_GAP_DEFAULT_VALUE = true;
         public static final boolean TIME_REGISTRATION_PUNCH_BAR_ENABLED_FROM_HOME_SCREEN_DEFAULT_VALUE = true;
         public static final boolean TIME_REGISTRATION_PUNCH_BAR_ENABLED_ON_ALL_SCREENS_DEFAULT_VALUE = false;
+        public static final int TIME_REGISTRATION_SPLIT_DEFAULT_GAP_DEFAULT_VALUE = 30;
 
         public class Keys {
             public static final String SELECTED_PROJECT_ID = "selectedProjectId";
@@ -122,6 +123,7 @@ public class Constants {
             public static final String TIME_PRECISION = "timePrecision";
             public static final String TIME_REGISTRATION_PUNCH_BAR_ENABLED_FROM_HOME_SCREEN = "timeRegistrationPunchBarEnabledFromHomeScreen";
             public static final String TIME_REGISTRATION_PUNCH_BAR_ENABLED_ON_ALL_SCREENS = "timeRegistrationPunchBarEnabledOnAllScreens";
+            public static final String TIME_REGISTRATION_SPLIT_DEFAULT_GAP = "timeRegistrationSplitDefaultGap";
             public static final String EXPORT_TYPE = "exportType";
             public static final String EXPORT_DATA = "exportData";
             public static final String EXPORT_CSV_SEPARATOR = "exportCsvSeparator";
