@@ -321,78 +321,185 @@ public class ReportingCriteriaActivity extends GuiceActivity {
 
     private void updateViewOnDateRangeSpinnerSelection() {
         int index = dateRangeSpinner.getSelectedItemPosition();
+        ReportingDateRange selectedDateRange = ReportingDateRange.getByIndex(index);
 
-        if (ReportingDateRange.TODAY.getOrder() == index) {
-            Date today  = new Date();
-            startDate = today;
-            endDate = today;
-            String todayAsText = DateUtils.DateTimeConverter.convertDateToString(startDate, dateFormat, this);
+        switch (selectedDateRange) {
+            case TODAY: {
+                Date today  = new Date();
+                startDate = today;
+                endDate = today;
+                String todayAsText = DateUtils.DateTimeConverter.convertDateToString(startDate, dateFormat, this);
 
-            dateRangeStartButton.setText(todayAsText);
-            dateRangeEndButton.setText(todayAsText);
+                dateRangeStartButton.setText(todayAsText);
+                dateRangeEndButton.setText(todayAsText);
 
-            dateRangeStartButton.setEnabled(false);
-            dateRangeEndButton.setEnabled(false);
-        } else if (ReportingDateRange.THIS_WEEK.getOrder() == index) {
-            SparseArray<Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(0, ReportingCriteriaActivity.this);
-            Date firstDay = result.get(DateConstants.FIRST_DAY_OF_WEEK);
-            Date lastDay = result.get(DateConstants.LAST_DAY_OF_WEEK);
+                dateRangeStartButton.setEnabled(false);
+                dateRangeEndButton.setEnabled(false);
+                break;
+            }
+            case YESTERDAY: {
+                Calendar yesterday = Calendar.getInstance();
+                yesterday.add(Calendar.DAY_OF_MONTH, -1);
+                startDate = yesterday.getTime();
+                endDate = yesterday.getTime();
+                String yesterdayAsText = DateUtils.DateTimeConverter.convertDateToString(startDate, dateFormat, this);
 
-            startDate = firstDay;
-            endDate = lastDay;
+                dateRangeStartButton.setText(yesterdayAsText);
+                dateRangeEndButton.setText(yesterdayAsText);
 
-            String strFirstDay = DateUtils.DateTimeConverter.convertDateToString(firstDay, dateFormat, this);
-            String strLastDay = DateUtils.DateTimeConverter.convertDateToString(lastDay, dateFormat, this);
+                dateRangeStartButton.setEnabled(false);
+                dateRangeEndButton.setEnabled(false);
+                break;
+            }
+            case THIS_WEEK: {
+                SparseArray<Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(0, ReportingCriteriaActivity.this);
+                Date firstDay = result.get(DateConstants.FIRST_DAY_OF_WEEK);
+                Date lastDay = result.get(DateConstants.LAST_DAY_OF_WEEK);
 
-            dateRangeStartButton.setText(strFirstDay);
-            dateRangeEndButton.setText(strLastDay);
+                startDate = firstDay;
+                endDate = lastDay;
 
-            dateRangeStartButton.setEnabled(false);
-            dateRangeEndButton.setEnabled(false);
-        } else if (ReportingDateRange.LAST_WEEK.getOrder() == index) {
-            SparseArray<Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(-1, ReportingCriteriaActivity.this);
-            Date firstDay = result.get(DateConstants.FIRST_DAY_OF_WEEK);
-            Date lastDay = result.get(DateConstants.LAST_DAY_OF_WEEK);
+                String strFirstDay = DateUtils.DateTimeConverter.convertDateToString(firstDay, dateFormat, this);
+                String strLastDay = DateUtils.DateTimeConverter.convertDateToString(lastDay, dateFormat, this);
 
-            startDate = firstDay;
-            endDate = lastDay;
+                dateRangeStartButton.setText(strFirstDay);
+                dateRangeEndButton.setText(strLastDay);
 
-            String strFirstDay = DateUtils.DateTimeConverter.convertDateToString(firstDay, dateFormat, this);
-            String strLastDay = DateUtils.DateTimeConverter.convertDateToString(lastDay, dateFormat, this);
+                dateRangeStartButton.setEnabled(false);
+                dateRangeEndButton.setEnabled(false);
+                break;
+            }
+            case LAST_WEEK: {
+                SparseArray<Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(-1, ReportingCriteriaActivity.this);
+                Date firstDay = result.get(DateConstants.FIRST_DAY_OF_WEEK);
+                Date lastDay = result.get(DateConstants.LAST_DAY_OF_WEEK);
 
-            dateRangeStartButton.setText(strFirstDay);
-            dateRangeEndButton.setText(strLastDay);
+                startDate = firstDay;
+                endDate = lastDay;
 
-            dateRangeStartButton.setEnabled(false);
-            dateRangeEndButton.setEnabled(false);
-        } else if (ReportingDateRange.ALL_TIMES.getOrder() == index) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(0L);
-            cal.set(Calendar.YEAR, 1900);
-            Date firstDay = cal.getTime();
-            cal.set(Calendar.YEAR, 9999);
-            Date lastDay = cal.getTime();
+                String strFirstDay = DateUtils.DateTimeConverter.convertDateToString(firstDay, dateFormat, this);
+                String strLastDay = DateUtils.DateTimeConverter.convertDateToString(lastDay, dateFormat, this);
 
-            startDate = firstDay;
-            endDate = lastDay;
+                dateRangeStartButton.setText(strFirstDay);
+                dateRangeEndButton.setText(strLastDay);
 
-            String strFirstDay = DateUtils.DateTimeConverter.convertDateToString(firstDay, dateFormat, this);
-            String strLastDay = DateUtils.DateTimeConverter.convertDateToString(lastDay, dateFormat, this);
+                dateRangeStartButton.setEnabled(false);
+                dateRangeEndButton.setEnabled(false);
+                break;
+            }
+            case TWO_WEEKS_AGO: {
+                SparseArray<Date> result = DateUtils.TimeCalculator.calculateWeekBoundaries(-2, ReportingCriteriaActivity.this);
+                Date firstDay = result.get(DateConstants.FIRST_DAY_OF_WEEK);
+                Date lastDay = result.get(DateConstants.LAST_DAY_OF_WEEK);
 
-            dateRangeStartButton.setText(strFirstDay);
-            dateRangeEndButton.setText(strLastDay);
+                startDate = firstDay;
+                endDate = lastDay;
 
-            dateRangeStartButton.setEnabled(false);
-            dateRangeEndButton.setEnabled(false);
-        } else if (ReportingDateRange.CUSTOM.getOrder() == index) {
-            String strStartDate = DateUtils.DateTimeConverter.convertDateToString(startDate, dateFormat, this);
-            String strEndDate = DateUtils.DateTimeConverter.convertDateToString(endDate, dateFormat, this);
+                String strFirstDay = DateUtils.DateTimeConverter.convertDateToString(firstDay, dateFormat, this);
+                String strLastDay = DateUtils.DateTimeConverter.convertDateToString(lastDay, dateFormat, this);
 
-            dateRangeStartButton.setText(strStartDate);
-            dateRangeEndButton.setText(strEndDate);
+                dateRangeStartButton.setText(strFirstDay);
+                dateRangeEndButton.setText(strLastDay);
 
-            dateRangeStartButton.setEnabled(true);
-            dateRangeEndButton.setEnabled(true);
+                dateRangeStartButton.setEnabled(false);
+                dateRangeEndButton.setEnabled(false);
+                break;
+            }
+            case THIS_MONTH: {
+                Calendar thisMonthStart = Calendar.getInstance();
+                thisMonthStart.set(Calendar.DAY_OF_MONTH, thisMonthStart.getActualMinimum(Calendar.DAY_OF_MONTH));
+
+                Calendar thisMonthEnd = Calendar.getInstance();
+                thisMonthEnd.set(Calendar.DAY_OF_MONTH, thisMonthEnd.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+                startDate = thisMonthStart.getTime();
+                endDate = thisMonthEnd.getTime();
+
+                String strFirstDay = DateUtils.DateTimeConverter.convertDateToString(startDate, dateFormat, this);
+                String strLastDay = DateUtils.DateTimeConverter.convertDateToString(endDate, dateFormat, this);
+
+                dateRangeStartButton.setText(strFirstDay);
+                dateRangeEndButton.setText(strLastDay);
+
+                dateRangeStartButton.setEnabled(false);
+                dateRangeEndButton.setEnabled(false);
+                break;
+            }
+            case LAST_MONTH: {
+                Calendar thisMonthStart = Calendar.getInstance();
+                thisMonthStart.add(Calendar.MONTH, -1);
+                thisMonthStart.set(Calendar.DAY_OF_MONTH, thisMonthStart.getActualMinimum(Calendar.DAY_OF_MONTH));
+
+                Calendar thisMonthEnd = Calendar.getInstance();
+                thisMonthEnd.add(Calendar.MONTH, -1);
+                thisMonthEnd.set(Calendar.DAY_OF_MONTH, thisMonthEnd.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+                startDate = thisMonthStart.getTime();
+                endDate = thisMonthEnd.getTime();
+
+                String strFirstDay = DateUtils.DateTimeConverter.convertDateToString(startDate, dateFormat, this);
+                String strLastDay = DateUtils.DateTimeConverter.convertDateToString(endDate, dateFormat, this);
+
+                dateRangeStartButton.setText(strFirstDay);
+                dateRangeEndButton.setText(strLastDay);
+
+                dateRangeStartButton.setEnabled(false);
+                dateRangeEndButton.setEnabled(false);
+                break;
+            }
+            case TWO_MONTHS_AGO: {
+                Calendar thisMonthStart = Calendar.getInstance();
+                thisMonthStart.add(Calendar.MONTH, -2);
+                thisMonthStart.set(Calendar.DAY_OF_MONTH, thisMonthStart.getActualMinimum(Calendar.DAY_OF_MONTH));
+
+                Calendar thisMonthEnd = Calendar.getInstance();
+                thisMonthEnd.add(Calendar.MONTH, -2);
+                thisMonthEnd.set(Calendar.DAY_OF_MONTH, thisMonthEnd.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+                startDate = thisMonthStart.getTime();
+                endDate = thisMonthEnd.getTime();
+
+                String strFirstDay = DateUtils.DateTimeConverter.convertDateToString(startDate, dateFormat, this);
+                String strLastDay = DateUtils.DateTimeConverter.convertDateToString(endDate, dateFormat, this);
+
+                dateRangeStartButton.setText(strFirstDay);
+                dateRangeEndButton.setText(strLastDay);
+
+                dateRangeStartButton.setEnabled(false);
+                dateRangeEndButton.setEnabled(false);
+                break;
+            }
+            case ALL_TIMES: {
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(0L);
+                cal.set(Calendar.YEAR, 1900);
+                Date firstDay = cal.getTime();
+                cal.set(Calendar.YEAR, 9999);
+                Date lastDay = cal.getTime();
+
+                startDate = firstDay;
+                endDate = lastDay;
+
+                String strFirstDay = DateUtils.DateTimeConverter.convertDateToString(firstDay, dateFormat, this);
+                String strLastDay = DateUtils.DateTimeConverter.convertDateToString(lastDay, dateFormat, this);
+
+                dateRangeStartButton.setText(strFirstDay);
+                dateRangeEndButton.setText(strLastDay);
+
+                dateRangeStartButton.setEnabled(false);
+                dateRangeEndButton.setEnabled(false);
+                break;
+            }
+            default: {
+                String strStartDate = DateUtils.DateTimeConverter.convertDateToString(startDate, dateFormat, this);
+                String strEndDate = DateUtils.DateTimeConverter.convertDateToString(endDate, dateFormat, this);
+
+                dateRangeStartButton.setText(strStartDate);
+                dateRangeEndButton.setText(strEndDate);
+
+                dateRangeStartButton.setEnabled(true);
+                dateRangeEndButton.setEnabled(true);
+            }
         }
     }
 
