@@ -380,4 +380,20 @@ public class PreferencesTest extends AndroidTestCase {
         int valueDeleted = Preferences.getTimeRegistrationSplitDefaultGap(ctx);
         assertEquals("No value should be found (result should be 30)", Constants.Preferences.TIME_REGISTRATION_SPLIT_DEFAULT_GAP_DEFAULT_VALUE, valueDeleted);
     }
+
+    public void testRemoveAllPreferences() {
+        Preferences.removePreference(ctx, Constants.Preferences.Keys.SELECTED_PROJECT_ID);
+
+        int valueNotFound = Preferences.getSelectedProjectId(ctx);
+        assertEquals("No value should be found", Constants.Preferences.SELECTED_PROJECT_ID_DEFAULT_VALUE, valueNotFound);
+
+        int value = 100;
+        Preferences.setSelectedProjectId(ctx, value);
+        int valueFound = Preferences.getSelectedProjectId(ctx);
+        assertEquals("A value should be found (" + value + ")", value, valueFound);
+
+        Preferences.removeAllPreferences(ctx);
+        int valueDeleted = Preferences.getSelectedProjectId(ctx);
+        assertEquals("No value should be found", Constants.Preferences.SELECTED_PROJECT_ID_DEFAULT_VALUE, valueDeleted);
+    }
 }

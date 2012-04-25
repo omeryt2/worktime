@@ -27,6 +27,10 @@ import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.HourPreference12Or24;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Access all the preferences. This class is mainly used to read the preferences but can be used in some rare cases
  * to also update or insert preferences.
@@ -54,6 +58,26 @@ public class Preferences {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
         editor.remove(key);
         editor.commit();
+    }
+
+    /**
+     * Removes all preferences from the system.
+     * @param ctx The context.
+     */
+    public static void removeAllPreferences(Context ctx) {
+        List<String> preferenceKeys = new ArrayList<String>();
+
+        Class prefKeysClass = Constants.Preferences.Keys.class;
+        Field[] keyFields = prefKeysClass.getFields();
+        for(Field field : keyFields) {
+            try {
+                preferenceKeys.add((String)field.get(null));
+            } catch (IllegalAccessException e) {}
+        }
+
+        for (String key : preferenceKeys) {
+            Preferences.removePreference(ctx, key);
+        }
     }
 
     /**

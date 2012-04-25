@@ -30,9 +30,6 @@ import eu.vranckaert.worktime.dao.utils.DatabaseHelper;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 
 import static junit.framework.Assert.fail;
 
@@ -95,19 +92,7 @@ public class TestUtil {
      * Removes all the preferences
      */
     public static void removeAllPreferences(Context ctx) {
-        List<String> preferenceKeys = new ArrayList<String>();
-
-        Class prefKeysClass = Constants.Preferences.Keys.class;
-        Field[] keyFields = prefKeysClass.getFields();
-        for(Field field : keyFields) {
-            try {
-                preferenceKeys.add((String)field.get(null));
-            } catch (IllegalAccessException e) {}
-        }
-
-        for (String key : preferenceKeys) {
-            Preferences.removePreference(ctx, key);
-        }
+        Preferences.removeAllPreferences(ctx);
     }
 
     /**

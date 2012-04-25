@@ -134,7 +134,12 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
         Date middlePoint = DateUtils.TimeCalculator.calculateMiddle(originalTimeRegistration.getStartTime(), endTime);
 
         endPart1.setTime(middlePoint);
-        startPart2.setTime(middlePoint);
+        Calendar defaultStartPart2 = Calendar.getInstance();
+        defaultStartPart2.setTime(endTime);
+        defaultStartPart2.set(Calendar.SECOND, 0);
+        defaultStartPart2.set(Calendar.MILLISECOND, 0);
+        defaultStartPart2.add(Calendar.MINUTE, -1);
+        startPart2.setTime(defaultStartPart2.getTime());
 
         Log.d(LOG_TAG, "The default value for the end of part 1 is: " +
                 DateUtils.DateTimeConverter.convertDateTimeToString(endPart1.getTime(), DateFormat.MEDIUM, TimeFormat.SHORT, EditTimeRegistrationSplitActivity.this));
@@ -232,6 +237,10 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
                 break;
             }
             case 1: {
+                if (nextViewIndex < currentViewIndex) {
+                    return true;
+                }
+
                 calculateLimits();
 
                 Calendar tmpPart = getCurrentDateTimePickerValue();

@@ -377,6 +377,8 @@
     <string name="pref_time_registrations_split_default_gap_summary">Gap in minutes:</string>
     <string name="pref_time_registrations_split_default_gap_summary_text">Define the default gap in minutes when splitting two time registrations</string>
     <string name="pref_time_registrations_split_default_gap_units_right">min</string>
+    <string name="pref_reset_category_title">Reset preferences</string>
+    <string name="pref_reset_category_summary">Restore the factory default preferences for this application</string>
     <!-- BACKUP -->
     <string name="lbl_backup_restore_writing_backup_sd">Writing backup to SD-card</string>
     <string name="msg_backup_restore_writing_backup_sd_success">The backup is written to your SD-card: %1$s</string>
