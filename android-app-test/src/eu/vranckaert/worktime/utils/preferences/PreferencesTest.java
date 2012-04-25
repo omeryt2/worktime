@@ -364,4 +364,20 @@ public class PreferencesTest extends AndroidTestCase {
         ExportCsvSeparator preferenceDeleted = Preferences.getPreferredExportCSVSeparator(ctx);
         assertEquals("No preference should be found!", ExportCsvSeparator.SEMICOLON, preferenceDeleted);
     }
+
+    public void testTimeRegistrationSplitDefaultGap() {
+        Preferences.removePreference(ctx, Constants.Preferences.Keys.TIME_REGISTRATION_SPLIT_DEFAULT_GAP);
+
+        int resultNotFound = Preferences.getTimeRegistrationSplitDefaultGap(ctx);
+        assertEquals("No value should be found (result should be 30)", Constants.Preferences.TIME_REGISTRATION_SPLIT_DEFAULT_GAP_DEFAULT_VALUE, resultNotFound);
+
+        int value = 344;
+        Preferences.setTimeRegistrationSplitDefaultGap(ctx, value);
+        int minutesFound = Preferences.getTimeRegistrationSplitDefaultGap(ctx);
+        assertEquals("A value is expected (" + value + ")", value, minutesFound);
+
+        Preferences.removePreference(ctx, Constants.Preferences.Keys.TIME_REGISTRATION_SPLIT_DEFAULT_GAP);
+        int valueDeleted = Preferences.getTimeRegistrationSplitDefaultGap(ctx);
+        assertEquals("No value should be found (result should be 30)", Constants.Preferences.TIME_REGISTRATION_SPLIT_DEFAULT_GAP_DEFAULT_VALUE, valueDeleted);
+    }
 }

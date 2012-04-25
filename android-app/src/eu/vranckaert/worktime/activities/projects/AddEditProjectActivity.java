@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.activities.projects;
 
 import android.content.Intent;
@@ -143,10 +144,11 @@ public class AddEditProjectActivity extends GuiceActivity {
                     );
                     Log.d(LOG_TAG, "Project with id " + project.getId() + " and name " + project.getName() + " is updated");
                     TimeRegistration latestTimeRegistration = timeRegistrationService.getLatestTimeRegistration();
-                    taskService.refresh(latestTimeRegistration.getTask());
-                    projectService.refresh(latestTimeRegistration.getTask().getProject());
                     if (latestTimeRegistration != null && latestTimeRegistration.getTask().getProject().getId().equals(project.getId())) {
                         Log.d(LOG_TAG, "About to update the widget and notifications");
+
+                        taskService.refresh(latestTimeRegistration.getTask());
+                        projectService.refresh(latestTimeRegistration.getTask().getProject());
                         widgetService.updateWidget();
                         statusBarNotificationService.addOrUpdateNotification(latestTimeRegistration);
                     }

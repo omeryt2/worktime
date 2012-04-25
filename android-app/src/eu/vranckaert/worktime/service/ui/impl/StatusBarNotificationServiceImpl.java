@@ -76,6 +76,10 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
 
         if (registration == null) {
             registration = timeRegistrationService.getLatestTimeRegistration();
+            if (registration == null) {
+                Log.d(LOG_TAG, "Cannot add a notification because no time registration is found!");
+                return;
+            }
         }
 
         if (showStatusBarNotifications && registration != null && registration.isOngoingTimeRegistration()) {

@@ -21,6 +21,7 @@ import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.enums.reporting.ReportingDisplayDuration;
 import eu.vranckaert.worktime.model.TimeRegistration;
+import eu.vranckaert.worktime.test.Assert;
 import eu.vranckaert.worktime.test.cases.TestCase;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.preferences.TimePrecisionPreference;
@@ -466,5 +467,69 @@ public class DateUtilsTimeCalculatorTest extends TestCase {
         String result = DateUtils.TimeCalculator.calculatePeriod(ctx, timeRegistrations,  ReportingDisplayDuration.HOUR_MINUTES_SECONDS);
 
         assertEquals(expectedResult, result);
+    }
+
+    public void testCalculateMiddleOfTwoDates() {
+        Calendar cal1 = Calendar.getInstance();
+        cal1.set(Calendar.YEAR, 2011);
+        cal1.set(Calendar.MONTH, 6);
+        cal1.set(Calendar.DAY_OF_MONTH, 8);
+        cal1.set(Calendar.HOUR_OF_DAY, 8);
+        cal1.set(Calendar.MINUTE, 33);
+        cal1.set(Calendar.SECOND, 0);
+        cal1.set(Calendar.MILLISECOND, 0);
+
+        Calendar cal2 = Calendar.getInstance();
+        cal2.set(Calendar.YEAR, 2011);
+        cal2.set(Calendar.MONTH, 6);
+        cal2.set(Calendar.DAY_OF_MONTH, 8);
+        cal2.set(Calendar.HOUR_OF_DAY, 11);
+        cal2.set(Calendar.MINUTE, 27);
+        cal2.set(Calendar.SECOND, 0);
+        cal2.set(Calendar.MILLISECOND, 0);
+
+        Calendar expectedCal = Calendar.getInstance();
+        expectedCal.set(Calendar.YEAR, 2011);
+        expectedCal.set(Calendar.MONTH, 6);
+        expectedCal.set(Calendar.DAY_OF_MONTH, 8);
+        expectedCal.set(Calendar.HOUR_OF_DAY, 10);
+        expectedCal.set(Calendar.MINUTE, 0);
+        expectedCal.set(Calendar.SECOND, 0);
+        expectedCal.set(Calendar.MILLISECOND, 0);
+
+        Date middle = DateUtils.TimeCalculator.calculateMiddle(cal1.getTime(), cal2.getTime());
+        Assert.assertSameDate(expectedCal.getTime(), middle);
+    }
+
+    public void testCalculateMiddleOfTwoDatesWithReversedDates() {
+        Calendar cal1 = Calendar.getInstance();
+        cal1.set(Calendar.YEAR, 2011);
+        cal1.set(Calendar.MONTH, 6);
+        cal1.set(Calendar.DAY_OF_MONTH, 8);
+        cal1.set(Calendar.HOUR_OF_DAY, 8);
+        cal1.set(Calendar.MINUTE, 33);
+        cal1.set(Calendar.SECOND, 0);
+        cal1.set(Calendar.MILLISECOND, 0);
+
+        Calendar cal2 = Calendar.getInstance();
+        cal2.set(Calendar.YEAR, 2011);
+        cal2.set(Calendar.MONTH, 6);
+        cal2.set(Calendar.DAY_OF_MONTH, 8);
+        cal2.set(Calendar.HOUR_OF_DAY, 11);
+        cal2.set(Calendar.MINUTE, 27);
+        cal2.set(Calendar.SECOND, 0);
+        cal2.set(Calendar.MILLISECOND, 0);
+
+        Calendar expectedCal = Calendar.getInstance();
+        expectedCal.set(Calendar.YEAR, 2011);
+        expectedCal.set(Calendar.MONTH, 6);
+        expectedCal.set(Calendar.DAY_OF_MONTH, 8);
+        expectedCal.set(Calendar.HOUR_OF_DAY, 10);
+        expectedCal.set(Calendar.MINUTE, 0);
+        expectedCal.set(Calendar.SECOND, 0);
+        expectedCal.set(Calendar.MILLISECOND, 0);
+
+        Date middle = DateUtils.TimeCalculator.calculateMiddle(cal2.getTime(), cal1.getTime());
+        Assert.assertSameDate(expectedCal.getTime(), middle);
     }
 }
