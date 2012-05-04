@@ -66,6 +66,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * User: DIRK VRANCKAERT
@@ -127,6 +128,7 @@ public class ReportingExportActivity extends GuiceActivity {
                 ExportType exportType = ExportType.getByIndex(position);
                 updateViewsForExportType(exportType);
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
                 // NA
@@ -157,6 +159,7 @@ public class ReportingExportActivity extends GuiceActivity {
 
     /**
      * Updates the entire view for the selected export type.
+     *
      * @param exportType The selected {@link ExportType}.
      */
     private void updateViewsForExportType(ExportType exportType) {
@@ -176,6 +179,7 @@ public class ReportingExportActivity extends GuiceActivity {
 
     /**
      * Updates the view elements specified for showing the export type with the default settings.
+     *
      * @param ctx The context.
      */
     private void updateExportType(Context ctx) {
@@ -185,6 +189,7 @@ public class ReportingExportActivity extends GuiceActivity {
 
     /**
      * Updates the view elements specified for showing the export csv separator with the default settings.
+     *
      * @param ctx The context.
      */
     private void updateExportCsvSeparator(Context ctx) {
@@ -194,6 +199,7 @@ public class ReportingExportActivity extends GuiceActivity {
 
     /**
      * Updates the view elements specified for showing the export data with the default settings.
+     *
      * @param ctx The context.
      */
     private void updateExportData(Context ctx) {
@@ -278,8 +284,9 @@ public class ReportingExportActivity extends GuiceActivity {
     }
 
     /**
-     * Save the file name to the preferences in case it has changed.
-     * Afterwards Disk the time registrations.
+     * Whenever the user selects the export button this method will be triggered. It validates the user-input, updates
+     * the preferences, hide the keyboard is it's still visible, and checks if an SD-card is available. If all these
+     * checks proceed the export will be launched.
      *
      * @param view The view.
      */
@@ -303,6 +310,11 @@ public class ReportingExportActivity extends GuiceActivity {
         }
     }
 
+    /**
+     * Validates the user-input.
+     * @return If validation failed this method will return {@link Boolean#FALSE}. Otherwise always
+     * {@link Boolean#TRUE}.
+     */
     private boolean validate() {
         boolean valid = true;
         if (fileNameInput.getText().toString().length() < 3) {
@@ -318,6 +330,10 @@ public class ReportingExportActivity extends GuiceActivity {
         return valid;
     }
 
+    /**
+     * Updates the preferences with the users' choice of different UI-options (like the file name, export for CSV or
+     * Excel, ...)
+     */
     private void updatePreferences() {
         ExportType exportType = ExportType.getByIndex(reportingTypeSpinner.getSelectedItemPosition());
         String filename = fileNameInput.getText().toString();
@@ -338,6 +354,11 @@ public class ReportingExportActivity extends GuiceActivity {
         }
     }
 
+    /**
+     * This method is executed when the users presses the export button and all fields are validated. It takes care of
+     * the threading, so it starts a loading dialog, then starts triggers the CSV or Excel export (based on the users'
+     * choice) and afterwards removes the loading dialog and handles either the successful or failed export.
+     */
     private void startExport() {
         AsyncTask task = new AsyncTask() {
             @Override
@@ -391,6 +412,21 @@ public class ReportingExportActivity extends GuiceActivity {
         }.execute();
     }
 
+    /**
+     * In case of a CSV export this method will prepare all the data that will be put in the CSV file and launch the
+     * CSV export in the {@link ExportService}.
+     *
+     * @param filename        The name of the file in whcih the export will be made available.
+     * @param separatorExport The {@link ExportCsvSeparator} that will be used to separate the values in the file. This
+     *                        is chosen by the users in the GUI.
+     * @param exportData      Represents the users' choice to export only the raw data ({@link ExportData#RAW_DATA}) or
+     *                        only the report data ({@link ExportData#REPORT}). Combining both in a CSV file is not
+     *                        possible!
+     * @return Returns the {@link File} instance referring to the generated file.
+     * @throws GeneralExportException This exception means that something went wrong during export but we don't know
+     *                                exactly what. Most likely it's due to a file-system issue (SD-card not mounted or
+     *                                not writable).
+     */
     private File doCSVExport(String filename, ExportCsvSeparator separatorExport, ExportData exportData) throws GeneralExportException {
         List<String> headers = new ArrayList<String>();
         List<String[]> values = new ArrayList<String[]>();
@@ -417,7 +453,7 @@ public class ReportingExportActivity extends GuiceActivity {
                     String taskName = timeRegistration.getTask().getName();
                     String projectComment = "";
 
-                    if(timeRegistration.getEndTime() != null) {
+                    if (timeRegistration.getEndTime() != null) {
                         endDate = DateUtils.DateTimeConverter.convertDateToString(timeRegistration.getEndTime(), DateFormat.SHORT, ReportingExportActivity.this);
                         endTime = DateUtils.DateTimeConverter.convertTimeToString(timeRegistration.getEndTime(), TimeFormat.MEDIUM, ReportingExportActivity.this);
                     } else {
@@ -459,6 +495,16 @@ public class ReportingExportActivity extends GuiceActivity {
         return exportService.exportCsvFile(ReportingExportActivity.this, filename, headers, values, separatorExport);
     }
 
+    /**
+     * In case of an Excel export this method will prepare all the data to be put in the Excel file
+     * (all headers and body data for all tabs) and launch the actual excel-export in the {@link ExportService}.
+     *
+     * @param filename The name of the file in which the export will be made available.
+     * @return Returns the {@link File} instance referring to the generated file.
+     * @throws GeneralExportException This exception means that something went wrong during export but we don't know
+     *                                exactly what. Most likely it's due to a file-system issue (SD-card not mounted or
+     *                                not writable).
+     */
     private File doExcelExport(String filename) throws GeneralExportException {
         String reportSheetName = "Report";
         String dataSheetName = "Data";
@@ -470,7 +516,7 @@ public class ReportingExportActivity extends GuiceActivity {
         List<Object[]> rawValues = new ArrayList<Object[]>();
 
         //Construct report body
-        reportValues = buildReportBody(exportDto.getTimeRegistrations(), exportDto.getReportingDataLevels());
+        reportValues = buildExcelReportBodyData(exportDto.getTimeRegistrations(), exportDto.getReportingDataLevels());
         //Construct report headers
         if (reportValues.size() > 0) {
             reportHeaders = Arrays.asList(reportValues.get(0));
@@ -490,7 +536,7 @@ public class ReportingExportActivity extends GuiceActivity {
         rawHeaders.add("");
         rawHeaders.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_total_time));
         //Construct raw body
-        rawValues = buildRawBody(exportDto.getTimeRegistrations());
+        rawValues = buildExcelRawBodyData(exportDto.getTimeRegistrations());
 
         Map<String, List<Object>> headers = new HashMap<String, List<Object>>();
         Map<String, Map<Integer, DisplayFormat>> headersColumnFormat = new HashMap<String, Map<Integer, DisplayFormat>>();
@@ -534,7 +580,17 @@ public class ReportingExportActivity extends GuiceActivity {
         }
     }
 
-    private List<Object[]> buildReportBody(List<TimeRegistration> timeRegistrations, List<ReportingDataLvl0> reportingDataLevels) {
+    /**
+     * Build the data that will be used in the body of the 'Reporting'-tab in Excel for a list of
+     * {@link TimeRegistration}s and a list of {@link ReportingDataLvl0}s. Those are also used in the
+     * {@link ReportingResultActivity} to display the same table.
+     *
+     * @param timeRegistrations   The list of time registrations.
+     * @param reportingDataLevels The list of reporting data levels.
+     * @return Returns a list of {@link Object} arrays. Each array represents one line in the Excel tab. Each array-item
+     *         represents one cell in the Excel tab.
+     */
+    private List<Object[]> buildExcelReportBodyData(List<TimeRegistration> timeRegistrations, List<ReportingDataLvl0> reportingDataLevels) {
         boolean containsOngoingTr = false;
         Date ongoingTrEndDate = null;
 
@@ -595,7 +651,7 @@ public class ReportingExportActivity extends GuiceActivity {
             for (Integer totalRow : totalRowsForLvl0) {
                 formulaLvl0 += "[CC]" + totalRow + "+";
             }
-            formulaLvl0 = formulaLvl0.substring(0, formulaLvl0.length()-1);
+            formulaLvl0 = formulaLvl0.substring(0, formulaLvl0.length() - 1);
             lvl0Record[3] = formulaLvl0;
         }
 
@@ -603,7 +659,7 @@ public class ReportingExportActivity extends GuiceActivity {
         for (Integer totalRow : totalRowsForHeader) {
             formulaHeader += "[CC]" + totalRow + "+";
         }
-        formulaHeader = formulaHeader.substring(0, formulaHeader.length()-1);
+        formulaHeader = formulaHeader.substring(0, formulaHeader.length() - 1);
         headerRecord[3] = formulaHeader;
 
         if (containsOngoingTr) {
@@ -620,7 +676,14 @@ public class ReportingExportActivity extends GuiceActivity {
         return tableRecords;
     }
 
-    private List<Object[]> buildRawBody(List<TimeRegistration> timeRegistrations) {
+    /**
+     * Build the data that will be used in the body of the 'Raw'-tab in Excel for a list of {@link TimeRegistration}s.
+     *
+     * @param timeRegistrations The list of time registrations for which the raw-tab will be build.
+     * @return Returns a list of {@link Object} arrays. Each array represents one line in the Excel tab. Each array-item
+     *         represents one cell in the Excell tab.
+     */
+    private List<Object[]> buildExcelRawBodyData(List<TimeRegistration> timeRegistrations) {
         List<Object[]> rawValues = new ArrayList<Object[]>();
         for (TimeRegistration timeRegistration : timeRegistrations) {
             Date startDate = timeRegistration.getStartTime();
@@ -634,7 +697,7 @@ public class ReportingExportActivity extends GuiceActivity {
             Date startDateTime = timeRegistration.getStartTime();
             Date endDateTime = null;
 
-            if(timeRegistration.getEndTime() != null) {
+            if (timeRegistration.getEndTime() != null) {
                 endDate = timeRegistration.getEndTime();
                 endTime = timeRegistration.getEndTime();
                 endDateTime = timeRegistration.getEndTime();
@@ -657,10 +720,28 @@ public class ReportingExportActivity extends GuiceActivity {
         return rawValues;
     }
 
-    private static Date getExcelTimeFromPeriod(Period period) {
+    /**
+     * Create a {@link Date} instance based on a calculated {@link Period} (aka time-duration) that Excel can handle to
+     * display a date.<br/>
+     * Basically this means that a {@link Date} will be generated for time zone GMT+0 and the default date will be:
+     * <b>31/11/1899 00:00:00,00000</b>. To this date the hours, minutes and seconds of the {@link Period} will be
+     * added.
+     *
+     * @param period The period (or time duration) that will need to be converted to an Excel date.
+     * @return The Excel date that will be x hours, x minutes and x seconds after 31/11/1899 00:00:00,00000.
+     */
+    private Date getExcelTimeFromPeriod(Period period) {
         Log.d(LOG_TAG, "Creating excel calendar date-time for period " + period);
 
-        Calendar cal = Calendar.getInstance();
+        /*
+         * Specifying the GMT+0 time zone for the Excel calendar fixes the issue that for each excel time displayed a
+         * certain amount of hours (always the same amount of hours for all the calculated excel times) is missing.
+         * The reason for this is that the Calendar takes the device default time zone (for the emulator being GMT+0 by
+         * default). For your own device that could be GMT+01:00. However Excel only works with GMT+0 time zones, if
+         * that's not the case it translates the time to the GMT+0 time zone and you loose one hour for every generated
+         * Excel time.
+         */
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+00:00"));
         cal.set(Calendar.YEAR, 1899);
         cal.set(Calendar.MONTH, 11);
         cal.set(Calendar.DAY_OF_MONTH, 31);
@@ -695,6 +776,9 @@ public class ReportingExportActivity extends GuiceActivity {
         return cal.getTime();
     }
 
+    /**
+     * Send the exported file by mail.
+     */
     private void sendExportedFileByMail() {
         IntentUtil.sendSomething(
                 ReportingExportActivity.this,

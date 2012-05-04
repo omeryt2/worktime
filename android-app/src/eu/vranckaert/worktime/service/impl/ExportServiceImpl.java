@@ -279,6 +279,8 @@ public class ExportServiceImpl implements ExportService {
             throw new GeneralExportException(msg, e);
         }
 
+        FileUtil.enableForMTP(ctx, file);
+
         return file;
     }
 
