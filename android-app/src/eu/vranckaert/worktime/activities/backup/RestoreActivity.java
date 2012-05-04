@@ -105,7 +105,7 @@ public class RestoreActivity extends GuiceActivity {
             case Constants.Dialog.BACKUP_RESTORE_FILE_SEARCH_NO_SD: {
                 AlertDialog.Builder alertRestoreNoSd = new AlertDialog.Builder(this);
 				alertRestoreNoSd
-						   .setMessage(getString(R.string.msg_backup_restore_sd_card_unavailable))
+						   .setMessage(getString(R.string.warning_msg_sd_car_unavailable))
 						   .setCancelable(false)
 						   .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                public void onClick(DialogInterface dialog, int which) {
@@ -228,7 +228,7 @@ public class RestoreActivity extends GuiceActivity {
                     statusBarNotificationService.addOrUpdateNotification(null);
 
                 } catch (BackupFileCouldNotBeWritten e) {
-                    error = getString(R.string.msg_backup_restore_sd_card_unavailable);
+                    error = getString(R.string.warning_msg_sd_car_unavailable);
                 } catch (SDCardUnavailableException e) {
                     error = getString(R.string.msg_backup_restore_writing_backup_file_not_written);
                 }

@@ -42,6 +42,8 @@
     <string name="lbl_do_nothing">Do nothing</string>
 	<!-- GENERAL - DIALOG -->
 	<string name="dialog_title_error">Error</string>
+    <!-- GENERAL - WARNINGS -->
+    <string name="warning_msg_sd_car_unavailable">Make sure the SD-card is in the device and the SD-card is mounted.</string>
 
     <!-- DEFUALT VALUES DB -->
     <string name="default_project_name">Default Project</string>
@@ -385,7 +387,6 @@
     <string name="msg_backup_restore_writing_backup_file_not_be_created">The backup file on the SD-card could not be created. Check the SD-card to be mounted and try again. If the error keeps appearing please report a bug.</string>
     <string name="msg_backup_restore_writing_backup_file_not_written">Something went wrong while writing the backup file to the SD-card. Try again or if the error keeps appearing please report a bug.</string>
     <string name="msg_backup_restore_no_backup_files_found">No backup files have been found on the SD-card. Please read the \'Backup/Restore documentation\' first.</string>
-    <string name="msg_backup_restore_sd_card_unavailable">Make sure the SD-card is in the device and the SD-card is mounted.</string>
     <string name="lbl_backup_restore_restore_backup_list_title">Choose a backup to restore</string>
     <string name="lbl_backup_restore_send_backup_list_title">Choose a backup to send</string>
     <string name="lbl_backup_restore_restoring_backup_from_sd">Restoring backup \'%1$s\' from SD-card</string>

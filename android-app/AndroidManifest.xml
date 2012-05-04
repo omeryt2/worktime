@@ -26,7 +26,7 @@
 
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="14"/>
 
-    <application android:label="WorkTime" android:icon="@drawable/logo" android:name=".guice.Application">
+    <application android:label="WorkTime" android:icon="@drawable/logo" android:name=".guice.Application" android:debuggable="true">
         <!-- Widget configuration -->
         <receiver android:name=".providers.WorkTimeWidgetProvider" android:process=":otherPrivateProcess">
 			<intent-filter>

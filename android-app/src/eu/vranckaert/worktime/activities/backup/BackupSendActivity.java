@@ -88,7 +88,7 @@ public class BackupSendActivity extends GuiceActivity {
             case Constants.Dialog.BACKUP_SEND_FILE_SEARCH_NO_SD: {
                 AlertDialog.Builder alertRestoreNoSd = new AlertDialog.Builder(this);
                 alertRestoreNoSd
-                        .setMessage(getString(R.string.msg_backup_restore_sd_card_unavailable))
+                        .setMessage(getString(R.string.warning_msg_sd_car_unavailable))
                         .setCancelable(false)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {

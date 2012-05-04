@@ -60,7 +60,7 @@ public class BackupActivity extends GuiceActivity {
                 try {
                     return backupService.backup(getApplicationContext());
                 } catch (SDCardUnavailableException e) {
-                    error = getString(R.string.msg_backup_restore_sd_card_unavailable);
+                    error = getString(R.string.warning_msg_sd_car_unavailable);
                     return false;
                 } catch (BackupFileCouldNotBeCreated backupFileCouldNotBeCreated) {
                     error = getString(R.string.msg_backup_restore_writing_backup_file_not_be_created);

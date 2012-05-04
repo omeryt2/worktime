@@ -1,18 +1,19 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package eu.vranckaert.worktime.utils.tracker;
 
 import android.content.Context;
@@ -40,7 +41,7 @@ public class AnalyticsTracker {
         AnalyticsTracker tracker = new AnalyticsTracker();
         tracker.ctx = ctx;
 
-        if (!isStableBuild(ctx)) {
+        if (!ContextUtils.isStableBuild(ctx)) {
             return tracker;
         }
 
@@ -50,63 +51,50 @@ public class AnalyticsTracker {
         return tracker;
     }
 
-    private static boolean isStableBuild(Context ctx) {
-        String[] nonFinalBuildNames = {"unstable", "alpha", "beta", "rc"};
-        String version = ContextUtils.getCurrentApplicationVersionName(ctx).toLowerCase();
-
-        for (String nonFinalBuildName : nonFinalBuildNames) {
-            if (version.contains(nonFinalBuildName)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     public void addTransaction(Transaction transaction) {
-        if (!isStableBuild(ctx)) {
+        if (!ContextUtils.isStableBuild(ctx)) {
             return;
         }
         gat.addTransaction(transaction);
     }
 
     public void addItem(Item item) {
-        if (!isStableBuild(ctx)) {
+        if (!ContextUtils.isStableBuild(ctx)) {
             return;
         }
         gat.addItem(item);
     }
 
     public void trackTransactions() {
-        if (!isStableBuild(ctx)) {
+        if (!ContextUtils.isStableBuild(ctx)) {
             return;
         }
         gat.trackTransactions();
     }
 
     public void clearTransactions() {
-        if (!isStableBuild(ctx)) {
+        if (!ContextUtils.isStableBuild(ctx)) {
             return;
         }
         gat.clearTransactions();
     }
 
     public void trackEvent(String source, String action) {
-        if (!isStableBuild(ctx)) {
+        if (!ContextUtils.isStableBuild(ctx)) {
             return;
         }
         gat.trackEvent(source, action, "", -1);
     }
 
     public void trackPageView(String pageView) {
-        if (!isStableBuild(ctx)) {
+        if (!ContextUtils.isStableBuild(ctx)) {
             return;
         }
         gat.trackPageView(pageView);
     }
 
     public void stopSession() {
-        if (!isStableBuild(ctx)) {
+        if (!ContextUtils.isStableBuild(ctx)) {
             return;
         }
         gat.stopSession();

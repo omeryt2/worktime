@@ -1,18 +1,19 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package eu.vranckaert.worktime.utils.context;
 
 import android.content.Context;
@@ -115,5 +116,24 @@ public class ContextUtils {
         String applicationPackageName = ctx.getApplicationInfo().packageName;
         Log.d(LOG_TAG, "The application package name is " + applicationPackageName);
         return applicationPackageName;
+    }
+
+    /**
+     * Determines if the currently used version of the application is a stable build or not. Non-stable builds
+     * recognized by the version code which should contain <b>unstable</b>, <b>alpha</b>, <b>beta</b> or <b>rc</b>.
+     * @param ctx The context of the application.
+     * @return {@link Boolean#TRUE} if the current version of the application is stable, {@link Boolean#FALSE} if not.
+     */
+    public static boolean isStableBuild(Context ctx) {
+        String[] nonFinalBuildNames = {"unstable", "alpha", "beta", "rc"};
+        String version = ContextUtils.getCurrentApplicationVersionName(ctx).toLowerCase();
+
+        for (String nonFinalBuildName : nonFinalBuildNames) {
+            if (version.contains(nonFinalBuildName)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

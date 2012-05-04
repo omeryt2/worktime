@@ -658,8 +658,9 @@ public class ReportingExportActivity extends GuiceActivity {
     }
 
     private static Date getExcelTimeFromPeriod(Period period) {
+        Log.d(LOG_TAG, "Creating excel calendar date-time for period " + period);
+
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.AM_PM, Calendar.AM);
         cal.set(Calendar.YEAR, 1899);
         cal.set(Calendar.MONTH, 11);
         cal.set(Calendar.DAY_OF_MONTH, 31);
@@ -669,16 +670,27 @@ public class ReportingExportActivity extends GuiceActivity {
         cal.set(Calendar.MILLISECOND, 0);
         //cal.add(Calendar.HOUR, -36);
 
+        Log.d(LOG_TAG, "Default excel calendar before adding time: " + cal.getTime());
+
         int hours = period.getHours();
         int minutes = period.getMinutes();
         int seconds = period.getSeconds();
 
-        if (hours > 0)
+        if (hours > 0) {
+            Log.d(LOG_TAG, "About to add hours to the excel calendar...");
             cal.add(Calendar.HOUR, hours);
-        if (minutes > 0)
+            Log.d(LOG_TAG, "Default excel calendar after adding hours: " + cal.getTime());
+        }
+        if (minutes > 0) {
+            Log.d(LOG_TAG, "About to add minutes to the excel calendar...");
             cal.set(Calendar.MINUTE, minutes);
-        if (seconds > 0)
+            Log.d(LOG_TAG, "Default excel calendar after adding minutes: " + cal.getTime());
+        }
+        if (seconds > 0) {
+            Log.d(LOG_TAG, "About to add seconds to the excel calendar...");
             cal.set(Calendar.SECOND, seconds);
+            Log.d(LOG_TAG, "Default excel calendar after adding seconds: " + cal.getTime());
+        }
 
         return cal.getTime();
     }

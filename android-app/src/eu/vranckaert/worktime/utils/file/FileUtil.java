@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.utils.file;
 
 import android.content.Context;
@@ -29,6 +30,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.List;
 
 /**
  * User: DIRK VRANCKAERT
@@ -281,5 +283,28 @@ public class FileUtil {
                     }
                 }
         );
+    }
+
+    /**
+     * Delete a list of {@link File}s. If for some reason one of the files cannot be deleted, it will be ignored
+     * (but logged!).
+     * @param files The list of {@link File}s to be deleted from disk.
+     */
+    public static void deleteFiles(List<File> files) {
+        for (File file : files) {
+            deleteFile(file);
+        }
+    }
+
+    /**
+     * Delete a single {@link File} from the disk. If for some reason one of the files cannot be deleted, it will be
+     * ignored (but logged!).
+     * @param file The {@link File} to be deleted from disk.
+     */
+    public static void deleteFile(File file) {
+        boolean result = file.delete();
+        if (!result) {
+            Log.w(LOG_TAG, "Could not remove file " + file.getAbsolutePath());
+        }
     }
 }
