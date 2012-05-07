@@ -39,6 +39,7 @@ import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
+import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.service.CommentHistoryService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
@@ -75,6 +76,9 @@ public class StopTimeRegistrationActivity extends GuiceActivity {
     @Inject
     private TaskService taskService;
 
+    @Inject
+    private BackupService backupService;
+
     private AnalyticsTracker tracker;
 
     @Override
@@ -110,7 +114,7 @@ public class StopTimeRegistrationActivity extends GuiceActivity {
                 TimeRegistration latestRegistration = timeRegistrationService.getLatestTimeRegistration();
 
                 if (latestRegistration == null || latestRegistration.getEndTime() != null) {
-                    Log.w(LOG_TAG, "Data must be incorrupt! Please clear all the data through the system settings of the application!");
+                    Log.w(LOG_TAG, "Data must be corrupt! Please clear all the data through the system settings of the application!");
                     return new Object();
                 } else {
                     latestRegistration.setEndTime(endTime);
@@ -134,6 +138,11 @@ public class StopTimeRegistrationActivity extends GuiceActivity {
                     statusBarNotificationService.removeOngoingTimeRegistrationNotification();
 
                     widgetService.updateWidget();
+
+                    /*
+                    * Creates a new backup to be sure that the data is always secure!
+                    */
+                    backupService.requestBackup(StopTimeRegistrationActivity.this);
                 }
 
                 if (StringUtils.isNotBlank(comment)) {
@@ -159,8 +168,9 @@ public class StopTimeRegistrationActivity extends GuiceActivity {
                 boolean askFinishTask = Preferences.getWidgetEndingTimeRegistrationFinishTaskPreference(getApplicationContext());
                 if (!askFinishTask) {
                     finish();
+                } else {
+                    showDialog(Constants.Dialog.ASK_FINISH_TASK);
                 }
-                showDialog(Constants.Dialog.ASK_FINISH_TASK);
             }
         };
         threading.execute();

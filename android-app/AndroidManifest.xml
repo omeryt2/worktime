@@ -24,9 +24,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="14"/>
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="14"/>
 
-    <application android:label="WorkTime" android:icon="@drawable/logo" android:name=".guice.Application" android:debuggable="true">
+    <application android:label="WorkTime" android:icon="@drawable/logo"
+                 android:name=".guice.Application" android:backupAgent=".utils.context.DatabaseBackupAgent">
+        <!-- Backup service configuration -->
+        <meta-data android:name="com.google.android.backup.api_key"
+                   android:value="AEdPqrEAAAAIKBOIRHAdZEXSXtzuiIu5cs97amRuguwj7UtnfA" />
+
         <!-- Widget configuration -->
         <receiver android:name=".providers.WorkTimeWidgetProvider" android:process=":otherPrivateProcess">
 			<intent-filter>
@@ -111,36 +116,32 @@
                   android:configChanges="orientation|keyboardHidden"/>
 
         <!-- Backup and Restore activities -->
-        <activity android:name=".activities.backup.BackupActivity"
-                  android:theme="@style/Theme.Translucent"
-                  android:configChanges="orientation|keyboardHidden">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-                <action android:name="eu.vranckaert.worktime.BACKUP_DATA"/>
-            </intent-filter>
-        </activity>
-        <activity android:name=".activities.backup.RestoreActivity"
-                  android:theme="@style/Theme.Translucent"
-                  android:configChanges="orientation|keyboardHidden">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-                <action android:name="eu.vranckaert.worktime.RESTORE_DATA"/>
-            </intent-filter>
-        </activity>
         <activity android:name=".activities.backup.BackupRestoreInfoActivity"
                   android:theme="@style/Theme.Translucent"
-                  android:configChanges="orientation|keyboardHidden">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-                <action android:name="eu.vranckaert.worktime.BACKUP_RESTORE_DATA_INFO"/>
-            </intent-filter>
-        </activity>
-        <activity android:name=".activities.backup.BackupSendActivity"
+                  android:configChanges="orientation|keyboardHidden"/>
+        <!-- Old backup system -->
+        <activity android:name=".activities.backup.BackupToSDActivity"
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
-                <action android:name="eu.vranckaert.worktime.BACKUP_SEND"/>
+                <action android:name="eu.vranckaert.worktime.SD_BACKUP_DATA"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".activities.backup.RestoreFromSDActivity"
+                  android:theme="@style/Theme.Translucent"
+                  android:configChanges="orientation|keyboardHidden">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="eu.vranckaert.worktime.SD_RESTORE_DATA"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".activities.backup.BackupSendFromSDActivity"
+                  android:theme="@style/Theme.Translucent"
+                  android:configChanges="orientation|keyboardHidden">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="eu.vranckaert.worktime.SD_BACKUP_SEND"/>
             </intent-filter>
         </activity>
 

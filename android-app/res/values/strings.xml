@@ -382,6 +382,7 @@
     <string name="pref_reset_category_title">Reset preferences</string>
     <string name="pref_reset_category_summary">Restore the factory default preferences for this application</string>
     <!-- BACKUP -->
+    <!-- OLD BACKUP SYSTEM -->
     <string name="lbl_backup_restore_writing_backup_sd">Writing backup to SD-card</string>
     <string name="msg_backup_restore_writing_backup_sd_success">The backup is written to your SD-card: %1$s</string>
     <string name="msg_backup_restore_writing_backup_file_not_be_created">The backup file on the SD-card could not be created. Check the SD-card to be mounted and try again. If the error keeps appearing please report a bug.</string>
@@ -392,23 +393,16 @@
     <string name="lbl_backup_restore_restoring_backup_from_sd">Restoring backup \'%1$s\' from SD-card</string>
     <string name="msg_backup_restore_are_your_sure">Restoring this backup will erase all the current data and replace it with the backup data. Even if the backup data seems to be corrupt afterwards. This action cannot be undone. Are you sure you want to continue the restore of the backup \'%1$s\'?</string>
     <string name="msg_backup_restore_success">The backup file %1$s is successfully restored. Restart the application and check if the data is correct. Otherwise try to restore another backup if available.</string>
+    <!-- NEW BACKUP SYSTEM -->
+    <string name="msg_restore_notification_ticker">Successful restore of backup</string>
+    <string name="msg_restore_notification_title">Restore Successful</string>
+    <string name="msg_restore_notification_message">The backup has been successfully restored</string>
+    <string name="msg_manual_backup_confirmation">A new backup will now be created and added to your Google account.</string>
+    <string name="msg_manual_restore_confirmation">The latest backup, linked to your Google account, will be restored. Are you sure you want to override the data? This cannot be undone!</string>
+    <string name="msg_manual_restore_executing">Restoring latest backup...</string>
+    <string name="msg_manual_restore_successful">The backup is restored successful!</string>
+    <string name="msg_manual_restore_error">Something went wrong while restoring the backup. Make sure you have an internet connection available. If this problem occurs more in the future please contact the developers.</string>
     <string name="lbl_backup_restore_documentation_title">Backup/Restore Documentation</string>
-    <string name="msg_backup_restore_documentation_content">Backup:\n
-    * An SD-card is required to make a backup\n
-    * All the data is included in the backup, except for the preferences\n
-    * The backups are placed in the SD-card directory \'worktime-backup\'\n
-    * A backup file always starts with \'worktimedb-\' and ends with \'.bak\'\n
-    * The combination in between is the date and time of the backup ending with 0 for an AM-time and 1 for PM\n
-    * Example file-name: \'worktimedb-20110231090431-1\'\n
-     \nRestore:\n
-    * Only files in the backup directory \'worktime-backup\' on the SD-card are shown as possible restore points\n
-    * If a backup is renamed and does not start with \'worktimedb-\' AND does not end on \'.bak\' it will be ignored and not shown as possible restore point\n
-    * All listed restore points are displayed as their creation time (based on the filename) and sorted by this creation time\n
-    \nSend Backup:\n
-    * It\'s possible to send backup files one by one using your mail application (standard GMail is supported)\n
-    * Only files in the backup directory \'worktime-backup\' on the SD-card are shown\n
-    * If a backup is renamed and does not start with \'worktimedb-\' AND does not end on \'.bak\' it will be ignored\n
-    * All listed files are displayed as their creation time (based on the filename) and sorted by this creation time\n</string>
     <!-- ABOUT -->
     <string name="lbl_about_title">About</string>
     <string name="lbl_about_project">Project</string>

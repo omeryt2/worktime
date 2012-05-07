@@ -37,8 +37,8 @@ import roboguice.activity.GuiceActivity;
  * Date: 11/09/11
  * Time: 11:49
  */
-public class BackupActivity extends GuiceActivity {
-    private static final String LOG_TAG = BackupActivity.class.getSimpleName();
+public class BackupToSDActivity extends GuiceActivity {
+    private static final String LOG_TAG = BackupToSDActivity.class.getSimpleName();
 
     @Inject
     private BackupService backupService;
@@ -93,7 +93,7 @@ public class BackupActivity extends GuiceActivity {
         switch (id) {
             case Constants.Dialog.BACKUP_IN_PROGRESS: {
                 dialog = ProgressDialog.show(
-                        BackupActivity.this,
+                        BackupToSDActivity.this,
                         "",
                         getString(R.string.lbl_backup_restore_writing_backup_sd),
                         true,

@@ -31,4 +31,9 @@ public interface StatusBarNotificationService {
      * @param registration The registration to create a notification for.
      */
     void addOrUpdateNotification(TimeRegistration registration);
+
+    /**
+     * Add a new notification in the status bar to notify that a backup-restore is successful.
+     */
+    void addStatusBarNotificationForRestore();
 }

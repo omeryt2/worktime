@@ -34,6 +34,7 @@ import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
+import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
@@ -74,6 +75,9 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
 
     @Inject
     private TaskService taskService;
+
+    @Inject
+    private BackupService backupService;
     
     private boolean selectProject;
 
@@ -187,6 +191,11 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
                 projectService.refresh(selectedTask.getProject());
 
                 widgetService.updateWidget();
+
+                /*
+                * Creates a new backup to be sure that the data is always secure!
+                */
+                backupService.requestBackup(StartTimeRegistrationActivity.this);
 
                 return null;
             }

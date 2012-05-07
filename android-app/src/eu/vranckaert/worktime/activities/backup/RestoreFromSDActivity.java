@@ -46,8 +46,8 @@ import java.util.List;
  * Date: 11/09/11
  * Time: 11:49
  */
-public class RestoreActivity extends GuiceActivity {
-    private static final String LOG_TAG = RestoreActivity.class.getSimpleName();
+public class RestoreFromSDActivity extends GuiceActivity {
+    private static final String LOG_TAG = RestoreFromSDActivity.class.getSimpleName();
     @Inject
     private BackupService backupService;
 
@@ -120,7 +120,7 @@ public class RestoreActivity extends GuiceActivity {
                 List<String> fileNames = new ArrayList<String>();
                 for (File file : databaseBackupFiles) {
                     Log.d(LOG_TAG, "Filename found: " + file.getName());
-                    fileNames.add(backupService.toString(RestoreActivity.this, file));
+                    fileNames.add(backupService.toString(RestoreFromSDActivity.this, file));
                 }
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(R.string.lbl_backup_restore_restore_backup_list_title)
@@ -139,7 +139,7 @@ public class RestoreActivity extends GuiceActivity {
                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
                            public void onCancel(DialogInterface dialogInterface) {
                                Log.d(LOG_TAG, "No backup file chosen, close the activity");
-                               RestoreActivity.this.finish();
+                               RestoreFromSDActivity.this.finish();
                            }
                        });
                 dialog = builder.create();
@@ -166,7 +166,7 @@ public class RestoreActivity extends GuiceActivity {
             }
             case Constants.Dialog.RESTORE_IN_PROGRESS: {
                 dialog = ProgressDialog.show(
-                        RestoreActivity.this,
+                        RestoreFromSDActivity.this,
                         "",
                         getString(R.string.lbl_backup_restore_restoring_backup_from_sd, restoreFile.getName()),
                         true,

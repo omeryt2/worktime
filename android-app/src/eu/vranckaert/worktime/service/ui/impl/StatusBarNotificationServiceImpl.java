@@ -114,6 +114,28 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
         }
     }
 
+    @Override
+    public void addStatusBarNotificationForRestore() {
+        CharSequence ticker = context.getString(R.string.msg_restore_notification_ticker);
+        CharSequence title = context.getString(R.string.msg_restore_notification_title);
+        CharSequence message = context.getString(R.string.msg_restore_notification_message);
+
+        NotificationManager notificationManager = getNotificationManager();
+
+        int icon = R.drawable.logo_notif_bar;
+        Long when = System.currentTimeMillis();
+
+        Notification notification = new Notification(icon, ticker, when);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, null, 0);
+        notification.setLatestEventInfo(context, title, message, contentIntent);
+
+        notificationManager.notify(
+                Constants.StatusBarNotificationIds.RESTORE_SUCCESSFUL,
+                notification
+        );
+    }
+
     /**
      * Get an instance of the Android {@link NotificationManager}.
      * @return An instance of the {@link NotificationManager}.

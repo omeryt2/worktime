@@ -41,8 +41,8 @@ import java.util.List;
  * Date: 7/02/12
  * Time: 13:48
  */
-public class BackupSendActivity extends GuiceActivity {
-    private static final String LOG_TAG = BackupSendActivity.class.getSimpleName();
+public class BackupSendFromSDActivity extends GuiceActivity {
+    private static final String LOG_TAG = BackupSendFromSDActivity.class.getSimpleName();
 
     @Inject
     private BackupService backupService;
@@ -103,7 +103,7 @@ public class BackupSendActivity extends GuiceActivity {
                 List<String> fileNames = new ArrayList<String>();
                 for (File file : databaseBackupFiles) {
                     Log.d(LOG_TAG, "Filename found: " + file.getName());
-                    fileNames.add(backupService.toString(BackupSendActivity.this, file));
+                    fileNames.add(backupService.toString(BackupSendFromSDActivity.this, file));
                 }
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(R.string.lbl_backup_restore_send_backup_list_title)
@@ -122,7 +122,7 @@ public class BackupSendActivity extends GuiceActivity {
                         .setOnCancelListener(new DialogInterface.OnCancelListener() {
                             public void onCancel(DialogInterface dialogInterface) {
                                 Log.d(LOG_TAG, "No backup file chosen, close the activity");
-                                BackupSendActivity.this.finish();
+                                BackupSendFromSDActivity.this.finish();
                             }
                         });
                 dialog = builder.create();
@@ -134,7 +134,7 @@ public class BackupSendActivity extends GuiceActivity {
     }
 
     private void sendFile(File file) {
-        IntentUtil.sendSomething(BackupSendActivity.this, -1, -1, file, R.string.lbl_pref_backup_send_app_chooser_title);
+        IntentUtil.sendSomething(BackupSendFromSDActivity.this, -1, -1, file, R.string.lbl_pref_backup_send_app_chooser_title);
         finish();
     }
 }

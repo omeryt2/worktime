@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.activities.preferences;
 
 import android.content.Context;
@@ -22,8 +23,10 @@ import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import android.view.View;
 import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.activities.backup.BackupRestoreInfoActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
+import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
@@ -73,8 +76,24 @@ public class PreferencesActivity extends GuicePreferenceActivity {
         //Category NOTIFICATIONS
         createCategoryButton(ctx, preferences, R.string.pref_stat_bar_notifs_category_title, NotificationsPreferencesActivity.class);
 
-        //Category BACKUP
-        createCategoryButton(ctx, preferences, R.string.pref_backup_category_title, BackupPreferencesActivity.class);
+        if (!ContextUtils.isStableBuild(PreferencesActivity.this)) {
+            //Category BACKUP
+            createCategoryButton(ctx, preferences, R.string.pref_backup_category_title, BackupPreferencesActivity.class);
+        }
+
+        //Category BACKUP INFO
+        Preference backupInfoItem = new Preference(ctx);
+        backupInfoItem.setTitle(R.string.pref_backup_restore_doc_title);
+        backupInfoItem.setSummary(R.string.pref_backup_restore_doc_summary);
+        preferences.addPreference(backupInfoItem);
+        backupInfoItem.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(PreferencesActivity.this, BackupRestoreInfoActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        });
 
         //Option RESET ALL PREFERENCES
         Preference resetItem = new Preference(ctx);

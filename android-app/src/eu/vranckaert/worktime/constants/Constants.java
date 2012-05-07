@@ -67,6 +67,11 @@ public class Constants {
         public static final int BACKUP_SEND_FILE_SEARCH_NOTHING_FOUND = 49;
         public static final int BACKUP_SEND_FILE_SEARCH_NO_SD = 50;
 	public static final int REPORTING_EXPORT_ERROR = 51;
+        public static final int MANUAL_BACKUP_CONFIRMATION = 52;
+        public static final int MANUAL_RESTORE_CONFIRMATION = 53;
+        public static final int MANUAL_RESTORE_EXECUTING = 54;
+        public static final int MANUAL_RESTORE_SUCCESSFUL = 55;
+        public static final int MANUAL_RESTORE_ERROR = 56;
     }
     public class IntentRequestCodes {
         public static final int ADD_PROJECT = 0;
@@ -176,5 +181,6 @@ public class Constants {
      */
     public class StatusBarNotificationIds {
         public static final int ONGOING_TIME_REGISTRATION_MESSAGE = 1;
+        public static final int RESTORE_SUCCESSFUL = 2;
     }
 }
