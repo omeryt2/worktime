@@ -244,8 +244,9 @@ public class DateUtils {
      */
     public static class TimeCalculator {
         /**
-         * Calculates the time ({@link org.joda.time.Interval}) between two dates. If the startDate is not before the endDate the dates
-         * will be swapped.
+         * Calculates the time ({@link org.joda.time.Interval}) between two dates. If the startDate is not before the
+         * endDate the dates will be swapped. The preferred time precision will also be applied on the start and end
+         * date (so milliseconds and seconds can be set to zero).
          * @param ctx The context.
          * @param startDate The start date for the interval.
          * @param endDate The ending date for the interval.
@@ -268,8 +269,36 @@ public class DateUtils {
         }
 
         /**
-         * Calculates the time ({@link org.joda.time.Duration}) between two dates. If the startDate is not before the endDate the dates
-         * will be swapped.
+         * Calculates the time ({@link org.joda.time.Interval}) between two dates. If the startDate is not before the
+         * endDate the dates will be swapped. No time precision will be applied so the interval will be calculated
+         * on the exact dates specified.
+         * @param ctx The context.
+         * @param startDate The start date for the interval.
+         * @param endDate The ending date for the interval.
+         * @return The {@link org.joda.time.Interval} between the two dates.
+         */
+        public static final Interval calculateExactInterval(Context ctx, Date startDate, Date endDate) {
+            Calendar start = Calendar.getInstance();
+            start.setTime(startDate);
+
+            Calendar end = Calendar.getInstance();
+            end.setTime(endDate);
+
+            if(end.before(start)) {
+                Calendar swap = start;
+                start = end;
+                end = swap;
+            }
+
+            Interval interval = new Interval(start.getTime().getTime(), end.getTime().getTime());
+
+            return interval;
+        }
+
+        /**
+         * Calculates the time ({@link org.joda.time.Duration}) between two dates. If the startDate is not before the
+         * endDate the dates will be swapped. Time prevision will be applied on the the start and end dates (so
+         * milliseconds and seconds can be set to zero).
          * @param ctx The context.
          * @param startDate The start date for the interval.
          * @param endDate The ending date for the interval.
@@ -277,6 +306,20 @@ public class DateUtils {
          */
         public static final Duration calculateDuration(Context ctx, Date startDate, Date endDate) {
             Interval interval = calculateInterval(ctx, startDate, endDate);
+            Duration duration = interval.toDuration();
+            return duration;
+        }
+
+        /**
+         * Calculates the time ({@link org.joda.time.Duration}) between two dates. If the startDate is not before the
+         * endDate the dates will be swapped.
+         * @param ctx The context.
+         * @param startDate The start date for the interval.
+         * @param endDate The ending date for the interval.
+         * @return The {@link org.joda.time.Duration} between the two dates.
+         */
+        public static final Duration calculateExactDuration(Context ctx, Date startDate, Date endDate) {
+            Interval interval = calculateExactInterval(ctx, startDate, endDate);
             Duration duration = interval.toDuration();
             return duration;
         }

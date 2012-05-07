@@ -167,13 +167,17 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
                     Log.d(LOG_TAG, "Check for gap between this new time registration and the previous one");
                     TimeRegistration previousTimeRegistration = timeRegistrationService.getPreviousTimeRegistration(newTr);
                     if (previousTimeRegistration != null) {
-                        Duration duration = DateUtils.TimeCalculator.calculateDuration(
+                        Log.d(LOG_TAG, "The previous time registrations ended on " + previousTimeRegistration.getEndTime());
+                        Log.d(LOG_TAG, "The new time registration starts on " + newTr.getStartTime());
+                        Duration duration = DateUtils.TimeCalculator.calculateExactDuration(
                                 StartTimeRegistrationActivity.this,
-                                startTime,
+                                newTr.getStartTime(),
                                 previousTimeRegistration.getEndTime()
                         );
-                        long durationSeconds = duration.getStandardSeconds();
-                        if (durationSeconds < 60) {
+                        Log.d(LOG_TAG, "The duration between the previous end time and the new start time is " + duration);
+                        long durationMillis = duration.getMillis();
+                        Log.d(LOG_TAG, "The duration in milliseconds is " + durationMillis);
+                        if (durationMillis < 60000) {
                             Log.d(LOG_TAG, "Gap is less than 60 seconds, setting start time to end time of previous registration");
                             newTr.setStartTime(previousTimeRegistration.getEndTime());
                         }
