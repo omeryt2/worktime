@@ -99,7 +99,7 @@
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden"/>
         <!-- Stop -->
-        <activity android:name=".activities.widget.TimeRegistrationActionActivity"
+        <activity android:name=".activities.timeregistrations.TimeRegistrationActionActivity"
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden"/>
         <!-- Select project -->

@@ -15,6 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
+
 <resources>
     <!-- ActionBar compatibility -->
     <style name="AppTheme" parent="android:style/Theme.Holo.Light">
@@ -30,6 +31,7 @@
         <item name="android:textColor">@color/actionbar_title_color</item>
     </style>
 
+    <!-- Application styles -->
     <!-- Popup Theme -->
     <style name="Theme.Translucent" parent="android:style/Theme.Holo.Light.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>

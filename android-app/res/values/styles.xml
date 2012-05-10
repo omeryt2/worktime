@@ -56,6 +56,10 @@
     <style name="ActionBarCompatHomeItem" parent="style/ActionBarCompatItemBase"/>
 
     <!-- Application styles -->
+    <!-- Popup Theme -->
+    <style name="Theme.Translucent" parent="android:style/Theme.Translucent">
+        <item name="android:windowNoTitle">true</item>
+    </style>
     <!-- Title Bar aka Action Bar (old) -->
     <style name="TitleBar">
         <item name="android:id">@id/title_container</item>

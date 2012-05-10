@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package eu.vranckaert.worktime.activities.widget.listadapter;
+package eu.vranckaert.worktime.activities.timeregistrations.listadapter;
 
 import android.app.Activity;
 import android.util.Log;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package eu.vranckaert.worktime.activities.widget;
+package eu.vranckaert.worktime.activities.timeregistrations;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -36,11 +36,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
-import eu.vranckaert.worktime.activities.timeregistrations.EditTimeRegistrationProjectAndTask;
-import eu.vranckaert.worktime.activities.timeregistrations.EditTimeRegistrationSplitActivity;
-import eu.vranckaert.worktime.activities.timeregistrations.EditTimeRegistrationStartTimeActivity;
-import eu.vranckaert.worktime.activities.timeregistrations.RegistrationDetailsActivity;
-import eu.vranckaert.worktime.activities.widget.listadapter.TimeRegistrationActionListAdapter;
+import eu.vranckaert.worktime.activities.timeregistrations.listadapter.TimeRegistrationActionListAdapter;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.enums.timeregistration.TimeRegistrationAction;

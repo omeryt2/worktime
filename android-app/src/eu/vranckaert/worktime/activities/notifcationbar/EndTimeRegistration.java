@@ -19,7 +19,7 @@ package eu.vranckaert.worktime.activities.notifcationbar;
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.inject.Inject;
-import eu.vranckaert.worktime.activities.widget.TimeRegistrationActionActivity;
+import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationActionActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import roboguice.activity.GuiceActivity;

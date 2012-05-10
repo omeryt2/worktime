@@ -30,7 +30,6 @@ import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.reporting.ReportingCriteriaActivity;
 import eu.vranckaert.worktime.activities.timeregistrations.listadapter.TimeRegistrationsListAdapter;
-import eu.vranckaert.worktime.activities.widget.TimeRegistrationActionActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.model.TimeRegistration;
