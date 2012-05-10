@@ -140,7 +140,7 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
 
             @Override
             protected void onPreExecute() {
-                showDialog(Constants.Dialog.LOADING_TIMEREGISTRATION_CHANGE);
+                showDialog(Constants.Dialog.LOADING_TIME_REGISTRATION_CHANGE);
             }
 
             @Override
@@ -206,7 +206,7 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
 
             @Override
             protected void onPostExecute(Object o) {
-                removeDialog(Constants.Dialog.LOADING_TIMEREGISTRATION_CHANGE);
+                removeDialog(Constants.Dialog.LOADING_TIME_REGISTRATION_CHANGE);
                 Toast.makeText(StartTimeRegistrationActivity.this, R.string.msg_widget_time_reg_created, Toast.LENGTH_LONG).show();
                 finish();
             }
@@ -218,12 +218,12 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
     protected Dialog onCreateDialog(int dialogId) {
         Dialog dialog = null;
         switch(dialogId) {
-            case Constants.Dialog.LOADING_TIMEREGISTRATION_CHANGE: {
+            case Constants.Dialog.LOADING_TIME_REGISTRATION_CHANGE: {
                 Log.d(LOG_TAG, "Creating loading dialog for starting a new time registration");
                 dialog = ProgressDialog.show(
                         StartTimeRegistrationActivity.this,
                         "",
-                        getString(R.string.lbl_widget_starting_new_timeregistration),
+                        getString(R.string.lbl_punching_in),
                         true,
                         false
                 );

@@ -1,24 +1,26 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package eu.vranckaert.worktime.activities.about;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -29,7 +31,7 @@ import eu.vranckaert.worktime.dao.utils.DaoConstants;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import roboguice.activity.GuiceListActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,7 @@ import java.util.List;
  * Date: 05/02/11
  * Time: 19:06
  */
-public class AboutActivity extends GuiceListActivity {
+public class AboutActivity extends ActionBarGuiceListActivity {
     private static final String LOG_TAG = AboutActivity.class.getSimpleName();
     
     private AnalyticsTracker tracker;
@@ -50,6 +52,9 @@ public class AboutActivity extends GuiceListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+
+        setTitle(R.string.lbl_about_title);
+        setDisplayHomeAsUpEnabled(true);
         
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.ABOUT_ACTIVITY);
@@ -128,8 +133,14 @@ public class AboutActivity extends GuiceListActivity {
         }
     }
 
-    public void onHomeClick(View view) {
-        IntentUtil.goHome(this);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                IntentUtil.goHome(AboutActivity.this);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

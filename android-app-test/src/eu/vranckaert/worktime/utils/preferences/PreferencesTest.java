@@ -77,20 +77,20 @@ public class PreferencesTest extends AndroidTestCase {
         assertEquals("No preference should be found!", Constants.Preferences.WIDGET_ASK_FOR_TASK_SELECTION_IF_ONLY_ONE_DEFAULT_VALUE, preferenceDeleted);
     }
 
-    public void testWidgetEndingTimeRegistrationComment() {
-        Preferences.removePreference(ctx, Constants.Preferences.Keys.WIDGET_ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE);
+    public void testEndingTimeRegistrationComment() {
+        Preferences.removePreference(ctx, Constants.Preferences.Keys.ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE);
 
-        boolean preferenceNotFound = Preferences.getWidgetEndingTimeRegistrationCommentPreference(ctx);
-        assertEquals("No preference should be found!", Constants.Preferences.WIDGET_ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE_DEFAULT_VALUE, preferenceNotFound);
+        boolean preferenceNotFound = Preferences.getEndingTimeRegistrationCommentPreference(ctx);
+        assertEquals("No preference should be found!", Constants.Preferences.ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE_DEFAULT_VALUE, preferenceNotFound);
 
-        boolean preference = !Constants.Preferences.WIDGET_ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE_DEFAULT_VALUE;
-        Preferences.setWidgetEndingTimeRegistrationCommentPreference(ctx, preference);
-        boolean preferenceFound = Preferences.getWidgetEndingTimeRegistrationCommentPreference(ctx);
+        boolean preference = !Constants.Preferences.ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE_DEFAULT_VALUE;
+        Preferences.setEndingTimeRegistrationCommentPreference(ctx, preference);
+        boolean preferenceFound = Preferences.getEndingTimeRegistrationCommentPreference(ctx);
         assertEquals("A preference should be found (" + preference + ")", preference, preferenceFound);
 
-        Preferences.removePreference(ctx, Constants.Preferences.Keys.WIDGET_ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE);
-        boolean preferenceDeleted = Preferences.getWidgetEndingTimeRegistrationCommentPreference(ctx);
-        assertEquals("No preference should be found!", Constants.Preferences.WIDGET_ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE_DEFAULT_VALUE, preferenceDeleted);
+        Preferences.removePreference(ctx, Constants.Preferences.Keys.ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE);
+        boolean preferenceDeleted = Preferences.getEndingTimeRegistrationCommentPreference(ctx);
+        assertEquals("No preference should be found!", Constants.Preferences.ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE_DEFAULT_VALUE, preferenceDeleted);
     }
 
     public void testWidgetEndingTimeRegistrationFinishTask() {

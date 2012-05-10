@@ -1,29 +1,27 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package eu.vranckaert.worktime.activities.notifcationbar;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import eu.vranckaert.worktime.R;
-import eu.vranckaert.worktime.activities.widget.StopTimeRegistrationActivity;
+import com.google.inject.Inject;
+import eu.vranckaert.worktime.activities.widget.TimeRegistrationActionActivity;
 import eu.vranckaert.worktime.constants.Constants;
-import eu.vranckaert.worktime.utils.preferences.Preferences;
+import eu.vranckaert.worktime.service.TimeRegistrationService;
 import roboguice.activity.GuiceActivity;
 
 /**
@@ -32,48 +30,20 @@ import roboguice.activity.GuiceActivity;
  * Time: 21:46
  */
 public class EndTimeRegistration extends GuiceActivity {
+    @Inject
+    private TimeRegistrationService timeRegistrationService;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!Preferences.getWidgetEndingTimeRegistrationCommentPreference(getApplicationContext())) {
-            showDialog(Constants.Dialog.END_TIME_REGISTRATION_YES_NO);
-        } else {
-            launchStopTimeRegistrationActivity();
-        }
-    }
-
-    @Override
-    protected Dialog onCreateDialog(int dialogId) {
-        Dialog dialog = null;
-        switch(dialogId) {
-            case Constants.Dialog.END_TIME_REGISTRATION_YES_NO: {
-                AlertDialog.Builder alertEndTimeRegistration = new AlertDialog.Builder(this);
-				alertEndTimeRegistration.setTitle(getString(R.string.lbl_notif_end_time_registration_request_title))
-						   .setMessage(R.string.lbl_notif_end_time_registration_request)
-						   .setCancelable(false)
-						   .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                               public void onClick(DialogInterface dialog, int which) {
-                                   removeDialog(Constants.Dialog.DELETE_PROJECT_YES_NO);
-                                   launchStopTimeRegistrationActivity();
-                               }
-                           })
-						   .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                               public void onClick(DialogInterface dialog, int which) {
-                                   removeDialog(Constants.Dialog.DELETE_PROJECT_YES_NO);
-                                   finish();
-                               }
-                           });
-				dialog = alertEndTimeRegistration.create();
-                break;
-            }
-        };
-        return dialog;
+        launchStopTimeRegistrationActivity();
     }
 
     private void launchStopTimeRegistrationActivity() {
-        Intent intent = new Intent(getApplicationContext(), StopTimeRegistrationActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        startActivityForResult(intent, Constants.IntentRequestCodes.STOP_TIME_REGISTRATION);
+        Intent intent = new Intent(getApplicationContext(), TimeRegistrationActionActivity.class);
+        intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistrationService.getLatestTimeRegistration());
+        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
     }
 
     @Override

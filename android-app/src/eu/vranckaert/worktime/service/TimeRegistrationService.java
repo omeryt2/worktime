@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.service;
 
 import eu.vranckaert.worktime.model.Project;
@@ -118,4 +119,10 @@ public interface TimeRegistrationService {
      * @return The next time registration if any. Otherwise null!
      */
     TimeRegistration getNextTimeRegistration(TimeRegistration timeRegistration);
+
+    /**
+     * Fully initialize all elements of a certain {@link TimeRegistration} instance.
+     * @param timeRegistration The time registration to be fully initialized.
+     */
+    void fullyInitialize(TimeRegistration timeRegistration);
 }

@@ -24,12 +24,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,8 +51,7 @@ import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import roboguice.activity.GuiceListActivity;
-import roboguice.inject.InjectView;
+import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceListActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,7 +62,7 @@ import java.util.List;
  * Date: 05/02/11
  * Time: 18:19
  */
-public class ManageProjectsActivity extends GuiceListActivity {
+public class ManageProjectsActivity extends ActionBarGuiceListActivity {
     private static final String LOG_TAG = ManageProjectsActivity.class.getSimpleName();
 
     private List<Project> projects;
@@ -84,15 +83,16 @@ public class ManageProjectsActivity extends GuiceListActivity {
     @Inject
     private TimeRegistrationService timeRegistrationService;
 
-    @InjectView(R.id.showHideFinishedProjectButton)
-    private ImageButton showHideFinishedProjectButton;
-
     private AnalyticsTracker tracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_projects);
+
+        setTitle(R.string.btn_manage_projects_title);
+        setDisplayHomeAsUpEnabled(true);
+
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.MANAGE_PROJECTS_ACTIVITY);
 
@@ -114,8 +114,6 @@ public class ManageProjectsActivity extends GuiceListActivity {
      */
     private void loadProjects() {
         clearProjects();
-
-        setShowHideFinishedTasksButton();
 
         boolean hide = Preferences.getDisplayProjectsHideFinished(getApplicationContext());
         if (hide) {
@@ -143,16 +141,6 @@ public class ManageProjectsActivity extends GuiceListActivity {
         ManageProjectsListAdapter adapter = new ManageProjectsListAdapter(projects);
         adapter.notifyDataSetChanged();
         setListAdapter(adapter);
-    }
-
-    private void setShowHideFinishedTasksButton() {
-        boolean hide = Preferences.getDisplayProjectsHideFinished(ManageProjectsActivity.this);
-
-        if (hide) {
-            showHideFinishedProjectButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_title_locked));
-        } else {
-            showHideFinishedProjectButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_title_unlocked));
-        }
     }
 
     /**
@@ -512,26 +500,51 @@ public class ManageProjectsActivity extends GuiceListActivity {
     }
 
     /**
-     * Navigate home.
-     * @param view The view.
+     *
+     * @param menuItem
+     * @param hideFinished
      */
-    public void onHomeClick(View view) {
-        IntentUtil.goHome(this);
+    private void switchMenuItemFinishedProjects(MenuItem menuItem, boolean hideFinished) {
+        if (hideFinished) {
+            menuItem.setIcon(R.drawable.ic_title_unlocked_alt);
+            menuItem.setTitle(R.string.manage_projects_ab_menu_show_all);
+        } else {
+            menuItem.setIcon(R.drawable.ic_title_locked_alt);
+            menuItem.setTitle(R.string.manage_projects_ab_menu_show_unfinished);
+        }
     }
 
-    public void showHideFinishedProjects(View view) {
-        boolean hide = Preferences.getDisplayProjectsHideFinished(ManageProjectsActivity.this);
-        Preferences.setDisplayProjectsHideFinished(ManageProjectsActivity.this, !hide);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.ab_activity_manage_projects, menu);
 
-        loadProjects();
+        MenuItem menuItem = menu.getItem(1);
+        boolean hideFinished = Preferences.getDisplayProjectsHideFinished(ManageProjectsActivity.this);
+        switchMenuItemFinishedProjects(menuItem, hideFinished);
+
+        // Calling super after populating the menu is necessary here to ensure that the
+        // action bar helpers have a chance to handle this event.
+        return super.onCreateOptionsMenu(menu);
     }
 
-    /**
-     * Navigate to the add projects activity.
-     * @param view The view.
-     */
-    public void onAddClick(View view) {
-        openAddProjectActivity();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                IntentUtil.goHome(ManageProjectsActivity.this);
+                break;
+            case R.id.menu_manage_projects_activity_new:
+                openAddProjectActivity();
+                break;
+            case R.id.menu_manage_projects_activity_switch_finished:
+                boolean hideFinished = !Preferences.getDisplayProjectsHideFinished(ManageProjectsActivity.this);
+                switchMenuItemFinishedProjects(item, hideFinished);
+                Preferences.setDisplayProjectsHideFinished(ManageProjectsActivity.this, hideFinished);
+                loadProjects();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void onPunchButtonClick(View view) {

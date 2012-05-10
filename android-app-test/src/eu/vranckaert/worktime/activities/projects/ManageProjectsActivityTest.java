@@ -23,6 +23,7 @@ import eu.vranckaert.worktime.dao.CommentHistoryDao;
 import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
+import eu.vranckaert.worktime.test.ActionBar;
 import eu.vranckaert.worktime.test.cases.ActivityTestCase;
 import eu.vranckaert.worktime.test.utils.TestUtil;
 
@@ -57,7 +58,7 @@ public class ManageProjectsActivityTest extends ActivityTestCase<ManageProjectsA
 
     private void addProject(String projectName) {
         // Click the add button
-        solo.clickOnImageButton(2);
+        ActionBar.clickMenuItem(R.id.menu_manage_projects_activity_new, solo.getCurrentActivity());
         solo.waitForActivity(AddEditProjectActivity.class.getSimpleName());
         solo.waitForDialogToClose(TestUtil.Time.TWENTY_SECONDS);
         solo.assertCurrentActivity("The add/edit project activity is expected", AddEditProjectActivity.class);
@@ -71,7 +72,7 @@ public class ManageProjectsActivityTest extends ActivityTestCase<ManageProjectsA
         takeScreenshot();
 
         // Save the new project
-        solo.clickOnImageButton(1);
+        ActionBar.clickMenuItem(R.id.menu_add_project_save, solo.getCurrentActivity());
         solo.waitForActivity(ManageProjectsActivity.class.getSimpleName());
         solo.waitForDialogToClose(TestUtil.Time.TWENTY_SECONDS);
         solo.assertCurrentActivity("The projects activity is expected", ManageProjectsActivity.class);

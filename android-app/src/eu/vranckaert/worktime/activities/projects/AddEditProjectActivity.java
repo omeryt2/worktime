@@ -17,12 +17,14 @@
 package eu.vranckaert.worktime.activities.projects;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
@@ -38,7 +40,7 @@ import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import roboguice.activity.GuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
@@ -47,14 +49,13 @@ import roboguice.inject.InjectView;
  * Date: 06/02/11
  * Time: 03:51
  */
-public class AddEditProjectActivity extends GuiceActivity {
+public class AddEditProjectActivity extends ActionBarGuiceActivity {
     private static final String LOG_TAG = AddEditProjectActivity.class.getSimpleName();
 
     @InjectView(R.id.projectname) private EditText projectNameInput;
     @InjectView(R.id.projectcomment) private EditText projectCommentInput;
     @InjectView(R.id.projectname_required) private TextView projectnameRequired;
     @InjectView(R.id.projectname_unique) private TextView projectnameUnique;
-    @InjectView(R.id.title_text) private TextView titleText;
 
     @Inject
     private ProjectService projectService;
@@ -80,33 +81,28 @@ public class AddEditProjectActivity extends GuiceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_project);
+
+        setTitle(R.string.lbl_add_project_title);
+        setDisplayHomeAsUpEnabled(true);
+
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.ADD_EDIT_PROJECT_ACTIVITY);
 
         if (inUpdateMode()) {
-            titleText.setText(R.string.lbl_edit_project_title);
+            setTitle(R.string.lbl_edit_project_title);
             projectNameInput.setText(editProject.getName());
             projectCommentInput.setText(editProject.getComment());
         }
     }
 
     /**
-     * Navigate home.
-     * @param view The view.
-     */
-    public void onHomeClick(View view) {
-        IntentUtil.goHome(this);
-    }
-
-    /**
      * Save the project.
-     * @param view The view.
      */
-    public void onSaveClick(View view) {
+    public void performSave() {
         hideValidationErrors();
 
-        String name = projectNameInput.getText().toString();
-        String comment = projectCommentInput.getText().toString();
+        final String name = projectNameInput.getText().toString();
+        final String comment = projectCommentInput.getText().toString();
         if (name.length() > 0) {
             if (checkForDuplicateProjectNames(name)) {
                 Log.d(LOG_TAG, "A project with this name already exists... Choose another name!");
@@ -115,49 +111,65 @@ public class AddEditProjectActivity extends GuiceActivity {
                 ContextUtils.hideKeyboard(AddEditProjectActivity.this, projectNameInput);
                 Log.d(LOG_TAG, "Ready to save new project");
 
-                ImageView saveButton = (ImageView) findViewById(R.id.btn_save);
-                ProgressBar progressBar = (ProgressBar) findViewById(R.id.title_refresh_progress);
-                saveButton.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
-
-                Project project;
-                if (!inUpdateMode()) {
-                    project = new Project();
-                } else {
-                    project = editProject;
-                }
-                project.setName(name);
-                project.setComment(comment);
-
-                if (!inUpdateMode()) {
-                    project = projectService.save(project);
-                    tracker.trackEvent(
-                            TrackerConstants.EventSources.ADD_EDIT_PROJECT_ACTIVITY,
-                            TrackerConstants.EventActions.ADD_PROJECT
-                    );
-                    Log.d(LOG_TAG, "New project persisted");
-                } else {
-                    project = projectService.update(project);
-                    tracker.trackEvent(
-                            TrackerConstants.EventSources.ADD_EDIT_PROJECT_ACTIVITY,
-                            TrackerConstants.EventActions.EDIT_PROJECT
-                    );
-                    Log.d(LOG_TAG, "Project with id " + project.getId() + " and name " + project.getName() + " is updated");
-                    TimeRegistration latestTimeRegistration = timeRegistrationService.getLatestTimeRegistration();
-                    if (latestTimeRegistration != null && latestTimeRegistration.getTask().getProject().getId().equals(project.getId())) {
-                        Log.d(LOG_TAG, "About to update the widget and notifications");
-
-                        taskService.refresh(latestTimeRegistration.getTask());
-                        projectService.refresh(latestTimeRegistration.getTask().getProject());
-                        widgetService.updateWidget();
-                        statusBarNotificationService.addOrUpdateNotification(latestTimeRegistration);
+                AsyncTask<String, Void, Project> task = new AsyncTask<String, Void, Project>(){
+                    @Override
+                    protected void onPreExecute() {
+                        getActionBarHelper().setRefreshActionItemState(true, R.id.menu_add_project_save);
                     }
-                }
 
-                Intent intentData = new Intent();
-                intentData.putExtra(Constants.Extras.PROJECT, project);
-                setResult(RESULT_OK, intentData);
-                finish();
+                    @Override
+                    protected Project doInBackground(String... parameters) {
+                        Project project;
+                        if (!inUpdateMode()) {
+                            project = new Project();
+                        } else {
+                            project = editProject;
+                        }
+                        project.setName(parameters[0]);
+                        project.setComment(parameters[1]);
+
+                        if (!inUpdateMode()) {
+                            project = projectService.save(project);
+                            tracker.trackEvent(
+                                    TrackerConstants.EventSources.ADD_EDIT_PROJECT_ACTIVITY,
+                                    TrackerConstants.EventActions.ADD_PROJECT
+                            );
+                            Log.d(LOG_TAG, "New project persisted");
+                        } else {
+                            project = projectService.update(project);
+                            tracker.trackEvent(
+                                    TrackerConstants.EventSources.ADD_EDIT_PROJECT_ACTIVITY,
+                                    TrackerConstants.EventActions.EDIT_PROJECT
+                            );
+                            Log.d(LOG_TAG, "Project with id " + project.getId() + " and name " + project.getName() + " is updated");
+                        }
+
+                        return project;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Project project) {
+                        if (inUpdateMode()) {
+                            TimeRegistration latestTimeRegistration = timeRegistrationService.getLatestTimeRegistration();
+                            timeRegistrationService.fullyInitialize(latestTimeRegistration);
+                            if (latestTimeRegistration != null && latestTimeRegistration.getTask().getProject().getId().equals(project.getId())) {
+                                Log.d(LOG_TAG, "About to update the widget and notifications");
+
+                                taskService.refresh(latestTimeRegistration.getTask());
+                                projectService.refresh(latestTimeRegistration.getTask().getProject());
+                                widgetService.updateWidget();
+                                statusBarNotificationService.addOrUpdateNotification(latestTimeRegistration);
+                            }
+                        }
+
+                        getActionBarHelper().setRefreshActionItemState(false, R.id.menu_add_project_save);
+                        Intent intentData = new Intent();
+                        intentData.putExtra(Constants.Extras.PROJECT, project);
+                        setResult(RESULT_OK, intentData);
+                        finish();
+                    }
+                };
+                task.execute(name, comment);
             }
         } else {
             Log.d(LOG_TAG, "Validation error!");
@@ -190,6 +202,29 @@ public class AddEditProjectActivity extends GuiceActivity {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.ab_activity_add_edit_project, menu);
+
+        // Calling super after populating the menu is necessary here to ensure that the
+        // action bar helpers have a chance to handle this event.
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                IntentUtil.goBack(AddEditProjectActivity.this);
+                break;
+            case R.id.menu_add_project_save:
+                performSave();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

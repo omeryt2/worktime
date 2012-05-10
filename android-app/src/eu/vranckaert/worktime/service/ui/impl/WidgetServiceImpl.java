@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.service.ui.impl;
 
 import android.app.Activity;
@@ -28,7 +29,8 @@ import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.HomeActivity;
 import eu.vranckaert.worktime.activities.widget.SelectProjectActivity;
 import eu.vranckaert.worktime.activities.widget.StartTimeRegistrationActivity;
-import eu.vranckaert.worktime.activities.widget.StopTimeRegistrationActivity;
+import eu.vranckaert.worktime.activities.widget.TimeRegistrationActionActivity;
+import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
 import eu.vranckaert.worktime.dao.impl.TimeRegistrationDaoImpl;
 import eu.vranckaert.worktime.model.Project;
@@ -96,13 +98,13 @@ public class WidgetServiceImpl implements WidgetService {
             views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_start));
             //Enable on click for the start button
             Log.d(LOG_TAG, "Couple the start button to an on click action");
-            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, StartTimeRegistrationActivity.class, null);
+            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, StartTimeRegistrationActivity.class, null, null);
         } else if(lastTimeRegistration != null && lastTimeRegistration.getEndTime() == null) {
             Log.d(LOG_TAG, "This is an ongoing timeregistration");
             views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_stop));
             //Enable on click for the stop button
             Log.d(LOG_TAG, "Couple the stop button to an on click action.");
-            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, StopTimeRegistrationActivity.class, null);
+            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, TimeRegistrationActionActivity.class, lastTimeRegistration, null);
             timeRegistrationStarted = true;
         }
 
@@ -140,10 +142,13 @@ public class WidgetServiceImpl implements WidgetService {
      * @param activity The activity that will do some background processing.
      * @param extraFlags Extra flags for the activities.
      */
-    private void startBackgroundWorkActivity(Context ctx, int resId, Class<? extends Activity> activity, int... extraFlags) {
+    private void startBackgroundWorkActivity(Context ctx, int resId, Class<? extends Activity> activity, TimeRegistration timeRegistration, int... extraFlags) {
         int defaultFlags = Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS|Intent.FLAG_ACTIVITY_NO_HISTORY;
 
         Intent intent = new Intent(ctx, activity);
+        if (timeRegistration != null) {
+            intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
+        }
         intent.setFlags(defaultFlags);
 
         if(extraFlags != null) {

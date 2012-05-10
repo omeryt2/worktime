@@ -15,7 +15,16 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
+
 <resources>
+    <!-- ActionBar compatibility -->
+    <item type="id" name="actionbar_compat" />
+    <item type="id" name="actionbar_compat_title" />
+    <item type="id" name="actionbar_compat_item_refresh_progress" />
+    <!-- Make sure if no refresh menu-item is defined elsewhere the code doesn't break and can still anticipate on a
+     refresh menu item sometime -->
+    <item type="id" name="menu_refresh" />
+
 
     <item type="id" name="title_container" />
     <item type="id" name="title_logo" />

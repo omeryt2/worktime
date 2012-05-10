@@ -19,14 +19,14 @@ package eu.vranckaert.worktime.activities.preferences;
 import android.os.Bundle;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.TrackerConstants;
-import eu.vranckaert.worktime.utils.activity.MyPreferencesActivity;
+import eu.vranckaert.worktime.utils.activity.GenericPreferencesActivity;
 
 /**
  * User: DIRK VRANCKAERT
  * Date: 31/01/12
  * Time: 9:20
  */
-public class BackupPreferencesActivity extends MyPreferencesActivity {
+public class BackupPreferencesActivity extends GenericPreferencesActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

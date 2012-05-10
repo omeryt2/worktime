@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.activities.preferences;
 
 import android.os.Bundle;
@@ -24,7 +25,7 @@ import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
-import eu.vranckaert.worktime.utils.activity.MyPreferencesActivity;
+import eu.vranckaert.worktime.utils.activity.GenericPreferencesActivity;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 
 /**
@@ -32,7 +33,7 @@ import eu.vranckaert.worktime.utils.preferences.Preferences;
  * Date: 31/01/12
  * Time: 9:20
  */
-public class NotificationsPreferencesActivity extends MyPreferencesActivity {
+public class NotificationsPreferencesActivity extends GenericPreferencesActivity {
     private static final String LOG_TAG = NotificationsPreferencesActivity.class.getSimpleName();
 
     @Inject

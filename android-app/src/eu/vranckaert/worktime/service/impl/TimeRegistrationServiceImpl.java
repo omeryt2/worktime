@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.service.impl;
 
 import android.content.Context;
@@ -165,5 +166,13 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
     @Override
     public TimeRegistration getNextTimeRegistration(TimeRegistration timeRegistration) {
         return dao.getNextTimeRegistration(timeRegistration);
+    }
+
+    @Override
+    public void fullyInitialize(TimeRegistration timeRegistration) {
+        if (timeRegistration != null) {
+            taskDao.refresh(timeRegistration.getTask());
+            projectDao.refresh(timeRegistration.getTask().getProject());
+        }
     }
 }

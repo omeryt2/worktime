@@ -133,28 +133,28 @@ public class Preferences {
     }
 
     /**
-     * Get the preference for key {@link Constants.Preferences.Keys#WIDGET_ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE}.
+     * Get the preference for key {@link Constants.Preferences.Keys#ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE}.
      * If no value is found for the preference the default value will be
-     * {@link Constants.Preferences#WIDGET_ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE_DEFAULT_VALUE}.
+     * {@link Constants.Preferences#ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE_DEFAULT_VALUE}.
      * @param ctx The context when getting the preference for asking a comment when ending a time registration.
      * @return The {@link Boolean} which represents weather should be asked for a comment on ending a time registration
      * or not.
      */
-    public static boolean getWidgetEndingTimeRegistrationCommentPreference(Context ctx) {
+    public static boolean getEndingTimeRegistrationCommentPreference(Context ctx) {
         return getSharedPreferences(ctx).getBoolean(
-                Constants.Preferences.Keys.WIDGET_ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE,
-                Constants.Preferences.WIDGET_ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE_DEFAULT_VALUE
+                Constants.Preferences.Keys.ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE,
+                Constants.Preferences.ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE_DEFAULT_VALUE
         );
     }
 
     /**
-     * Updates the preference {@link Constants.Preferences.Keys#WIDGET_ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE}.
+     * Updates the preference {@link Constants.Preferences.Keys#ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE}.
      * @param ctx The context when updating the preference.
      * @param askComment Weather or not to ask for a preference when ending a time registration.
      */
-    public static void setWidgetEndingTimeRegistrationCommentPreference(Context ctx, boolean askComment) {
+    public static void setEndingTimeRegistrationCommentPreference(Context ctx, boolean askComment) {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
-        editor.putBoolean(Constants.Preferences.Keys.WIDGET_ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE, askComment);
+        editor.putBoolean(Constants.Preferences.Keys.ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE, askComment);
         editor.commit();
     }
 

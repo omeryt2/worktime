@@ -15,7 +15,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
+
 <resources>
+    <!-- ActionBar compatibility -->
+    <color name="actionbar_title_color">#224894</color>
+
     <color name="title_background">#ffcc0000</color>
     <color name="title_separator">#ffffffff</color>
     <color name="foreground1">#ffcc3300</color>

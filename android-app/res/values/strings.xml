@@ -52,14 +52,17 @@
     <string name="default_task_comment">This is the default task, created when installing the application.</string>
 
     <!-- HOME -->
+    <string name="home_ab_menu_about">About</string>
     <string name="home_btn_timeregs">Registrations</string>
     <string name="home_btn_projects">Projects</string>
     <string name="home_btn_preferences">Preferences</string>
     <string name="home_btn_reporting">Reporting</string>
-    <string name="home_btn_about">About</string>
     <string name="home_comp_start_stop_time_registration_no_ongoing">No ongoing time regstration!</string>
 
     <!-- MANAGE PROJECTS -->
+    <string name="manage_projects_ab_menu_new">New project</string>
+    <string name="manage_projects_ab_menu_show_unfinished">Unfinished projects</string>
+    <string name="manage_projects_ab_menu_show_all">All projects</string>
     <string name="btn_manage_projects_title">Manage Projects</string>
     <string name="msg_delete_project_confirmation">Do you want to delete this project?</string>
     <string name="lbl_empty_project_list">No projects available.</string>
@@ -74,6 +77,7 @@
     <string name="lbl_projects_menu_edit">Edit project</string>
     <string name="lbl_projects_menu_copy">Copy project and tasks</string>
     <!-- ADD/EDIT PROJECT -->
+    <string name="add_project_ab_menu_save">Save</string>
     <string name="lbl_add_project_title">Add Project</string>
     <string name="lbl_edit_project_title">Edit Project</string>
     <string name="lbl_add_project_name">Project-name:</string>
@@ -125,18 +129,8 @@
     <string name="lbl_empty_registration_list">No time registrations available yet.</string>
     <string name="now">Until now&#8230;</string>
     <string name="lbl_registrations_load_more">Tap to load more&#8230;</string>
-    <string name="msg_delete_registration_confirmation">Do you want to delete this time registration?</string>
     <string name="lbl_registrations_comment">Comment:</string>
-    <string name="lbl_registrations_menu_title">Registration Options</string>
-    <string name="lbl_registrations_menu_details">View details</string>
-    <string name="lbl_registrations_menu_edit_start">Edit starting time</string>
-    <string name="lbl_registrations_menu_edit_end">Edit end time</string>
-    <string name="lbl_registrations_menu_split">Split</string>
-    <string name="lbl_registrations_menu_edit_comment">Edit comment</string>
-    <string name="lbl_registrations_menu_add_comment">Add comment</string>
-    <string name="lbl_registrations_menu_edit_project_task">Edit project and task</string>
-    <string name="lbl_registrations_menu_delete">Delete registration</string>
-    <string name="lbl_registration_menu_restart">Restart registration</string>
+    <string name="lbl_registrations_edit">Edit</string>
     <!-- REGISTRATION DETAILS -->
     <string name="lbl_registration_details_title">Registration Details</string>
     <string name="lbl_registration_details_start">Start: </string>
@@ -145,7 +139,27 @@
     <string name="lbl_registration_details_comment">Comment:</string>
     <string name="lbl_registration_details_project">Project: </string>
     <string name="lbl_registration_details_task">Task: </string>
-    <!-- REGISTRATIONS EDITS -->
+    <!-- REGISTRATION EDIT-ACTIONS -->
+    <string name="lbl_time_registration_actions_punching_out">Ending the time registration</string>
+    <string name="err_time_registration_actions_dialog_corrupt_data">Corrupt data! Clear the application data!</string>
+    <string name="lbl_time_registration_actions_dialog_title_choose_action">Choose action</string>
+    <string name="lbl_time_registration_actions_dialog_choose_action_spinner_prompt">Select an action&#8230;</string>
+    <string-array name="array_time_registration_actions_dialog_choose_action_spinner">
+        <item>Punch Out</item>
+        <item>Split</item>
+        <item>Open details</item>
+        <item>Edit starting time</item>
+        <item>Edit end time</item>
+        <item>Restart</item>
+        <item>Edit project and task</item>
+        <item>Set comment</item>
+        <item>Delete</item>
+    </string-array>
+    <string name="lbl_time_registration_actions_dialog_btn_reuse_last_comment">Reuse last comment</string>
+    <string name="lbl_time_registration_actions_dialog_updating_time_registration">Updating time registration...</string>
+    <string name="lbl_time_registration_actions_dialog_removing_time_registration">Removing time registration...</string>
+    <string name="msg_time_registration_actions_dialog_removing_time_registration_confirmation">Do you want to delete this time registration?</string>
+    <!-- EDIT START/END DATE -->
     <string name="lbl_registration_edit_pick_date">Pick a new date</string>
     <string name="lbl_registration_edit_pick_time">Pick a new time</string>
     <string name="lbl_registration_edit_validation_error">Validation Error</string>
@@ -153,7 +167,10 @@
     <string name="lbl_registration_edit_validation_error_greater_than_equal_to">The specified date/time needs to be after or equal to the limit. Press ok and correct this error. Limit is %1$s</string>
     <string name="lbl_registration_edit_validation_error_less_than">The specified date/time needs to be before the limit. Press ok and correct this error. Limit is %1$s</string>
     <string name="lbl_registration_edit_validation_error_greater_than">The specified date/time needs to be after the limit. Press ok and correct your error. Limit is %1$s</string>
-    <!-- REGISTRATIONS SPLIT -->
+    <!-- ADD/EDIT COMMENT -->
+    <string name="lbl_registration_add_comment">Add comment</string>
+    <string name="lbl_registration_edit_comment">Edit comment</string>
+    <!-- SPLIT REGISTRATIONS-->
     <string name="lbl_registration_split_title">Split Time Registration</string>
     <string name="lbl_registration_split_cancel_dialog">Do you want to cancel?</string>
     <string name="msg_registration_split_cancel_dialog">Canceling will make you loose all your changes. Do you want to continue?</string>
@@ -424,23 +441,16 @@
     <string name="msg_widget_ask_finish_task_title">Finish task?</string>
     <string name="msg_widget_ask_finish_task_message">Do you want to mark the task \'%1$s\' finished? This can be undone in the project details!</string>
     <string name="msg_no_tasks_available_choose_other_project">No tasks are available for the selected project. Select another project or go back and create a task for the project first.</string>
-    <string name="err_widget_corrupt_data">Corrupt data! Clear the application data!</string>
     <string name="lbl_widget_instructions">Click the widget to open the app.</string>
     <string name="lbl_widget_title_select_project">Select project</string>
     <string name="lbl_widget_title_select_task">Select task</string>
-    <string name="lbl_widget_starting_new_timeregistration">Starting a new time registration</string>
-    <string name="lbl_widget_ending_timeregistration">Ending the time registration</string>
-    <string name="lbl_widget_dialog_title_enter_comment">Enter a comment</string>
-    <string name="lbl_widget_dialog_title_edit_comment">Edit comment</string>
-    <string name="lbl_widget_dialog_btn_reuse_last_comment">Reuse last comment</string>
+    <string name="lbl_punching_in">Starting a new time registration</string>
 
     <!-- NOTIFICATION BAR -->
     <string name="lbl_notif_new_tr_started">A new time registration has been started</string>
     <string name="lbl_notif_update_tr">A time registration is ongoing</string>
     <string name="lbl_notif_project_task_name">%1$s - %2$s</string>
     <string name="lbl_notif_title_ongoing_tr">Ongoing Time Registration</string>
-    <string name="lbl_notif_end_time_registration_request_title">End Registration</string>
-    <string name="lbl_notif_end_time_registration_request">Do you want to end the time registration?</string>
 
     <!-- WIZARD -->
     <string name="wizard_navigation_cancel">Cancel</string>

@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.activities.timeregistrations;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import com.google.inject.Inject;
 import com.google.inject.internal.Nullable;
 import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.activities.widget.TimeRegistrationActionActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TextConstants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
@@ -37,7 +34,6 @@ import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
-import eu.vranckaert.worktime.utils.context.ContextMenuUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
@@ -121,12 +117,12 @@ public class RegistrationDetailsActivity extends GuiceActivity {
     private void updateView() {
         timeRegistrationStart.setText(
                 TextConstants.SPACE +
-                DateUtils.DateTimeConverter.convertDateTimeToString(
-                        registration.getStartTime(),
-                        DateFormat.MEDIUM,
-                        TimeFormat.MEDIUM,
-                        getApplicationContext()
-                )
+                        DateUtils.DateTimeConverter.convertDateTimeToString(
+                                registration.getStartTime(),
+                                DateFormat.MEDIUM,
+                                TimeFormat.MEDIUM,
+                                getApplicationContext()
+                        )
         );
         timeRegistrationDuration.setText(
                 TextConstants.SPACE +
@@ -174,122 +170,28 @@ public class RegistrationDetailsActivity extends GuiceActivity {
      * @param view The view.
      */
     public void onEditClick(View view) {
-        registerForContextMenu(view);
-        view.showContextMenu();
-    }
-
-    /**
-     * Navigate home.
-     * @param view The view.
-     */
-    public void onDeleteClick(View view) {
-        deleteTimeRegistration(registration, true);
+        Intent intent = new Intent(RegistrationDetailsActivity.this, TimeRegistrationActionActivity.class);
+        intent.putExtra(Constants.Extras.TIME_REGISTRATION, registration);
+        startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
     }
 
     public void onPunchButtonClick(View view) {
         PunchBarUtil.onPunchButtonClick(RegistrationDetailsActivity.this, timeRegistrationService);
     }
 
-    /**
-     * Delete the instance of this {@link TimeRegistration}.
-     * @param timeRegistration The time registration to delete.
-     * @param askPermission Indicates if the user-permission for the deletion should be asked!
-     */
-    private void deleteTimeRegistration(final TimeRegistration timeRegistration, boolean askPermission) {
-        if(askPermission) {
-            showDialog(Constants.Dialog.DELETE_TIME_REGISTRATION_YES_NO);
-            return;
-        }
-
-        timeRegistrationService.remove(timeRegistration);
-        widgetService.updateWidget();
-
-        if (timeRegistration.isOngoingTimeRegistration()) {
-            statusBarNotificationService.removeOngoingTimeRegistrationNotification();
-        }
-        setResult(RESULT_OK);
-        finish();
-    }
-
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        Dialog dialog = null;
-        switch (id) {
-            case Constants.Dialog.DELETE_TIME_REGISTRATION_YES_NO: {
-                AlertDialog.Builder alertRemoveReg = new AlertDialog.Builder(this);
-				alertRemoveReg
-						   .setMessage(R.string.msg_delete_registration_confirmation)
-						   .setCancelable(false)
-						   .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                               public void onClick(DialogInterface dialog, int which) {
-                                   deleteTimeRegistration(registration, false);
-                                   dialog.cancel();
-                               }
-                           })
-						   .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                               public void onClick(DialogInterface dialog, int which) {
-                                   dialog.cancel();
-                               }
-                           });
-				dialog = alertRemoveReg.create();
-                break;
-            }
-        }
-        return dialog;
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        Log.d(LOG_TAG, "In method onCreateContextMenu(...)");
-        super.onCreateContextMenu(menu, v, menuInfo);
-        ContextMenuUtils.createTimeRegistrationEditContextMenu(
-                getApplicationContext(),
-                registration,
-                menu,
-                true
-        );
-        TimeRegistration latestRegistration = timeRegistrationService.getLatestTimeRegistration();
-        if (latestRegistration != null) {
-            Log.d(LOG_TAG, "Latest time registration id: " + latestRegistration.getId());
-            Log.d(LOG_TAG, "Current viewing time registration id: " + registration.getId());
-            if (registration.isOngoingTimeRegistration() || !registration.getId().equals(latestRegistration.getId())) {
-                // Only remove this menu-option if the viewing registration is not the last one!
-                menu.removeItem(Constants.ContentMenuItemIds.TIME_REGISTRATION_RESTART);
-            }
-        }
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        return ContextMenuUtils.handleTimeRegistrationEditContextMenuSelection(
-                RegistrationDetailsActivity.this,
-                item,
-                registration,
-                previousRegistration,
-                nextRegistration,
-                tracker
-        );
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Constants.IntentRequestCodes.REGISTRATION_EDIT_DIALOG: {
+            case Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION: {
                 if (resultCode == RESULT_OK) {
-                    Log.d(LOG_TAG, "The time registration has been updated!");
+                    Log.d(LOG_TAG, "The time registration has been changed...");
                     isUpdated = true;
-                    registration = timeRegistrationService.get(registration.getId());
-                    taskService.refresh(registration.getTask());
-                    projectService.refresh(registration.getTask().getProject());
-                    updateView();
-                }
-                break;
-            }
-            case Constants.IntentRequestCodes.REGISTRATION_SPLIT_DIALOG: {
-                if (resultCode == RESULT_OK) {
+                } else if (resultCode == Constants.IntentResultCodes.RESULT_OK_SPLIT) {
                     Log.d(LOG_TAG, "The time registration has been split!");
                     isUpdated = true;
                     isSplit = true;
+                }
+                if (resultCode == RESULT_OK || resultCode == Constants.IntentResultCodes.RESULT_OK_SPLIT) {
                     registration = timeRegistrationService.get(registration.getId());
                     taskService.refresh(registration.getTask());
                     projectService.refresh(registration.getTask().getProject());

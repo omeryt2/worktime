@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.utils.punchbar;
 
 import android.app.Activity;
@@ -24,7 +25,7 @@ import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.HomeActivity;
 import eu.vranckaert.worktime.activities.punchbar.PunchBarClickListener;
 import eu.vranckaert.worktime.activities.widget.StartTimeRegistrationActivity;
-import eu.vranckaert.worktime.activities.widget.StopTimeRegistrationActivity;
+import eu.vranckaert.worktime.activities.widget.TimeRegistrationActionActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.ProjectService;
@@ -100,7 +101,8 @@ public class PunchBarUtil {
     public static void onPunchButtonClick(Activity ctx, TimeRegistrationService timeRegistrationService) {
         TimeRegistration lastTimeRegistration = timeRegistrationService.getLatestTimeRegistration();
         if (lastTimeRegistration != null && lastTimeRegistration.isOngoingTimeRegistration()) {
-            Intent intent = new Intent(ctx, StopTimeRegistrationActivity.class);
+            Intent intent = new Intent(ctx, TimeRegistrationActionActivity.class);
+            intent.putExtra(Constants.Extras.TIME_REGISTRATION, lastTimeRegistration);
             ctx.startActivityForResult(intent, Constants.IntentRequestCodes.PUNCH_BAR_END_TIME_REGISTRATION);
         } else {
             Intent intent = new Intent(ctx, StartTimeRegistrationActivity.class);

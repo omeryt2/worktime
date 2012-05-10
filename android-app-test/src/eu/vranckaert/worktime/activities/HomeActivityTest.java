@@ -16,6 +16,7 @@
 
 package eu.vranckaert.worktime.activities;
 
+import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.about.AboutActivity;
 import eu.vranckaert.worktime.activities.preferences.PreferencesActivity;
 import eu.vranckaert.worktime.activities.projects.ManageProjectsActivity;
@@ -25,6 +26,7 @@ import eu.vranckaert.worktime.dao.CommentHistoryDao;
 import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
+import eu.vranckaert.worktime.test.ActionBar;
 import eu.vranckaert.worktime.test.cases.ActivityTestCase;
 
 /**
@@ -71,7 +73,7 @@ public class HomeActivityTest extends ActivityTestCase<HomeActivity> {
 
     public void testClickAboutButton() {
         solo.assertCurrentActivity("The home activity is expected", HomeActivity.class);
-        solo.clickOnButton(4);
+        ActionBar.clickMenuItem(R.id.menu_home_activity_about, solo.getCurrentActivity());
         solo.waitForActivity(AboutActivity.class.getSimpleName());
         solo.assertCurrentActivity("The about activity is expected", AboutActivity.class);
     }

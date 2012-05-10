@@ -21,7 +21,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
-import android.view.View;
+import android.view.MenuItem;
+import android.view.Window;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.backup.BackupRestoreInfoActivity;
 import eu.vranckaert.worktime.constants.Constants;
@@ -30,6 +31,7 @@ import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
+import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuicePreferenceActivity;
 import roboguice.activity.GuicePreferenceActivity;
 
 /**
@@ -37,15 +39,20 @@ import roboguice.activity.GuicePreferenceActivity;
  * Date: 05/02/11
  * Time: 19:09
  */
-public class PreferencesActivity extends GuicePreferenceActivity {
+public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
     private static final String LOG_TAG = PreferencesActivity.class.getSimpleName();
 
     private AnalyticsTracker tracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE); // For compatibility with the action-bar
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
+
+        setTitle(R.string.lbl_preferences_title);
+        setDisplayHomeAsUpEnabled(true);
+
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.PREFERENCES_ACTIVITY);
 
@@ -124,8 +131,14 @@ public class PreferencesActivity extends GuicePreferenceActivity {
         });
     }
 
-    public void onHomeClick(View view) {
-        IntentUtil.goHome(this);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                IntentUtil.goHome(PreferencesActivity.this);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

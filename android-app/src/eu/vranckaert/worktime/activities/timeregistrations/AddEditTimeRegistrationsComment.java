@@ -58,14 +58,14 @@ public class AddEditTimeRegistrationsComment extends GuiceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        showDialog(Constants.Dialog.ENTER_COMMENT_FOR_TR);
+        showDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
     }
 
     @Override
     protected Dialog onCreateDialog(int dialogId) {
         Dialog dialog = null;
         switch(dialogId) {
-            case Constants.Dialog.ENTER_COMMENT_FOR_TR: {
+            case Constants.Dialog.TIME_REGISTRATION_ACTION: {
                 boolean enterNewComment = false;
                 if (StringUtils.isBlank(timeRegistration.getComment())) {
                     enterNewComment = true;
@@ -73,25 +73,24 @@ public class AddEditTimeRegistrationsComment extends GuiceActivity {
                 Log.d(LOG_TAG, "Entering a new comment? " + enterNewComment);
 
                 Log.d(LOG_TAG, "Creating enter comment dialog for a time registration");
-                AlertDialog.Builder enterComment = new AlertDialog.Builder(this);
+                AlertDialog.Builder commentDialog = new AlertDialog.Builder(this);
 
                 final Context mContext = AddEditTimeRegistrationsComment.this;
                 LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
-                final View layout = inflater.inflate(R.layout.dialog_add_tr_comment,
+                final View layout = inflater.inflate(R.layout.dialog_time_registration_actions,
                                                (ViewGroup) findViewById(R.id.dialog_layout_root));
+                layout.findViewById(R.id.tr_action_spinner).setVisibility(View.GONE);
                 if (enterNewComment) {
-                    enterComment.setTitle(R.string.lbl_widget_dialog_title_enter_comment);
+                    commentDialog.setTitle(R.string.lbl_registration_add_comment);
                 } else {
-                    enterComment.setTitle(R.string.lbl_widget_dialog_title_edit_comment);
+                    commentDialog.setTitle(R.string.lbl_registration_edit_comment);
                 }
 
-                enterComment.setCancelable(false);
-                enterComment.setPositiveButton(android.R.string.ok, new AlertDialog.OnClickListener() {
+                commentDialog.setCancelable(false);
+                commentDialog.setPositiveButton(android.R.string.ok, new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Log.d(LOG_TAG, "CommentHistory entered, ready to save...");
-                        removeDialog(Constants.Dialog.ENTER_COMMENT_FOR_TR);
-//                        AutoCompleteTextView commentEditText =
-//                                (AutoCompleteTextView) layout.findViewById(R.id.tr_comment);
+                        removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
                         EditText commentEditText = (EditText) layout.findViewById(R.id.tr_comment);
                         String comment = commentEditText.getText().toString();
                         ContextUtils.hideKeyboard(mContext, commentEditText);
@@ -99,15 +98,14 @@ public class AddEditTimeRegistrationsComment extends GuiceActivity {
                         updateComment(comment);
                     }
                 });
-                enterComment.setNegativeButton(android.R.string.cancel, new AlertDialog.OnClickListener() {
+                commentDialog.setNegativeButton(android.R.string.cancel, new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Log.d(LOG_TAG, "Ending time registration cancelled on entering comment...");
-                        removeDialog(Constants.Dialog.ENTER_COMMENT_FOR_TR);
+                        removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
                         finish();
                     }
                 });
 
-//                AutoCompleteTextView commentEditText = (AutoCompleteTextView) layout.findViewById(R.id.tr_comment);
                 final EditText commentEditText = (EditText) layout.findViewById(R.id.tr_comment);
                 Button reuseComment = (Button) layout.findViewById(R.id.tr_reuse_btn);
                 reuseComment.setOnClickListener(new View.OnClickListener() {
@@ -119,17 +117,13 @@ public class AddEditTimeRegistrationsComment extends GuiceActivity {
                         }
                     }
                 });
-//                List<String> options = commentHistoryService.getAll();
-//                ArrayAdapter<String> autoCompleteAdapter =
-//                        new ArrayAdapter<String>(this, R.layout.autocomplete_list_item, options);
-//                commentEditText.setAdapter(autoCompleteAdapter);
 
                 if (!enterNewComment) {
                     commentEditText.setText(timeRegistration.getComment());
                 }
 
-                enterComment.setView(layout);
-                dialog = enterComment.create();
+                commentDialog.setView(layout);
+                dialog = commentDialog.create();
 
                 break;
             }

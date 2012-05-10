@@ -21,14 +21,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <LinearLayout style="@style/TitleBar">
-        <!--<ImageView style="@style/TitleBarLogo"
-            android:src="@drawable/icon" />-->
-        <TextView style="@style/TitleBarText" android:text="@string/app_name"/>
-
-        <View style="@style/TitleBarSpring" />
-    </LinearLayout>
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
@@ -63,20 +55,6 @@
                 android:onClick="onPreferencesClick"
                 android:text="@string/home_btn_preferences"
                 android:drawableTop="@drawable/home_btn_preferences"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-            <Button style="@style/HomeButton"
-                android:onClick="onAboutClick"
-                android:text="@string/home_btn_about"
-                android:drawableTop="@drawable/home_btn_about"/>
-            <ImageView
-                style="@style/HomeButton"
-                android:drawableTop="@drawable/home_btn_default"/>
         </LinearLayout>
     </LinearLayout>
 

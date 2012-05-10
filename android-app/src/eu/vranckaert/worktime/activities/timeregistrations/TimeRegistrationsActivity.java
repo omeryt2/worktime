@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.activities.timeregistrations;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,7 +29,8 @@ import android.widget.ListView;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.reporting.ReportingCriteriaActivity;
-import eu.vranckaert.worktime.activities.timeregistrations.listadapter.TimRegistrationsListAdapter;
+import eu.vranckaert.worktime.activities.timeregistrations.listadapter.TimeRegistrationsListAdapter;
+import eu.vranckaert.worktime.activities.widget.TimeRegistrationActionActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.model.TimeRegistration;
@@ -39,7 +39,6 @@ import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
-import eu.vranckaert.worktime.utils.context.ContextMenuUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
@@ -110,8 +109,12 @@ public class TimeRegistrationsActivity extends GuiceListActivity {
                 if (position > 0) {
                     nextTimeRegistration = timeRegistrations.get(position - 1);
                 }
-                IntentUtil.openRegistrationDetailActivity(TimeRegistrationsActivity.this, selectedRegistration,
-                        previousTimeRegistration, nextTimeRegistration);
+
+                Intent intent = new Intent(TimeRegistrationsActivity.this, RegistrationDetailsActivity.class);
+                intent.putExtra(Constants.Extras.TIME_REGISTRATION, selectedRegistration);
+                intent.putExtra(Constants.Extras.TIME_REGISTRATION_PREVIOUS, previousTimeRegistration);
+                intent.putExtra(Constants.Extras.TIME_REGISTRATION_NEXT, nextTimeRegistration);
+                startActivityForResult(intent, Constants.IntentRequestCodes.REGISTRATION_DETAILS);
             }
         });
 
@@ -213,10 +216,10 @@ public class TimeRegistrationsActivity extends GuiceListActivity {
         listOfNewTimeRegistrations.addAll(timeRegistrations);
 
         if (getListView().getAdapter() == null) {
-            TimRegistrationsListAdapter adapter = new TimRegistrationsListAdapter(TimeRegistrationsActivity.this, listOfNewTimeRegistrations);
+            TimeRegistrationsListAdapter adapter = new TimeRegistrationsListAdapter(TimeRegistrationsActivity.this, listOfNewTimeRegistrations);
             setListAdapter(adapter);
         } else {
-            ((TimRegistrationsListAdapter) getListView().getAdapter()).refill(listOfNewTimeRegistrations);
+            ((TimeRegistrationsListAdapter) getListView().getAdapter()).refill(listOfNewTimeRegistrations);
         }
     }
 
@@ -261,85 +264,15 @@ public class TimeRegistrationsActivity extends GuiceListActivity {
         return size;
     }
 
-    private void deleteTimeRegistration(final TimeRegistration timeRegistration, boolean askPermission) {
-        if(askPermission) {
-            timeRegistrationToDelete = timeRegistration;
-            showDialog(Constants.Dialog.DELETE_TIME_REGISTRATION_YES_NO);
-            return;
-        }
-
-        timeRegistrationService.remove(timeRegistration);
-        timeRegistrations.remove(timeRegistration);
-        initialRecordCount--;
-        currentLowerLimit--;
-
-        tracker.trackEvent(
-                TrackerConstants.EventSources.TIME_REGISTRATIONS_ACTIVITY,
-                TrackerConstants.EventActions.DELETE_TIME_REGISTRATION
-        );
-
-        timeRegistrationToDelete = null;
-        widgetService.updateWidget();
-        if (timeRegistration.isOngoingTimeRegistration()) {
-            statusBarNotificationService.removeOngoingTimeRegistrationNotification();
-        }
-        loadTimeRegistrations(false, false);
-
-        PunchBarUtil.configurePunchBar(TimeRegistrationsActivity.this, timeRegistrationService, taskService, projectService);
-    }
-
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        Dialog dialog = null;
-        switch (id) {
-            case Constants.Dialog.DELETE_TIME_REGISTRATION_YES_NO: {
-                AlertDialog.Builder alertRemoveAllRegs = new AlertDialog.Builder(this);
-				alertRemoveAllRegs
-						   .setMessage(R.string.msg_delete_registration_confirmation)
-						   .setCancelable(false)
-						   .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                               public void onClick(DialogInterface dialog, int which) {
-                                   deleteTimeRegistration(timeRegistrationToDelete, false);
-                                   dialog.cancel();
-                               }
-                           })
-						   .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                               public void onClick(DialogInterface dialog, int which) {
-                                   timeRegistrationToDelete = null;
-                                   dialog.cancel();
-                               }
-                           });
-				dialog = alertRemoveAllRegs.create();
-                break;
-            }
-        }
-        return dialog;
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Constants.IntentRequestCodes.REGISTRATION_DETAILS : {
+            case Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION : {
                 if (resultCode == RESULT_OK) {
-                    Log.d(LOG_TAG, "A TR has been updated on the registrations details view, it's necessary to reload the list of time registrations upon return!");
+                    Log.d(LOG_TAG, "The time registration has been updated");
                     loadTimeRegistrations(true, false);
                 } else if (resultCode == Constants.IntentResultCodes.RESULT_OK_SPLIT) {
-                    Log.d(LOG_TAG, "A TR has been split on the registrations details view, it's necessary to reload the list of time registrations upon return!");
-                    timeRegistrations.add(0, new TimeRegistration()); //Forces when reloading to load one extra record!
-                    loadTimeRegistrations(true, false);
-                }
-                break;
-            }
-            case Constants.IntentRequestCodes.REGISTRATION_EDIT_DIALOG: {
-                if (resultCode == RESULT_OK) {
-                    Log.d(LOG_TAG, "The time registration has been updated!");
-                    loadTimeRegistrations(true, false);
-                }
-                break;
-            }
-            case Constants.IntentRequestCodes.REGISTRATION_SPLIT_DIALOG: {
-                if (resultCode == RESULT_OK) {
-                    Log.d(LOG_TAG, "The time registration has been split!");
+                    Log.d(LOG_TAG, "The time registration has been split");
                     timeRegistrations.add(0, new TimeRegistration()); //Forces when reloading to load one extra record!
                     loadTimeRegistrations(true, false);
                 }
@@ -356,58 +289,28 @@ public class TimeRegistrationsActivity extends GuiceListActivity {
         }
     }
 
+    // TODO add only one option to the context menu
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        Log.d(LOG_TAG, "In method onCreateContextMenu(...)");
-        if (v.getId() == android.R.id.list) {
-            super.onCreateContextMenu(menu, v, menuInfo);
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-            TimeRegistration timeRegistration = timeRegistrations.get(info.position);
-            ContextMenuUtils.createTimeRegistrationEditContextMenu(
-                    getApplicationContext(),
-                    timeRegistration,
-                    menu,
-                    false
-            );
-
-            if (info.position > 0 || timeRegistration.isOngoingTimeRegistration()) {
-                menu.removeItem(Constants.ContentMenuItemIds.TIME_REGISTRATION_RESTART);
-            }
-        }
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.time_registrations_list_menu, menu);
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int element = info.position;
-        TimeRegistration timeRegistrationForContext = timeRegistrations.get(element);
+        TimeRegistration timeRegistration = timeRegistrations.get(element);
 
-        TimeRegistration previousTimeRegistration = null;
-        if (getTimeRegistrationsSize() > element + 1) {
-            previousTimeRegistration = timeRegistrations.get(element + 1);
-        } else if (initialRecordCount > timeRegistrations.size()) {
-            Log.d(LOG_TAG, "The previous time registration is not yet loaded, loading it now");
-            previousTimeRegistration = timeRegistrationService.getPreviousTimeRegistration(timeRegistrationForContext);
+        switch (item.getItemId()) {
+            case R.id.registrations_edit:
+                Intent intent = new Intent(TimeRegistrationsActivity.this, TimeRegistrationActionActivity.class);
+                intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
+                startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
         }
-
-        TimeRegistration nextTimeRegistration = null;
-        if (element > 0) {
-            nextTimeRegistration = timeRegistrations.get(element - 1);
-        }
-
-        if (item.getItemId() == Constants.ContentMenuItemIds.TIME_REGISTRATION_DELETE) {
-            deleteTimeRegistration(timeRegistrationForContext, true);
-            return true;
-        }
-
-        return ContextMenuUtils.handleTimeRegistrationEditContextMenuSelection(
-                TimeRegistrationsActivity.this,
-                item,
-                timeRegistrationForContext,
-                previousTimeRegistration,
-                nextTimeRegistration,
-                tracker
-        );
     }
 
     @Override

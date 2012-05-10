@@ -15,19 +15,12 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/home_root"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-
-    <LinearLayout style="@style/TitleBar">
-        <!--<ImageView style="@style/TitleBarLogo"
-            android:src="@drawable/icon" />-->
-        <TextView style="@style/TitleBarText" android:text="@string/app_name"/>
-
-        <View style="@style/TitleBarSpring" />
-    </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
@@ -63,12 +56,10 @@
                 android:onClick="onPreferencesClick"
                 android:text="@string/home_btn_preferences"
                 android:drawableTop="@drawable/home_btn_preferences"/>
-            <Button style="@style/HomeButton"
-                android:onClick="onAboutClick"
-                android:text="@string/home_btn_about"
-                android:drawableTop="@drawable/home_btn_about"/>
             <ImageView style="@style/HomeButton"
-                android:drawableTop="@drawable/home_btn_default"/>
+                       android:drawableTop="@drawable/home_btn_default"/>
+            <ImageView style="@style/HomeButton"
+                       android:drawableTop="@drawable/home_btn_default"/>
         </LinearLayout>
     </LinearLayout>
 

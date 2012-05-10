@@ -18,6 +18,9 @@ package eu.vranckaert.worktime.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
@@ -35,9 +38,9 @@ import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import roboguice.activity.GuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 
-public class HomeActivity extends GuiceActivity {
+public class HomeActivity extends ActionBarGuiceActivity {
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
 
     @Inject
@@ -94,19 +97,10 @@ public class HomeActivity extends GuiceActivity {
 
     public void onPreferencesClick(View view) {
         launchActivity(PreferencesActivity.class);
-//        if (ContextUtils.getAndroidApiVersion() < OSContants.API.HONEYCOMB_3_0) {
-//            launchActivity(PreferencesActivity.class);
-//        } else {
-//            launchActivity(PreferencesICSActivity.class);
-//        }
     }
 
     public void onReportingClick(View view) {
         launchActivity(ReportingCriteriaActivity.class);
-    }
-
-    public void onAboutClick(View view) {
-        launchActivity(AboutActivity.class);
     }
     
     public void onPunchButtonClick(View view) {
@@ -125,6 +119,28 @@ public class HomeActivity extends GuiceActivity {
                 || requestCode == Constants.IntentRequestCodes.PUNCH_BAR_END_TIME_REGISTRATION) {
             PunchBarUtil.configurePunchBar(HomeActivity.this, timeRegistrationService, taskService, projectService);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.ab_activity_home, menu);
+
+        // Calling super after populating the menu is necessary here to ensure that the
+        // action bar helpers have a chance to handle this event.
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                break;
+            case R.id.menu_home_activity_about:
+                launchActivity(AboutActivity.class);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
