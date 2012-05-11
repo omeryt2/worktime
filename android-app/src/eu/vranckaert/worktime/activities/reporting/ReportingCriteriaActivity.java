@@ -55,6 +55,7 @@ import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.file.CsvFilenameFilter;
 import eu.vranckaert.worktime.utils.file.FileUtil;
+import eu.vranckaert.worktime.utils.file.XlsFilenameFilter;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import roboguice.activity.GuiceActivity;
@@ -309,13 +310,14 @@ public class ReportingCriteriaActivity extends GuiceActivity {
             actionExportButton.setVisibility(View.INVISIBLE);
             return;
         }
-        
-        File[] documents = documentDirectory.listFiles(new CsvFilenameFilter());
 
-        if (documents != null && documents.length > 0) {
-            actionExportButton.setVisibility(View.VISIBLE);
-        } else {
+        File[] csvDocuments = documentDirectory.listFiles(new CsvFilenameFilter());
+        File[] xlsDocuments = documentDirectory.listFiles(new XlsFilenameFilter());
+
+        if ( (csvDocuments == null && xlsDocuments == null) || (csvDocuments.length == 0 || xlsDocuments.length == 0) ) {
             actionExportButton.setVisibility(View.INVISIBLE);
+        } else {
+            actionExportButton.setVisibility(View.VISIBLE);
         }
     }
 
