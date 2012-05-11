@@ -39,6 +39,8 @@ public class ActionBarHelperHoneycomb extends ActionBarHelper {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        menu.removeItem(R.id.menu_refresh);
+
         mOptionsMenu = menu;
         return super.onCreateOptionsMenu(menu);
     }
@@ -67,6 +69,11 @@ public class ActionBarHelperHoneycomb extends ActionBarHelper {
                 refreshItem.setActionView(null);
             }
         }
+    }
+
+    @Override
+    public void setHomeButtonEnabled(boolean enabled) {
+        mActivity.getActionBar().setHomeButtonEnabled(enabled);
     }
 
     /**

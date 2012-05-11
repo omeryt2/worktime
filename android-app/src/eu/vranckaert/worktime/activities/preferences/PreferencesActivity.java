@@ -26,6 +26,7 @@ import android.view.Window;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.backup.BackupRestoreInfoActivity;
 import eu.vranckaert.worktime.constants.Constants;
+import eu.vranckaert.worktime.constants.OSContants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
@@ -46,7 +47,9 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE); // For compatibility with the action-bar
+        if (ContextUtils.getAndroidApiVersion() < OSContants.API.HONEYCOMB_3_0) {
+            requestWindowFeature(Window.FEATURE_CUSTOM_TITLE); // For compatibility with the action-bar
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
 

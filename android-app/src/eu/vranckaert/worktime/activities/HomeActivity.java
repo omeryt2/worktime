@@ -128,7 +128,11 @@ public class HomeActivity extends ActionBarGuiceActivity {
 
         // Calling super after populating the menu is necessary here to ensure that the
         // action bar helpers have a chance to handle this event.
-        return super.onCreateOptionsMenu(menu);
+        boolean r = super.onCreateOptionsMenu(menu);
+
+        // Disable click on home-button
+        getActionBarHelper().setHomeButtonEnabled(false);
+        return r;
     }
 
     @Override

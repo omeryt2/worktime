@@ -51,6 +51,8 @@ public class ActionBarHelperBase extends ActionBarHelper {
     private static final String MENU_ATTR_ID = "id";
     private static final String MENU_ATTR_SHOW_AS_ACTION = "showAsAction";
 
+    private View homeButton;
+
     protected Set<Integer> mActionItemIds = new HashSet<Integer>();
 
     protected ActionBarHelperBase(Activity activity) {
@@ -81,7 +83,7 @@ public class ActionBarHelperBase extends ActionBarHelper {
         mActivity.onPrepareOptionsMenu(menu);
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
-            if (mActionItemIds.contains(item.getItemId()) || item.getItemId() == R.id.menu_refresh) {
+            if (mActionItemIds.contains(item.getItemId())) {
                 addActionItemCompatFromMenuItem(item);
             }
         }
@@ -105,7 +107,7 @@ public class ActionBarHelperBase extends ActionBarHelper {
         SimpleMenuItem homeItem = new SimpleMenuItem(
                 tempMenu, android.R.id.home, 0, mActivity.getString(R.string.app_name));
         homeItem.setIcon(R.drawable.ic_home);
-        addActionItemCompatFromMenuItem(homeItem);
+        homeButton = addActionItemCompatFromMenuItem(homeItem);
 
         // Add title text
         TextView titleText = new TextView(mActivity, null, R.attr.actionbarCompatTitleStyle);
@@ -207,9 +209,6 @@ public class ActionBarHelperBase extends ActionBarHelper {
         });
         actionButton.setId(item.getItemId());
 
-        if (item.getItemId() != R.id.menu_refresh)
-            actionBar.addView(actionButton);
-
         if (item.getItemId() == R.id.menu_refresh) {
             // Refresh buttons should be stateful, and allow for indeterminate progress indicators,
             // so add those.
@@ -235,7 +234,17 @@ public class ActionBarHelperBase extends ActionBarHelper {
             actionBar.addView(indicator);
         }
 
-        return actionButton;
+        if (item.getItemId() != R.id.menu_refresh) {
+            actionBar.addView(actionButton);
+            return actionButton;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void setHomeButtonEnabled(boolean enabled) {
+        homeButton.setClickable(false);
     }
 
     /**

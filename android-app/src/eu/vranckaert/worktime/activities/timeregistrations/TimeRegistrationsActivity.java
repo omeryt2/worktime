@@ -21,6 +21,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,7 +42,7 @@ import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import roboguice.activity.GuiceListActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,7 @@ import java.util.List;
  * Date: 05/02/11
  * Time: 18:58
  */
-public class TimeRegistrationsActivity extends GuiceListActivity {
+public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
     private static final String LOG_TAG = TimeRegistrationsActivity.class.getSimpleName();
 
     @Inject
@@ -81,6 +82,10 @@ public class TimeRegistrationsActivity extends GuiceListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrations);
+
+        setTitle(R.string.lbl_registrations_title);
+        setDisplayHomeAsUpEnabled(true);
+
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.TIME_REGISTRATIONS_ACTIVITY);
 
@@ -222,31 +227,6 @@ public class TimeRegistrationsActivity extends GuiceListActivity {
         }
     }
 
-    /**
-     * Go Home.
-     * @param view The view.
-     */
-    public void onHomeClick(View view) {
-        IntentUtil.goHome(this);
-    }
-
-    /**
-     * Add a time registration.
-     * @param view The view.
-     */
-    public void onAddClick(View view) {
-        //Not yet implemented
-    }
-
-    /**
-     * Disk the time registrations.
-     * @param view The view.
-     */
-    public void onExportClick(View view) {
-        Intent intent = new Intent(TimeRegistrationsActivity.this, ReportingCriteriaActivity.class);
-        startActivity(intent);
-    }
-
     public void onPunchButtonClick(View view) {
         PunchBarUtil.onPunchButtonClick(TimeRegistrationsActivity.this, timeRegistrationService);
     }
@@ -288,7 +268,6 @@ public class TimeRegistrationsActivity extends GuiceListActivity {
         }
     }
 
-    // TODO add only one option to the context menu
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         MenuInflater inflater = getMenuInflater();
@@ -310,6 +289,30 @@ public class TimeRegistrationsActivity extends GuiceListActivity {
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.ab_activity_time_registrations, menu);
+
+        // Calling super after populating the menu is necessary here to ensure that the
+        // action bar helpers have a chance to handle this event.
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                IntentUtil.goBack(TimeRegistrationsActivity.this);
+                break;
+            case R.id.menu_time_registrations_report:
+                Intent intent = new Intent(TimeRegistrationsActivity.this, ReportingCriteriaActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

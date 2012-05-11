@@ -60,10 +60,10 @@
     <string name="home_comp_start_stop_time_registration_no_ongoing">No ongoing time regstration!</string>
 
     <!-- MANAGE PROJECTS -->
+    <string name="btn_manage_projects_title">Manage Projects</string>
     <string name="manage_projects_ab_menu_new">New project</string>
     <string name="manage_projects_ab_menu_show_unfinished">Unfinished projects</string>
     <string name="manage_projects_ab_menu_show_all">All projects</string>
-    <string name="btn_manage_projects_title">Manage Projects</string>
     <string name="msg_delete_project_confirmation">Do you want to delete this project?</string>
     <string name="lbl_empty_project_list">No projects available.</string>
     <string name="msg_delete_project_at_least_one_required">You cannot delete this project. At least one is required.</string>
@@ -77,9 +77,9 @@
     <string name="lbl_projects_menu_edit">Edit project</string>
     <string name="lbl_projects_menu_copy">Copy project and tasks</string>
     <!-- ADD/EDIT PROJECT -->
-    <string name="add_project_ab_menu_save">Save</string>
     <string name="lbl_add_project_title">Add Project</string>
     <string name="lbl_edit_project_title">Edit Project</string>
+    <string name="add_project_ab_menu_save">Save</string>
     <string name="lbl_add_project_name">Project-name:</string>
     <string name="lbl_add_project_comment">Comment:</string>
     <string name="lbl_project_name_not_unique">This name is already in use. Please choose another one.</string>
@@ -126,6 +126,7 @@
 
     <!-- REGISTRATIONS -->
     <string name="lbl_registrations_title">Time Registrations</string>
+    <string name="time_registrations_ab_menu_report">Reporting</string>
     <string name="lbl_empty_registration_list">No time registrations available yet.</string>
     <string name="now">Until now&#8230;</string>
     <string name="lbl_registrations_load_more">Tap to load more&#8230;</string>

@@ -83,6 +83,11 @@ public abstract class ActionBarHelper {
     public abstract void setRefreshActionItemState(boolean refreshing, int menuItemResId);
 
     /**
+     * Enables or disables the home button.
+     */
+    public abstract void setHomeButtonEnabled(boolean enabled);
+
+    /**
      * Returns a {@link android.view.MenuInflater} for use when inflating menus. The implementation of this
      * method in {@link ActionBarHelperBase} returns a wrapped menu inflater that can read
      * action bar metadata from a menu resource pre-Honeycomb.

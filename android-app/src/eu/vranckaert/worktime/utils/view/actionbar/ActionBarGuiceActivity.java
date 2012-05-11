@@ -89,6 +89,7 @@ public class ActionBarGuiceActivity extends GuiceActivity {
 
     /**
      * Enables or disables the home button to be used for up-navigation.
+     *
      * @param upEnabled If the home button should be enabled as up-navigation or not.
      */
     public void setDisplayHomeAsUpEnabled(boolean upEnabled) {
@@ -96,5 +97,7 @@ public class ActionBarGuiceActivity extends GuiceActivity {
             ActionBar ab = getActionBar();
             ab.setDisplayHomeAsUpEnabled(true);
         }
-    };
+    }
+
+    ;
 }

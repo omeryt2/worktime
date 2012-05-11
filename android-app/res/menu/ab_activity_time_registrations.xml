@@ -17,11 +17,9 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@id/menu_refresh"
-          android:showAsAction="always"/>
-    <item android:id="@+id/menu_add_project_save"
-          android:title="@string/add_project_ab_menu_save"
-          android:icon="@drawable/ic_content_save"
+    <item android:id="@+id/menu_time_registrations_report"
+          android:title="@string/time_registrations_ab_menu_report"
+          android:icon="@drawable/ic_collections_view_as_list"
           android:orderInCategory="1"
           android:showAsAction="always" />
 </menu>
