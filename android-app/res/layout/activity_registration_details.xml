@@ -15,112 +15,91 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
 
-    <LinearLayout style="@style/TitleBar">
-        <ImageButton style="@style/TitleBarAction"
-            android:src="@drawable/ic_title_home"
-            android:onClick="onHomeClick" />
-
-        <ImageView style="@style/TitleBarSeparator" />
-        <eu.vranckaert.worktime.utils.view.CustomTextView
-                style="@style/TitleBarText"
-                android:text="@string/lbl_registration_details_title"/>
-
-        <ImageView style="@style/TitleBarSeparator" />
-        <ImageButton style="@style/TitleBarAction"
-            android:src="@drawable/ic_title_edit"
-            android:onClick="onEditClick" />
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+    <LinearLayout android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:orientation="vertical"
+                  android:layout_above="@id/punch_bar_container"
+                  android:layout_alignParentTop="true">
+        <!-- Start time and date -->
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/lbl_registration_details_start"
+                      style="@style/WorkTimeDetailsInfoLabel"/>
+            <TextView android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/start"
+                      style="@style/WorkTimeDetailsInfo"/>
+        </LinearLayout>
+        <!-- End time and date -->
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/lbl_registration_details_end"
+                      style="@style/WorkTimeDetailsInfoLabel"/>
+            <TextView android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/end"
+                      style="@style/WorkTimeDetailsInfo"/>
+        </LinearLayout>
+        <!-- Duration -->
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/lbl_registration_details_duration"
+                      style="@style/WorkTimeDetailsInfoLabel"/>
+            <TextView android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/duration"
+                      style="@style/WorkTimeDetailsInfo"/>
+        </LinearLayout>
+        <!-- Comment -->
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/lbl_registration_details_comment"
+                  android:id="@+id/comment_label"
+                  style="@style/WorkTimeDetailsInfoLabel"/>
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/comment"
+                  style="@style/WorkTimeDetailsInfo"/>
+        <!-- Project -->
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/lbl_registration_details_project"
+                      style="@style/WorkTimeDetailsInfoLabel"/>
+            <TextView android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/project"
+                      style="@style/WorkTimeDetailsInfo"/>
+        </LinearLayout>
+        <!-- Task -->
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/lbl_registration_details_task"
+                      style="@style/WorkTimeDetailsInfoLabel"/>
+            <TextView android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/task"
+                      style="@style/WorkTimeDetailsInfo"/>
+        </LinearLayout>
     </LinearLayout>
 
-    <RelativeLayout android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
-        <LinearLayout android:layout_width="fill_parent"
-                      android:layout_height="fill_parent"
-                      android:orientation="vertical"
-                      android:layout_above="@id/punch_bar_container"
-                      android:layout_alignParentTop="true">
-            <!-- Start time and date -->
-            <LinearLayout android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="horizontal">
-                <TextView android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text="@string/lbl_registration_details_start"
-                          style="@style/WorkTimeDetailsInfoLabel"/>
-                <TextView android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:id="@+id/start"
-                          style="@style/WorkTimeDetailsInfo"/>
-            </LinearLayout>
-            <!-- End time and date -->
-            <LinearLayout android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="horizontal">
-                <TextView android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text="@string/lbl_registration_details_end"
-                          style="@style/WorkTimeDetailsInfoLabel"/>
-                <TextView android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:id="@+id/end"
-                          style="@style/WorkTimeDetailsInfo"/>
-            </LinearLayout>
-            <!-- Duration -->
-            <LinearLayout android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="horizontal">
-                <TextView android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text="@string/lbl_registration_details_duration"
-                          style="@style/WorkTimeDetailsInfoLabel"/>
-                <TextView android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:id="@+id/duration"
-                          style="@style/WorkTimeDetailsInfo"/>
-            </LinearLayout>
-            <!-- Comment -->
-            <TextView android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:text="@string/lbl_registration_details_comment"
-                      android:id="@+id/comment_label"
-                      style="@style/WorkTimeDetailsInfoLabel"/>
-            <TextView android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:id="@+id/comment"
-                      style="@style/WorkTimeDetailsInfo"/>
-            <!-- Project -->
-            <LinearLayout android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="horizontal">
-                <TextView android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text="@string/lbl_registration_details_project"
-                          style="@style/WorkTimeDetailsInfoLabel"/>
-                <TextView android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:id="@+id/project"
-                          style="@style/WorkTimeDetailsInfo"/>
-            </LinearLayout>
-            <!-- Task -->
-            <LinearLayout android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="horizontal">
-                <TextView android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text="@string/lbl_registration_details_task"
-                          style="@style/WorkTimeDetailsInfoLabel"/>
-                <TextView android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:id="@+id/task"
-                          style="@style/WorkTimeDetailsInfo"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <include layout="@layout/comp_start_stop_time_registration"/>
-    </RelativeLayout>
-
-</LinearLayout>
+    <include layout="@layout/comp_start_stop_time_registration"/>
+</RelativeLayout>

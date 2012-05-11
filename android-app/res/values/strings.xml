@@ -134,6 +134,7 @@
     <string name="lbl_registrations_edit">Edit</string>
     <!-- REGISTRATION DETAILS -->
     <string name="lbl_registration_details_title">Registration Details</string>
+    <string name="time_registration_details_ab_menu_edit">Edit</string>
     <string name="lbl_registration_details_start">Start: </string>
     <string name="lbl_registration_details_end">End: </string>
     <string name="lbl_registration_details_duration">Duration: </string>

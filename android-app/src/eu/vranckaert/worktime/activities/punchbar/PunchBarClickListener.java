@@ -19,7 +19,7 @@ package eu.vranckaert.worktime.activities.punchbar;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
-import eu.vranckaert.worktime.activities.timeregistrations.RegistrationDetailsActivity;
+import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationDetailsActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.model.TimeRegistration;
 
@@ -39,7 +39,7 @@ public class PunchBarClickListener implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if (this.ongoingTimeRegistration != null && this.ongoingTimeRegistration.isOngoingTimeRegistration()) {
-            Intent intent = new Intent(ctx, RegistrationDetailsActivity.class);
+            Intent intent = new Intent(ctx, TimeRegistrationDetailsActivity.class);
             intent.putExtra(Constants.Extras.TIME_REGISTRATION, ongoingTimeRegistration);
             intent.putExtra(Constants.Extras.TIME_REGISTRATION_PREVIOUS, previousTimeRegistration);
             intent.putExtra(Constants.Extras.TIME_REGISTRATION_NEXT, nextTimeRegistration);

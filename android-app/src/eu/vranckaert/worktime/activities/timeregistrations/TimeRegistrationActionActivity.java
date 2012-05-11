@@ -474,7 +474,7 @@ public class TimeRegistrationActionActivity extends GuiceActivity {
                                 TimeRegistration nextTimeRegistration = timeRegistrationService.getNextTimeRegistration(timeRegistration);
                                 timeRegistrationService.fullyInitialize(nextTimeRegistration);
 
-                                Intent intent = new Intent(TimeRegistrationActionActivity.this, RegistrationDetailsActivity.class);
+                                Intent intent = new Intent(TimeRegistrationActionActivity.this, TimeRegistrationDetailsActivity.class);
                                 intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
                                 intent.putExtra(Constants.Extras.TIME_REGISTRATION_PREVIOUS, previousTimeRegistration);
                                 intent.putExtra(Constants.Extras.TIME_REGISTRATION_NEXT, nextTimeRegistration);

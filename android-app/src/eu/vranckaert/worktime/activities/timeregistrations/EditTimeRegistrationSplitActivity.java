@@ -30,7 +30,6 @@ import eu.vranckaert.worktime.dao.TimeRegistrationDao;
 import eu.vranckaert.worktime.dao.impl.TimeRegistrationDaoImpl;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
-import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.HourPreference12Or24;
@@ -73,6 +72,8 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setTitle(R.string.lbl_registration_split_title);
 
         loadExtras();
         validateOriginalTimeRegistration();
@@ -581,29 +582,9 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
         timePicker.setCurrentMinute(part.get(Calendar.MINUTE));
     }
 
-    /**
-     * Go Home.
-     * @param view The view.
-     */
-    public void onHomeClick(View view) {
-        boolean result = onCancel(getActiveView(), view);
-        if (result) {
-            if (isCancelDialogEnabled()) {
-                showCancelDialog(view);
-            } else {
-                closeOnCancel(view);
-            }
-        }
-    }
-
     @Override
     public void closeOnCancel(View view) {
         setResult(RESULT_CANCELED);
-
-        if (view != null && view.getId() == R.id.title_bar_home_button) {
-            IntentUtil.goHome(this);
-            return;
-        }
 
         super.closeOnCancel(view);
     }

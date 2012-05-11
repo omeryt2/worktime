@@ -19,6 +19,9 @@ package eu.vranckaert.worktime.activities.timeregistrations;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import com.google.inject.Inject;
@@ -40,7 +43,7 @@ import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import roboguice.activity.GuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
@@ -49,8 +52,8 @@ import roboguice.inject.InjectView;
  * Date: 27/04/11
  * Time: 15:59
  */
-public class RegistrationDetailsActivity extends GuiceActivity {
-    private static final String LOG_TAG = RegistrationDetailsActivity.class.getSimpleName();
+public class TimeRegistrationDetailsActivity extends ActionBarGuiceActivity {
+    private static final String LOG_TAG = TimeRegistrationDetailsActivity.class.getSimpleName();
 
     @InjectView(R.id.start)
     private TextView timeRegistrationStart;
@@ -101,8 +104,10 @@ public class RegistrationDetailsActivity extends GuiceActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_registration_details);
+
+        setTitle(R.string.lbl_registration_details_title);
+        setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.REGISTRATIONS_DETAILS_ACTIVITY);
@@ -156,26 +161,8 @@ public class RegistrationDetailsActivity extends GuiceActivity {
         }
     }
 
-    /**
-     * Navigate home.
-     * @param view The view.
-     */
-    public void onHomeClick(View view) {
-        IntentUtil.goHome(this);
-    }
-
-    /**
-     * Navigate home.
-     * @param view The view.
-     */
-    public void onEditClick(View view) {
-        Intent intent = new Intent(RegistrationDetailsActivity.this, TimeRegistrationActionActivity.class);
-        intent.putExtra(Constants.Extras.TIME_REGISTRATION, registration);
-        startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
-    }
-
     public void onPunchButtonClick(View view) {
-        PunchBarUtil.onPunchButtonClick(RegistrationDetailsActivity.this, timeRegistrationService);
+        PunchBarUtil.onPunchButtonClick(TimeRegistrationDetailsActivity.this, timeRegistrationService);
     }
 
     @Override
@@ -199,11 +186,11 @@ public class RegistrationDetailsActivity extends GuiceActivity {
                 break;
             }
             case Constants.IntentRequestCodes.PUNCH_BAR_START_TIME_REGISTRATION: {
-                PunchBarUtil.configurePunchBar(RegistrationDetailsActivity.this, timeRegistrationService, taskService, projectService);
+                PunchBarUtil.configurePunchBar(TimeRegistrationDetailsActivity.this, timeRegistrationService, taskService, projectService);
                 break;
             }
             case Constants.IntentRequestCodes.PUNCH_BAR_END_TIME_REGISTRATION: {
-                PunchBarUtil.configurePunchBar(RegistrationDetailsActivity.this, timeRegistrationService, taskService, projectService);
+                PunchBarUtil.configurePunchBar(TimeRegistrationDetailsActivity.this, timeRegistrationService, taskService, projectService);
                 break;
             }
         }
@@ -213,7 +200,7 @@ public class RegistrationDetailsActivity extends GuiceActivity {
     protected void onResume() {
         super.onResume();
 
-        PunchBarUtil.configurePunchBar(RegistrationDetailsActivity.this, timeRegistrationService, taskService, projectService);
+        PunchBarUtil.configurePunchBar(TimeRegistrationDetailsActivity.this, timeRegistrationService, taskService, projectService);
 
         if (initialLoad) {
             initialLoad = false;
@@ -228,6 +215,31 @@ public class RegistrationDetailsActivity extends GuiceActivity {
         }
 
         updateView();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.ab_activity_time_registration_details, menu);
+
+        // Calling super after populating the menu is necessary here to ensure that the
+        // action bar helpers have a chance to handle this event.
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                IntentUtil.goBack(TimeRegistrationDetailsActivity.this);
+                break;
+            case R.id.menu_time_registration_details_edit:
+                Intent intent = new Intent(TimeRegistrationDetailsActivity.this, TimeRegistrationActionActivity.class);
+                intent.putExtra(Constants.Extras.TIME_REGISTRATION, registration);
+                startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

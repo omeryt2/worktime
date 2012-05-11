@@ -66,7 +66,7 @@
         <activity android:name=".activities.timeregistrations.TimeRegistrationsActivity"
                   android:theme="@style/AppTheme"
                   android:configChanges="orientation|keyboardHidden"/>
-        <activity android:name=".activities.timeregistrations.RegistrationDetailsActivity"
+        <activity android:name=".activities.timeregistrations.TimeRegistrationDetailsActivity"
                   android:theme="@style/AppTheme"
                   android:configChanges="orientation|keyboardHidden"/>
         <activity android:name=".activities.timeregistrations.AddEditTimeRegistrationsComment"

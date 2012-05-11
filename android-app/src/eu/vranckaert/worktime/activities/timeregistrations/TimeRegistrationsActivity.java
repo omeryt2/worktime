@@ -114,7 +114,7 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
                     nextTimeRegistration = timeRegistrations.get(position - 1);
                 }
 
-                Intent intent = new Intent(TimeRegistrationsActivity.this, RegistrationDetailsActivity.class);
+                Intent intent = new Intent(TimeRegistrationsActivity.this, TimeRegistrationDetailsActivity.class);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION, selectedRegistration);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION_PREVIOUS, previousTimeRegistration);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION_NEXT, nextTimeRegistration);
