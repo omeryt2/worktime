@@ -17,11 +17,14 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@id/menu_refresh"
-          android:showAsAction="always"/>
-    <item android:id="@+id/menu_add_project_activity_save"
-          android:title="@string/add_project_ab_menu_save"
-          android:icon="@drawable/ic_content_save"
+    <item android:id="@+id/menu_reporting_criteria_activity_new"
+          android:title="@string/reporting_criteria_ab_menu_generate_report"
+          android:icon="@drawable/ic_collections_view_as_list"
           android:orderInCategory="1"
+          android:showAsAction="always" />
+    <item android:id="@+id/menu_reporting_criteria_activity_batch_share"
+          android:title="@string/reporting_criteria_ab_menu_batch_share"
+          android:icon="@drawable/ic_social_share"
+          android:orderInCategory="2"
           android:showAsAction="always" />
 </menu>

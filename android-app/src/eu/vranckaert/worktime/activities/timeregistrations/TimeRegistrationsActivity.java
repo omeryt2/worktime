@@ -281,7 +281,7 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
         TimeRegistration timeRegistration = timeRegistrations.get(element);
 
         switch (item.getItemId()) {
-            case R.id.registrations_edit:
+            case R.id.registrations_activity_edit:
                 Intent intent = new Intent(TimeRegistrationsActivity.this, TimeRegistrationActionActivity.class);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
                 startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
@@ -307,7 +307,7 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
             case android.R.id.home:
                 IntentUtil.goBack(TimeRegistrationsActivity.this);
                 break;
-            case R.id.menu_time_registrations_report:
+            case R.id.menu_time_registrations_activity_report:
                 Intent intent = new Intent(TimeRegistrationsActivity.this, ReportingCriteriaActivity.class);
                 startActivity(intent);
                 break;

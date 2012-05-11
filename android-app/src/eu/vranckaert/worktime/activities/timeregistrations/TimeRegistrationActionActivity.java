@@ -253,8 +253,6 @@ public class TimeRegistrationActionActivity extends GuiceActivity {
                     Looper.prepare();
                 }
 
-                Date endTime = new Date();
-
                 timeRegistration.setComment(comment);
                 tracker.trackEvent(
                         TrackerConstants.EventSources.TIME_REGISTRATION_ACTION_ACTIVITY,
@@ -274,11 +272,6 @@ public class TimeRegistrationActionActivity extends GuiceActivity {
             protected void onPostExecute(Object o) {
                 removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION_LOADING);
                 Log.d(LOG_TAG, "Loading dialog removed from UI");
-                if (o != null) {
-                    Log.d(LOG_TAG, "Something went wrong...");
-                    Toast.makeText(TimeRegistrationActionActivity.this, R.string.err_time_registration_actions_dialog_corrupt_data, Toast.LENGTH_LONG).show();
-                }
-
                 Log.d(LOG_TAG, "Finishing activity...");
                 setResult(RESULT_OK);
                 finish();
@@ -492,7 +485,13 @@ public class TimeRegistrationActionActivity extends GuiceActivity {
                                 break;
                             }
                             case EDIT_END_TIME: {
-                                // TODO
+                                TimeRegistration nextTimeRegistration = timeRegistrationService.getNextTimeRegistration(timeRegistration);
+                                timeRegistrationService.fullyInitialize(nextTimeRegistration);
+
+                                Intent intent = new Intent(TimeRegistrationActionActivity.this, EditTimeRegistrationEndTimeActivity.class);
+                                intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
+                                intent.putExtra(Constants.Extras.TIME_REGISTRATION_PREVIOUS, nextTimeRegistration);
+                                startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT_DIALOG);
                                 break;
                             }
                             case RESTART_TIME_REGISTRATION: {

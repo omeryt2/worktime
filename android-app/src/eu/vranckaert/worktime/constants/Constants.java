@@ -73,6 +73,7 @@ public class Constants {
         public static final int MANUAL_RESTORE_ERROR = 56;
         public static final int TIME_REGISTRATION_ACTION_LOADING = 57;
         public static final int TIME_REGISTRATION_DELETE_LOADING = 58;
+        public static final int REPORTING_BATCH_SHARE_NO_FILES_FOUND = 59;
     }
     public class IntentRequestCodes {
         public static final int ADD_PROJECT = 0;

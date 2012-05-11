@@ -114,7 +114,7 @@ public class AddEditProjectActivity extends ActionBarGuiceActivity {
                 AsyncTask<String, Void, Project> task = new AsyncTask<String, Void, Project>(){
                     @Override
                     protected void onPreExecute() {
-                        getActionBarHelper().setRefreshActionItemState(true, R.id.menu_add_project_save);
+                        getActionBarHelper().setRefreshActionItemState(true, R.id.menu_add_project_activity_save);
                     }
 
                     @Override
@@ -162,7 +162,7 @@ public class AddEditProjectActivity extends ActionBarGuiceActivity {
                             }
                         }
 
-                        getActionBarHelper().setRefreshActionItemState(false, R.id.menu_add_project_save);
+                        getActionBarHelper().setRefreshActionItemState(false, R.id.menu_add_project_activity_save);
                         Intent intentData = new Intent();
                         intentData.putExtra(Constants.Extras.PROJECT, project);
                         setResult(RESULT_OK, intentData);
@@ -220,7 +220,7 @@ public class AddEditProjectActivity extends ActionBarGuiceActivity {
             case android.R.id.home:
                 IntentUtil.goBack(AddEditProjectActivity.this);
                 break;
-            case R.id.menu_add_project_save:
+            case R.id.menu_add_project_activity_save:
                 performSave();
                 break;
         }

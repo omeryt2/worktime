@@ -17,7 +17,7 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_time_registrations_report"
+    <item android:id="@+id/menu_time_registrations_activity_report"
           android:title="@string/time_registrations_ab_menu_report"
           android:icon="@drawable/ic_collections_view_as_list"
           android:orderInCategory="1"

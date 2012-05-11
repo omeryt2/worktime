@@ -24,6 +24,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -58,7 +61,7 @@ import eu.vranckaert.worktime.utils.file.FileUtil;
 import eu.vranckaert.worktime.utils.file.XlsFilenameFilter;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import roboguice.activity.GuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
@@ -76,13 +79,15 @@ import java.util.List;
  * Date: 15/09/11
  * Time: 20:28
  */
-public class ReportingCriteriaActivity extends GuiceActivity {
+public class ReportingCriteriaActivity extends ActionBarGuiceActivity {
     private static final String LOG_TAG = ReportingCriteriaActivity.class.getSimpleName();
 
     private List<ReportingDateRange> dateRanges;
     private List<ReportingDataGrouping> dataGroupings;
     private List<ReportingDisplayDuration> displayDurations;
     private List<ReportingDataOrder> dataOrders;
+
+    private File[] allDocumentsAvailable;
 
     @InjectExtra(value = Constants.Extras.TIME_REGISTRATION_START_DATE, optional = true)
     @Nullable
@@ -109,8 +114,6 @@ public class ReportingCriteriaActivity extends GuiceActivity {
     private List<Project> availableProjects = null;
     private List<Task> availableTasks = null;
 
-    @InjectView(R.id.btn_action_export)
-    private View actionExportButton;
     @InjectView(R.id.reporting_criteria_date_range_spinner)
     private Spinner dateRangeSpinner;
     @InjectView(R.id.reporting_criteria_data_grouping_spinner)
@@ -148,6 +151,10 @@ public class ReportingCriteriaActivity extends GuiceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reporting_criteria);
+
+        setTitle(R.string.lbl_reporting_criteria_title);
+        setDisplayHomeAsUpEnabled(true);
+
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.REPORTING_CRITERIA_ACTIVITY);
 
@@ -155,9 +162,6 @@ public class ReportingCriteriaActivity extends GuiceActivity {
     }
 
     private void initializeView() {
-        //Disk button
-        checkForEnablingBatchSharing();
-
         //Date Range spinner
         dateRanges = Arrays.asList(ReportingDateRange.values());
         Collections.sort(dateRanges, new Comparator<ReportingDateRange>() {
@@ -302,23 +306,6 @@ public class ReportingCriteriaActivity extends GuiceActivity {
         //Handle changes...
         updateViewOnDateRangeSpinnerSelection();
         updateViewOnProjectAndTaskSelection();
-    }
-
-    private void checkForEnablingBatchSharing() {
-        File documentDirectory = FileUtil.getExportDir(ReportingCriteriaActivity.this);
-        if (documentDirectory == null) {
-            actionExportButton.setVisibility(View.INVISIBLE);
-            return;
-        }
-
-        File[] csvDocuments = documentDirectory.listFiles(new CsvFilenameFilter());
-        File[] xlsDocuments = documentDirectory.listFiles(new XlsFilenameFilter());
-
-        if ( (csvDocuments == null && xlsDocuments == null) || (csvDocuments.length == 0 || xlsDocuments.length == 0) ) {
-            actionExportButton.setVisibility(View.INVISIBLE);
-        } else {
-            actionExportButton.setVisibility(View.VISIBLE);
-        }
     }
 
     private void updateViewOnDateRangeSpinnerSelection() {
@@ -698,14 +685,26 @@ public class ReportingCriteriaActivity extends GuiceActivity {
 				dialog = alertValidationError.create();
                 break;
             }
+            case Constants.Dialog.REPORTING_BATCH_SHARE_NO_FILES_FOUND: {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.lbl_reporting_criteria_batch_share_no_files_found_dialog_msg)
+                       .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               removeDialog(Constants.Dialog.REPORTING_BATCH_SHARE_NO_FILES_FOUND);
+                           }
+                       });
+                dialog = builder.create();
+                break;
+            }
             case Constants.Dialog.REPORTING_BATCH_SHARE: {
                 final List<File> selectedDocuments = new ArrayList<File>();
-                final File[] documents = FileUtil.getExportDir(ReportingCriteriaActivity.this).listFiles(new CsvFilenameFilter());
+                final File[] allDocuments = allDocumentsAvailable;
 
-                String[] documentNames = new String[documents.length];
-                boolean[] checkedNames = new boolean[documents.length];
-                for (int i=0; i<documents.length; i++) {
-                    File document = documents[i];
+                String[] documentNames = new String[allDocuments.length];
+                boolean[] checkedNames = new boolean[allDocuments.length];
+                for (int i=0; i<allDocuments.length; i++) {
+                    File document = allDocuments[i];
                     documentNames[i] = document.getName();
                     checkedNames[i] = Boolean.FALSE;
                 }
@@ -717,11 +716,11 @@ public class ReportingCriteriaActivity extends GuiceActivity {
                                new DialogInterface.OnMultiChoiceClickListener() {
                                    @Override
                                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                                       Log.d(LOG_TAG, (isChecked?"Selecting":"Unselecting") + " document on position " + which + " with title '" + documents[which].getName() + "'");
+                                       Log.d(LOG_TAG, (isChecked?"Selecting":"Unselecting") + " document on position " + which + " with title '" + allDocuments[which].getName() + "'");
                                        if (isChecked) {
-                                           selectedDocuments.add(documents[which]);
+                                           selectedDocuments.add(allDocuments[which]);
                                        } else {
-                                           selectedDocuments.remove(documents[which]);
+                                           selectedDocuments.remove(allDocuments[which]);
                                        }
                                    }
                                }
@@ -732,7 +731,7 @@ public class ReportingCriteriaActivity extends GuiceActivity {
                                Log.d(LOG_TAG, "Continuing to batch share with " + selectedDocuments.size() + " document(s)");
                                if (selectedDocuments.size() == 0) {
                                    Log.d(LOG_TAG, "Showing toast message notifying the user he must select a document to share");
-                                   Toast.makeText(ReportingCriteriaActivity.this, R.string.msg_reporting_criteria_batch_share_no_docs_selected,  Toast.LENGTH_SHORT).show();
+                                   Toast.makeText(ReportingCriteriaActivity.this, R.string.msg_reporting_criteria_batch_share_no_docs_selected, Toast.LENGTH_SHORT).show();
                                    return;
                                }
                                removeDialog(Constants.Dialog.REPORTING_BATCH_SHARE);
@@ -770,9 +769,35 @@ public class ReportingCriteriaActivity extends GuiceActivity {
                 selectedDocuments,
                 R.string.lbl_reporting_criteria_batch_share_app_chooser_title
         );
+
     }
 
-    public void onGenerateReportClick(View view) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.ab_activity_reporting_criteria, menu);
+
+        // Calling super after populating the menu is necessary here to ensure that the
+        // action bar helpers have a chance to handle this event.
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                break;
+            case R.id.menu_reporting_criteria_activity_new:
+                generateReport();
+                break;
+            case R.id.menu_reporting_criteria_activity_batch_share:
+                shareFiles();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void generateReport() {
         if (startDate.after(endDate)) {
             showDialog(Constants.Dialog.REPORTING_CRITERIA_SELECT_END_DATE_ERROR_BEFORE_START_DATE);
             return;
@@ -794,24 +819,22 @@ public class ReportingCriteriaActivity extends GuiceActivity {
         startActivity(intent);
     }
 
-    public void onBatchShareClick(View view) {
-        showDialog(Constants.Dialog.REPORTING_BATCH_SHARE);
-    }
+    private void shareFiles() {
+        final File[] csvDocuments = FileUtil.getExportDir(ReportingCriteriaActivity.this).listFiles(new CsvFilenameFilter());
+        final File[] xlsDocuments = FileUtil.getExportDir(ReportingCriteriaActivity.this).listFiles(new XlsFilenameFilter());
+        allDocumentsAvailable = new File[csvDocuments.length + xlsDocuments.length];
+        System.arraycopy(csvDocuments, 0, allDocumentsAvailable, 0, csvDocuments.length);
+        System.arraycopy(xlsDocuments, 0, allDocumentsAvailable, csvDocuments.length, xlsDocuments.length);
 
-    public void onHomeClick(View view) {
-        IntentUtil.goHome(this);
+        if (allDocumentsAvailable.length > 0)
+            showDialog(Constants.Dialog.REPORTING_BATCH_SHARE);
+        else
+            showDialog(Constants.Dialog.REPORTING_BATCH_SHARE_NO_FILES_FOUND);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         tracker.stopSession();
-    }
-
-    @Override
-    protected void onRestart() {
-        Log.d(LOG_TAG, "Checking if batch sharing should be enabled when coming back...");
-        super.onRestart();
-        checkForEnablingBatchSharing();
     }
 }

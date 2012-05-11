@@ -194,6 +194,8 @@
     <!-- REPORTING -->
     <!-- Criteria -->
     <string name="lbl_reporting_criteria_title">Reporting</string>
+    <string name="reporting_criteria_ab_menu_generate_report">Generate report</string>
+    <string name="reporting_criteria_ab_menu_batch_share">Send reports</string>
     <string name="lbl_reporting_criteria_date_range">Date Range</string>
     <string name="lbl_reporting_criteria_project_and_task">Project and Task</string>
     <string name="lbl_reporting_criteria_data_display">Data Display</string>
@@ -241,6 +243,7 @@
         <item>01d 03h 05m 00s (24h/day)</item>
         <item>03d 03h 05m 00s (8h/day)</item>
     </string-array>
+    <string name="lbl_reporting_criteria_batch_share_no_files_found_dialog_msg">No export-files are found to share!</string>
     <string name="lbl_reporting_criteria_batch_share_dialog_title">Select files to share</string>
     <string name="lbl_reporting_criteria_batch_share_subject">Shared exported WorkTime reports</string>
     <string name="lbl_reporting_criteria_batch_share_body">\n\nShared using WorkTime for Android</string>

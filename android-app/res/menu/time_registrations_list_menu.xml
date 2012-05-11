@@ -17,6 +17,6 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/registrations_edit"
+    <item android:id="@+id/registrations_activity_edit"
           android:title="@string/lbl_registrations_edit"/>
 </menu>

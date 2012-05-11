@@ -72,7 +72,7 @@ public class ManageProjectsActivityTest extends ActivityTestCase<ManageProjectsA
         takeScreenshot();
 
         // Save the new project
-        ActionBar.clickMenuItem(R.id.menu_add_project_save, solo.getCurrentActivity());
+        ActionBar.clickMenuItem(R.id.menu_add_project_activity_save, solo.getCurrentActivity());
         solo.waitForActivity(ManageProjectsActivity.class.getSimpleName());
         solo.waitForDialogToClose(TestUtil.Time.TWENTY_SECONDS);
         solo.assertCurrentActivity("The projects activity is expected", ManageProjectsActivity.class);

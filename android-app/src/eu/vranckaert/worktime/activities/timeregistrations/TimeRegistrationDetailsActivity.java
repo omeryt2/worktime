@@ -233,7 +233,7 @@ public class TimeRegistrationDetailsActivity extends ActionBarGuiceActivity {
             case android.R.id.home:
                 IntentUtil.goBack(TimeRegistrationDetailsActivity.this);
                 break;
-            case R.id.menu_time_registration_details_edit:
+            case R.id.menu_time_registration_details_activity_edit:
                 Intent intent = new Intent(TimeRegistrationDetailsActivity.this, TimeRegistrationActionActivity.class);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION, registration);
                 startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);

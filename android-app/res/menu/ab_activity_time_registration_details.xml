@@ -17,7 +17,7 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_time_registration_details_edit"
+    <item android:id="@+id/menu_time_registration_details_activity_edit"
           android:title="@string/time_registration_details_ab_menu_edit"
           android:icon="@drawable/ic_content_edit"
           android:orderInCategory="1"
