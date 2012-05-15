@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +61,7 @@ import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import roboguice.activity.GuiceListActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceListActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
@@ -73,11 +74,8 @@ import java.util.List;
  * Date: 28/03/11
  * Time: 18:26
  */
-public class ProjectDetailsActivity extends GuiceListActivity {
+public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
     private static final String LOG_TAG = ProjectDetailsActivity.class.getSimpleName();
-
-    @InjectView(R.id.title_text)
-    private TextView titleText;
 
     @InjectView(R.id.projectComment)
     private TextView projectComment;
@@ -127,14 +125,15 @@ public class ProjectDetailsActivity extends GuiceListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_project_details);
+
+        setTitle(project.getName());
+        setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.PROJECTS_DETAILS_ACTIVITY);
 
         Log.d(LOG_TAG, "Project found with id " + project.getId() + " and name " + project.getName());
-        titleText.setText(project.getName());
         if (StringUtils.isNotBlank(project.getComment())) {
             projectComment.setText(project.getComment());
         }
@@ -453,7 +452,7 @@ public class ProjectDetailsActivity extends GuiceListActivity {
             case Constants.IntentRequestCodes.EDIT_PROJECT:
                 if (resultCode == Activity.RESULT_OK) {
                     project = (Project) data.getExtras().get(Constants.Extras.PROJECT);
-                    titleText.setText(project.getName());
+                    setTitle(project.getName());
                     if (StringUtils.isNotBlank(project.getComment())) {
                         projectComment.setText(project.getComment());
                     } else {
@@ -596,10 +595,6 @@ public class ProjectDetailsActivity extends GuiceListActivity {
         intent.putExtra(Constants.Extras.PROJECT, project);
         startActivity(intent);
     }
-
-    public void onHomeClick(View view) {
-        IntentUtil.goHome(this);
-    }
     
     public void showHideFinishedTasks(View view) {
         boolean hide = Preferences.getDisplayTasksHideFinished(ProjectDetailsActivity.this);
@@ -615,18 +610,6 @@ public class ProjectDetailsActivity extends GuiceListActivity {
 
     public void onAddTaskClick(View view) {
         openAddTaskActivity();
-    }
-
-    public void onEditClick(View view) {
-        openEditProjectActivity(project);
-    }
-
-    public void onDeleteClick(View view) {
-        deleteProject(project, true);
-    }
-
-    public void onGenerateReportClick(View view) {
-        openReportingCriteriaActivity(project);
     }
 
     public void onPunchButtonClick(View view) {
@@ -726,6 +709,35 @@ public class ProjectDetailsActivity extends GuiceListActivity {
         );
         Log.d(LOG_TAG, "Task has been moved!");
         loadProjectTasks(project);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.ab_activity_project_details, menu);
+
+        // Calling super after populating the menu is necessary here to ensure that the
+        // action bar helpers have a chance to handle this event.
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                IntentUtil.goBack(ProjectDetailsActivity.this);
+                break;
+            case R.id.menu_project_details_activity_edit:
+                openEditProjectActivity(project);
+                break;
+            case R.id.menu_project_details_activity_delete:
+                deleteProject(project, true);
+                break;
+            case R.id.menu_project_details_activity_reporting:
+                openReportingCriteriaActivity(project);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -1,17 +1,17 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package eu.vranckaert.worktime.service.impl;
 
@@ -27,7 +27,6 @@ import eu.vranckaert.worktime.dao.impl.TimeRegistrationDaoImpl;
 import eu.vranckaert.worktime.exceptions.AtLeastOneProjectRequiredException;
 import eu.vranckaert.worktime.exceptions.ProjectStillInUseException;
 import eu.vranckaert.worktime.model.Project;
-import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
@@ -87,10 +86,10 @@ public class ProjectServiceImpl implements ProjectService {
      * {@inheritDoc}
      */
     public void remove(Project project) throws AtLeastOneProjectRequiredException, ProjectStillInUseException {
-        if (countTotalNumberOfProjects() > 1) {
-            List<Task> tasksForProject = taskDao.findTasksForProject(project);//TODO don't get entire list, just the count!
-            if (tasksForProject.size() > 0) {
-                throw new ProjectStillInUseException("The project is still linked with " + tasksForProject.size() + " tasks! Remove them first!");
+        if (dao.count() > 1) {
+            Long taskCount = taskDao.count();
+            if (taskCount > 0) {
+                throw new ProjectStillInUseException("The project is still linked with " + taskCount + " tasks! Remove them first!");
             }
             dao.delete(project);
             if (project.isDefaultValue()) {
@@ -151,13 +150,6 @@ public class ProjectServiceImpl implements ProjectService {
             return false;
         }
         return dao.isNameAlreadyUsed(projectName);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int countTotalNumberOfProjects() {
-        return dao.countTotalNumberOfProjects();
     }
 
     /**

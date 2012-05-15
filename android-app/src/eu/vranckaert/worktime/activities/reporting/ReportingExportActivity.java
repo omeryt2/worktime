@@ -25,6 +25,9 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -52,9 +55,9 @@ import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
+import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 import jxl.biff.DisplayFormat;
 import org.joda.time.Period;
-import roboguice.activity.GuiceActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
@@ -73,7 +76,7 @@ import java.util.TimeZone;
  * Date: 15/02/11
  * Time: 00:15
  */
-public class ReportingExportActivity extends GuiceActivity {
+public class ReportingExportActivity extends ActionBarGuiceActivity {
     private static final String LOG_TAG = ReportingExportActivity.class.getSimpleName();
 
     @InjectView(R.id.reporting_export_type)
@@ -105,8 +108,10 @@ public class ReportingExportActivity extends GuiceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_reporting_export);
+
+        setTitle(R.string.lbl_reporting_export_title);
+        setDisplayHomeAsUpEnabled(true);
 
         initForm(ReportingExportActivity.this);
     }
@@ -275,23 +280,10 @@ public class ReportingExportActivity extends GuiceActivity {
     }
 
     /**
-     * Go Home.
-     *
-     * @param view The view.
+     * This method validates the user-input, updates the preferences, hide the keyboard is it's still visible, and
+     * checks if an SD-card is available. If all these checks proceed the export will be launched.
      */
-    public void onHomeClick(View view) {
-        IntentUtil.goHome(this);
-    }
-
-    /**
-     * Whenever the user selects the export button this method will be triggered. It validates the user-input, updates
-     * the preferences, hide the keyboard is it's still visible, and checks if an SD-card is available. If all these
-     * checks proceed the export will be launched.
-     *
-     * @param view The view.
-     */
-    public void onExportClick(View view) {
-        Log.d(LOG_TAG, "Export button clicked!");
+    private void save() {
         Log.d(LOG_TAG, "Validate input...");
         if (!validate()) {
             return;
@@ -304,7 +296,7 @@ public class ReportingExportActivity extends GuiceActivity {
         ContextUtils.hideKeyboard(ReportingExportActivity.this, fileNameInput);
 
         if (ContextUtils.isSdCardAvailable() && ContextUtils.isSdCardWritable()) {
-            startExport();
+            doSave();
         } else {
             showDialog(Constants.Dialog.REPORTING_EXPORT_UNAVAILABLE);
         }
@@ -359,7 +351,7 @@ public class ReportingExportActivity extends GuiceActivity {
      * the threading, so it starts a loading dialog, then starts triggers the CSV or Excel export (based on the users'
      * choice) and afterwards removes the loading dialog and handles either the successful or failed export.
      */
-    private void startExport() {
+    private void doSave() {
         AsyncTask task = new AsyncTask() {
             @Override
             protected void onPreExecute() {
@@ -389,7 +381,7 @@ public class ReportingExportActivity extends GuiceActivity {
                         }
                     }
                 } catch (GeneralExportException e) {
-                    Log.e(LOG_TAG, "A general exception occured during export!", e);
+                    Log.e(LOG_TAG, "A general exception occurred during export!", e);
                 }
                 Log.d(LOG_TAG, "Export in background process finished!");
                 return file;
@@ -787,5 +779,28 @@ public class ReportingExportActivity extends GuiceActivity {
                 exportedFile,
                 R.string.lbl_reporting_export_share_file_app_chooser_title
         );
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.ab_activity_reporting_export, menu);
+
+        // Calling super after populating the menu is necessary here to ensure that the
+        // action bar helpers have a chance to handle this event.
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                IntentUtil.goBack(ReportingExportActivity.this);
+                break;
+            case R.id.menu_reporting_export_save:
+                save();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

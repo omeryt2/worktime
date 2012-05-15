@@ -27,6 +27,7 @@
         <attr name="borderDrawable" format="reference" />
     </declare-styleable>
 
+    <!-- Custom Seek Bar Preference -->
     <declare-styleable name="SeekBarPreferenceView">
         <attr name="unitsLeft" format="string"/>
         <attr name="summaryText" format="string"/>

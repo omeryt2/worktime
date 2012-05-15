@@ -25,20 +25,17 @@
      refresh menu item sometime -->
     <item type="id" name="menu_refresh" />
 
-
-    <item type="id" name="title_container" />
-    <item type="id" name="title_logo" />
-    <item type="id" name="title_text" />
-    <item type="id" name="btn_save" />
-    <item type="id" name="img_finished" />
+    <!-- Title bar -->
     <item type="id" name="title_refresh_progress" />
-
-    <item type="id" name="punch_bar_text" />
-    <item type="id" name="punch_bar_container" />
-
+    <!-- sub-title bar -->
     <item type="id" name="sub_title_container" />
     <item type="id" name="sub_title_text" />
 
+    <!-- Punch Bar -->
+    <item type="id" name="punch_bar_text" />
+    <item type="id" name="punch_bar_container" />
+
+    <!-- Widget -->
     <item type="id" name="widget"/>
     <item type="id" name="widget_bgtop" />
     <item type="id" name="widget_actionbtn" />
@@ -51,4 +48,7 @@
     <item type="id" name="wizard_navigation_container_finish" />
     <item type="id" name="wizard_content_container" />
     <item type="id" name="wizard_page_content_container" />
+
+    <!-- Custom ids -->
+    <item type="id" name="img_finished" />
 </resources>

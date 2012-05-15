@@ -17,14 +17,19 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_reporting_criteria_activity_batch_share"
-          android:title="@string/reporting_criteria_ab_menu_batch_share"
-          android:icon="@drawable/ic_content_email"
+    <item android:id="@+id/menu_project_details_activity_edit"
+          android:title="@string/project_details_ab_menu_edit"
+          android:icon="@drawable/ic_content_edit"
           android:orderInCategory="1"
-          android:showAsAction="ifRoom" />
-    <item android:id="@+id/menu_reporting_criteria_activity_new"
-          android:title="@string/reporting_criteria_ab_menu_generate_report"
-          android:icon="@drawable/ic_collections_view_as_list"
-          android:orderInCategory="2"
           android:showAsAction="always" />
+    <item android:id="@+id/menu_project_details_activity_delete"
+          android:title="@string/project_details_ab_menu_delete"
+          android:icon="@drawable/ic_content_discard"
+          android:orderInCategory="2"
+          android:showAsAction="never" />
+    <item android:id="@+id/menu_project_details_activity_reporting"
+          android:title="@string/project_details_ab_menu_reporting"
+          android:icon="@drawable/ic_collections_view_as_list"
+          android:orderInCategory="3"
+          android:showAsAction="never" />
 </menu>

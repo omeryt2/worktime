@@ -15,42 +15,22 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
 
-    <LinearLayout style="@style/TitleBar">
-        <ImageButton style="@style/TitleBarAction"
-            android:src="@drawable/ic_title_home"
-            android:onClick="onHomeClick" />
-
-        <ImageView style="@style/TitleBarSeparator" />
-        <eu.vranckaert.worktime.utils.view.CustomTextView
-                style="@style/TitleBarText" android:text="@string/lbl_reporting_result_title"/>
-
-        <ImageView style="@style/TitleBarSeparator" />
-        <ImageButton style="@style/TitleBarAction"
-            android:src="@drawable/ic_title_export"
-            android:onClick="onExportClick" />
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+    <LinearLayout android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical">
+        <TextView android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/reporting_result_includes_ongoing_tr_label"
+                  android:text="@string/lbl_reporting_result_includes_ongoing_time_registrations"
+                  android:visibility="gone"
+                  android:textSize="@dimen/text_size_really_small"
+                  android:textColor="@color/validation_error"/>
+        <TableLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:stretchColumns="*" android:id="@+id/reporting_result_table">
+            <!-- Dynamically add content here... -->
+        </TableLayout>
     </LinearLayout>
-
-    <ScrollView android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-        <LinearLayout android:layout_width="fill_parent"
-                      android:layout_height="wrap_content"
-                      android:orientation="vertical">
-            <TextView android:layout_width="fill_parent"
-                      android:layout_height="wrap_content"
-                      android:id="@+id/reporting_result_includes_ongoing_tr_label"
-                      android:text="@string/lbl_reporting_result_includes_ongoing_time_registrations"
-                      android:visibility="gone"
-                      android:textSize="@dimen/text_size_really_small"
-                      android:textColor="@color/validation_error"/>
-            <TableLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:stretchColumns="*">
-                <!-- Dynamically add content here... -->
-            </TableLayout>
-        </LinearLayout>
-    </ScrollView>
-
-</LinearLayout>
+</ScrollView>

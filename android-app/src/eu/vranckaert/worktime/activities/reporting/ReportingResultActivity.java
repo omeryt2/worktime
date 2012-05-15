@@ -23,9 +23,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -57,7 +58,7 @@ import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import roboguice.activity.GuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
@@ -71,7 +72,7 @@ import java.util.List;
  * Date: 24/09/11
  * Time: 20:03
  */
-public class ReportingResultActivity extends GuiceActivity {
+public class ReportingResultActivity extends ActionBarGuiceActivity {
     private static final String LOG_TAG = ReportingResultActivity.class.getSimpleName();
 
     @Inject
@@ -104,6 +105,9 @@ public class ReportingResultActivity extends GuiceActivity {
     @InjectView(R.id.reporting_result_includes_ongoing_tr_label)
     private TextView resultIncludesOngoingTrsLabel;
 
+    @InjectView(R.id.reporting_result_table)
+    private TableLayout resultTable;
+
     private AnalyticsTracker tracker;
 
     private List<TimeRegistration> timeRegistrations = new ArrayList<TimeRegistration>();
@@ -113,6 +117,9 @@ public class ReportingResultActivity extends GuiceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reporting_result);
+
+        setTitle(R.string.lbl_reporting_result_title);
+        setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.REPORTING_RESULT_ACTIVITY);
@@ -177,13 +184,6 @@ public class ReportingResultActivity extends GuiceActivity {
     }
 
     private void buildTable(List<ReportingTableRecord> tableRecords) {
-        //TODO clean code to get TableLayout (this is a dirty fix because @InjectView didn't work for some reason...)
-        View titleBarView = findViewById(R.id.title_container);
-        LinearLayout windowView = (LinearLayout) titleBarView.getParent();
-        ScrollView scrollView = (ScrollView) windowView.getChildAt(1);
-        LinearLayout scrollViewContent = (LinearLayout) scrollView.getChildAt(0);
-        TableLayout resultTable = (TableLayout) scrollViewContent.getChildAt(1);
-
         for (ReportingTableRecord record : tableRecords) {
             TableRow row = new TableRow(ReportingResultActivity.this);
             TextView recordTotalCol1 = new TextView(ReportingResultActivity.this);
@@ -396,7 +396,7 @@ public class ReportingResultActivity extends GuiceActivity {
         return dialog;
     }
 
-    public void onExportClick(View view) {
+    private void save() {
         tracker.trackEvent(
                 TrackerConstants.EventSources.REPORTING_RESULT_ACTIVITY,
                 TrackerConstants.EventActions.EXPORT_RESULT
@@ -417,100 +417,29 @@ public class ReportingResultActivity extends GuiceActivity {
         Intent intent = new Intent(ReportingResultActivity.this, ReportingExportActivity.class);
         intent.putExtra(Constants.Extras.EXPORT_DTO, exportDto);
         startActivity(intent);
-
-        /*ActionItem exportData = new ActionItem(QuickActionIds.EXPORT_TABLE_DATA, getString(R.string.lbl_reporting_results_export_table_data));
-        exportData.setIcon(quickactionExportTableData);
-        ActionItem exportRaw = new ActionItem(QuickActionIds.EXPORT_RAW_DATA, getString(R.string.lbl_reporting_results_export_raw_data));
-        exportRaw.setIcon(quickactionExportRawData);
-
-        QuickAction quickAction = new QuickAction(ReportingResultActivity.this);
-
-        quickAction.addActionItem(exportData);
-        quickAction.addActionItem(exportRaw);
-
-        quickAction.setOnActionItemClickListener(new QuickAction.OnActionItemClickListener() {
-            @Override
-            public void onItemClick(QuickAction source, int pos, int actionId) {
-                List<String> headers = new ArrayList<String>();
-                List<String[]> values = new ArrayList<String[]>();
-
-                switch (actionId) {
-                    case QuickActionIds.EXPORT_TABLE_DATA: {
-                        //Construct headers
-                        headers = null;
-
-                        //Construct body
-                        for (ReportingTableRecord tableRecord : tableRecords) {
-                            String[] exportLine = {
-                                tableRecord.getColumn1(),
-                                tableRecord.getColumn2(),
-                                tableRecord.getColumn3(),
-                                tableRecord.getColumnTotal()
-                            };
-                            values.add(exportLine);
-                        }
-
-                        break;
-                    }
-                    case QuickActionIds.EXPORT_RAW_DATA: {
-                        //Construct headers
-                        headers.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_startdate));
-                        headers.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_starttime));
-                        headers.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_enddate));
-                        headers.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_endtime));
-                        headers.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_comment));
-                        headers.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_project));
-                        headers.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_task));
-                        headers.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_projectcomment));
-
-                        //Construct body
-                        for (TimeRegistration timeRegistration : timeRegistrations) {
-                            String startDate = DateUtils.DateTimeConverter.convertDateToString(timeRegistration.getStartTime(), DateFormat.SHORT, ReportingResultActivity.this);
-                            String startTime = DateUtils.DateTimeConverter.convertTimeToString(timeRegistration.getStartTime(), TimeFormat.MEDIUM, ReportingResultActivity.this);
-                            String endDate = "";
-                            String endTime = "";
-                            String trComment = "";
-                            String projectName = timeRegistration.getTask().getProject().getName();
-                            String taskName = timeRegistration.getTask().getName();
-                            String projectComment = "";
-
-                            if(timeRegistration.getEndTime() != null) {
-                                endDate = DateUtils.DateTimeConverter.convertDateToString(timeRegistration.getEndTime(), DateFormat.SHORT, ReportingResultActivity.this);
-                                endTime = DateUtils.DateTimeConverter.convertTimeToString(timeRegistration.getEndTime(), TimeFormat.MEDIUM, ReportingResultActivity.this);
-                            } else {
-                                endDate = getString(R.string.now);
-                                endTime = "";
-                            }
-                            if (StringUtils.isNotBlank(timeRegistration.getComment())) {
-                                trComment = timeRegistration.getComment();
-                            }
-                            if (StringUtils.isNotBlank(timeRegistration.getTask().getProject().getComment())) {
-                                projectComment = timeRegistration.getTask().getProject().getComment();
-                            }
-
-                            String[] exportLine = {
-                                    startDate, startTime, endDate, endTime, trComment,
-                                    projectName, taskName, projectComment
-                            };
-                            values.add(exportLine);
-                        }
-
-                        break;
-                    }
-                }
-
-                Intent intent = new Intent(ReportingResultActivity.this, ReportingExportActivity.class);
-                intent.putExtra(Constants.Extras.TIME_REGISTRATIONS, (Serializable) headers);
-                intent.putExtra(Constants.Extras.TABLE_RECORDS, (Serializable) values);
-                startActivity(intent);
-            }
-        });
-
-        quickAction.show(view);*/
     }
 
-    public void onHomeClick(View view) {
-        IntentUtil.goHome(this);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.ab_activity_reporting_result, menu);
+
+        // Calling super after populating the menu is necessary here to ensure that the
+        // action bar helpers have a chance to handle this event.
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                IntentUtil.goBack(ReportingResultActivity.this);
+                break;
+            case R.id.menu_reporting_result_save:
+                save();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

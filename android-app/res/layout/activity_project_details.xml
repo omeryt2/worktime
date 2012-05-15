@@ -15,106 +15,79 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
 
-    <LinearLayout style="@style/TitleBar">
-        <ImageButton style="@style/TitleBarAction"
-            android:src="@drawable/ic_title_home"
-            android:onClick="onHomeClick" />
-
-        <ImageView style="@style/TitleBarSeparator" />
-        <eu.vranckaert.worktime.utils.view.CustomTextView style="@style/TitleBarText"/>
-
-        <ImageView style="@style/TitleBarSeparator" />
-        <ImageButton style="@style/TitleBarAction"
-            android:src="@drawable/ic_title_edit"
-            android:onClick="onEditClick" />
-        <ImageView style="@style/TitleBarSeparator" />
-        <ImageButton style="@style/TitleBarAction"
-            android:src="@drawable/ic_title_delete"
-            android:onClick="onDeleteClick" />
-        <ImageView style="@style/TitleBarSeparator" />
-        <ImageButton style="@style/TitleBarAction"
-            android:src="@drawable/ic_title_generatereport"
-            android:onClick="onGenerateReportClick" />
-    </LinearLayout>
-
-    <RelativeLayout android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
-        <LinearLayout android:layout_width="fill_parent"
-                      android:layout_height="fill_parent"
-                      android:orientation="vertical"
-                      android:layout_above="@id/punch_bar_container"
-                      android:layout_alignParentTop="true">
-            <TextView android:layout_width="fill_parent"
-                      android:layout_height="wrap_content"
-                      android:id="@+id/projectComment"
-                      style="@style/WorkTimeDetailsInfo"
-                      android:text="@string/lbl_project_details_no_comment"
-                      android:paddingTop="10dp"
-                      android:paddingLeft="10dp"
-                      android:paddingRight="10dp"/>
-            <TableLayout android:layout_width="fill_parent"
-                         android:layout_height="wrap_content"
-                         android:stretchColumns="1"
-                         android:paddingTop="10dip"
-                         android:paddingBottom="10dip">
-                <TableRow android:paddingLeft="10dip" android:paddingRight="10dip">
-                    <TextView android:layout_width="wrap_content"
-                              android:layout_height="wrap_content"
-                              android:text="@string/lbl_project_details_total_time_spent"
-                              style="@style/WorkTimeDetailsInfo"
-                              android:paddingRight="5dip"/>
-                    <TextView android:layout_width="wrap_content"
-                              android:layout_height="wrap_content"
-                              android:id="@+id/txt_project_details_total_time_spent"
-                              style="@style/WorkTimeDetailsInfo"
-                              android:text="@string/loading"/>
-                </TableRow>
-                <TableRow android:paddingLeft="10dip" android:paddingRight="10dip">
-                    <TextView android:layout_width="wrap_content"
-                              android:layout_height="wrap_content"
-                              android:text="@string/lbl_project_details_punch_in_count"
-                              style="@style/WorkTimeDetailsInfo"
-                              android:paddingRight="5dip"/>
-                    <TextView android:layout_width="wrap_content"
-                              android:layout_height="wrap_content"
-                              android:id="@+id/txt_project_details_punch_in_count"
-                              style="@style/WorkTimeDetailsInfo"
-                              android:text="@string/loading"/>
-                </TableRow>
-            </TableLayout>
-            <!-- ListView header -->
-            <LinearLayout style="@style/SubTitleBar">
-                <TextView style="@style/SubTitleBarText" android:text="@string/lbl_project_details_tasks"/>
-                <LinearLayout android:layout_width="wrap_content"
-                              android:layout_height="fill_parent"
-                              android:orientation="horizontal"
-                              android:id="@+id/showHideFinishedTasksButtonGroup">
-                    <ImageView style="@style/TitleBarSeparator" />
-                    <ImageButton style="@style/TitleBarAction"
-                                 android:src="@drawable/ic_title_unlocked"
-                                 android:onClick="showHideFinishedTasks"
-                                 android:id="@+id/showHideFinishedTasksButton"/>
-                </LinearLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+    <LinearLayout android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:orientation="vertical"
+                  android:layout_above="@id/punch_bar_container"
+                  android:layout_alignParentTop="true">
+        <TextView android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/projectComment"
+                  style="@style/WorkTimeDetailsInfo"
+                  android:text="@string/lbl_project_details_no_comment"
+                  android:paddingTop="10dp"
+                  android:paddingLeft="10dp"
+                  android:paddingRight="10dp"/>
+        <TableLayout android:layout_width="fill_parent"
+                     android:layout_height="wrap_content"
+                     android:stretchColumns="1"
+                     android:paddingTop="10dip"
+                     android:paddingBottom="10dip">
+            <TableRow android:paddingLeft="10dip" android:paddingRight="10dip">
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/lbl_project_details_total_time_spent"
+                          style="@style/WorkTimeDetailsInfo"
+                          android:paddingRight="5dip"/>
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:id="@+id/txt_project_details_total_time_spent"
+                          style="@style/WorkTimeDetailsInfo"
+                          android:text="@string/loading"/>
+            </TableRow>
+            <TableRow android:paddingLeft="10dip" android:paddingRight="10dip">
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/lbl_project_details_punch_in_count"
+                          style="@style/WorkTimeDetailsInfo"
+                          android:paddingRight="5dip"/>
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:id="@+id/txt_project_details_punch_in_count"
+                          style="@style/WorkTimeDetailsInfo"
+                          android:text="@string/loading"/>
+            </TableRow>
+        </TableLayout>
+        <!-- ListView header -->
+        <LinearLayout style="@style/SubTitleBar">
+            <TextView style="@style/SubTitleBarText" android:text="@string/lbl_project_details_tasks"/>
+            <LinearLayout android:layout_width="wrap_content"
+                          android:layout_height="fill_parent"
+                          android:orientation="horizontal"
+                          android:id="@+id/showHideFinishedTasksButtonGroup">
                 <ImageView style="@style/TitleBarSeparator" />
                 <ImageButton style="@style/TitleBarAction"
-                             android:src="@drawable/ic_title_add"
-                             android:onClick="onAddTaskClick"
-                             android:id="@+id/addTaskButton"/>
-                <ProgressBar style="@style/TitleBarProgressIndicator"
-                             android:visibility="gone"/>
+                             android:src="@drawable/ic_title_unlocked"
+                             android:onClick="showHideFinishedTasks"
+                             android:id="@+id/showHideFinishedTasksButton"/>
             </LinearLayout>
-
-            <ListView android:layout_width="fill_parent"
-                      android:layout_height="fill_parent"
-                      android:id="@android:id/list"/>
+            <ImageView style="@style/TitleBarSeparator" />
+            <ImageButton style="@style/TitleBarAction"
+                         android:src="@drawable/ic_title_add"
+                         android:onClick="onAddTaskClick"
+                         android:id="@+id/addTaskButton"/>
+            <ProgressBar style="@style/TitleBarProgressIndicator"
+                         android:visibility="gone"/>
         </LinearLayout>
 
-        <include layout="@layout/comp_start_stop_time_registration"/>
-    </RelativeLayout>
+        <ListView android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:id="@android:id/list"/>
+    </LinearLayout>
 
-</LinearLayout>
+    <include layout="@layout/comp_start_stop_time_registration"/>
+</RelativeLayout>

@@ -41,10 +41,6 @@
                 android:onClick="onProjectsClick"
                 android:text="@string/home_btn_projects"
                 android:drawableTop="@drawable/home_btn_projects"/>
-            <Button style="@style/HomeButton"
-                android:onClick="onReportingClick"
-                android:text="@string/home_btn_reporting"
-                android:drawableTop="@drawable/home_btn_reporting"/>
         </LinearLayout>
 
         <LinearLayout
@@ -53,13 +49,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
             <Button style="@style/HomeButton"
+                    android:onClick="onReportingClick"
+                    android:text="@string/home_btn_reporting"
+                    android:drawableTop="@drawable/home_btn_reporting"/>
+            <Button style="@style/HomeButton"
                 android:onClick="onPreferencesClick"
                 android:text="@string/home_btn_preferences"
                 android:drawableTop="@drawable/home_btn_preferences"/>
-            <ImageView style="@style/HomeButton"
-                       android:drawableTop="@drawable/home_btn_default"/>
-            <ImageView style="@style/HomeButton"
-                       android:drawableTop="@drawable/home_btn_default"/>
         </LinearLayout>
     </LinearLayout>
 

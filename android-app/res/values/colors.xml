@@ -19,28 +19,28 @@
 <resources>
     <!-- ActionBar compatibility -->
     <color name="actionbar_title_color">#224894</color>
+    <!-- Themes -->
+    <drawable name="transparent_background">#00000000</drawable>
 
-    <color name="title_background">#ffcc0000</color>
+    <!-- Title bar -->
     <color name="title_separator">#ffffffff</color>
     <color name="foreground1">#ffcc3300</color>
     <color name="title_text">#ffffffff</color>
+    <color name="sub_title_background">#ffff4f4f</color>
 
-    <!--<color name="footer_background">#ffcc0000</color>-->
+    <!-- Punch Bar -->
     <color name="punch_bar_background">#ffbdbdbd</color>
     <color name="punch_bar_text">#ffffffff</color>
 
-    <color name="sub_title_background">#ffff4f4f</color>
-
+    <!-- Custom colors -->
     <color name="validation_error">#ffff0000</color>
     <color name="infoproject">#ff999999</color>
     <color name="list_separator">#ffcccccc</color>
+    <color name="grey">#ff878787</color>
 
+    <!-- Reporting result -->
     <color name="table_record_lvl_n_0">#ffffffff</color>
     <color name="table_record_lvl_n_1">#ff3366ff</color>
     <color name="table_record_lvl_n_2">#ff7494f4</color>
     <color name="table_record_lvl_n_3">#ffffffff</color>
-
-    <color name="grey">#ff878787</color>
-
-    <drawable name="transparent_background">#00000000</drawable>
 </resources>

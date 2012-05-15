@@ -381,13 +381,9 @@ public class TimeRegistrationActionActivity extends GuiceActivity {
                 final View layout = inflater.inflate(R.layout.dialog_time_registration_actions,
                                                (ViewGroup) findViewById(R.id.dialog_layout_root));
 
-                // Issue 89: No null-check on latestTimeRegistration required because it can never be null as at least
-                // one time registration should be started in order to be able to stop one..!
-                // Reuse the comment that is already entered for this TR
-                TimeRegistration latestRegistration = timeRegistrationService.getLatestTimeRegistration();
                 final EditText commentEditText = (EditText) layout.findViewById(R.id.tr_comment);
-                if (latestRegistration.getComment() != null) {
-                    commentEditText.setText(latestRegistration.getComment());
+                if (timeRegistration.getComment() != null) {
+                    commentEditText.setText(timeRegistration.getComment());
                 }
 
                 // Attach the button

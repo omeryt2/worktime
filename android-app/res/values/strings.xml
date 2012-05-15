@@ -85,6 +85,9 @@
     <string name="lbl_project_name_not_unique">This name is already in use. Please choose another one.</string>
     <string name="lbl_project_name_required">The name of the project is a required field!</string>
     <!-- PROJECT DETAILS -->
+    <string name="project_details_ab_menu_edit">Edit project</string>
+    <string name="project_details_ab_menu_delete">Delete project</string>
+    <string name="project_details_ab_menu_reporting">Reporting</string>
     <string name="lbl_project_details_tasks">Tasks</string>
     <string name="lbl_project_details_no_comment">No comment entered for this project</string>
     <string name="lbl_project_details_total_time_spent">Total time spent:</string>
@@ -118,6 +121,7 @@
     <!-- ADD/EDIT TASK -->
     <string name="lbl_add_task_title">Add Task</string>
     <string name="lbl_edit_task_title">Edit Task</string>
+    <string name="add_task_ab_menu_save">Save</string>
     <string name="lbl_add_task_name">Task-name:</string>
     <string name="lbl_task_name_required">The name of the task is a required field!</string>
     <string name="lbl_add_task_project_name">Project:</string>
@@ -251,6 +255,7 @@
     <string name="msg_reporting_criteria_batch_share_no_docs_selected">You did not select any document to share</string>
     <!-- Results -->
     <string name="lbl_reporting_result_title">Reporting Result</string>
+    <string name="reporting_result_ab_menu_save">Save</string>
     <string name="lbl_reporting_result_loading_dialog">Loading results&#8230;</string>
     <string name="lbl_reporting_result_includes_ongoing_time_registrations">Warning: the result contains data from ongoing time registrations. The calculations are based on the current date and time.</string>
     <string name="lbl_reporting_results_table_total">Total</string>
@@ -258,6 +263,7 @@
     <string name="lbl_reporting_results_export_raw_data">Raw Data</string>
     <!-- EXPORT -->
     <string name="lbl_reporting_export_title">Export Result</string>
+    <string name="reporting_export_ab_menu_save">Save</string>
     <string name="lbl_reporting_export_type">Export Type</string>
     <string name="lbl_reporting_export_type_prompt">Select an export type</string>
     <string-array name="array_reporting_export_type_options">
