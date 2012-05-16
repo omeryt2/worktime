@@ -65,23 +65,6 @@ public class ProjectDaoTest extends DaoTestCase<ProjectDao, ProjectDaoImpl> {
         assertTrue(result3);
     }
     
-    public void testCountTotalNumberOfProjects() {
-        assertEquals("1 project should have been found!", 1, getDao().countTotalNumberOfProjects());
-        
-        getDao().save(getDummyProject());
-        getDao().save(getDummyProject());
-
-        assertEquals("3 projects should have been found!", 3, getDao().countTotalNumberOfProjects());
-        
-        getDao().save(getDummyProject());
-        
-        assertEquals("3 projects should have been found!", 4, getDao().countTotalNumberOfProjects());
-        
-        getDao().save(getDummyProject());
-        
-        assertEquals("3 projects should have been found!", 5, getDao().countTotalNumberOfProjects());
-    }
-    
     public void testFindDefaultProject() {
         String newDefaultProjectName = "Test new default project!";
         
