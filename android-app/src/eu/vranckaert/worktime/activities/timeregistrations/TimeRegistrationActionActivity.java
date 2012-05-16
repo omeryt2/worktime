@@ -486,7 +486,7 @@ public class TimeRegistrationActionActivity extends GuiceActivity {
 
                                 Intent intent = new Intent(TimeRegistrationActionActivity.this, EditTimeRegistrationEndTimeActivity.class);
                                 intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
-                                intent.putExtra(Constants.Extras.TIME_REGISTRATION_PREVIOUS, nextTimeRegistration);
+                                intent.putExtra(Constants.Extras.TIME_REGISTRATION_NEXT, nextTimeRegistration);
                                 startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT_DIALOG);
                                 break;
                             }
