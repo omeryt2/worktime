@@ -48,7 +48,4 @@
     <item type="id" name="wizard_navigation_container_finish" />
     <item type="id" name="wizard_content_container" />
     <item type="id" name="wizard_page_content_container" />
-
-    <!-- Custom ids -->
-    <item type="id" name="img_finished" />
 </resources>

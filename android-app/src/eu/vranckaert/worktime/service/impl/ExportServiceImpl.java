@@ -396,7 +396,7 @@ public class ExportServiceImpl implements ExportService {
         {
             modulo = (dividend - 1) % 26;
             i = 65 + modulo;
-            columnName = new Character((char)i).toString() + columnName;
+            columnName = Character.valueOf((char) i).toString() + columnName;
             dividend = (int)((dividend - modulo) / 26);
         }
         return columnName;

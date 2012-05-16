@@ -498,8 +498,8 @@ public class ReportingExportActivity extends ActionBarGuiceActivity {
      *                                not writable).
      */
     private File doExcelExport(String filename) throws GeneralExportException {
-        String reportSheetName = "Report";
-        String dataSheetName = "Data";
+        String reportSheetName = getString(R.string.lbl_reporting_results_export_report_data_sheet_name);
+        String dataSheetName = getString(R.string.lbl_reporting_results_export_raw_data_sheet_name);
 
         List<Object> reportHeaders = new ArrayList<Object>();
         List<Object[]> reportValues = new ArrayList<Object[]>();

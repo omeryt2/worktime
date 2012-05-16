@@ -52,7 +52,8 @@
                       android:orientation="vertical"
                       android:id="@+id/reporting_export_csv_separator_container"
                       android:visibility="gone">
-            <ImageView style="@style/WorkTimeListSeparator" />
+            <ImageView style="@style/WorkTimeListSeparator"
+                       android:contentDescription="@string/empty_content_description"/>
             <TextView android:layout_width="fill_parent"
                       android:layout_height="wrap_content"
                       android:text="@string/lbl_reporting_export_csv_separator"/>
@@ -69,7 +70,8 @@
                       android:orientation="vertical"
                       android:id="@+id/reporting_export_data_container"
                       android:visibility="gone">
-            <ImageView style="@style/WorkTimeListSeparator" />
+            <ImageView style="@style/WorkTimeListSeparator"
+                       android:contentDescription="@string/empty_content_description"/>
             <TextView android:layout_width="fill_parent"
                       android:layout_height="wrap_content"
                       android:text="@string/lbl_reporting_export_data"/>

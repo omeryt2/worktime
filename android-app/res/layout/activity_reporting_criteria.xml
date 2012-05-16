@@ -80,7 +80,8 @@
                 <ImageView android:id="@+id/btn_delete_project"
                            android:layout_height="wrap_content"
                            android:layout_width="wrap_content"
-                           android:src="@drawable/ic_delete"/>
+                           android:src="@drawable/ic_delete"
+                           android:contentDescription="@string/content_description_delete_project"/>
             </TableRow>
             <TableRow>
                 <TextView android:layout_width="wrap_content"
@@ -95,7 +96,8 @@
                 <ImageView android:id="@+id/btn_delete_task"
                            android:layout_height="wrap_content"
                            android:layout_width="wrap_content"
-                           android:src="@drawable/ic_delete"/>
+                           android:src="@drawable/ic_delete"
+                           android:contentDescription="@string/content_description_delete_task"/>
             </TableRow>
         </TableLayout>
         <CheckBox android:layout_width="fill_parent"

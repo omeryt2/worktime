@@ -21,7 +21,7 @@
           android:title="@string/project_details_ab_menu_edit"
           android:icon="@drawable/ic_content_edit"
           android:orderInCategory="1"
-          android:showAsAction="always" />
+          android:showAsAction="ifRoom" />
     <item android:id="@+id/menu_project_details_activity_delete"
           android:title="@string/project_details_ab_menu_delete"
           android:icon="@drawable/ic_content_discard"

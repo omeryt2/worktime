@@ -25,7 +25,6 @@
     <string name="no">No</string>
     <string name="close">Close</string>
     <string name="dash">-</string>
-    <string name="value">Value</string>
     <string name="loading">Loading&#8230;</string>
     <string name="save">Save</string>
     <string name="add">Add</string>
@@ -91,7 +90,7 @@
     <string name="lbl_project_details_tasks">Tasks</string>
     <string name="lbl_project_details_no_comment">No comment entered for this project</string>
     <string name="lbl_project_details_total_time_spent">Total time spent:</string>
-    <string name="lbl_project_details_punch_in_count">\"Punch In\" count:</string>
+    <string name="lbl_project_details_punch_in_count">&#8220;Punch In&#8221; count:</string>
     <string name="msg_delete_task_confirmation">Do you want to delete this task?</string>
     <string name="msg_delete_task_and_linked_time_registrations_confirmation">Time registrations for this task have been found. Do you want to delete all those time registrations and the task or do nothing?</string>
     <string name="msg_delete_task_unavailable_still_in_use">The project cannot be deleted as it is still used in some tasks. Please remove the tasks first and try again.</string>
@@ -104,7 +103,7 @@
     <string name="lbl_tasks_menu_add">Add new task</string>
     <!-- COPY WIZARD -->
     <string name="lbl_copy_project_title">Copy Project</string>
-    <string name="lbl_copy_project_part_one_content">In position to copy a project you will have to provide a new, unique, name on the next screen. Pay attention because the project will be copied (with the new name) and together all of it\'s tasks. But time registrations for the project and tasks will not be copied!\n\nPress \'Next\' to continue with the copy.</string>
+    <string name="lbl_copy_project_part_one_content">In position to copy a project you will have to provide a new, unique, name on the next screen. Pay attention because the project will be copied (with the new name) and together all of it\'s tasks. But time registrations for the project and tasks will not be copied!\n\nPress &#8216;Next&#8217; to continue with the copy.</string>
     <string name="lbl_copy_project_part_two_title">Set a project name</string>
     <string name="lbl_copy_project_part_two_copy_all_tasks_chekced">Copy all tasks</string>
     <string name="lbl_copy_project_part_two_copy_all_tasks_unchekced">Only copy unfinished tasks</string>
@@ -162,8 +161,8 @@
         <item>Delete</item>
     </string-array>
     <string name="lbl_time_registration_actions_dialog_btn_reuse_last_comment">Reuse last comment</string>
-    <string name="lbl_time_registration_actions_dialog_updating_time_registration">Updating time registration...</string>
-    <string name="lbl_time_registration_actions_dialog_removing_time_registration">Removing time registration...</string>
+    <string name="lbl_time_registration_actions_dialog_updating_time_registration">Updating time registration&#8230;</string>
+    <string name="lbl_time_registration_actions_dialog_removing_time_registration">Removing time registration&#8230;</string>
     <string name="msg_time_registration_actions_dialog_removing_time_registration_confirmation">Do you want to delete this time registration?</string>
     <!-- EDIT START/END DATE -->
     <string name="lbl_registration_edit_pick_date">Pick a new date</string>
@@ -259,8 +258,6 @@
     <string name="lbl_reporting_result_loading_dialog">Loading results&#8230;</string>
     <string name="lbl_reporting_result_includes_ongoing_time_registrations">Warning: the result contains data from ongoing time registrations. The calculations are based on the current date and time.</string>
     <string name="lbl_reporting_results_table_total">Total</string>
-    <string name="lbl_reporting_results_export_table_data">Table Data</string>
-    <string name="lbl_reporting_results_export_raw_data">Raw Data</string>
     <!-- EXPORT -->
     <string name="lbl_reporting_export_title">Export Result</string>
     <string name="reporting_export_ab_menu_save">Save</string>
@@ -415,21 +412,16 @@
     <string name="msg_backup_restore_writing_backup_sd_success">The backup is written to your SD-card: %1$s</string>
     <string name="msg_backup_restore_writing_backup_file_not_be_created">The backup file on the SD-card could not be created. Check the SD-card to be mounted and try again. If the error keeps appearing please report a bug.</string>
     <string name="msg_backup_restore_writing_backup_file_not_written">Something went wrong while writing the backup file to the SD-card. Try again or if the error keeps appearing please report a bug.</string>
-    <string name="msg_backup_restore_no_backup_files_found">No backup files have been found on the SD-card. Please read the \'Backup/Restore documentation\' first.</string>
+    <string name="msg_backup_restore_no_backup_files_found">No backup files have been found on the SD-card. Please read the &#8216;Backup/Restore documentation&#8217; first.</string>
     <string name="lbl_backup_restore_restore_backup_list_title">Choose a backup to restore</string>
     <string name="lbl_backup_restore_send_backup_list_title">Choose a backup to send</string>
-    <string name="lbl_backup_restore_restoring_backup_from_sd">Restoring backup \'%1$s\' from SD-card</string>
-    <string name="msg_backup_restore_are_your_sure">Restoring this backup will erase all the current data and replace it with the backup data. Even if the backup data seems to be corrupt afterwards. This action cannot be undone. Are you sure you want to continue the restore of the backup \'%1$s\'?</string>
+    <string name="lbl_backup_restore_restoring_backup_from_sd">Restoring backup &#8216;%1$s&#8217; from SD-card</string>
+    <string name="msg_backup_restore_are_your_sure">Restoring this backup will erase all the current data and replace it with the backup data. Even if the backup data seems to be corrupt afterwards. This action cannot be undone. Are you sure you want to continue the restore of the backup &#8216;%1$s&#8217;?</string>
     <string name="msg_backup_restore_success">The backup file %1$s is successfully restored. Restart the application and check if the data is correct. Otherwise try to restore another backup if available.</string>
     <!-- NEW BACKUP SYSTEM -->
     <string name="msg_restore_notification_ticker">Successful restore of backup</string>
     <string name="msg_restore_notification_title">Restore Successful</string>
     <string name="msg_restore_notification_message">The backup has been successfully restored</string>
-    <string name="msg_manual_backup_confirmation">A new backup will now be created and added to your Google account.</string>
-    <string name="msg_manual_restore_confirmation">The latest backup, linked to your Google account, will be restored. Are you sure you want to override the data? This cannot be undone!</string>
-    <string name="msg_manual_restore_executing">Restoring latest backup...</string>
-    <string name="msg_manual_restore_successful">The backup is restored successful!</string>
-    <string name="msg_manual_restore_error">Something went wrong while restoring the backup. Make sure you have an internet connection available. If this problem occurs more in the future please contact the developers.</string>
     <string name="lbl_backup_restore_documentation_title">Backup/Restore Documentation</string>
     <!-- ABOUT -->
     <string name="lbl_about_title">About</string>
@@ -446,11 +438,10 @@
     <!-- WIDGET -->
     <string name="btn_widget_start">Punch In</string>
     <string name="btn_widget_stop">Punch Out</string>
-    <string name="btn_widget_open_app">Open</string>
     <string name="msg_widget_time_reg_created">Punched in</string>
     <string name="msg_widget_time_reg_ended">Punched out</string>
     <string name="msg_widget_ask_finish_task_title">Finish task?</string>
-    <string name="msg_widget_ask_finish_task_message">Do you want to mark the task \'%1$s\' finished? This can be undone in the project details!</string>
+    <string name="msg_widget_ask_finish_task_message">Do you want to mark the task &#8216;%1$s&#8217; finished? This can be undone in the project details!</string>
     <string name="msg_no_tasks_available_choose_other_project">No tasks are available for the selected project. Select another project or go back and create a task for the project first.</string>
     <string name="lbl_widget_instructions">Click the widget to open the app.</string>
     <string name="lbl_widget_title_select_project">Select project</string>
@@ -470,4 +461,12 @@
     <string name="wizard_navigation_finish">Finish</string>
     <string name="wizard_navigation_yes">Yes</string>
     <string name="wizard_navigation_no">No</string>
+
+    <!-- Image content descriptions -->
+    <string name="empty_content_description"></string>
+    <string name="content_description_punch_bar_start_stop">Punch in or out</string>
+    <string name="content_description_project_locked_unlocked">Locked or unlocked projects</string>
+    <string name="content_description_delete_project">Delete project</string>
+    <string name="content_description_add_project">Add project</string>
+    <string name="content_description_delete_task">Delete task</string>
 </resources>

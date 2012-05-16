@@ -254,11 +254,10 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
         taskName.setText(taskToBeRendered.getName());
 
         Log.d(LOG_TAG, "Ready to set the finished flag (" + taskToBeRendered.isFinished() + ") ...");
-        View view = row.findViewById(R.id.img_finished);
         if (taskToBeRendered.isFinished()) {
-            view.setVisibility(View.VISIBLE);
+            taskName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_finished, 0, 0, 0);
         } else {
-            view.setVisibility(View.GONE);
+            taskName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
     }
 
@@ -288,11 +287,11 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
             );
         }
 
-        int firstVisiblePosistion = getListView().getFirstVisiblePosition();
+        int firstVisiblePosition = getListView().getFirstVisiblePosition();
         if (Preferences.getDisplayTasksHideFinished(getApplicationContext())) {
             loadProjectTasks(project);
         } else {
-            View row = getListView().getChildAt(listIndex - firstVisiblePosistion);
+            View row = getListView().getChildAt(listIndex - firstVisiblePosition);
             updateRow(row, task);
         }
     }

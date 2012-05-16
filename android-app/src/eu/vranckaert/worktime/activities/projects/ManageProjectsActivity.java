@@ -342,15 +342,14 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
             }
 
             Log.d(LOG_TAG, "Ready to update the name of the project of the listitem...");
-            TextView projectname = (TextView) row.findViewById(R.id.projectname_listitem);
-            projectname.setText(project.getName());
+            TextView projectName = (TextView) row.findViewById(R.id.projectname_listitem);
+            projectName.setText(project.getName());
 
             Log.d(LOG_TAG, "Render the finished image if the project is finished");
-            View finishedImg = row.findViewById(R.id.img_finished);
             if (project.isFinished()) {
-                finishedImg.setVisibility(View.VISIBLE);
+                projectName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_finished, 0, 0, 0);
             } else {
-                finishedImg.setVisibility(View.GONE);
+                projectName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
 
             Log.d(LOG_TAG, "Done rendering row " + position);
