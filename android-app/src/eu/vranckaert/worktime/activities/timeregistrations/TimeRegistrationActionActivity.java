@@ -407,14 +407,17 @@ public class TimeRegistrationActionActivity extends GuiceActivity {
                 // Set default value...
                 if (timeRegistration.isOngoingTimeRegistration()) {
                     actionSpinner.setSelection(TimeRegistrationAction.PUNCH_OUT.getOrder());
+                    if (Preferences.getEndingTimeRegistrationCommentPreference(getApplicationContext())) {
+                        commentEditText.setVisibility(View.VISIBLE);
+                    }
                 } else {
                     actionSpinner.setSelection(TimeRegistrationAction.SPLIT.getOrder());
                 }
                 actionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        TimeRegistrationAction action = TimeRegistrationAction.getByIndex(actions, position);
-                        View commentContainer = layout.findViewById(R.id.tr_comment_container);
+                        final TimeRegistrationAction action = TimeRegistrationAction.getByIndex(actions, position);
+                        final View commentContainer = layout.findViewById(R.id.tr_comment_container);
 
                         switch (action) {
                             case PUNCH_OUT:

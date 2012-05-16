@@ -786,7 +786,7 @@ public class ReportingCriteriaActivity extends ActionBarGuiceActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                IntentUtil.goHome(ReportingCriteriaActivity.this);
+                IntentUtil.goBack(ReportingCriteriaActivity.this);
                 break;
             case R.id.menu_reporting_criteria_activity_new:
                 generateReport();
