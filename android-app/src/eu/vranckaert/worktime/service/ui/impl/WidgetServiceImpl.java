@@ -93,13 +93,13 @@ public class WidgetServiceImpl implements WidgetService {
             Log.d(LOG_TAG, "No timeregstrations found yet!");
         }
 
-        if(numberOfTimeRegs == 0L || (lastTimeRegistration != null && lastTimeRegistration.getEndTime() != null)) {
+        if(numberOfTimeRegs == 0L || (lastTimeRegistration != null && !lastTimeRegistration.isOngoingTimeRegistration())) {
             Log.d(LOG_TAG, "No timeregistrations found yet or it's an ended timeregistration");
             views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_start));
             //Enable on click for the start button
             Log.d(LOG_TAG, "Couple the start button to an on click action");
             startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, StartTimeRegistrationActivity.class, null, null);
-        } else if(lastTimeRegistration != null && !lastTimeRegistration.isOngoingTimeRegistration()) {
+        } else if(lastTimeRegistration != null && lastTimeRegistration.isOngoingTimeRegistration()) {
             Log.d(LOG_TAG, "This is an ongoing time registration");
             views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_stop));
             //Enable on click for the stop button
