@@ -240,7 +240,8 @@
             <!-- Specify the output -->
             <arg value="--xml"/>
             <arg value="lint-report.xml" />
-
+            <arg value="--simplehtml"/>
+            <arg value="lint.html" />
             <!-- The directory to run lint on -->
             <arg value="."/>
         </exec>

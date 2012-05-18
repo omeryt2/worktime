@@ -102,6 +102,7 @@ public class TimeRegistrationActionActivity extends GuiceActivity {
             throw new RuntimeException("The time registration should never be null in the TimeRegistrationActionActivity!");
         } else {
             timeRegistrationService.fullyInitialize(timeRegistration);
+            Log.d(LOG_TAG, "Launching action-activity with timeRegistration " + timeRegistration);
         }
 
         showDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
@@ -373,7 +374,7 @@ public class TimeRegistrationActionActivity extends GuiceActivity {
                 break;
             }
             case Constants.Dialog.TIME_REGISTRATION_ACTION: {
-                Log.d(LOG_TAG, "Creating enter comment dialog for ending a time registration");
+                Log.d(LOG_TAG, "Building the actions dialog");
                 AlertDialog.Builder actionsDialog = new AlertDialog.Builder(this);
 
                 final Context mContext = TimeRegistrationActionActivity.this;
@@ -446,17 +447,18 @@ public class TimeRegistrationActionActivity extends GuiceActivity {
                         removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
                         ContextUtils.hideKeyboard(mContext, commentEditText);
                         TimeRegistrationAction action = TimeRegistrationAction.getByIndex(actions, actionSpinner.getSelectedItemPosition());
+                        Log.d(LOG_TAG, "Chosen action: " + action.toString());
                         switch (action) {
                             case PUNCH_OUT: {
-                                Log.d(LOG_TAG, "Ready to punch out");
                                 String comment = commentEditText.getText().toString();
-                                Log.d(LOG_TAG, "Time Registration will be saved with comment: " + comment);
+                                if (comment != null)
+                                    Log.d(LOG_TAG, "Time Registration will be saved with comment: " + comment);
                                 endTimeRegistration(comment);
                                 break;
                             }
                             case SPLIT: {
                                 Intent intent = new Intent(TimeRegistrationActionActivity.this, EditTimeRegistrationSplitActivity.class);
-                                intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistrationService.getLatestTimeRegistration());
+                                intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
                                 startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT_DIALOG);
                                 break;
                             }

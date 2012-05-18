@@ -71,13 +71,13 @@ public interface TimeRegistrationService {
     void update(TimeRegistration timeRegistration);
 
     /**
-     * Find the latest time registration. Returns <b>null</b> if no time regstrations are found!
+     * Find the latest time registration. Returns <b>null</b> if no time registrations are found!
      * @return The latest time registration.
      */
     TimeRegistration getLatestTimeRegistration();
 
     /**
-     * Removes an existing timeregistration.
+     * Removes an existing time registration.
      *
      * @param timeRegistration The registration to remove.
      */

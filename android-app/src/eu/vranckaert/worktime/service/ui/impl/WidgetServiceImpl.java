@@ -99,8 +99,8 @@ public class WidgetServiceImpl implements WidgetService {
             //Enable on click for the start button
             Log.d(LOG_TAG, "Couple the start button to an on click action");
             startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, StartTimeRegistrationActivity.class, null, null);
-        } else if(lastTimeRegistration != null && lastTimeRegistration.getEndTime() == null) {
-            Log.d(LOG_TAG, "This is an ongoing timeregistration");
+        } else if(lastTimeRegistration != null && !lastTimeRegistration.isOngoingTimeRegistration()) {
+            Log.d(LOG_TAG, "This is an ongoing time registration");
             views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_stop));
             //Enable on click for the stop button
             Log.d(LOG_TAG, "Couple the stop button to an on click action.");
