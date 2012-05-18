@@ -23,5 +23,5 @@
           android:title="@string/add_project_ab_menu_save"
           android:icon="@drawable/ic_content_save"
           android:orderInCategory="1"
-          android:showAsAction="withText" />
+          android:showAsAction="always|withText" />
 </menu>

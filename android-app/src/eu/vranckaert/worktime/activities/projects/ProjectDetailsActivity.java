@@ -32,8 +32,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.inject.Inject;
@@ -79,18 +77,6 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
 
     @InjectView(R.id.projectComment)
     private TextView projectComment;
-
-    @InjectView(R.id.title_refresh_progress)
-    private ProgressBar progressBar;
-    
-    @InjectView(R.id.showHideFinishedTasksButtonGroup)
-    private View showHideFinishedTasksButtonGroup;
-    
-    @InjectView(R.id.showHideFinishedTasksButton)
-    private ImageButton showHideFinishedTasksButton;
-
-    @InjectView(R.id.addTaskButton)
-    private ImageButton addTaskButton;
 
     @InjectView(R.id.txt_project_details_total_time_spent)
     private TextView totalTimeSpent;
@@ -146,13 +132,6 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
     private void loadProjectTasks(final Project project) {
         AsyncTask asyncTask = new AsyncTask() {
             @Override
-            protected void onPreExecute() {
-                progressBar.setVisibility(View.VISIBLE);
-                addTaskButton.setVisibility(View.GONE);
-                showHideFinishedTasksButtonGroup.setVisibility(View.GONE);
-            }
-
-            @Override
             protected Object doInBackground(Object... objects) {
                 Project project = (Project) objects[0];
                 if (Preferences.getDisplayTasksHideFinished(getApplicationContext())) {
@@ -171,25 +150,24 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
                 adapter.notifyDataSetChanged();
                 setListAdapter(adapter);
 
-                setShowHideFinishedTasksButton();
-
-                progressBar.setVisibility(View.GONE);
-                addTaskButton.setVisibility(View.VISIBLE);
-                showHideFinishedTasksButtonGroup.setVisibility(View.VISIBLE);
-
                 loadProjectDetails(project);
             }
         };
         asyncTask.execute(project);
     }
 
-    private void setShowHideFinishedTasksButton() {
-        boolean hide = Preferences.getDisplayTasksHideFinished(ProjectDetailsActivity.this);
-
-        if (hide) {
-            showHideFinishedTasksButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_navigation_accept));
+    /**
+     *
+     * @param menuItem
+     * @param hideFinished
+     */
+    private void switchMenuItemFinishedProjects(MenuItem menuItem, boolean hideFinished) {
+        if (hideFinished) {
+            menuItem.setIcon(R.drawable.ic_navigation_accept);
+            menuItem.setTitle(R.string.project_details_ab_menu_show_all_tasks);
         } else {
-            showHideFinishedTasksButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_navigation_cancel));
+            menuItem.setIcon(R.drawable.ic_navigation_cancel);
+            menuItem.setTitle(R.string.project_details_ab_menu_show_finished_tasks);
         }
     }
 
@@ -509,6 +487,11 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
             }
 
             menu.add(Menu.NONE,
+                     Constants.ContentMenuItemIds.TASK_REPORTING,
+                     Menu.NONE,
+                     R.string.lbl_tasks_menu_reporting
+            );
+            menu.add(Menu.NONE,
                     Constants.ContentMenuItemIds.TASK_DELETE,
                     Menu.NONE,
                     R.string.lbl_tasks_menu_delete
@@ -542,6 +525,10 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
             }
             case Constants.ContentMenuItemIds.TASK_MARK_UNFINISHED: {
                 changeTaskFinished(false, element);
+                break;
+            }
+            case Constants.ContentMenuItemIds.TASK_REPORTING: {
+                openReportingCriteriaActivity(project, taskForContext);
                 break;
             }
             case Constants.ContentMenuItemIds.TASK_DELETE: {
@@ -594,8 +581,15 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
         intent.putExtra(Constants.Extras.PROJECT, project);
         startActivity(intent);
     }
+
+    private void openReportingCriteriaActivity(Project project, Task task) {
+        Intent intent = new Intent(getApplicationContext(), ReportingCriteriaActivity.class);
+        intent.putExtra(Constants.Extras.PROJECT, project);
+        intent.putExtra(Constants.Extras.TASK, task);
+        startActivity(intent);
+    }
     
-    public void showHideFinishedTasks(View view) {
+    public void showHideFinishedTasks() {
         boolean hide = Preferences.getDisplayTasksHideFinished(ProjectDetailsActivity.this);
         Preferences.setDisplayTasksHideFinished(ProjectDetailsActivity.this, !hide);
 
@@ -605,10 +599,6 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
         setListAdapter(adapter);
 
         loadProjectTasks(project);
-    }
-
-    public void onAddTaskClick(View view) {
-        openAddTaskActivity();
     }
 
     public void onPunchButtonClick(View view) {
@@ -715,6 +705,10 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.ab_activity_project_details, menu);
 
+        MenuItem menuItem = menu.getItem(3);
+        boolean hideFinished = Preferences.getDisplayTasksHideFinished(ProjectDetailsActivity.this);
+        switchMenuItemFinishedProjects(menuItem, hideFinished);
+
         // Calling super after populating the menu is necessary here to ensure that the
         // action bar helpers have a chance to handle this event.
         return super.onCreateOptionsMenu(menu);
@@ -731,6 +725,15 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
                 break;
             case R.id.menu_project_details_activity_delete:
                 deleteProject(project, true);
+                break;
+            case R.id.menu_project_details_activity_add_task:
+                openAddTaskActivity();
+                break;
+            case R.id.menu_project_details_activity_switch_finished_tasks:
+                boolean hideFinished = !Preferences.getDisplayTasksHideFinished(ProjectDetailsActivity.this);
+                switchMenuItemFinishedProjects(item, hideFinished);
+                Preferences.setDisplayProjectsHideFinished(ProjectDetailsActivity.this, hideFinished);
+                showHideFinishedTasks();
                 break;
             case R.id.menu_project_details_activity_reporting:
                 openReportingCriteriaActivity(project);

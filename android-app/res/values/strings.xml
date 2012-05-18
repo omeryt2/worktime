@@ -86,11 +86,15 @@
     <!-- PROJECT DETAILS -->
     <string name="project_details_ab_menu_edit">Edit project</string>
     <string name="project_details_ab_menu_delete">Delete project</string>
+    <string name="project_details_ab_menu_add_task">Add task</string>
+    <string name="project_details_ab_menu_show_finished_tasks">Show only unfinished tasks</string>
+    <string name="project_details_ab_menu_show_all_tasks">Show all tasks</string>
     <string name="project_details_ab_menu_reporting">Reporting</string>
-    <string name="lbl_project_details_tasks">Tasks</string>
     <string name="lbl_project_details_no_comment">No comment entered for this project</string>
     <string name="lbl_project_details_total_time_spent">Total time spent:</string>
     <string name="lbl_project_details_punch_in_count">&#8220;Punch In&#8221; count:</string>
+    <string name="lbl_project_details_tasks_title">Tasks for this project:</string>
+    <string name="lbl_project_details_tasks_nothing_found">No tasks available yet</string>
     <string name="msg_delete_task_confirmation">Do you want to delete this task?</string>
     <string name="msg_delete_task_and_linked_time_registrations_confirmation">Time registrations for this task have been found. Do you want to delete all those time registrations and the task or do nothing?</string>
     <string name="msg_delete_task_unavailable_still_in_use">The project cannot be deleted as it is still used in some tasks. Please remove the tasks first and try again.</string>
@@ -99,6 +103,7 @@
     <string name="lbl_tasks_menu_move">Move task</string>
     <string name="lbl_tasks_menu_mark_unfinished">Mark unfinished</string>
     <string name="lbl_tasks_menu_mark_finished">Mark finished</string>
+    <string name="lbl_tasks_menu_reporting">Reporting</string>
     <string name="lbl_tasks_menu_delete">Delete task</string>
     <string name="lbl_tasks_menu_add">Add new task</string>
     <!-- COPY WIZARD -->
@@ -130,7 +135,7 @@
     <!-- REGISTRATIONS -->
     <string name="lbl_registrations_title">Time Registrations</string>
     <string name="time_registrations_ab_menu_report">Reporting</string>
-    <string name="lbl_empty_registration_list">No time registrations available yet.</string>
+    <string name="lbl_empty_registration_list">No time registrations available yet</string>
     <string name="now">Until now&#8230;</string>
     <string name="lbl_registrations_load_more">Tap to load more&#8230;</string>
     <string name="lbl_registrations_comment">Comment:</string>

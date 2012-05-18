@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.service.impl;
 
 import android.content.Context;
@@ -86,8 +87,8 @@ public class ProjectServiceImpl implements ProjectService {
      * {@inheritDoc}
      */
     public void remove(Project project) throws AtLeastOneProjectRequiredException, ProjectStillInUseException {
-        if (dao.count() > 1) {
-            Long taskCount = taskDao.count();
+        if (dao.count() > 1L) {
+            int taskCount = taskDao.countTasksForProject(project);
             if (taskCount > 0) {
                 throw new ProjectStillInUseException("The project is still linked with " + taskCount + " tasks! Remove them first!");
             }

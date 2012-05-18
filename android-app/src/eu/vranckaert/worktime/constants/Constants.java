@@ -167,6 +167,7 @@ public class Constants {
         public static final int PROJECT_MARK_FINISHED = 20;
         public static final int PROJECT_MARK_UNFINISHED = 21;
         public static final int PROJECT_COPY = 22;
+        public static final int TASK_REPORTING = 23;
     }
     /**
      * This class specifies some constants which represent each message id.

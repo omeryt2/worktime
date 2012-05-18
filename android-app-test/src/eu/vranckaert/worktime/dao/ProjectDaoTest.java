@@ -64,7 +64,7 @@ public class ProjectDaoTest extends DaoTestCase<ProjectDao, ProjectDaoImpl> {
         assertFalse(result2);
         assertTrue(result3);
     }
-    
+
     public void testFindDefaultProject() {
         String newDefaultProjectName = "Test new default project!";
         

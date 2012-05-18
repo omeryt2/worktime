@@ -62,35 +62,22 @@
                           android:text="@string/loading"/>
             </TableRow>
         </TableLayout>
-        <!-- ListView header -->
-        <LinearLayout style="@style/SubTitleBar">
-            <TextView style="@style/SubTitleBarText" android:text="@string/lbl_project_details_tasks"/>
-            <LinearLayout android:layout_width="wrap_content"
-                          android:layout_height="fill_parent"
-                          android:orientation="horizontal"
-                          android:id="@+id/showHideFinishedTasksButtonGroup">
-                <ImageView style="@style/TitleBarSeparator"
-                           android:contentDescription="@string/empty_content_description"/>
-                <ImageButton style="@style/TitleBarAction"
-                             android:contentDescription="@string/content_description_project_locked_unlocked"
-                             android:src="@drawable/ic_navigation_cancel"
-                             android:onClick="showHideFinishedTasks"
-                             android:id="@+id/showHideFinishedTasksButton"/>
-            </LinearLayout>
-            <ImageView style="@style/TitleBarSeparator"
-                       android:contentDescription="@string/empty_content_description"/>
-            <ImageButton style="@style/TitleBarAction"
-                         android:src="@drawable/ic_title_add"
-                         android:onClick="onAddTaskClick"
-                         android:id="@+id/addTaskButton"
-                         android:contentDescription="@string/content_description_add_project"/>
-            <ProgressBar style="@style/TitleBarProgressIndicator"
-                         android:visibility="gone"/>
-        </LinearLayout>
-
+        <TextView android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:textSize="22sp"
+                  android:textAllCaps="true"
+                  android:textStyle="bold"
+                  android:text="@string/lbl_project_details_tasks_title"
+                  android:paddingTop="10dp"
+                  android:paddingLeft="10dp"
+                  android:paddingRight="10dp"/>
         <ListView android:layout_width="fill_parent"
                   android:layout_height="fill_parent"
                   android:id="@android:id/list"/>
+        <TextView android:id="@android:id/empty"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/lbl_project_details_tasks_nothing_found"/>
     </LinearLayout>
 
     <include layout="@layout/comp_start_stop_time_registration"/>

@@ -22,10 +22,8 @@
           android:icon="@drawable/ic_content_new"
           android:orderInCategory="1"
           android:showAsAction="ifRoom" />
-    <!-- TODO better styled image for lock/unlock -->
     <item android:id="@+id/menu_manage_projects_activity_switch_finished"
           android:title="@string/manage_projects_ab_menu_show_unfinished"
-          android:icon="@drawable/ic_navigation_cancel"
           android:orderInCategory="2"
           android:showAsAction="never" />
 </menu>
