@@ -505,10 +505,10 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
      */
     private void switchMenuItemFinishedProjects(MenuItem menuItem, boolean hideFinished) {
         if (hideFinished) {
-            menuItem.setIcon(R.drawable.ic_title_unlocked_alt);
+            menuItem.setIcon(R.drawable.ic_navigation_accept);
             menuItem.setTitle(R.string.manage_projects_ab_menu_show_all);
         } else {
-            menuItem.setIcon(R.drawable.ic_title_locked_alt);
+            menuItem.setIcon(R.drawable.ic_navigation_cancel);
             menuItem.setTitle(R.string.manage_projects_ab_menu_show_unfinished);
         }
     }

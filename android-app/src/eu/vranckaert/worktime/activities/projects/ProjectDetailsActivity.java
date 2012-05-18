@@ -187,9 +187,9 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
         boolean hide = Preferences.getDisplayTasksHideFinished(ProjectDetailsActivity.this);
 
         if (hide) {
-            showHideFinishedTasksButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_title_locked));
+            showHideFinishedTasksButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_navigation_accept));
         } else {
-            showHideFinishedTasksButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_title_unlocked));
+            showHideFinishedTasksButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_navigation_cancel));
         }
     }
 

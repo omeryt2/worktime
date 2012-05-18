@@ -61,8 +61,8 @@
     <!-- MANAGE PROJECTS -->
     <string name="btn_manage_projects_title">Manage Projects</string>
     <string name="manage_projects_ab_menu_new">New project</string>
-    <string name="manage_projects_ab_menu_show_unfinished">Unfinished projects</string>
-    <string name="manage_projects_ab_menu_show_all">All projects</string>
+    <string name="manage_projects_ab_menu_show_unfinished">Show only unfinished projects</string>
+    <string name="manage_projects_ab_menu_show_all">Show all projects</string>
     <string name="msg_delete_project_confirmation">Do you want to delete this project?</string>
     <string name="lbl_empty_project_list">No projects available.</string>
     <string name="msg_delete_project_at_least_one_required">You cannot delete this project. At least one is required.</string>
@@ -380,16 +380,16 @@
     <string name="pref_projects_tasks_select_project_hide_finished_title">Hide finished projects in selection</string>
     <string name="pref_projects_tasks_select_project_hide_finished_summary_on">Finished projects are hidden when selecting projects from a list</string>
     <string name="pref_projects_tasks_select_project_hide_finished_summary_off">Finished projects are shown when selecting projects from a list</string>
-    <string name="pref_backup_category_title">Backup and Restore</string>
+    <string name="pref_backup_category_title">Old backup system</string>
     <string name="pref_backup_title">Backup</string>
     <string name="pref_backup_summary">Backup all WorkTime data on this device</string>
     <string name="pref_restore_title">Restore</string>
     <string name="pref_restore_summary">Restore the WorkTime data on this device from a previous backup from this or another device</string>
-    <string name="pref_backup_restore_doc_title">Backup/Restore documentation</string>
-    <string name="pref_backup_restore_doc_summary">Read the backup/restore functionality documentation.</string>
     <string name="pref_backup_send_title">Send backup&#8230;</string>
     <string name="pref_backup_send_summary">Send backup-file to your computer through email</string>
     <string name="lbl_pref_backup_send_app_chooser_title">Choose application to send backup with</string>
+    <string name="pref_backup_restore_doc_title">Backup/Restore documentation</string>
+    <string name="pref_backup_restore_doc_summary">Read the backup/restore functionality documentation.</string>
     <string name="pref_time_registrations_category_title">Time Registrations</string>
     <string name="pref_time_registrations_auto_close_60s_gap_title">Auto close 60s gap</string>
     <string name="pref_time_registrations_auto_close_60s_gap_summary_on">The start time of the a newly started time registration will be modified to close maximum a 60s gap with the previous time registration</string>

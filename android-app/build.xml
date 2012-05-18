@@ -240,6 +240,9 @@
             <!-- Specify the output -->
             <arg value="--xml"/>
             <arg value="lint-report.xml" />
+            <!-- Exclude checks -->
+            <arg value="--disable"/>
+            <arg value="NewApi,UnknownId"/>
             <!-- The directory to run lint on -->
             <arg value="."/>
         </exec>

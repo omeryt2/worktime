@@ -73,7 +73,7 @@
                            android:contentDescription="@string/empty_content_description"/>
                 <ImageButton style="@style/TitleBarAction"
                              android:contentDescription="@string/content_description_project_locked_unlocked"
-                             android:src="@drawable/ic_title_unlocked"
+                             android:src="@drawable/ic_navigation_cancel"
                              android:onClick="showHideFinishedTasks"
                              android:id="@+id/showHideFinishedTasksButton"/>
             </LinearLayout>

@@ -207,7 +207,7 @@ public class AddEditProjectActivity extends ActionBarGuiceActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.ab_activity_add_edit_project, menu);
+        menuInflater.inflate(R.menu.ab_activity_add_project, menu);
 
         // Calling super after populating the menu is necessary here to ensure that the
         // action bar helpers have a chance to handle this event.
