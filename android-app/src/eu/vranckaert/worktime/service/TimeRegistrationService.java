@@ -125,4 +125,9 @@ public interface TimeRegistrationService {
      * @param timeRegistration The time registration to be fully initialized.
      */
     void fullyInitialize(TimeRegistration timeRegistration);
+
+    /**
+     * Removes all items.
+     */
+    void removeAll();
 }

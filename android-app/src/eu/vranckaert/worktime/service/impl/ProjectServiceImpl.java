@@ -229,4 +229,14 @@ public class ProjectServiceImpl implements ProjectService {
         }
         return dao.findDefaultProject();
     }
+
+    @Override
+    public void removeAll() {
+        dao.deleteAll();
+    }
+
+    @Override
+    public void insertDefaultProjectAndTaskData() {
+        dao.insertDefaultData();
+    }
 }

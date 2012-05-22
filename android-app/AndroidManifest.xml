@@ -176,5 +176,11 @@
         <activity android:name=".activities.preferences.WidgetPreferencesActivity"
                   android:theme="@style/AppTheme"
                   android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".activities.preferences.ResetApplicationPreferencesActivity"
+                  android:theme="@style/Theme.Translucent"
+                  android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".activities.preferences.ResetPreferencesActivity"
+                  android:theme="@style/Theme.Translucent"
+                  android:configChanges="orientation|keyboardHidden"/>
     </application>
 </manifest>

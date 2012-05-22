@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.dao.impl;
 
 import android.content.Context;
@@ -215,6 +216,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             Log.e(LOG_TAG, "Could not execute the query...");
             throwFatalException(e);
         }
+
         return null;
     }
 }

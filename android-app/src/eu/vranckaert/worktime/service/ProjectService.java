@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.service;
 
 import eu.vranckaert.worktime.exceptions.AtLeastOneProjectRequiredException;
@@ -106,4 +107,14 @@ public interface ProjectService {
      * @return The project that is now marked as default project.
      */
     Project changeDefaultProjectUponProjectMarkedFinished(Project projectMarkedFinished);
+
+    /**
+     * Removes all items.
+     */
+    void removeAll();
+
+    /**
+     * Inserts the default data in the database!
+     */
+    void insertDefaultProjectAndTaskData();
 }

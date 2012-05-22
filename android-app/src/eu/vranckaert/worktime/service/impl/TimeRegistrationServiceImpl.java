@@ -175,4 +175,9 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
             projectDao.refresh(timeRegistration.getTask().getProject());
         }
     }
+
+    @Override
+    public void removeAll() {
+        dao.deleteAll();
+    }
 }

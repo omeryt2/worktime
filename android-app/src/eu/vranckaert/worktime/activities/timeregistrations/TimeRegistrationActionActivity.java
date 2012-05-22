@@ -16,6 +16,7 @@
 
 package eu.vranckaert.worktime.activities.timeregistrations;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -34,7 +35,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.timeregistrations.listadapter.TimeRegistrationActionListAdapter;
 import eu.vranckaert.worktime.constants.Constants;
@@ -46,14 +46,18 @@ import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.service.CommentHistoryService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
+import eu.vranckaert.worktime.service.impl.CommentHistoryServiceImpl;
+import eu.vranckaert.worktime.service.impl.DatabaseFileBackupServiceImpl;
+import eu.vranckaert.worktime.service.impl.TaskServiceImpl;
+import eu.vranckaert.worktime.service.impl.TimeRegistrationServiceImpl;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
+import eu.vranckaert.worktime.service.ui.impl.StatusBarNotificationServiceImpl;
+import eu.vranckaert.worktime.service.ui.impl.WidgetServiceImpl;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import roboguice.activity.GuiceActivity;
-import roboguice.inject.InjectExtra;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,35 +69,39 @@ import java.util.List;
  * Date: 09/02/11
  * Time: 23:25
  */
-public class TimeRegistrationActionActivity extends GuiceActivity {
+public class TimeRegistrationActionActivity extends Activity {
+    /**
+     * LOG_TAG for logging
+     */
     private static final String LOG_TAG = TimeRegistrationActionActivity.class.getSimpleName();
 
-    @Inject
+    /**
+     * Services
+     */
     private WidgetService widgetService;
-
-    @Inject
     private StatusBarNotificationService statusBarNotificationService;
-
-    @Inject
     private TimeRegistrationService timeRegistrationService;
-
-    @Inject
     private CommentHistoryService commentHistoryService;
-
-    @Inject
     private TaskService taskService;
-
-    @Inject
     private BackupService backupService;
 
-    @InjectExtra(Constants.Extras.TIME_REGISTRATION)
+    /**
+     * Extras
+     */
     private TimeRegistration timeRegistration;
 
+    /**
+     * Google Analytics Tracker
+     */
     private AnalyticsTracker tracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        loadExtras();
+        loadServices();
+
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         Log.d(LOG_TAG, "Started the TimeRegistration Action activity");
 
@@ -106,6 +114,25 @@ public class TimeRegistrationActionActivity extends GuiceActivity {
         }
 
         showDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
+    }
+
+    /**
+     * Get all the extras...
+     */
+    private void loadExtras() {
+        timeRegistration = (TimeRegistration) getIntent().getExtras().get(Constants.Extras.TIME_REGISTRATION);
+    }
+
+    /**
+     * Load all the services...
+     */
+    private void loadServices() {
+        widgetService = new WidgetServiceImpl(TimeRegistrationActionActivity.this);
+        statusBarNotificationService = new StatusBarNotificationServiceImpl(TimeRegistrationActionActivity.this);
+        timeRegistrationService = new TimeRegistrationServiceImpl(TimeRegistrationActionActivity.this);
+        commentHistoryService = new CommentHistoryServiceImpl(TimeRegistrationActionActivity.this);
+        taskService = new TaskServiceImpl(TimeRegistrationActionActivity.this);
+        backupService = new DatabaseFileBackupServiceImpl();
     }
 
     private void endTimeRegistration(final String comment) {

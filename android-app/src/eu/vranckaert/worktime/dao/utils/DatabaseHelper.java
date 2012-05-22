@@ -1,17 +1,17 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package eu.vranckaert.worktime.dao.utils;
 
@@ -20,7 +20,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
-import com.j256.ormlite.dao.BaseDaoImpl;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.db.DatabaseType;
 import com.j256.ormlite.db.SqliteAndroidDatabaseType;
@@ -89,30 +88,34 @@ public class DatabaseHelper<T, ID> extends OrmLiteSqliteOpenHelper {
                 TableUtils.createTable(connectionSource, table.getTableClass());
             }
 
-            int defaultProjectId = 1;
-
-            Log.d(LOG_TAG, "Inserting default project");
-            ContentValues projectValues = new ContentValues();
-            projectValues.put("id", defaultProjectId);
-            projectValues.put("name", context.getString(R.string.default_project_name));
-            projectValues.put("comment", context.getString(R.string.default_project_comment));
-            projectValues.put("defaultValue", true);
-            projectValues.put("finished", false);
-            projectValues.put("flags", "");
-            database.insert("project", null, projectValues);
-
-            Log.d(LOG_TAG, "Inserting default task for default project");
-            ContentValues taskValues = new ContentValues();
-            taskValues.put("name", context.getString(R.string.default_task_name));
-            taskValues.put("comment", context.getString(R.string.default_task_comment));
-            taskValues.put("projectId", defaultProjectId);
-            taskValues.put("finished", false);
-            taskValues.put("flags", "");
-            database.insert("task", null, taskValues);
+            insertDefaultData(database);
         } catch (SQLException e) {
             Log.e(LOG_TAG, "Excpetion while creating the database", e);
             throw new RuntimeException("Excpetion while creating the database", e);
         }
+    }
+
+    public void insertDefaultData(SQLiteDatabase database) {
+        int defaultProjectId = 1;
+
+        Log.d(LOG_TAG, "Inserting default project");
+        ContentValues projectValues = new ContentValues();
+        projectValues.put("id", defaultProjectId);
+        projectValues.put("name", context.getString(R.string.default_project_name));
+        projectValues.put("comment", context.getString(R.string.default_project_comment));
+        projectValues.put("defaultValue", true);
+        projectValues.put("finished", false);
+        projectValues.put("flags", "");
+        database.insert("project", null, projectValues);
+
+        Log.d(LOG_TAG, "Inserting default task for default project");
+        ContentValues taskValues = new ContentValues();
+        taskValues.put("name", context.getString(R.string.default_task_name));
+        taskValues.put("comment", context.getString(R.string.default_task_comment));
+        taskValues.put("projectId", defaultProjectId);
+        taskValues.put("finished", false);
+        taskValues.put("flags", "");
+        database.insert("task", null, taskValues);
     }
 
     @Override

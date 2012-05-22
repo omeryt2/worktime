@@ -46,7 +46,7 @@ import java.util.List;
  */
 public class DatabaseFileBackupServiceImpl implements BackupService {
     private static final String LOG_TAG = DatabaseFileBackupServiceImpl.class.getSimpleName();
-    
+
     public String backup(Context ctx) throws SDCardUnavailableException, BackupFileCouldNotBeCreated, BackupFileCouldNotBeWritten {
         String fileName = BASE_FILE_NAME + DateUtils.DateTimeConverter.getUniqueTimestampString() + FILE_EXTENSION;
 

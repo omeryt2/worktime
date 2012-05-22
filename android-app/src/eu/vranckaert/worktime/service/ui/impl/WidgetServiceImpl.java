@@ -31,15 +31,15 @@ import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationActio
 import eu.vranckaert.worktime.activities.widget.SelectProjectActivity;
 import eu.vranckaert.worktime.activities.widget.StartTimeRegistrationActivity;
 import eu.vranckaert.worktime.constants.Constants;
-import eu.vranckaert.worktime.dao.TimeRegistrationDao;
-import eu.vranckaert.worktime.dao.impl.TimeRegistrationDaoImpl;
 import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.providers.WorkTimeWidgetProvider;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
+import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.impl.ProjectServiceImpl;
 import eu.vranckaert.worktime.service.impl.TaskServiceImpl;
+import eu.vranckaert.worktime.service.impl.TimeRegistrationServiceImpl;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 
 /**
@@ -54,7 +54,7 @@ public class WidgetServiceImpl implements WidgetService {
     private Context ctx;
 
     @Inject
-    private TimeRegistrationDao timeRegistrationDao;
+    private TimeRegistrationService timeRegistrationService;
 
     @Inject
     private TaskService taskService;
@@ -83,11 +83,11 @@ public class WidgetServiceImpl implements WidgetService {
 
         boolean timeRegistrationStarted = false;
 
-        Long numberOfTimeRegs = timeRegistrationDao.count();
+        Long numberOfTimeRegs = timeRegistrationService.count();
 
         TimeRegistration lastTimeRegistration = null;
         if(numberOfTimeRegs > 0L) {
-            lastTimeRegistration = timeRegistrationDao.getLatestTimeRegistration();
+            lastTimeRegistration = timeRegistrationService.getLatestTimeRegistration();
             Log.d(LOG_TAG, "The last time registration has ID " + lastTimeRegistration.getId());
         } else {
             Log.d(LOG_TAG, "No timeregstrations found yet!");
@@ -189,7 +189,7 @@ public class WidgetServiceImpl implements WidgetService {
      * @param ctx The widget's context.
      */
     private void getDaos(Context ctx) {
-        this.timeRegistrationDao = new TimeRegistrationDaoImpl(ctx);
+        //this.timeRegistrationDao = new TimeRegistrationDaoImpl(ctx);
         Log.d(LOG_TAG, "DAOS ok!");
     }
 
@@ -200,6 +200,7 @@ public class WidgetServiceImpl implements WidgetService {
     private void getServices(Context ctx) {
         this.projectService = new ProjectServiceImpl(ctx);
         this.taskService = new TaskServiceImpl(ctx);
+        this.timeRegistrationService = new TimeRegistrationServiceImpl(ctx);
         Log.d(LOG_TAG, "Services ok!");
     }
 }

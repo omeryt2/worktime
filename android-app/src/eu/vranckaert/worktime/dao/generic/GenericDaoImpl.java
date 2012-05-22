@@ -1,17 +1,17 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package eu.vranckaert.worktime.dao.generic;
 
@@ -20,6 +20,7 @@ import android.util.Log;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import eu.vranckaert.worktime.dao.utils.DatabaseHelper;
 
 import java.sql.SQLException;
@@ -79,6 +80,21 @@ public abstract class GenericDaoImpl<T, ID> implements GenericDao<T, ID> {
         String message = "An unknown SQL exception occured while executing a basic SQL command!";
         Log.e(LOG_TAG, message, e);
         throw new RuntimeException(message, e);
+    }
+
+    /**
+     * Get the database helper to give you low-level database access!
+     * @return The project-custom database helper ({@link DatabaseHelper}).
+     */
+    protected DatabaseHelper<T, ID> getDatabaseHelper() {
+        DatabaseHelper<T, ID> databaseHelper = (DatabaseHelper<T, ID>) OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        return databaseHelper;
+    }
+
+    @Override
+    public void insertDefaultData() {
+        DatabaseHelper<T, ID> databaseHelper = getDatabaseHelper();
+        databaseHelper.insertDefaultData(databaseHelper.getWritableDatabase());
     }
 
     /**
@@ -188,5 +204,15 @@ public abstract class GenericDaoImpl<T, ID> implements GenericDao<T, ID> {
             throwFatalException(e);
         }
         return result;
+    }
+
+    @Override
+    public void deleteAll() {
+        DeleteBuilder<T, ID> deleteBuilder = dao.deleteBuilder();
+        try {
+            dao.delete(deleteBuilder.prepare());
+        } catch (SQLException e) {
+            throwFatalException(e);
+        }
     }
 }

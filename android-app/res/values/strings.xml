@@ -375,6 +375,12 @@
     <string name="pref_widget_ask_for_finishing_task_summary_on">Ending a time registration will ask if you want to finish the selected task.</string>
     <string name="pref_widget_ask_for_finishing_task_summary_off">Ending a time registration will not ask if you want to finish the selected task.</string>
     <string name="pref_stat_bar_notifs_category_title">Notifications</string>
+    <string name="pref_reset_preferences_title">Reset Preferences</string>
+    <string name="pref_reset_preferences_confirmation_message">This operation will reset all your preferences of WorkTime to the system defaults. This cannot be undone! Are you sure you want to continue with the reset?</string>
+    <string name="pref_reset_application_title">Reset Application</string>
+    <string name="pref_reset_application_summary">This option will remove all your data and restore the initial data to start clean</string>
+    <string name="pref_rest_application_confirmation_message">This operation will delete all your data and cannot be undone! Preferences are not reset. Are you sure you want to continue with the reset?</string>
+    <string name="pref_rest_application_loading_dialog_message">Resetting application...</string>
     <string name="pref_stat_bar_notifs_ask_for_comment_title">Show status bar notifications?</string>
     <string name="pref_stat_bar_notifs_ask_for_comment_summary_on">Notifications will be shown in the status bar.</string>
     <string name="pref_stat_bar_notifs_ask_for_comment_summary_off">No notifications will be shown in the status bar.</string>

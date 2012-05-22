@@ -30,7 +30,6 @@ import eu.vranckaert.worktime.constants.OSContants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
-import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuicePreferenceActivity;
 import roboguice.activity.GuicePreferenceActivity;
@@ -86,10 +85,33 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
         //Category NOTIFICATIONS
         createCategoryButton(ctx, preferences, R.string.pref_stat_bar_notifs_category_title, NotificationsPreferencesActivity.class);
 
-        if (!ContextUtils.isStableBuild(PreferencesActivity.this)) {
-            //Category BACKUP
-            createCategoryButton(ctx, preferences, R.string.pref_backup_category_title, BackupPreferencesActivity.class);
-        }
+        //Category RESET APPLICATION
+        Preference resetAppItem = new Preference(ctx);
+        resetAppItem.setTitle(R.string.pref_reset_application_title);
+        resetAppItem.setSummary(R.string.pref_reset_application_summary);
+        preferences.addPreference(resetAppItem);
+        resetAppItem.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(PreferencesActivity.this, ResetApplicationPreferencesActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        });
+
+        //Option RESET ALL PREFERENCES
+        Preference resetItem = new Preference(ctx);
+        resetItem.setTitle(R.string.pref_reset_category_title);
+        resetItem.setSummary(R.string.pref_reset_category_summary);
+        preferences.addPreference(resetItem);
+        resetItem.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(PreferencesActivity.this, ResetPreferencesActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        });
 
         //Category BACKUP INFO
         Preference backupInfoItem = new Preference(ctx);
@@ -105,18 +127,10 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
             }
         });
 
-        //Option RESET ALL PREFERENCES
-        Preference resetItem = new Preference(ctx);
-        resetItem.setTitle(R.string.pref_reset_category_title);
-        resetItem.setSummary(R.string.pref_reset_category_summary);
-        preferences.addPreference(resetItem);
-        resetItem.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Preferences.removeAllPreferences(PreferencesActivity.this);
-                return true;
-            }
-        });
+        if (!ContextUtils.isStableBuild(PreferencesActivity.this)) {
+            //Category BACKUP (old system)
+            createCategoryButton(ctx, preferences, R.string.pref_backup_category_title, BackupPreferencesActivity.class);
+        }
     }
 
     private void createCategoryButton(final Context ctx, final PreferenceScreen preferences,

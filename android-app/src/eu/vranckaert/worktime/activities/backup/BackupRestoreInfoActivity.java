@@ -62,6 +62,12 @@ public class BackupRestoreInfoActivity extends GuiceActivity {
                                 dialog.cancel();
                                 finish();
                             }
+                        })
+                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialogInterface) {
+                                finish();
+                            }
                         });
                 dialog = alertBackupSuccess.create();
                 break;
