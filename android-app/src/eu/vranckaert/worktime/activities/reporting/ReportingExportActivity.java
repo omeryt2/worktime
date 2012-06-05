@@ -566,7 +566,7 @@ public class ReportingExportActivity extends ActionBarGuiceActivity {
         hiddenColumns.put(dataSheetName, Arrays.asList(new Integer[]{8, 9}));
 
         try {
-            return exportService.exportXlsFile(ReportingExportActivity.this, filename, headers, values, headersColumnFormat, valuesColumnFormat, hiddenColumns, null, false);
+            return exportService.exportXlsFile(ReportingExportActivity.this, filename, headers, values, headersColumnFormat, valuesColumnFormat, hiddenColumns, null, true);
         } catch (GeneralExportException e) {
             throw e;
         }

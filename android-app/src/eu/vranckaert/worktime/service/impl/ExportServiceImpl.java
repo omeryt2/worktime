@@ -146,6 +146,8 @@ public class ExportServiceImpl implements ExportService {
             String sheetName = entry.getKey();
             List<Object[]> sheetValues = entry.getValue();
 
+            Integer[] maximumColumnLengths = new Integer[getNumberOfColumns(sheetName, headers, sheetValues)];
+
             WritableSheet sheet = workbook.createSheet(sheetName, sheetIndex);
             Log.d(LOG_TAG, "Sheet with name " + sheetName + " created for workbook at index " + sheetIndex);
             sheetIndex++;
@@ -180,7 +182,7 @@ public class ExportServiceImpl implements ExportService {
                         headerDisplayFormat = headerDisplayFormats.get(i);
                     }
 
-                    WritableCell headerCell = createExcelCell(i, headerRow, headerValues.get(i), headerDisplayFormat, ExportService.EXCEL_HEADER_COLOR);
+                    WritableCell headerCell = createExcelCell(i, headerRow, headerValues.get(i), headerDisplayFormat, ExportService.EXCEL_HEADER_COLOR, maximumColumnLengths);
                     if (headerCell != null) {
                         Log.d(LOG_TAG, "Writing content to header cell at column " + i + ", row " + headerRow + ".");
                         try {
@@ -210,7 +212,7 @@ public class ExportServiceImpl implements ExportService {
                         valueDisplayFormat = valuesDisplayFormats.get(column);
                     }
 
-                    WritableCell cell = createExcelCell(column, row, cellValue, valueDisplayFormat, null);
+                    WritableCell cell = createExcelCell(column, row, cellValue, valueDisplayFormat, null, maximumColumnLengths);
                     if (cell != null) {
                         Log.d(LOG_TAG, "Writing data to Excel workbook at sheet " + sheetName + " in cell at column " + column + " and row " + row);
                         try {
@@ -243,15 +245,20 @@ public class ExportServiceImpl implements ExportService {
                 }
             }
 
+            /*
+             * issue 113:  Auto-size all columns in which we entered data on all the sheets we created so the cells match
+             * their content
+             */
             if (autoSizeColumns) {
-                // Auto-size all columns in which we entered data on all the sheets we created to match the content of the
-                // cells...
-                CellView autoSizingCellView = new CellView();
-                autoSizingCellView.setAutosize(true);
-                for (int column = 0; column < highestColumnNumberInUse; column++) {
-                    if (!hiddenColumnNumbers.contains(column)) {
-                        Log.d(LOG_TAG, "Auosizing cells in column " + column + " on sheet " + sheetName);
-                        sheet.setColumnView(column, autoSizingCellView);
+                for (int sheetColumn = 0; sheetColumn < highestColumnNumberInUse; sheetColumn++) {
+                    if (sheetColumn < maximumColumnLengths.length) {
+                        Integer columnLength = maximumColumnLengths[sheetColumn];
+
+                        CellView cellView = new CellView();
+                        cellView.setSize(columnLength * 256); // Always multiply by 256, see the JXL documentation!
+
+                        Log.d(LOG_TAG, "Resizing cells in column " + sheetColumn + " on sheet " + sheetName);
+                        sheet.setColumnView(sheetColumn, cellView);
                     }
                 }
             }
@@ -282,6 +289,22 @@ public class ExportServiceImpl implements ExportService {
         FileUtil.enableForMTP(ctx, file);
 
         return file;
+    }
+
+    private int getNumberOfColumns(String sheetName, Map<String, List<Object>> headers, List<Object[]> sheetValues) {
+        int numberOfColumns = 0;
+        for (Object[] sheetRowValues : sheetValues) {
+            int cols = sheetRowValues.length;
+            if (cols > numberOfColumns)
+                numberOfColumns = cols;
+        }
+        if (headers != null && headers.get(sheetName) != null && headers.get(sheetName).size() != 0) {
+            int colHeaders = headers.get(sheetName).size();
+            if (colHeaders > numberOfColumns) {
+                numberOfColumns = colHeaders;
+            }
+        }
+        return numberOfColumns;
     }
 
     /**
@@ -332,10 +355,14 @@ public class ExportServiceImpl implements ExportService {
      *                      correctly according to the {@link DisplayFormat} specified.
      * @param cellColor     This parameter is optional. If provided the background of the cell will formatted in the
      *                      specified {@link Colour}.
+     * @param columnLengths The maximum length per column (in number of characters). This var needs to be updated every
+     *                      time if a longer content is entered in the column.
      * @return An instance of {@link WritableCell} containing the data and the cell parameters (row, column). If
      *         provided it contains also the display format and the cell's background color.
      */
-    private WritableCell createExcelCell(int c, int r, Object value, DisplayFormat displayFormat, Colour cellColor) {
+    private WritableCell createExcelCell(int c, int r, Object value, DisplayFormat displayFormat, Colour cellColor,
+                                         Integer[] columnLengths) {
+        int currentColumnLength = 0;
         WritableCell cell = null;
 
         if (value == null) {
@@ -344,13 +371,17 @@ public class ExportServiceImpl implements ExportService {
 
         if (value instanceof java.lang.Double) {
             cell = new jxl.write.Number(c, r, (Double) value);
+            currentColumnLength = ((Double) value).toString().length();
         } else if (value instanceof Integer) {
             Integer iValue = (Integer) value;
             cell = new jxl.write.Number(c, r, Double.valueOf(iValue.toString()));
+            currentColumnLength = iValue.toString().length();
         } else if (value instanceof Boolean) {
             cell = new jxl.write.Boolean(c, r, (Boolean) value);
+            currentColumnLength = 5;
         } else if (value instanceof Date) {
             cell = new jxl.write.DateTime(c, r, (java.util.Date) value);
+            currentColumnLength = 10;
         } else if (value instanceof String && ((String) value).startsWith("=") && ((String) value).length() > 1) {
             // Now we know it should be a function
             String formula = (String) value;
@@ -359,9 +390,11 @@ public class ExportServiceImpl implements ExportService {
             Log.d(LOG_TAG, "Formula for cell with column " + c + " and row " + r + " is " + formula);
             formula = formula.substring(1);
             cell = new Formula(c, r, formula);
+            currentColumnLength = 10;
         } else {
             // Default handling as String!
             cell = new Label(c, r, value.toString());
+            currentColumnLength = value.toString().length() + 3;
         }
 
         if (displayFormat != null || cellColor != null) {
@@ -381,6 +414,11 @@ public class ExportServiceImpl implements ExportService {
             }
 
             cell.setCellFormat(cellFormat);
+        }
+
+        Integer columnLength = columnLengths[c];
+        if (columnLength == null || currentColumnLength > columnLength) {
+            columnLengths[c] = currentColumnLength;
         }
 
         return cell;
