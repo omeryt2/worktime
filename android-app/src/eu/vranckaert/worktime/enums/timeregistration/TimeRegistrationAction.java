@@ -21,6 +21,19 @@ import eu.vranckaert.worktime.model.TimeRegistration;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This enum defines all possible actions on a {@link TimeRegistration}. It defines weather the action is possible for
+ * ongoing, ended or all time registrations. and the order the of the actions to be used in the front-end. When
+ * modifying the list of possible time registration actions you should also:</br>
+ * <ul>
+ * <li>modify the array resource
+ * {@link eu.vranckaert.worktime.R.array#array_time_registration_actions_dialog_choose_action_spinner} and add/remove
+ * the action in the correct position (according to the {@link TimeRegistrationAction#order} value that you defined for
+ * the action).</li>
+ * <li>Handle the new option in the activity method:
+ * {@link eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationActionActivity#handleTimeRegistrationAction(TimeRegistrationAction, android.widget.EditText)}</li>
+ * </ul>
+ */
 public enum TimeRegistrationAction {
     PUNCH_OUT(0, TimeRegistrationActionScope.ONGOING_TIME_REGISTRATION),
     SPLIT(1, TimeRegistrationActionScope.BOTH),
@@ -30,7 +43,8 @@ public enum TimeRegistrationAction {
     RESTART_TIME_REGISTRATION(5, TimeRegistrationActionScope.ENDED_TIME_REGISTRATION),
     EDIT_PROJECT_AND_TASK(6, TimeRegistrationActionScope.BOTH),
     SET_COMMENT(7, TimeRegistrationActionScope.BOTH),
-    DELETE_TIME_REGISTRATION(8, TimeRegistrationActionScope.BOTH);
+    DELETE_TIME_REGISTRATION(8, TimeRegistrationActionScope.BOTH),
+    DELETE_TIME_REGISTRATIONS_IN_RANGE(9, TimeRegistrationActionScope.BOTH);
 
     private int order;
     private int originalOrder;

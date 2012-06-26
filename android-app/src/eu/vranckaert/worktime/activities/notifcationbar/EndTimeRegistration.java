@@ -42,7 +42,7 @@ public class EndTimeRegistration extends GuiceActivity {
     private void launchStopTimeRegistrationActivity() {
         Intent intent = new Intent(getApplicationContext(), TimeRegistrationActionActivity.class);
         intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistrationService.getLatestTimeRegistration());
-        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
     }
 

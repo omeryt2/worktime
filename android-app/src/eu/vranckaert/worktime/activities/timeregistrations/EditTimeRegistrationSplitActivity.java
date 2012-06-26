@@ -23,12 +23,13 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.OSContants;
-import eu.vranckaert.worktime.dao.TimeRegistrationDao;
-import eu.vranckaert.worktime.dao.impl.TimeRegistrationDaoImpl;
 import eu.vranckaert.worktime.model.TimeRegistration;
+import eu.vranckaert.worktime.service.TimeRegistrationService;
+import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
@@ -48,6 +49,12 @@ import java.util.Date;
  */
 public class EditTimeRegistrationSplitActivity extends WizardActivity {
     private static final String LOG_TAG = EditTimeRegistrationSplitActivity.class.getSimpleName();
+
+    @Inject
+    TimeRegistrationService trService;
+
+    @Inject
+    WidgetService widgetService;
 
     private TimeRegistration originalTimeRegistration;
     private int defaultSplitGap;
@@ -545,9 +552,10 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
         //The original time registration will be kept, and updated with the values from part1.
         part1.setId(originalTimeRegistration.getId());
 
-        TimeRegistrationDao dao = new TimeRegistrationDaoImpl(EditTimeRegistrationSplitActivity.this);
-        dao.update(part1);
-        dao.save(part2);
+        trService.update(part1);
+        trService.create(part2);
+
+        widgetService.updateWidget();
 
         return true;
     }

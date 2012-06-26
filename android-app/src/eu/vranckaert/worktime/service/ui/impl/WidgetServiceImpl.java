@@ -98,13 +98,13 @@ public class WidgetServiceImpl implements WidgetService {
             views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_start));
             //Enable on click for the start button
             Log.d(LOG_TAG, "Couple the start button to an on click action");
-            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, StartTimeRegistrationActivity.class, null, null);
+            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, StartTimeRegistrationActivity.class, null);
         } else if(lastTimeRegistration != null && lastTimeRegistration.isOngoingTimeRegistration()) {
             Log.d(LOG_TAG, "This is an ongoing time registration");
             views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_stop));
             //Enable on click for the stop button
             Log.d(LOG_TAG, "Couple the stop button to an on click action.");
-            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, TimeRegistrationActionActivity.class, lastTimeRegistration, null);
+            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, TimeRegistrationActionActivity.class, lastTimeRegistration);
             timeRegistrationStarted = true;
         }
 
@@ -143,7 +143,7 @@ public class WidgetServiceImpl implements WidgetService {
      * @param extraFlags Extra flags for the activities.
      */
     private void startBackgroundWorkActivity(Context ctx, int resId, Class<? extends Activity> activity, TimeRegistration timeRegistration, int... extraFlags) {
-        int defaultFlags = Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS|Intent.FLAG_ACTIVITY_NO_HISTORY;
+        int defaultFlags = Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK;
 
         Intent intent = new Intent(ctx, activity);
         if (timeRegistration != null) {
@@ -158,7 +158,7 @@ public class WidgetServiceImpl implements WidgetService {
                 }
             }
         }
-        PendingIntent pendingIntent = PendingIntent.getActivity(ctx, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(ctx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(resId, pendingIntent);
     }
 
@@ -168,11 +168,11 @@ public class WidgetServiceImpl implements WidgetService {
      * @param updatedView The update view.
      */
     private void commitView(Context ctx, RemoteViews updatedView) {
-        Log.d(LOG_TAG, "Comitting update view...");
+        Log.d(LOG_TAG, "Committing update view...");
         ComponentName cn = new ComponentName(ctx, WorkTimeWidgetProvider.class);
         AppWidgetManager mgr = AppWidgetManager.getInstance(ctx);
 		mgr.updateAppWidget(cn, updatedView);
-        Log.d(LOG_TAG, "Updated view comitted!");
+        Log.d(LOG_TAG, "Updated view committed!");
     }
 
     /**
