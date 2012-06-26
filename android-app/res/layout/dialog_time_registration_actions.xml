@@ -44,4 +44,46 @@
                 android:layout_height="wrap_content"
                 android:text="@string/lbl_time_registration_actions_dialog_btn_reuse_last_comment"/>
     </LinearLayout>
+
+    <LinearLayout android:id="@+id/tr_delete_container"
+                  android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  android:orientation="vertical">
+        <RadioGroup android:id="@+id/tr_delete_radio_container"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+            <RadioButton android:id="@+id/tr_delete_current"
+                         android:layout_width="fill_parent"
+                         android:layout_height="wrap_content"
+                         android:text="Only this time registration"/>
+            <RadioButton android:id="@+id/tr_delete_range"
+                         android:layout_width="fill_parent"
+                         android:layout_height="wrap_content"
+                         android:text="All time registration within range:"/>
+            <TableLayout android:id="@+id/tr_delete_range_container"
+                         android:layout_width="fill_parent"
+                         android:layout_height="wrap_content"
+                         android:paddingLeft="30dip"
+                         android:stretchColumns="1">
+                <TableRow>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="From:"/>
+                    <Button android:id="@+id/tr_delete_range_date_from"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text=""/>
+                </TableRow>
+                <TableRow>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="To:"/>
+                    <Button android:id="@+id/tr_delete_range_date_to"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text=""/>
+                </TableRow>
+            </TableLayout>
+        </RadioGroup>
+    </LinearLayout>
 </LinearLayout>

@@ -43,8 +43,7 @@ public enum TimeRegistrationAction {
     RESTART_TIME_REGISTRATION(5, TimeRegistrationActionScope.ENDED_TIME_REGISTRATION),
     EDIT_PROJECT_AND_TASK(6, TimeRegistrationActionScope.BOTH),
     SET_COMMENT(7, TimeRegistrationActionScope.BOTH),
-    DELETE_TIME_REGISTRATION(8, TimeRegistrationActionScope.BOTH),
-    DELETE_TIME_REGISTRATIONS_IN_RANGE(9, TimeRegistrationActionScope.BOTH);
+    DELETE_TIME_REGISTRATION(8, TimeRegistrationActionScope.BOTH);
 
     private int order;
     private int originalOrder;

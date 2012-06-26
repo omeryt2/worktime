@@ -33,7 +33,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TableLayout;
 import android.widget.Toast;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.timeregistrations.listadapter.TimeRegistrationActionListAdapter;
@@ -438,6 +440,10 @@ public class TimeRegistrationActionActivity extends Activity {
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         final TimeRegistrationAction action = TimeRegistrationAction.getByIndex(actions, position);
                         final View commentContainer = layout.findViewById(R.id.tr_comment_container);
+                        final View deleteContainer = layout.findViewById(R.id.tr_delete_container);
+
+                        commentContainer.setVisibility(View.GONE);
+                        deleteContainer.setVisibility(View.GONE);
 
                         switch (action) {
                             case PUNCH_OUT:
@@ -448,8 +454,38 @@ public class TimeRegistrationActionActivity extends Activity {
                             case SET_COMMENT:
                                 commentContainer.setVisibility(View.VISIBLE);
                                 break;
-                            default:
-                                commentContainer.setVisibility(View.GONE);
+                            case DELETE_TIME_REGISTRATION:
+                                deleteContainer.setVisibility(View.VISIBLE);
+                                final TableLayout deleteRangeContainer  = (TableLayout) layout.findViewById(R.id.tr_delete_range_container);
+                                final Button deleteRangeFromButton = (Button) layout.findViewById(R.id.tr_delete_range_date_from);
+                                final Button deleteRangeToButton = (Button) layout.findViewById(R.id.tr_delete_range_date_to);
+
+                                RadioGroup deleteRadioContainer = (RadioGroup) layout.findViewById(R.id.tr_delete_radio_container);
+                                deleteRadioContainer.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                                    @Override
+                                    public void onCheckedChanged(RadioGroup radioGroup, int index) {
+                                        int checkedId = radioGroup.getCheckedRadioButtonId();
+                                        switch (checkedId) {
+                                            case R.id.tr_delete_current: {
+                                                deleteRangeContainer.setEnabled(false);
+                                                deleteRangeFromButton.setEnabled(false);
+                                                deleteRangeToButton.setEnabled(false);
+                                                break;
+                                            }
+                                            case R.id.tr_delete_range: {
+                                                deleteRangeContainer.setEnabled(true);
+                                                deleteRangeFromButton.setEnabled(true);
+                                                deleteRangeToButton.setEnabled(true);
+
+                                                // TODO enable date selection for buttons
+
+                                                break;
+                                            }
+                                        }
+                                    }
+                                });
+                                deleteRadioContainer.check(R.id.tr_delete_current);
+                                break;
                         }
                     }
 
@@ -466,7 +502,7 @@ public class TimeRegistrationActionActivity extends Activity {
                         removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
                         ContextUtils.hideKeyboard(mContext, commentEditText);
                         TimeRegistrationAction action = TimeRegistrationAction.getByIndex(actions, actionSpinner.getSelectedItemPosition());
-                        handleTimeRegistrationAction(action, commentEditText);
+                        handleTimeRegistrationAction(action, commentEditText, (RadioGroup) layout.findViewById(R.id.tr_delete_radio_container));
                     }
                 });
                 actionsDialog.setNegativeButton(android.R.string.cancel, new AlertDialog.OnClickListener() {
@@ -583,7 +619,7 @@ public class TimeRegistrationActionActivity extends Activity {
      * @param action The actions to handle of type {@link TimeRegistrationAction}.
      * @param commentEditText The {@link EditText} that is used for entering a comment in certain cases.
      */
-    private void handleTimeRegistrationAction(TimeRegistrationAction action, EditText commentEditText) {
+    private void handleTimeRegistrationAction(TimeRegistrationAction action, EditText commentEditText, RadioGroup deleteContainer) {
         Log.i(LOG_TAG, "Handling Time Registration action: " + action.toString());
         switch (action) {
             case PUNCH_OUT: {
@@ -648,13 +684,18 @@ public class TimeRegistrationActionActivity extends Activity {
                 break;
             }
             case DELETE_TIME_REGISTRATION: {
-                removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
-                showDialog(Constants.Dialog.DELETE_TIME_REGISTRATION_YES_NO);
-                break;
-            }
-            case DELETE_TIME_REGISTRATIONS_IN_RANGE: {
-                Intent intent = new Intent(this, EditTimeRegistrationDeleteInRangeActivity.class);
-                startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT_DIALOG);
+                int radioButtonId = deleteContainer.getCheckedRadioButtonId();
+
+                if (radioButtonId == R.id.tr_delete_current) {
+                    Log.d(LOG_TAG, "Deleting current time registration");
+
+                    removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
+                    showDialog(Constants.Dialog.DELETE_TIME_REGISTRATION_YES_NO);
+                } else if (radioButtonId == R.id.tr_delete_range) {
+                    Log.d(LOG_TAG, "Deleting all time registrations in range");
+                    // TODO
+                    finish();
+                }
                 break;
             }
         }

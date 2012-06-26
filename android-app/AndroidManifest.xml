@@ -84,9 +84,6 @@
         <activity android:name=".activities.timeregistrations.EditTimeRegistrationSplitActivity"
                   android:theme="@style/AppTheme"
                   android:configChanges="orientation|keyboardHidden"/>
-        <activity android:name=".activities.timeregistrations.EditTimeRegistrationDeleteInRangeActivity"
-                  android:theme="@style/AppTheme"
-                  android:configChanges="orientation|keyboardHidden"/>
         <!-- Task specific activities -->
         <activity android:name=".activities.tasks.AddEditTaskActivity"
                   android:theme="@style/AppTheme"

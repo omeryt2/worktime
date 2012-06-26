@@ -164,7 +164,6 @@
         <item>Edit project and task</item>
         <item>Set comment</item>
         <item>Delete</item>
-        <item>Delete multiple registrations</item>
     </string-array>
     <string name="lbl_time_registration_actions_dialog_btn_reuse_last_comment">Reuse last comment</string>
     <string name="lbl_time_registration_actions_dialog_updating_time_registration">Updating time registration&#8230;</string>
