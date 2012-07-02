@@ -18,6 +18,7 @@ package eu.vranckaert.worktime.activities.timeregistrations;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -32,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -57,12 +59,15 @@ import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.service.ui.impl.StatusBarNotificationServiceImpl;
 import eu.vranckaert.worktime.service.ui.impl.WidgetServiceImpl;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
+import eu.vranckaert.worktime.utils.date.DateFormat;
+import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -96,6 +101,14 @@ public class TimeRegistrationActionActivity extends Activity {
      * Google Analytics Tracker
      */
     private AnalyticsTracker tracker;
+
+    /**
+     * Vars
+     */
+    private Calendar removeRangeMinBoundary = null;
+    private Calendar removeRangeMaxBoundary = null;
+    private Button deleteRangeFromButton = null;
+    private Button deleteRangeToButton = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,6 +257,67 @@ public class TimeRegistrationActionActivity extends Activity {
         finish();
     }
 
+    private void deleteTimeRegistrations(Date minBoundary, Date maxBoundary) {
+        AsyncTask<Date, Void, Long> threading = new AsyncTask<Date, Void, Long>() {
+            @Override
+            protected void onPreExecute() {
+                showDialog(Constants.Dialog.TIME_REGISTRATIONS_DELETE_LOADING);
+            }
+
+            @Override
+            protected Long doInBackground(Date... boundaries) {
+                Log.d(LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
+                if(Looper.myLooper() == null) {
+                    Looper.prepare();
+                }
+
+                Date minBoundary = boundaries[0];
+                if (minBoundary != null)
+                    minBoundary = DateUtils.Various.setMinTimeValueOfDay(minBoundary);
+                Date maxBoundary = boundaries[1];
+                if (maxBoundary != null)
+                    maxBoundary = DateUtils.Various.setMaxTimeValueOfDay(maxBoundary);
+
+                long count = timeRegistrationService.removeAllInRange(minBoundary, maxBoundary);
+
+                widgetService.updateWidget();
+
+                TimeRegistration latestTimeRegistration = timeRegistrationService.getLatestTimeRegistration();
+                if (latestTimeRegistration != null && latestTimeRegistration.isOngoingTimeRegistration()) {
+                    statusBarNotificationService.addOrUpdateNotification(latestTimeRegistration);
+                } else {
+                    statusBarNotificationService.removeOngoingTimeRegistrationNotification();
+                }
+
+                tracker.trackEvent(
+                        TrackerConstants.EventSources.TIME_REGISTRATION_ACTION_ACTIVITY,
+                        TrackerConstants.EventActions.DELETE_TIME_REGISTRATIONS_IN_RANGE
+                );
+
+                return count;
+            }
+
+            @Override
+            protected void onPostExecute(Long count) {
+                removeDialog(Constants.Dialog.TIME_REGISTRATIONS_DELETE_LOADING);
+                Log.d(LOG_TAG, "Loading dialog removed from UI");
+
+                String message = "";
+                if (count == 1l) {
+                    message = getString(R.string.msg_time_registration_actions_dialog_removing_time_registrations_range_done_single, count);
+                } else {
+                    message = getString(R.string.msg_time_registration_actions_dialog_removing_time_registrations_range_done_multiple, count);
+                }
+                Toast.makeText(TimeRegistrationActionActivity.this, message, Toast.LENGTH_LONG).show();
+
+                Log.d(LOG_TAG, "Finishing activity...");
+                setResult(Constants.IntentResultCodes.RESULT_DELETED);
+                finish();
+            }
+        };
+        threading.execute(minBoundary, maxBoundary);
+    }
+
     /**
      * Deletes a {@link TimeRegistration} instance from the database.
      */
@@ -261,8 +335,6 @@ public class TimeRegistrationActionActivity extends Activity {
                 if(Looper.myLooper() == null) {
                     Looper.prepare();
                 }
-
-                Date endTime = new Date();
 
                 timeRegistrationService.remove(timeRegistration);
 
@@ -290,7 +362,7 @@ public class TimeRegistrationActionActivity extends Activity {
                 }
 
                 Log.d(LOG_TAG, "Finishing activity...");
-                setResult(RESULT_OK);
+                setResult(Constants.IntentResultCodes.RESULT_DELETED);
                 finish();
             }
         };
@@ -457,8 +529,15 @@ public class TimeRegistrationActionActivity extends Activity {
                             case DELETE_TIME_REGISTRATION:
                                 deleteContainer.setVisibility(View.VISIBLE);
                                 final TableLayout deleteRangeContainer  = (TableLayout) layout.findViewById(R.id.tr_delete_range_container);
-                                final Button deleteRangeFromButton = (Button) layout.findViewById(R.id.tr_delete_range_date_from);
-                                final Button deleteRangeToButton = (Button) layout.findViewById(R.id.tr_delete_range_date_to);
+                                deleteRangeFromButton = (Button) layout.findViewById(R.id.tr_delete_range_date_from);
+                                deleteRangeToButton = (Button) layout.findViewById(R.id.tr_delete_range_date_to);
+
+                                removeRangeMinBoundary = Calendar.getInstance();
+                                removeRangeMinBoundary.setTime(new Date());
+                                removeRangeMaxBoundary = Calendar.getInstance();
+                                removeRangeMaxBoundary.setTime(new Date());
+
+                                updateDateRangeSelectionButtons();
 
                                 RadioGroup deleteRadioContainer = (RadioGroup) layout.findViewById(R.id.tr_delete_radio_container);
                                 deleteRadioContainer.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -467,17 +546,24 @@ public class TimeRegistrationActionActivity extends Activity {
                                         int checkedId = radioGroup.getCheckedRadioButtonId();
                                         switch (checkedId) {
                                             case R.id.tr_delete_current: {
-                                                deleteRangeContainer.setEnabled(false);
-                                                deleteRangeFromButton.setEnabled(false);
-                                                deleteRangeToButton.setEnabled(false);
+                                                deleteRangeContainer.setVisibility(View.GONE);
                                                 break;
                                             }
                                             case R.id.tr_delete_range: {
-                                                deleteRangeContainer.setEnabled(true);
-                                                deleteRangeFromButton.setEnabled(true);
-                                                deleteRangeToButton.setEnabled(true);
+                                                deleteRangeContainer.setVisibility(View.VISIBLE);
 
-                                                // TODO enable date selection for buttons
+                                                deleteRangeFromButton.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View view) {
+                                                        showDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_MIN_BOUNDARY);
+                                                    }
+                                                });
+                                                deleteRangeToButton.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View view) {
+                                                        showDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_MAX_BOUNDARY);
+                                                    }
+                                                });
 
                                                 break;
                                             }
@@ -561,6 +647,17 @@ public class TimeRegistrationActionActivity extends Activity {
                 );
                 break;
             }
+            case Constants.Dialog.TIME_REGISTRATIONS_DELETE_LOADING: {
+                Log.d(LOG_TAG, "Creating loading dialog for deleting tr's");
+                dialog = ProgressDialog.show(
+                        TimeRegistrationActionActivity.this,
+                        "",
+                        getString(R.string.lbl_time_registration_actions_dialog_removing_time_registrations),
+                        true,
+                        false
+                );
+                break;
+            }
             case Constants.Dialog.ASK_FINISH_TASK: {
                 // Issue 89: No null-check on latestTimeRegistration required because it can never be null as at least
                 // one time registration should be started in order to be able to stop one..!
@@ -610,8 +707,158 @@ public class TimeRegistrationActionActivity extends Activity {
                 dialog = alertRemoveReg.create();
                 break;
             }
+            case Constants.Dialog.DELETE_TIME_REGISTRATIONS_YES_NO: {
+                AlertDialog.Builder alertRemoveReg = new AlertDialog.Builder(this);
+                alertRemoveReg
+                        .setMessage(R.string.msg_time_registration_actions_dialog_removing_time_registrations_confirmation)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                removeDialog(Constants.Dialog.DELETE_TIME_REGISTRATIONS_YES_NO);
+                                deleteTimeRegistrations(removeRangeMinBoundary != null ? removeRangeMinBoundary.getTime() : null, removeRangeMaxBoundary != null ? removeRangeMaxBoundary.getTime() : null);
+                            }
+                        })
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                removeDialog(Constants.Dialog.DELETE_TIME_REGISTRATIONS_YES_NO);
+                                setResult(RESULT_OK);
+                                finish();
+                            }
+                        });
+                dialog = alertRemoveReg.create();
+                break;
+            }
+            case Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_MIN_BOUNDARY: {
+                // dialog code for min boundary
+                Calendar temp = removeRangeMinBoundary;
+                if (temp == null) {
+                    temp = Calendar.getInstance();
+                }
+                DatePickerDialog datePickerDialog = new DatePickerDialog(
+                        TimeRegistrationActionActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            public void onDateSet(DatePicker datePickerView
+                                    , int year, int monthOfYear, int dayOfMonth) {
+                                if (removeRangeMinBoundary == null) {
+                                    removeRangeMinBoundary = Calendar.getInstance();
+                                }
+
+                                removeRangeMinBoundary.set(Calendar.YEAR, year);
+                                removeRangeMinBoundary.set(Calendar.MONTH, monthOfYear);
+                                removeRangeMinBoundary.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                                updateDateRangeSelectionButtons();
+
+                                if (removeRangeMaxBoundary != null && removeRangeMinBoundary != null &&
+                                        removeRangeMinBoundary.after(removeRangeMaxBoundary)) {
+                                    showDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_MAX_BOUNDARY);
+                                }
+
+                                removeDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_MIN_BOUNDARY);
+                            }
+                        },
+                        temp.get(Calendar.YEAR),
+                        temp.get(Calendar.MONTH),
+                        temp.get(Calendar.DAY_OF_MONTH)
+                );
+                datePickerDialog.setTitle(R.string.lbl_time_registration_actions_dialog_removing_time_registrations_range_selection_min_boundary_title);
+                datePickerDialog.setButton2(getText(R.string.lbl_time_registration_actions_dialog_removing_time_registrations_range_clear_date), new DatePickerDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        removeRangeMinBoundary = null;
+                        updateDateRangeSelectionButtons();
+                        removeDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_MIN_BOUNDARY);
+                    }
+                });
+                datePickerDialog.setButton3(getString(android.R.string.cancel), new DatePickerDialog.OnClickListener() {
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        removeDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_MIN_BOUNDARY);
+                    }
+                });
+                datePickerDialog.show();
+                break;
+            }
+            case Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_MAX_BOUNDARY: {
+                // dialog code for min boundary
+                Calendar temp = removeRangeMaxBoundary;
+                if (temp == null) {
+                    temp = Calendar.getInstance();
+                }
+                DatePickerDialog datePickerDialog = new DatePickerDialog(
+                        TimeRegistrationActionActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            public void onDateSet(DatePicker datePickerView
+                                    , int year, int monthOfYear, int dayOfMonth) {
+                                if (removeRangeMaxBoundary == null) {
+                                    removeRangeMaxBoundary = Calendar.getInstance();
+                                }
+
+                                removeRangeMaxBoundary.set(Calendar.YEAR, year);
+                                removeRangeMaxBoundary.set(Calendar.MONTH, monthOfYear);
+                                removeRangeMaxBoundary.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                                updateDateRangeSelectionButtons();
+
+                                if (removeRangeMaxBoundary != null && removeRangeMinBoundary != null &&
+                                        removeRangeMaxBoundary.before(removeRangeMinBoundary)) {
+                                    showDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_MIN_BOUNDARY);
+                                }
+
+                                removeDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_MAX_BOUNDARY);
+                            }
+                        },
+                        temp.get(Calendar.YEAR),
+                        temp.get(Calendar.MONTH),
+                        temp.get(Calendar.DAY_OF_MONTH)
+                );
+                datePickerDialog.setTitle(R.string.lbl_time_registration_actions_dialog_removing_time_registrations_range_selection_max_boundary_title);
+                datePickerDialog.setButton2(getText(R.string.lbl_time_registration_actions_dialog_removing_time_registrations_range_clear_date), new DatePickerDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        removeRangeMaxBoundary = null;
+                        updateDateRangeSelectionButtons();
+                        removeDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_MIN_BOUNDARY);
+                    }
+                });
+                datePickerDialog.setButton3(getString(android.R.string.cancel), new DatePickerDialog.OnClickListener() {
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        removeDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_MAX_BOUNDARY);
+                    }
+                });
+                datePickerDialog.show();
+                break;
+            }
+            case Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_BOUNDARY_PROBLEM: {
+                AlertDialog.Builder alertDeleteBoundariesProblem = new AlertDialog.Builder(this);
+                alertDeleteBoundariesProblem
+                        .setMessage(R.string.msg_time_registration_actions_dialog_removing_time_registrations_range_boundary_problem)
+                        .setCancelable(true)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                removeDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_BOUNDARY_PROBLEM);
+                            }
+                        });
+                dialog = alertDeleteBoundariesProblem.create();
+                break;
+            }
         };
         return dialog;
+    }
+
+    private void updateDateRangeSelectionButtons() {
+        if (deleteRangeFromButton != null && removeRangeMinBoundary != null)
+            deleteRangeFromButton.setText(
+                DateUtils.DateTimeConverter.convertDateToString(removeRangeMinBoundary.getTime(), DateFormat.MEDIUM, TimeRegistrationActionActivity.this)
+            );
+        else if (deleteRangeFromButton != null)
+            deleteRangeFromButton.setText(R.string.none);
+
+        if (deleteRangeToButton != null && removeRangeMaxBoundary != null)
+            deleteRangeToButton.setText(
+                DateUtils.DateTimeConverter.convertDateToString(removeRangeMaxBoundary.getTime(), DateFormat.MEDIUM, TimeRegistrationActionActivity.this)
+            );
+        else if (deleteRangeToButton != null)
+            deleteRangeToButton.setText(R.string.none);
     }
 
     /**
@@ -693,8 +940,12 @@ public class TimeRegistrationActionActivity extends Activity {
                     showDialog(Constants.Dialog.DELETE_TIME_REGISTRATION_YES_NO);
                 } else if (radioButtonId == R.id.tr_delete_range) {
                     Log.d(LOG_TAG, "Deleting all time registrations in range");
-                    // TODO
-                    finish();
+                    if (removeRangeMinBoundary.after(removeRangeMaxBoundary)) {
+                        showDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_BOUNDARY_PROBLEM);
+                    } else {
+                        removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
+                        showDialog(Constants.Dialog.DELETE_TIME_REGISTRATIONS_YES_NO);
+                    }
                 }
                 break;
             }

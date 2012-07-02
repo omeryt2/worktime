@@ -194,6 +194,11 @@ public class TimeRegistrationDetailsActivity extends ActionBarGuiceActivity {
                 break;
             }
         }
+
+        if (resultCode == Constants.IntentResultCodes.RESULT_DELETED) {
+            setResult(Constants.IntentResultCodes.RESULT_DELETED);
+            finish();
+        }
     }
 
     @Override

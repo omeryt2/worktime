@@ -1,17 +1,17 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package eu.vranckaert.worktime.dao;
 
@@ -83,4 +83,15 @@ public interface TimeRegistrationDao extends GenericDao<TimeRegistration, Intege
      * @return The next time registration if any. Otherwise null!
      */
     TimeRegistration getNextTimeRegistration(TimeRegistration timeRegistration);
+
+    /**
+     * Removes all {@link TimeRegistration} instance in a certain range. If one of both (or both) arguments is null, it
+     * will be ignored. So if no minBoundary is specified all time registrations will be deleted where the end date is
+     * before the maxBoundary. If both arguments are null everything will be deleted as in the
+     * {@link eu.vranckaert.worktime.dao.TimeRegistrationDao#deleteAll()} method.
+     * @param minBoundary The lower-boundary to check the time registrations start date against.
+     * @param maxBoundary The higher-boundary to check the time registrations end date against.
+     * @return The number of {@link TimeRegistration} instances that are removed permanently.
+     */
+    long deleteAllInRange(Date minBoundary, Date maxBoundary);
 }

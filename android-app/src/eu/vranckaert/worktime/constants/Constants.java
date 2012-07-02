@@ -24,7 +24,8 @@ package eu.vranckaert.worktime.constants;
 public class Constants {
     public class Dialog {
         public static final int DELETE_PROJECT_YES_NO = 0;
-        public static final int DELETE_TIME_REGISTRATION_YES_NO = 6;
+        public static final int DELETE_TIME_REGISTRATION_YES_NO = 1;
+        public static final int DELETE_TIME_REGISTRATIONS_YES_NO = 2;
         public static final int CHOOSE_SELECTED_PROJECT = 8;
         public static final int LOADING_TIME_REGISTRATION_CHANGE = 9;
         public static final int CHOOSE_TASK = 10;
@@ -77,6 +78,10 @@ public class Constants {
         public static final int RESET_APPLICATION_CONFIRMATION = 60;
         public static final int LOADING_RESET_APPLICATION = 61;
         public static final int RESET_PREFERENCES_CONFIRMATION = 62;
+        public static final int TIME_REGISTRATION_DELETE_RANGE_MIN_BOUNDARY = 63;
+        public static final int TIME_REGISTRATION_DELETE_RANGE_MAX_BOUNDARY = 64;
+        public static final int TIME_REGISTRATION_DELETE_RANGE_BOUNDARY_PROBLEM = 65;
+        public static final int TIME_REGISTRATIONS_DELETE_LOADING = 66;
     }
     public class IntentRequestCodes {
         public static final int ADD_PROJECT = 0;
@@ -94,6 +99,7 @@ public class Constants {
     }
     public class IntentResultCodes {
         public static final int RESULT_OK_SPLIT = 100;
+        public static final int RESULT_DELETED = 200;
     }
     public class Preferences {
         public static final String PREFERENCES_NAME = "WorkTime_0001";

@@ -70,6 +70,7 @@ public class TrackerConstants {
         public static final String START_TIME_REGISTRATION = "startTimeRegistration";
         public static final String END_TIME_REGISTRATION = "endTimeRegistration";
         public static final String DELETE_TIME_REGISTRATION = "deleteTimeRegistration";
+        public static final String DELETE_TIME_REGISTRATIONS_IN_RANGE = "deleteTimeRegistrationsInRange";
         public static final String ADD_TR_COMMENT = "addTrComment";
         public static final String EDIT_TR_COMMENT = "editTrComment";
         public static final String EDIT_TR_END_TIME = "editTrEndTime";

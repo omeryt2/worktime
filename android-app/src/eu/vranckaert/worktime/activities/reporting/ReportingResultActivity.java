@@ -298,7 +298,7 @@ public class ReportingResultActivity extends ActionBarGuiceActivity {
 
     	for (TimeRegistration tr : timeRegistrations) {
     		//Check for start date
-    		Date startTime = DateUtils.Various.resetToMidnight(tr.getStartTime());
+    		Date startTime = DateUtils.Various.setMinTimeValueOfDay(tr.getStartTime());
     		ReportingDataLvl0 dateLvl = new ReportingDataLvl0(DateUtils.DateTimeConverter.convertDateToString(startTime, DateFormat.SHORT, ReportingResultActivity.this));
     		int dateLvlIndex = reportingDataLevels.indexOf(dateLvl);
     		if (dateLvlIndex > -1) {
@@ -357,7 +357,7 @@ public class ReportingResultActivity extends ActionBarGuiceActivity {
     		}
 
     		//Check for start date
-    		Date startTime = DateUtils.Various.resetToMidnight(tr.getStartTime());
+    		Date startTime = DateUtils.Various.setMinTimeValueOfDay(tr.getStartTime());
             ReportingDataLvl2 dateLvl = new ReportingDataLvl2(DateUtils.DateTimeConverter.convertDateToString(startTime, DateFormat.SHORT, ReportingResultActivity.this));
     		int dateLvlIndex = taskLvl.getReportingDataLvl2().indexOf(dateLvl);;
     		if (dateLvlIndex > -1) {

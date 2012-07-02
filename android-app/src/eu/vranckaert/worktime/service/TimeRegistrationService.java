@@ -130,4 +130,15 @@ public interface TimeRegistrationService {
      * Removes all items.
      */
     void removeAll();
+
+    /**
+     * Removes all {@link TimeRegistration} instance in a certain range. If one of both (or both) arguments is null, it
+     * will be ignored. So if no minBoundary is specified all time registrations will be deleted where the end date is
+     * before the maxBoundary. If both arguments are null everything will be deleted as in the
+     * {@link eu.vranckaert.worktime.service.TimeRegistrationService#removeAll()} method.
+     * @param minBoundary The lower-boundary to check the time registrations start date against.
+     * @param maxBoundary The higher-boundary to check the time registrations end date against.
+     * @return The number of {@link TimeRegistration} instances that are removed permanently.
+     */
+    long removeAllInRange(Date minBoundary, Date maxBoundary);
 }

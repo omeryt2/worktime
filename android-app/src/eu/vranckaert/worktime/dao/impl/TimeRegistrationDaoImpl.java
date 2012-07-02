@@ -19,6 +19,8 @@ package eu.vranckaert.worktime.dao.impl;
 import android.content.Context;
 import android.util.Log;
 import com.google.inject.Inject;
+import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.PreparedDelete;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
@@ -218,5 +220,47 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
         }
 
         return null;
+    }
+
+    @Override
+    public long deleteAllInRange(Date minBoundary, Date maxBoundary) {
+        long count = -1;
+        Long countBefore = null;
+        Long countAfter = null;
+
+        DeleteBuilder<TimeRegistration,Integer> db = dao.deleteBuilder();
+
+        try {
+            countBefore = dao.countOf();
+
+            if (minBoundary != null || maxBoundary != null) {
+                Where where = db.where();
+                if (minBoundary != null) {
+                    where.ge("startTime", minBoundary);
+                }
+                if (maxBoundary != null) {
+                    if (minBoundary != null) {
+                        where.and().le("endTime", maxBoundary);
+                    } else {
+                        where.le("endTime", maxBoundary);
+                    }
+                }
+                db.setWhere(where);
+            }
+
+            PreparedDelete<TimeRegistration> pd = db.prepare();
+            Log.d(LOG_TAG, pd.toString());
+            dao.delete(pd);
+
+            countAfter = dao.countOf();
+        } catch (SQLException e) {
+            Log.e(LOG_TAG, "Could not execute the query...");
+            throwFatalException(e);
+        }
+
+        count = countBefore - countAfter;
+
+        Log.d(LOG_TAG, "number of deleted records: " + count);
+        return count;
     }
 }

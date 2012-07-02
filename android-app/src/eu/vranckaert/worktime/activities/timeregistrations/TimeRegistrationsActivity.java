@@ -266,6 +266,11 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
                 break;
             }
         }
+
+        if (resultCode == Constants.IntentResultCodes.RESULT_DELETED) {
+            Log.d(LOG_TAG, "One or more time registrations have been deleted.");
+            loadTimeRegistrations(true, false);
+        }
     }
 
     @Override

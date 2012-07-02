@@ -646,18 +646,33 @@ public class DateUtils {
      */
     public static class Various {
         /**
-         * Reset the time-part of a date to midnight (00:00:00.000000).
+         * Reset the time-part of a date to midnight (00:00:00.0000).
          * @param date The date to reset.
          * @return The time reset to midnight.
          */
-        public static Date resetToMidnight(Date date) {
+        public static Date setMinTimeValueOfDay(Date date) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
-            cal.set(Calendar.HOUR, 0);
             cal.set(Calendar.HOUR_OF_DAY, 0);
             cal.set(Calendar.MINUTE, 0);
             cal.set(Calendar.SECOND, 0);
             cal.set(Calendar.MILLISECOND, 0);
+            return cal.getTime();
+        }
+
+        /**
+         * Reset the time-part of a date to just before midnight (which is the maximum time-value of day:
+         * 23:59:59.9999).
+         * @param date The date to reset.
+         * @return The time reset to the maximum time-value of day.
+         */
+        public static Date setMaxTimeValueOfDay(Date date) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            cal.set(Calendar.MILLISECOND, 999);
             return cal.getTime();
         }
     }

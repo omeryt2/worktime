@@ -180,4 +180,9 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
     public void removeAll() {
         dao.deleteAll();
     }
+
+    @Override
+    public long removeAllInRange(Date minBoundary, Date maxBoundary) {
+        return dao.deleteAllInRange(minBoundary, maxBoundary);
+    }
 }
