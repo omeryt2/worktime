@@ -18,9 +18,11 @@ package eu.vranckaert.worktime.test;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.view.ActionProvider;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.view.View;
 
 public class TestingMenuItem implements MenuItem {
     private int id;
@@ -177,5 +179,60 @@ public class TestingMenuItem implements MenuItem {
     @Override
     public ContextMenu.ContextMenuInfo getMenuInfo() {
         return null;
+    }
+
+    @Override
+    public void setShowAsAction(int i) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public MenuItem setShowAsActionFlags(int i) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public MenuItem setActionView(View view) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public MenuItem setActionView(int i) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public View getActionView() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public MenuItem setActionProvider(ActionProvider actionProvider) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public ActionProvider getActionProvider() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean expandActionView() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean collapseActionView() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean isActionViewExpanded() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public MenuItem setOnActionExpandListener(OnActionExpandListener onActionExpandListener) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
