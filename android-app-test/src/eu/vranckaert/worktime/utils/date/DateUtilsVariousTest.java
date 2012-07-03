@@ -34,7 +34,7 @@ public class DateUtilsVariousTest extends AndroidTestCase {
         calendar.set(Calendar.MINUTE, 31);
         calendar.set(Calendar.HOUR_OF_DAY, 6);
         
-        Date result = DateUtils.Various.resetToMidnight(calendar.getTime());
+        Date result = DateUtils.Various.setMinTimeValueOfDay(calendar.getTime());
         
         Calendar resultCal = Calendar.getInstance();
         resultCal.setTime(result);
