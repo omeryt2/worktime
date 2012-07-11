@@ -63,4 +63,10 @@ public interface WidgetService {
      * @param id The id of the widget to be updated.
      */
     void updateWidget2x2(int id);
+
+    /**
+     * Called when a widget with a certain id is removed from the home-screen.
+     * @param id The id of the widget.
+     */
+    void removeWidget(int id);
 }

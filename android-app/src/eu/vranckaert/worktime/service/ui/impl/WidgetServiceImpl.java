@@ -191,6 +191,17 @@ public class WidgetServiceImpl implements WidgetService {
         commitView(ctx, widgetId, views, WorkTimeWidgetProvider_2x2.class);
     }
 
+    @Override
+    public void removeWidget(int widgetId) {
+        WidgetConfiguration wc = widgetConfigurationDao.findById(widgetId);
+        if (wc != null) {
+            widgetConfigurationDao.delete(wc);
+            Log.d(LOG_TAG, "Widget configuration for widget with id " + widgetId + " has been removed");
+        } else {
+            Log.d(LOG_TAG, "No widget configuration found for widget-id: " + widgetId);
+        }
+    }
+
     /**
      * Starts an activity that should do something in the background after clicking a button on the widget. That doesn't
      * mean that the activity cannot ask the user for any input/choice/... It only means that the launched
