@@ -1,26 +1,26 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2012 Dirk Vranckaert
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package eu.vranckaert.worktime.dao.impl;
 
 import android.content.Context;
-import android.util.Log;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.dao.CommentHistoryDao;
 import eu.vranckaert.worktime.dao.generic.GenericDaoImpl;
 import eu.vranckaert.worktime.model.CommentHistory;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 
 import java.sql.SQLException;
@@ -45,7 +45,7 @@ public class CommentHistoryDaoImpl extends GenericDaoImpl<CommentHistory, Intege
      * {@inheritDoc}
      */
     public void save(final String comment) {
-        Log.d(LOG_TAG, "About to save a new comment: " + comment);
+        Log.d(getContext(), LOG_TAG, "About to save a new comment: " + comment);
         String optimizedComment = StringUtils.optimizeString(comment);
 
         this.save(new CommentHistory(comment));
@@ -56,10 +56,10 @@ public class CommentHistoryDaoImpl extends GenericDaoImpl<CommentHistory, Intege
      * {@inheritDoc}
      */
     public void deleteAll() {
-        Log.d(LOG_TAG, "Ready to delete all the items in the comment history");
+        Log.d(getContext(), LOG_TAG, "Ready to delete all the items in the comment history");
         try {
             List<CommentHistory> comments = findAll();
-            Log.d(LOG_TAG, "Number of comments found to delete: " + comments.size());
+            Log.d(getContext(), LOG_TAG, "Number of comments found to delete: " + comments.size());
             List<Integer> ids = new ArrayList<Integer>();
             for (CommentHistory comment : comments) {
                 ids.add(comment.getId());
@@ -68,9 +68,9 @@ public class CommentHistoryDaoImpl extends GenericDaoImpl<CommentHistory, Intege
                 dao.deleteIds(ids);
             }
         } catch (SQLException e) {
-            Log.d(LOG_TAG, "Could not execute the query... Returning false");
+            Log.d(getContext(), LOG_TAG, "Could not execute the query... Returning false");
             return;
         }
-        Log.d(LOG_TAG, "All comments are deleted!");
+        Log.d(getContext(), LOG_TAG, "All comments are deleted!");
     }
 }

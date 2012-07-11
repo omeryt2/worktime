@@ -24,7 +24,6 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.RemoteViews;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
@@ -47,6 +46,7 @@ import eu.vranckaert.worktime.service.impl.ProjectServiceImpl;
 import eu.vranckaert.worktime.service.impl.TaskServiceImpl;
 import eu.vranckaert.worktime.service.impl.TimeRegistrationServiceImpl;
 import eu.vranckaert.worktime.service.ui.WidgetService;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.widget.WidgetUtil;
 
 import java.util.List;
@@ -89,7 +89,7 @@ public class WidgetServiceImpl implements WidgetService {
 
     @Override
     public void updateAllWidgets() {
-        Log.d(LOG_TAG, "Updating all widgets...");
+        Log.d(ctx, LOG_TAG, "Updating all widgets...");
         updateWidgets(WidgetUtil.getAllWidgetIds(ctx));
     }
 
@@ -123,7 +123,7 @@ public class WidgetServiceImpl implements WidgetService {
 
     @Override
     public void updateWidget1x1(int widgetId) {
-        Log.d(LOG_TAG, "Updating widget (1x1) with id " + widgetId);
+        Log.d(ctx, LOG_TAG, "Updating widget (1x1) with id " + widgetId);
 
         getViews(ctx, R.layout.worktime_appwidget_1x1);
 
@@ -134,7 +134,7 @@ public class WidgetServiceImpl implements WidgetService {
 
     @Override
     public void updateWidget2x2(int widgetId) {
-        Log.d(LOG_TAG, "Updating widget (2x2) with id " + widgetId);
+        Log.d(ctx, LOG_TAG, "Updating widget (2x2) with id " + widgetId);
 
         getViews(ctx, R.layout.worktime_appwidget_2x2);
 
@@ -146,9 +146,9 @@ public class WidgetServiceImpl implements WidgetService {
         if(numberOfTimeRegs > 0L) {
             lastTimeRegistration = timeRegistrationService.getLatestTimeRegistration();
             timeRegistrationService.fullyInitialize(lastTimeRegistration);
-            Log.d(LOG_TAG, "The last time registration has ID " + lastTimeRegistration.getId());
+            Log.d(ctx, LOG_TAG, "The last time registration has ID " + lastTimeRegistration.getId());
         } else {
-            Log.d(LOG_TAG, "No timeregstrations found yet!");
+            Log.d(ctx, LOG_TAG, "No timeregstrations found yet!");
         }
 
         //Update the selected project
@@ -157,34 +157,34 @@ public class WidgetServiceImpl implements WidgetService {
 
         if(numberOfTimeRegs == 0L || (lastTimeRegistration != null &&
                 (!lastTimeRegistration.isOngoingTimeRegistration() || !lastTimeRegistration.getTask().getProject().getId().equals(selectedProject.getId())) )) {
-            Log.d(LOG_TAG, "No timeregistrations found yet or it's an ended timeregistration");
+            Log.d(ctx, LOG_TAG, "No timeregistrations found yet or it's an ended timeregistration");
             views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_start));
             //Enable on click for the start button
-            Log.d(LOG_TAG, "Couple the start button to an on click action");
+            Log.d(ctx, LOG_TAG, "Couple the start button to an on click action");
             startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, StartTimeRegistrationActivity.class, null, widgetId);
         } else if(lastTimeRegistration != null && lastTimeRegistration.isOngoingTimeRegistration() && lastTimeRegistration.getTask().getProject().getId().equals(selectedProject.getId())) {
-            Log.d(LOG_TAG, "This is an ongoing time registration");
+            Log.d(ctx, LOG_TAG, "This is an ongoing time registration");
             views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_stop));
             //Enable on click for the stop button
-            Log.d(LOG_TAG, "Couple the stop button to an on click action.");
+            Log.d(ctx, LOG_TAG, "Couple the stop button to an on click action.");
             startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, TimeRegistrationActionActivity.class, lastTimeRegistration, widgetId);
             timeRegistrationStarted = true;
         }
 
         //Enable on click for the entire widget to open the app
-        Log.d(LOG_TAG, "Couple the widget background to an on click action. On click opens the home activity");
+        Log.d(ctx, LOG_TAG, "Couple the widget background to an on click action. On click opens the home activity");
         Intent homeAppIntent = new Intent(ctx, HomeActivity.class);
         PendingIntent homeAppPendingIntent = PendingIntent.getActivity(ctx, 0, homeAppIntent, 0);
         views.setOnClickPendingIntent(R.id.widget, homeAppPendingIntent);
 
         //Enable on click for the widget title to open the app if a registration is just started, or to open the
         //"select project" popup to change the selected project.
-        Log.d(LOG_TAG, "Couple the widget title background to an on click action.");
+        Log.d(ctx, LOG_TAG, "Couple the widget title background to an on click action.");
         if (timeRegistrationStarted) {
-            Log.d(LOG_TAG, "On click opens the home activity");
+            Log.d(ctx, LOG_TAG, "On click opens the home activity");
             views.setOnClickPendingIntent(R.id.widget_bgtop, homeAppPendingIntent);
         } else {
-            Log.d(LOG_TAG, "On click opens a chooser-dialog for selecting the a project");
+            Log.d(ctx, LOG_TAG, "On click opens a chooser-dialog for selecting the a project");
             startBackgroundWorkActivity(ctx, R.id.widget_bgtop, SelectProjectActivity.class, null, widgetId);
         }
 
@@ -196,9 +196,9 @@ public class WidgetServiceImpl implements WidgetService {
         WidgetConfiguration wc = widgetConfigurationDao.findById(widgetId);
         if (wc != null) {
             widgetConfigurationDao.delete(wc);
-            Log.d(LOG_TAG, "Widget configuration for widget with id " + widgetId + " has been removed");
+            Log.d(ctx, LOG_TAG, "Widget configuration for widget with id " + widgetId + " has been removed");
         } else {
-            Log.d(LOG_TAG, "No widget configuration found for widget-id: " + widgetId);
+            Log.d(ctx, LOG_TAG, "No widget configuration found for widget-id: " + widgetId);
         }
     }
 
@@ -240,10 +240,10 @@ public class WidgetServiceImpl implements WidgetService {
      * @param clazz The implementation class of the {@link AppWidgetProvider}.
      */
     private void commitView(Context ctx, int widgetId, RemoteViews updatedView, Class clazz) {
-        Log.d(LOG_TAG, "Committing update view...");
+        Log.d(ctx, LOG_TAG, "Committing update view...");
         AppWidgetManager mgr = AppWidgetManager.getInstance(ctx);
         mgr.updateAppWidget(widgetId, updatedView);
-        Log.d(LOG_TAG, "Updated view committed!");
+        Log.d(ctx, LOG_TAG, "Updated view committed!");
     }
 
     /**
@@ -253,7 +253,7 @@ public class WidgetServiceImpl implements WidgetService {
      */
     private void getViews(Context ctx, int viewResId) {
         this.views = new RemoteViews(ctx.getPackageName(), viewResId);
-        Log.d(LOG_TAG, "I just got the view which we'll start updating!");
+        Log.d(ctx, LOG_TAG, "I just got the view which we'll start updating!");
     }
 
     /**
@@ -262,7 +262,7 @@ public class WidgetServiceImpl implements WidgetService {
      */
     private void getDaos(Context ctx) {
         this.widgetConfigurationDao = new WidgetConfigurationDaoImpl(ctx);
-        Log.d(LOG_TAG, "DAOS are loaded...");
+        Log.d(ctx, LOG_TAG, "DAOS are loaded...");
     }
 
     /**
@@ -273,6 +273,6 @@ public class WidgetServiceImpl implements WidgetService {
         this.projectService = new ProjectServiceImpl(ctx);
         this.taskService = new TaskServiceImpl(ctx);
         this.timeRegistrationService = new TimeRegistrationServiceImpl(ctx);
-        Log.d(LOG_TAG, "Services are loaded...");
+        Log.d(ctx, LOG_TAG, "Services are loaded...");
     }
 }

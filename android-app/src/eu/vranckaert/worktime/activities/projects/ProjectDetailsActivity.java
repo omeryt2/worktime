@@ -23,7 +23,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -54,6 +53,7 @@ import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
@@ -119,7 +119,7 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.PROJECTS_DETAILS_ACTIVITY);
 
-        Log.d(LOG_TAG, "Project found with id " + project.getId() + " and name " + project.getName());
+        Log.d(getApplicationContext(), LOG_TAG, "Project found with id " + project.getId() + " and name " + project.getName());
         if (StringUtils.isNotBlank(project.getComment())) {
             projectComment.setText(project.getComment());
         }
@@ -201,37 +201,37 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
          */
         public ManageTasksListAdapter(List<Task> tasks) {
             super(ProjectDetailsActivity.this, R.layout.list_item_tasks, tasks);
-            Log.d(LOG_TAG, "Creating the manage projects list adapater");
+            Log.d(getApplicationContext(), LOG_TAG, "Creating the manage projects list adapater");
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            Log.d(LOG_TAG, "Start rendering/recycling row " + position);
+            Log.d(getApplicationContext(), LOG_TAG, "Start rendering/recycling row " + position);
             View row;
             final Task taskToBeRendered = tasksForProject.get(position);
-            Log.d(LOG_TAG, "Got taskToBeRendered with name " + taskToBeRendered.getName());
+            Log.d(getApplicationContext(), LOG_TAG, "Got taskToBeRendered with name " + taskToBeRendered.getName());
 
             if (convertView == null) {
-                Log.d(LOG_TAG, "Render a new line in the list");
+                Log.d(getApplicationContext(), LOG_TAG, "Render a new line in the list");
                 row = getLayoutInflater().inflate(R.layout.list_item_tasks, parent, false);
             } else {
-                Log.d(LOG_TAG, "Recycling an existing line in the list");
+                Log.d(getApplicationContext(), LOG_TAG, "Recycling an existing line in the list");
                 row = convertView;
             }
 
             updateRow(row, taskToBeRendered);
 
-            Log.d(LOG_TAG, "Done rendering row " + position);
+            Log.d(getApplicationContext(), LOG_TAG, "Done rendering row " + position);
             return row;
         }
     }
 
     private void updateRow(View row, final Task taskToBeRendered) {
-        Log.d(LOG_TAG, "Ready to update the name of the taskToBeRendered of the listitem...");
+        Log.d(getApplicationContext(), LOG_TAG, "Ready to update the name of the taskToBeRendered of the listitem...");
         TextView taskName = (TextView) row.findViewById(R.id.task_name_listitem);
         taskName.setText(taskToBeRendered.getName());
 
-        Log.d(LOG_TAG, "Ready to set the finished flag (" + taskToBeRendered.isFinished() + ") ...");
+        Log.d(getApplicationContext(), LOG_TAG, "Ready to set the finished flag (" + taskToBeRendered.isFinished() + ") ...");
         if (taskToBeRendered.isFinished()) {
             taskName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_finished, 0, 0, 0);
         } else {
@@ -285,14 +285,14 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
      */
     private void deleteTask(Task task, boolean askConfirmation, boolean force) {
         if (askConfirmation) {
-            Log.d(LOG_TAG, "Asking confirmation to remove a task");
+            Log.d(getApplicationContext(), LOG_TAG, "Asking confirmation to remove a task");
             taskToRemove = task;
             showDialog(Constants.Dialog.DELETE_TASK_YES_NO);
         } else {
-            Log.d(LOG_TAG, "Removing a task... Are we forcing the removal? " + force);
+            Log.d(getApplicationContext(), LOG_TAG, "Removing a task... Are we forcing the removal? " + force);
             taskToRemove = null;
             try {
-                Log.d(LOG_TAG, "Ready to actually remove the task!");
+                Log.d(getApplicationContext(), LOG_TAG, "Ready to actually remove the task!");
                 TimeRegistration registration = timeRegistrationService.getLatestTimeRegistration();
                 boolean reloadWidget = false;
                 if (registration != null && registration.getTask().getId().equals(task.getId())) {
@@ -304,7 +304,7 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
                     TrackerConstants.EventSources.PROJECT_DETAILS_ACTIVITY,
                     TrackerConstants.EventActions.DELETE_TASK
                 );
-                Log.d(LOG_TAG, "Task removed, ready to reload tasks");
+                Log.d(getApplicationContext(), LOG_TAG, "Task removed, ready to reload tasks");
                 loadProjectTasks(project);
 
                 if (reloadWidget) {
@@ -312,7 +312,7 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
                 }
             } catch (TaskStillInUseException e) {
                 if (force) {
-                    Log.d(LOG_TAG, "Something is wrong. Forcing the time registrations to be deleted should not result"
+                    Log.d(getApplicationContext(), LOG_TAG, "Something is wrong. Forcing the time registrations to be deleted should not result"
                         + "in this exception!");
                 } else {
                     taskToRemove = task;
@@ -450,12 +450,12 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        Log.d(LOG_TAG, "In method onCreateContextMenu(...)");
+        Log.d(getApplicationContext(), LOG_TAG, "In method onCreateContextMenu(...)");
         if (v.getId() == android.R.id.list) {
             super.onCreateContextMenu(menu, v, menuInfo);
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
             int element = info.position;
-            Log.d(LOG_TAG, "Creating context menu for element " + element + " in list");
+            Log.d(getApplicationContext(), LOG_TAG, "Creating context menu for element " + element + " in list");
             Task taskForContext = tasksForProject.get(element);
 
             menu.setHeaderTitle(taskForContext.getName());
@@ -613,18 +613,18 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
      */
     private void deleteProject(Project project, boolean askConfirmation) {
         if (askConfirmation) {
-            Log.d(LOG_TAG, "Asking confirmation to remove a project");
+            Log.d(getApplicationContext(), LOG_TAG, "Asking confirmation to remove a project");
             projectToRemove = project;
             showDialog(Constants.Dialog.DELETE_PROJECT_YES_NO);
         } else {
             try {
-                Log.d(LOG_TAG, "Ready to actually remove the project!");
+                Log.d(getApplicationContext(), LOG_TAG, "Ready to actually remove the project!");
                 projectService.remove(project);
                 tracker.trackEvent(
                         TrackerConstants.EventSources.PROJECT_DETAILS_ACTIVITY,
                         TrackerConstants.EventActions.DELETE_PROJECT
                 );
-                Log.d(LOG_TAG, "Project removed, closing it's detail activity");
+                Log.d(getApplicationContext(), LOG_TAG, "Project removed, closing it's detail activity");
                 projectUpdated = true;
                 finish();
             } catch (AtLeastOneProjectRequiredException e) {
@@ -643,7 +643,7 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
     private void moveTaskFromProject(final Task task, final Project fromProject) {
         final List<Project> availableProjects = projectService.findAll();
         Collections.sort(availableProjects, new ProjectByNameComparator());
-        Log.d(LOG_TAG, availableProjects.size() + " projects found");
+        Log.d(getApplicationContext(), LOG_TAG, availableProjects.size() + " projects found");
 
         List<String> projectList = new ArrayList<String>();
         int indexOfCurrentProject = -1;
@@ -657,7 +657,7 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
         if (indexOfCurrentProject > -1) {
             availableProjects.remove(indexOfCurrentProject);
         }
-        Log.d(LOG_TAG, availableProjects.size() + " projects to choose from");
+        Log.d(getApplicationContext(), LOG_TAG, availableProjects.size() + " projects to choose from");
         
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.lbl_move_task_title)
@@ -666,9 +666,9 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
                         -1,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogInterface, int index) {
-                                Log.d(LOG_TAG, "Project at index " + index + " choosen.");
+                                Log.d(getApplicationContext(), LOG_TAG, "Project at index " + index + " choosen.");
                                 Project selectedProject = availableProjects.get(index);
-                                Log.d(LOG_TAG, "Changing task to project " + selectedProject.getName());
+                                Log.d(getApplicationContext(), LOG_TAG, "Changing task to project " + selectedProject.getName());
                                 moveTaskToProject(task, fromProject, selectedProject);
                                 dialogInterface.dismiss();
                             }
@@ -676,7 +676,7 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
                 )
                 .setOnCancelListener(new DialogInterface.OnCancelListener() {
                     public void onCancel(DialogInterface dialogInterface) {
-                        Log.d(LOG_TAG, "No project chosen, closing the dialog");
+                        Log.d(getApplicationContext(), LOG_TAG, "No project chosen, closing the dialog");
                     }
                 });
         Dialog dialog = builder.create();
@@ -689,14 +689,14 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
      * @param toProject The project to which the task should be moved.
      */
     private void moveTaskToProject(Task task, Project fromProject, Project toProject) {
-        Log.d(LOG_TAG, "About to move the task away from project " + fromProject.getName() + ", to " + toProject.getName());
+        Log.d(getApplicationContext(), LOG_TAG, "About to move the task away from project " + fromProject.getName() + ", to " + toProject.getName());
         task.setProject(toProject);
         taskService.update(task);
         tracker.trackEvent(
                 TrackerConstants.EventSources.PROJECT_DETAILS_ACTIVITY,
                 TrackerConstants.EventActions.MOVE_TASK
         );
-        Log.d(LOG_TAG, "Task has been moved!");
+        Log.d(getApplicationContext(), LOG_TAG, "Task has been moved!");
         loadProjectTasks(project);
     }
 

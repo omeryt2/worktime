@@ -17,7 +17,6 @@
 package eu.vranckaert.worktime.activities.timeregistrations;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -31,6 +30,7 @@ import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.HourPreference12Or24;
@@ -99,7 +99,7 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
      */
     private void loadExtras() {
         originalTimeRegistration = (TimeRegistration) getIntent().getExtras().get(Constants.Extras.TIME_REGISTRATION);
-        Log.d(LOG_TAG, "Received time registration " + originalTimeRegistration.getId());
+        Log.d(getApplicationContext(), LOG_TAG, "Received time registration " + originalTimeRegistration.getId());
     }
 
     /**
@@ -115,7 +115,7 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
         );
         long durationMinutes = duration.getStandardMinutes();
         if (durationMinutes < 2L) {
-            Log.e(LOG_TAG, "The duration of the registration is less than 2 minutes so the registration cannot be split!");
+            Log.e(getApplicationContext(), LOG_TAG, "The duration of the registration is less than 2 minutes so the registration cannot be split!");
             Toast.makeText(
                     EditTimeRegistrationSplitActivity.this,
                     R.string.lbl_registration_split_validation_original_time_registration,
@@ -130,7 +130,7 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
      * equal so we set them to the same value, which is the end of the original time registration minus 1 minute.
      */
     private void setInitialDataForTimeRegistrationParts() {
-        Log.d(LOG_TAG, "Setting initial data for the different parts");
+        Log.d(getApplicationContext(), LOG_TAG, "Setting initial data for the different parts");
 
         endPart1 = Calendar.getInstance();
         startPart2 = Calendar.getInstance();
@@ -149,9 +149,9 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
         defaultStartPart2.add(Calendar.MINUTE, -1);
         startPart2.setTime(defaultStartPart2.getTime());
 
-        Log.d(LOG_TAG, "The default value for the end of part 1 is: " +
+        Log.d(getApplicationContext(), LOG_TAG, "The default value for the end of part 1 is: " +
                 DateUtils.DateTimeConverter.convertDateTimeToString(endPart1.getTime(), DateFormat.MEDIUM, TimeFormat.SHORT, EditTimeRegistrationSplitActivity.this));
-        Log.d(LOG_TAG, "The default value for the start of part 2 is: " +
+        Log.d(getApplicationContext(), LOG_TAG, "The default value for the start of part 2 is: " +
                 DateUtils.DateTimeConverter.convertDateTimeToString(startPart2.getTime(), DateFormat.MEDIUM, TimeFormat.SHORT, EditTimeRegistrationSplitActivity.this));
     }
 
@@ -159,7 +159,7 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
      * Calculates the lower and higher limits for both part 1 and part 2.
      */
     private void calculateLimits() {
-        Log.d(LOG_TAG, "Calculating limits for part 1");
+        Log.d(getApplicationContext(), LOG_TAG, "Calculating limits for part 1");
 
         lowerLimitPart1 = Calendar.getInstance();
         lowerLimitPart1.setTime(originalTimeRegistration.getStartTime());
@@ -169,10 +169,10 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
         higherLimitPart1 = Calendar.getInstance();
         higherLimitPart1.setTime(startPart2.getTime());
 
-        Log.d(LOG_TAG, "Lower limit part 1: " + DateUtils.DateTimeConverter.convertDateTimeToString(lowerLimitPart1.getTime(), DateFormat.MEDIUM, TimeFormat.SHORT, EditTimeRegistrationSplitActivity.this));
-        Log.d(LOG_TAG, "Higher limit part 1: " + DateUtils.DateTimeConverter.convertDateTimeToString(higherLimitPart1.getTime(), DateFormat.MEDIUM, TimeFormat.SHORT, EditTimeRegistrationSplitActivity.this));
+        Log.d(getApplicationContext(), LOG_TAG, "Lower limit part 1: " + DateUtils.DateTimeConverter.convertDateTimeToString(lowerLimitPart1.getTime(), DateFormat.MEDIUM, TimeFormat.SHORT, EditTimeRegistrationSplitActivity.this));
+        Log.d(getApplicationContext(), LOG_TAG, "Higher limit part 1: " + DateUtils.DateTimeConverter.convertDateTimeToString(higherLimitPart1.getTime(), DateFormat.MEDIUM, TimeFormat.SHORT, EditTimeRegistrationSplitActivity.this));
 
-        Log.d(LOG_TAG, "Calculating limits for part 2");
+        Log.d(getApplicationContext(), LOG_TAG, "Calculating limits for part 2");
 
         lowerLimitPart2 = Calendar.getInstance();
         lowerLimitPart2.setTime(endPart1.getTime());
@@ -186,8 +186,8 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
         higherLimitPart2.set(Calendar.MILLISECOND, 0);
         higherLimitPart2.set(Calendar.SECOND, 0);
 
-        Log.d(LOG_TAG, "Lower limit part 2: " + DateUtils.DateTimeConverter.convertDateTimeToString(lowerLimitPart2.getTime(), DateFormat.MEDIUM, TimeFormat.SHORT, EditTimeRegistrationSplitActivity.this));
-        Log.d(LOG_TAG, "Higher limit part 2: " + DateUtils.DateTimeConverter.convertDateTimeToString(higherLimitPart2.getTime(), DateFormat.MEDIUM, TimeFormat.SHORT, EditTimeRegistrationSplitActivity.this));
+        Log.d(getApplicationContext(), LOG_TAG, "Lower limit part 2: " + DateUtils.DateTimeConverter.convertDateTimeToString(lowerLimitPart2.getTime(), DateFormat.MEDIUM, TimeFormat.SHORT, EditTimeRegistrationSplitActivity.this));
+        Log.d(getApplicationContext(), LOG_TAG, "Higher limit part 2: " + DateUtils.DateTimeConverter.convertDateTimeToString(higherLimitPart2.getTime(), DateFormat.MEDIUM, TimeFormat.SHORT, EditTimeRegistrationSplitActivity.this));
     }
 
     @Override
@@ -292,20 +292,20 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
      * @return {@link Boolean#TRUE} if valid against the validation formula, {@link Boolean#FALSE} if not.
      */
     private boolean validateGreaterThan(final Calendar time, final Calendar limit) {
-        Log.d(LOG_TAG, "About to start validating time > limit");
+        Log.d(getApplicationContext(), LOG_TAG, "About to start validating time > limit");
 
         if (limit == null) {
             //No limit is defined so the time can be anything!
-            Log.d(LOG_TAG, "No limitations defined so validation is ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so validation is ok!");
             return true;
         }
 
         if (time.after(limit)) {
-            Log.d(LOG_TAG, "The time is greater than the limit, validation ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "The time is greater than the limit, validation ok!");
             return true;
         }
 
-        Log.d(LOG_TAG, "The time is not greater than the limit, validation NOT ok!");
+        Log.d(getApplicationContext(), LOG_TAG, "The time is not greater than the limit, validation NOT ok!");
         return false;
     }
 
@@ -317,20 +317,20 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
      * @return {@link Boolean#TRUE} if valid against the validation formula, {@link Boolean#FALSE} if not.
      */
     private boolean validateGreaterThanOrEqualsTo(final Calendar time, final Calendar limit) {
-        Log.d(LOG_TAG, "About to start validating time >= limit");
+        Log.d(getApplicationContext(), LOG_TAG, "About to start validating time >= limit");
 
         if (limit == null) {
             //No limit is defined so the time can be anything!
-            Log.d(LOG_TAG, "No limitations defined so validation is ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so validation is ok!");
             return true;
         }
 
         if (validateGreaterThan(time, limit) || validateEqualTo(time, limit)) {
-            Log.d(LOG_TAG, "The time is greater than or equal to the limit, validation ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "The time is greater than or equal to the limit, validation ok!");
             return true;
         }
 
-        Log.d(LOG_TAG, "The time is not greater than or equal to the limit, validation NOT ok!");
+        Log.d(getApplicationContext(), LOG_TAG, "The time is not greater than or equal to the limit, validation NOT ok!");
         return false;
     }
 
@@ -342,20 +342,20 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
      * @return {@link Boolean#TRUE} if valid against the validation formula, {@link Boolean#FALSE} if not.
      */
     private boolean validateLowerThan(final Calendar time, final Calendar limit) {
-        Log.d(LOG_TAG, "About to start validating time < limit");
+        Log.d(getApplicationContext(), LOG_TAG, "About to start validating time < limit");
 
         if (limit == null) {
             //No limit is defined so the time can be anything!
-            Log.d(LOG_TAG, "No limitations defined so validation is ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so validation is ok!");
             return true;
         }
 
         if (time.before(limit)) {
-            Log.d(LOG_TAG, "The time is lower than the limit, validation ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "The time is lower than the limit, validation ok!");
             return true;
         }
 
-        Log.d(LOG_TAG, "The time is not lower than the limit, validation NOT ok!");
+        Log.d(getApplicationContext(), LOG_TAG, "The time is not lower than the limit, validation NOT ok!");
         return false;
     }
 
@@ -367,20 +367,20 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
      * @return {@link Boolean#TRUE} if valid against the validation formula, {@link Boolean#FALSE} if not.
      */
     private boolean validateLowerThanOrEqualsTo(final Calendar time, final Calendar limit) {
-        Log.d(LOG_TAG, "About to start validating time <= limit");
+        Log.d(getApplicationContext(), LOG_TAG, "About to start validating time <= limit");
 
         if (limit == null) {
             //No limit is defined so the time can be anything!
-            Log.d(LOG_TAG, "No limitations defined so validation is ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so validation is ok!");
             return true;
         }
 
         if (validateLowerThan(time, limit) || validateEqualTo(time, limit)) {
-            Log.d(LOG_TAG, "The time is lower than or equal to the limit, validation ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "The time is lower than or equal to the limit, validation ok!");
             return true;
         }
 
-        Log.d(LOG_TAG, "The time is not lower than or equal to the limit, validation NOT ok!");
+        Log.d(getApplicationContext(), LOG_TAG, "The time is not lower than or equal to the limit, validation NOT ok!");
         return false;
     }
 
@@ -392,11 +392,11 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
      * @return {@link Boolean#TRUE} if valid against the validation formula, {@link Boolean#FALSE} if not.
      */
     private boolean validateEqualTo(final Calendar time, final Calendar limit) {
-        Log.d(LOG_TAG, "About to start validating time = limit");
+        Log.d(getApplicationContext(), LOG_TAG, "About to start validating time = limit");
 
         if (limit == null) {
             //No limit is defined so the time can be anything!
-            Log.d(LOG_TAG, "No limitations defined so validation is ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so validation is ok!");
             return true;
         }
 
@@ -412,11 +412,11 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
         calendarLimit.set(Calendar.MILLISECOND, 0);
         calendarLimit.set(Calendar.SECOND, 0);
         if (calendarTime.getTimeInMillis() == calendarLimit.getTimeInMillis()) {
-            Log.d(LOG_TAG, "The time is equal to the limit, validation ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "The time is equal to the limit, validation ok!");
             return true;
         }
 
-        Log.d(LOG_TAG, "The time is not equal to the limit, validation NOT ok!");
+        Log.d(getApplicationContext(), LOG_TAG, "The time is not equal to the limit, validation NOT ok!");
         return false;
     }
 

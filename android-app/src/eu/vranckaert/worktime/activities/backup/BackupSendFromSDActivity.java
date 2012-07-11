@@ -20,7 +20,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.preferences.DatabaseBackupFileComparator;
@@ -28,6 +27,7 @@ import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.exceptions.SDCardUnavailableException;
 import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import roboguice.activity.GuiceActivity;
 
@@ -102,7 +102,7 @@ public class BackupSendFromSDActivity extends GuiceActivity {
             case Constants.Dialog.BACKUP_SEND_FILE_SEARCH_SHOW_LIST: {
                 List<String> fileNames = new ArrayList<String>();
                 for (File file : databaseBackupFiles) {
-                    Log.d(LOG_TAG, "Filename found: " + file.getName());
+                    Log.d(getApplicationContext(), LOG_TAG, "Filename found: " + file.getName());
                     fileNames.add(backupService.toString(BackupSendFromSDActivity.this, file));
                 }
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -112,7 +112,7 @@ public class BackupSendFromSDActivity extends GuiceActivity {
                                 0,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialogInterface, int index) {
-                                        Log.d(LOG_TAG, "File at index " + index + " choosen.");
+                                        Log.d(getApplicationContext(), LOG_TAG, "File at index " + index + " choosen.");
                                         File fileToSend = databaseBackupFiles.get(index);
                                         removeDialog(Constants.Dialog.BACKUP_RESTORE_FILE_SEARCH_SHOW_LIST);
                                         sendFile(fileToSend); 
@@ -121,7 +121,7 @@ public class BackupSendFromSDActivity extends GuiceActivity {
                         )
                         .setOnCancelListener(new DialogInterface.OnCancelListener() {
                             public void onCancel(DialogInterface dialogInterface) {
-                                Log.d(LOG_TAG, "No backup file chosen, close the activity");
+                                Log.d(getApplicationContext(), LOG_TAG, "No backup file chosen, close the activity");
                                 BackupSendFromSDActivity.this.finish();
                             }
                         });

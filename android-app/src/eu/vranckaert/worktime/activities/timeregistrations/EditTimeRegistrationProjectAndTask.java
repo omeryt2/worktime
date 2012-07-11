@@ -20,7 +20,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.project.ProjectByNameComparator;
@@ -34,6 +33,7 @@ import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import roboguice.activity.GuiceActivity;
@@ -95,15 +95,15 @@ public class EditTimeRegistrationProjectAndTask extends GuiceActivity {
     private List<Project> loadAllProjects() {
         List<Project> availableProjects = new ArrayList<Project>();
         if (Preferences.getSelectProjectHideFinished(EditTimeRegistrationProjectAndTask.this)) {
-            Log.d(LOG_TAG, "About to load unfinished projects...");
+            Log.d(getApplicationContext(), LOG_TAG, "About to load unfinished projects...");
             availableProjects = projectService.findUnfinishedProjects();
         } else {
-            Log.d(LOG_TAG, "About to load all projects...");
+            Log.d(getApplicationContext(), LOG_TAG, "About to load all projects...");
             availableProjects = projectService.findAll();
         }
-        Log.d(LOG_TAG, availableProjects.size() + " projects found!");
+        Log.d(getApplicationContext(), LOG_TAG, availableProjects.size() + " projects found!");
         Collections.sort(availableProjects, new ProjectByNameComparator());
-        Log.d(LOG_TAG, "All projects have been sorted, " + availableProjects.size() + " will be returned");
+        Log.d(getApplicationContext(), LOG_TAG, "All projects have been sorted, " + availableProjects.size() + " will be returned");
         return availableProjects;
     }
 
@@ -119,13 +119,13 @@ public class EditTimeRegistrationProjectAndTask extends GuiceActivity {
                 for (int i=0; i<availableProjects.size(); i++) {
                     Project project = availableProjects.get(i);
 
-                    Log.d(LOG_TAG, "Is project " + project.getName() + " selected project? " + (newSelectedProject.getId().equals(project.getId())));
+                    Log.d(getApplicationContext(), LOG_TAG, "Is project " + project.getName() + " selected project? " + (newSelectedProject.getId().equals(project.getId())));
                     if (newSelectedProject.getId().equals(project.getId())) {
                         selectedProjectIndex = i;
                     }
 
                     projects.add(project.getName());
-                    Log.d(LOG_TAG, "Project with name " + project.getName() + " is added to the selection list");
+                    Log.d(getApplicationContext(), LOG_TAG, "Project with name " + project.getName() + " is added to the selection list");
                 }
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -162,20 +162,20 @@ public class EditTimeRegistrationProjectAndTask extends GuiceActivity {
                 break;
             }
             case Constants.Dialog.CHOOSE_TASK: {
-                Log.d(LOG_TAG, "Default value of selectedTask is id: " + newSelectedTask.getId() + " and name: " + newSelectedTask.getName());
+                Log.d(getApplicationContext(), LOG_TAG, "Default value of selectedTask is id: " + newSelectedTask.getId() + " and name: " + newSelectedTask.getName());
                 int selectedTaskIndex = -1;
 
                 List<String> tasks = new ArrayList<String>();
                 for (int i=0; i<availableTasks.size(); i++) {
                     Task task = availableTasks.get(i);
-                    Log.d(LOG_TAG, "Add task with name " + task.getName() + " to selection list");
+                    Log.d(getApplicationContext(), LOG_TAG, "Add task with name " + task.getName() + " to selection list");
                     tasks.add(task.getName());
-                    Log.d(LOG_TAG, "Is task " + task.getName() + " selected task? " + (task.getId().equals(newSelectedTask.getId())));
+                    Log.d(getApplicationContext(), LOG_TAG, "Is task " + task.getName() + " selected task? " + (task.getId().equals(newSelectedTask.getId())));
                     if (task.getId().equals(newSelectedTask.getId())) {
-                        Log.d(LOG_TAG, "Task should be default selected...");
+                        Log.d(getApplicationContext(), LOG_TAG, "Task should be default selected...");
                         selectedTaskIndex = i;
                     }
-                    Log.d(LOG_TAG, "Selected task index is: " + selectedTaskIndex);
+                    Log.d(getApplicationContext(), LOG_TAG, "Selected task index is: " + selectedTaskIndex);
                 }
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -185,9 +185,9 @@ public class EditTimeRegistrationProjectAndTask extends GuiceActivity {
                                selectedTaskIndex,
                                new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialogInterface, int index) {
-                                        Log.d(LOG_TAG, "Task at index " + index + " choosen.");
+                                        Log.d(getApplicationContext(), LOG_TAG, "Task at index " + index + " choosen.");
                                         newSelectedTask = availableTasks.get(index);
-                                        Log.d(LOG_TAG, "About to update the time registration for task with name " + newSelectedTask.getName());
+                                        Log.d(getApplicationContext(), LOG_TAG, "About to update the time registration for task with name " + newSelectedTask.getName());
                                         removeDialog(Constants.Dialog.CHOOSE_TASK);
                                         updateTimeRegistration();
                                     }
@@ -195,7 +195,7 @@ public class EditTimeRegistrationProjectAndTask extends GuiceActivity {
                        )
                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
                            public void onCancel(DialogInterface dialogInterface) {
-                               Log.d(LOG_TAG, "No task choosen, close the activity");
+                               Log.d(getApplicationContext(), LOG_TAG, "No task choosen, close the activity");
                                removeDialog(Constants.Dialog.CHOOSE_TASK);
                                showDialog(Constants.Dialog.CHOOSE_SELECTED_PROJECT);
                            }

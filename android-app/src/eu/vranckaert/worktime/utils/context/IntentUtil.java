@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import eu.vranckaert.worktime.activities.HomeActivity;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 
@@ -155,12 +154,12 @@ public class IntentUtil {
      * @param chooserTitle The application chooser's title string.
      */
     public static void sendSomething(Activity activity, String subject, String body, List<File> files, String chooserTitle) {
-        Log.d(LOG_TAG, "About to send something...");
-        Log.d(LOG_TAG, "At least one attachment included? " + (files.size()>0?"Yes":"No"));
+        Log.d(activity, LOG_TAG, "About to send something...");
+        Log.d(activity, LOG_TAG, "At least one attachment included? " + (files.size()>0?"Yes":"No"));
 
         String action = Intent.ACTION_SEND;
         if (files != null && files.size() > 1) {
-            Log.d(LOG_TAG, "More than one attachment included");
+            Log.d(activity, LOG_TAG, "More than one attachment included");
             action = Intent.ACTION_SEND_MULTIPLE;
         }
 
@@ -174,10 +173,10 @@ public class IntentUtil {
         }
 
         if (files != null && files.size() == 1) {
-            Log.d(LOG_TAG, "Adding one file...");
+            Log.d(activity, LOG_TAG, "Adding one file...");
             emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:/" + files.get(0)));
         } else if(files != null) {
-            Log.d(LOG_TAG, "Adding multiple files...");
+            Log.d(activity, LOG_TAG, "Adding multiple files...");
             ArrayList<Uri> uris = new ArrayList<Uri>();
             for (File file : files) {
                 Uri uri = Uri.fromFile(file);
@@ -187,7 +186,7 @@ public class IntentUtil {
             emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
         }
 
-        Log.d(LOG_TAG, "Launching share, application chooser if needed!");
+        Log.d(activity, LOG_TAG, "Launching share, application chooser if needed!");
         activity.startActivity(Intent.createChooser(emailIntent, chooserTitle));
     }
 

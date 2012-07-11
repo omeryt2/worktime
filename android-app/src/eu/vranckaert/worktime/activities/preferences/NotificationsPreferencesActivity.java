@@ -19,13 +19,13 @@ package eu.vranckaert.worktime.activities.preferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
-import android.util.Log;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.utils.activity.GenericPreferencesActivity;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 
 /**
@@ -50,11 +50,11 @@ public class NotificationsPreferencesActivity extends GenericPreferencesActivity
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 boolean result = (Boolean) newValue;
 
-                Log.d(LOG_TAG, "The newly selected value for 'Show status bar notification' is " + result);
+                Log.d(getApplicationContext(), LOG_TAG, "The newly selected value for 'Show status bar notification' is " + result);
                 Preferences.setShowStatusBarNotificationsPreference(getApplicationContext(), result);
-                Log.d(LOG_TAG, "Show status bar notifications checkbox to be updated");
+                Log.d(getApplicationContext(), LOG_TAG, "Show status bar notifications checkbox to be updated");
                 chPreference.setChecked(result);
-                Log.d(LOG_TAG, "Delegate the change of the notifications to the notification bar service");
+                Log.d(getApplicationContext(), LOG_TAG, "Delegate the change of the notifications to the notification bar service");
                 if (result) {
                     statusBarNotificationService.addOrUpdateNotification(null);
                 } else {

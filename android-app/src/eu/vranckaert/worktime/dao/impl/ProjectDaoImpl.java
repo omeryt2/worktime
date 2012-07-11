@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.dao.impl;
 
 import android.content.Context;
-import android.util.Log;
 import com.google.inject.Inject;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -24,6 +24,7 @@ import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.generic.GenericDaoImpl;
 import eu.vranckaert.worktime.exceptions.CorruptProjectDataException;
 import eu.vranckaert.worktime.model.Project;
+import eu.vranckaert.worktime.utils.context.Log;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -48,15 +49,15 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
             PreparedQuery<Project> pq = qb.prepare();
             projects = dao.query(pq);
         } catch (SQLException e) {
-            Log.d(LOG_TAG, "Could not execute the query... Returning false");
+            Log.d(getContext(), LOG_TAG, "Could not execute the query... Returning false");
             return false;
         }
 
         if(projects == null || projects.size() == 0) {
-            Log.d(LOG_TAG, "The name is not yet used!");
+            Log.d(getContext(), LOG_TAG, "The name is not yet used!");
             return false;
         }
-        Log.d(LOG_TAG, "The name is already in use!");
+        Log.d(getContext(), LOG_TAG, "The name is already in use!");
         return true;
     }
 
@@ -69,7 +70,7 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
             PreparedQuery<Project> pq = qb.prepare();
             projects = dao.query(pq);
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
             return null;
         }
 
@@ -80,7 +81,7 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
             } else {
                 message = "The project data is corrupt. More than one default project is found in the database!";
             }
-            Log.e(LOG_TAG, message);
+            Log.e(getContext(), LOG_TAG, message);
             throw new CorruptProjectDataException(message);
         } else {
             return projects.get(0);
@@ -95,7 +96,7 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
             PreparedQuery<Project> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
             return null;
         }
     }

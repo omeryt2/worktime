@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.utils.wizard;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 
@@ -176,7 +177,7 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
         if (this.layoutResIDs.size() > 0) {
             init();
         } else {
-            Log.w(LOG_TAG, "No views have been defined for this wizard so we cannot the wizard!");
+            Log.w(getApplicationContext(), LOG_TAG, "No views have been defined for this wizard so we cannot the wizard!");
             finish();
         }
     }
@@ -294,16 +295,16 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
      * @param newIndex The index of the page navigating to.
      */
     private void invalidateNavigation(int newIndex) {
-        Log.d(LOG_TAG, "Invalidating navigation components");
+        Log.d(getApplicationContext(), LOG_TAG, "Invalidating navigation components");
 
         //If first: show cancel button
         //Else: show previous button
         if (newIndex == 0) {
-            Log.d(LOG_TAG, "Enable CANCEL, hide PREVIOUS");
+            Log.d(getApplicationContext(), LOG_TAG, "Enable CANCEL, hide PREVIOUS");
             cancelButton.setVisibility(View.VISIBLE);
             previousButton.setVisibility(View.GONE);
         } else {
-            Log.d(LOG_TAG, "Hide CANCEL, enable PREVIOUS");
+            Log.d(getApplicationContext(), LOG_TAG, "Hide CANCEL, enable PREVIOUS");
             cancelButton.setVisibility(View.GONE);
             previousButton.setVisibility(View.VISIBLE);
         }
@@ -311,23 +312,23 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
         //If last: show finish button
         //Else: show next button
         if (newIndex == layoutResIDs.size()-1) {
-            Log.d(LOG_TAG, "Enable FINISH, hide NEXT");
+            Log.d(getApplicationContext(), LOG_TAG, "Enable FINISH, hide NEXT");
             finishButton.setVisibility(View.VISIBLE);
             nextButton.setVisibility(View.GONE);
         } else {
-            Log.d(LOG_TAG, "Hide FINISH, enable NEXT");
+            Log.d(getApplicationContext(), LOG_TAG, "Hide FINISH, enable NEXT");
             finishButton.setVisibility(View.GONE);
             nextButton.setVisibility(View.VISIBLE);
         }
 
         //Override witch specific settings for cancel and previous button
-        Log.d(LOG_TAG, "Override navigation components with user settings");
+        Log.d(getApplicationContext(), LOG_TAG, "Override navigation components with user settings");
         if (!isCancelEnabled()) {
-            Log.d(LOG_TAG, "CANCEL should not be enabled");
+            Log.d(getApplicationContext(), LOG_TAG, "CANCEL should not be enabled");
             cancelButton.setVisibility(View.GONE);
         }
         if (!isPreviousEnabled()) {
-            Log.d(LOG_TAG, "PREVIOUS should not be enabled");
+            Log.d(getApplicationContext(), LOG_TAG, "PREVIOUS should not be enabled");
             previousButton.setVisibility(View.GONE);
         }
     }
@@ -520,19 +521,19 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
     @Override
     @Deprecated
     public void setContentView(int layoutResID) {
-        Log.w(LOG_TAG, "The content view cannot be changed. This method is deprecated for the WizardActivity!");
+        Log.w(getApplicationContext(), LOG_TAG, "The content view cannot be changed. This method is deprecated for the WizardActivity!");
     }
 
     @Override
     @Deprecated
     public void setContentView(View view) {
-        Log.w(LOG_TAG, "The content view cannot be changed. This method is deprecated for the WizardActivity!");
+        Log.w(getApplicationContext(), LOG_TAG, "The content view cannot be changed. This method is deprecated for the WizardActivity!");
     }
 
     @Override
     @Deprecated
     public void setContentView(View view, ViewGroup.LayoutParams params) {
-        Log.w(LOG_TAG, "The content view cannot be changed. This method is deprecated for the WizardActivity!");
+        Log.w(getApplicationContext(), LOG_TAG, "The content view cannot be changed. This method is deprecated for the WizardActivity!");
     }
 
     /**
@@ -549,7 +550,7 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
      */
     public void setPreviousButtonText(int resId) {
         String string  = getString(resId);
-        Log.d(LOG_TAG, "New text of the previous button: " + string);
+        Log.d(getApplicationContext(), LOG_TAG, "New text of the previous button: " + string);
         changeButtonText(previousButton, string);
     }
 
@@ -558,7 +559,7 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
      * @param text The text to set.
      */
     public void setPreviousButtonText(String text) {
-        Log.d(LOG_TAG, "New text of the previous button: " + text);
+        Log.d(getApplicationContext(), LOG_TAG, "New text of the previous button: " + text);
         changeButtonText(previousButton, text);
     }
 
@@ -568,7 +569,7 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
      */
     public void setCancelButtonText(int resId) {
         String string  = getString(resId);
-        Log.d(LOG_TAG, "New text of the cancel button: " + string);
+        Log.d(getApplicationContext(), LOG_TAG, "New text of the cancel button: " + string);
         changeButtonText(cancelButton, string);
     }
 
@@ -577,7 +578,7 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
      * @param text The text to set.
      */
     public void setCancelButtonText(String text) {
-        Log.d(LOG_TAG, "New text of the cancel button: " + text);
+        Log.d(getApplicationContext(), LOG_TAG, "New text of the cancel button: " + text);
         changeButtonText(cancelButton, text);
     }
 
@@ -587,7 +588,7 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
      */
     public void setNextButtonText(int resId) {
         String string  = getString(resId);
-        Log.d(LOG_TAG, "New text of the next button: " + string);
+        Log.d(getApplicationContext(), LOG_TAG, "New text of the next button: " + string);
         changeButtonText(nextButton, string);
     }
 
@@ -596,7 +597,7 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
      * @param text The text to set.
      */
     public void setNextButtonText(String text) {
-        Log.d(LOG_TAG, "New text of the next button: " + text);
+        Log.d(getApplicationContext(), LOG_TAG, "New text of the next button: " + text);
         changeButtonText(nextButton, text);
     }
 
@@ -606,7 +607,7 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
      */
     public void setFinishButtonText(int resId) {
         String string  = getString(resId);
-        Log.d(LOG_TAG, "New text of the finish button: " + string);
+        Log.d(getApplicationContext(), LOG_TAG, "New text of the finish button: " + string);
         changeButtonText(finishButton, string);
     }
 
@@ -615,7 +616,7 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
      * @param text The text to set.
      */
     public void setFinishButtonText(String text) {
-        Log.d(LOG_TAG, "New text of the finish button: " + text);
+        Log.d(getApplicationContext(), LOG_TAG, "New text of the finish button: " + text);
         changeButtonText(finishButton, text);
     }
 
@@ -627,7 +628,7 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
     private void changeButtonText(View view, String text) {
         Button button = (Button) view;
         if (button == null) {
-            Log.w(LOG_TAG, "Could not cast the provided view to a button, so the text cannot be set!");
+            Log.w(getApplicationContext(), LOG_TAG, "Could not cast the provided view to a button, so the text cannot be set!");
             return;
         }
         button.setText(text);

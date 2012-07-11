@@ -17,12 +17,12 @@
 package eu.vranckaert.worktime.utils.date;
 
 import android.content.Context;
-import android.util.Log;
 import android.util.SparseArray;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.enums.reporting.ReportingDisplayDuration;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.preferences.TimePrecisionPreference;
 import eu.vranckaert.worktime.utils.string.StringUtils;
@@ -178,8 +178,6 @@ public class DateUtils {
                 yearMonthDay += "0";
             }
             yearMonthDay += day;
-
-            Log.d(LOG_TAG, "Current time in yearMonthDay format is " + yearMonthDay);
 
             return yearMonthDay;
         }
@@ -403,7 +401,7 @@ public class DateUtils {
         public static final Period calculatePeriod(Context ctx, List<TimeRegistration> registrations) {
             Long duration = 0L;
 
-            Log.d(LOG_TAG, "Calculating period for " + registrations.size() + " TR's...");
+            Log.d(ctx, LOG_TAG, "Calculating period for " + registrations.size() + " TR's...");
             for (TimeRegistration registration : registrations) {
                 Duration regDuration = null;
                 if (registration.isOngoingTimeRegistration()) {
@@ -411,16 +409,16 @@ public class DateUtils {
                 } else {
                     regDuration = calculateDuration(ctx, registration.getStartTime(), registration.getEndTime());
                 }
-                Log.d(LOG_TAG, "Calculated duration: " + regDuration);
-                Log.d(LOG_TAG, "About to add milis: " + regDuration.getMillis());
+                Log.d(ctx, LOG_TAG, "Calculated duration: " + regDuration);
+                Log.d(ctx, LOG_TAG, "About to add milis: " + regDuration.getMillis());
                 duration += regDuration.getMillis();
-                Log.d(LOG_TAG, "Total duration with new calcuation added: " + duration);
+                Log.d(ctx, LOG_TAG, "Total duration with new calcuation added: " + duration);
             }
-            Log.d(LOG_TAG, "Total duration calculated: " + duration);
+            Log.d(ctx, LOG_TAG, "Total duration calculated: " + duration);
             Duration totalDuration = new Duration(duration);
-            Log.d(LOG_TAG, "Total duration created from milis: " + totalDuration);
+            Log.d(ctx, LOG_TAG, "Total duration created from milis: " + totalDuration);
             Period period = totalDuration.toPeriod(PeriodType.time());
-            Log.d(LOG_TAG,  "Total period: " + period);
+            Log.d(ctx, LOG_TAG,  "Total period: " + period);
             return period;
         }
 
@@ -458,7 +456,7 @@ public class DateUtils {
                 }
             }
 
-            Log.d(LOG_TAG, days + "d " + hours + "h " + minutes + "m " + seconds + "s");
+            Log.d(ctx, LOG_TAG, days + "d " + hours + "h " + minutes + "m " + seconds + "s");
 
             String daysString = "";
             String hoursString = "";
@@ -634,8 +632,6 @@ public class DateUtils {
                 return false;
             }
             boolean is24HourClock = check.contains("19");
-
-            Log.d(LOG_TAG, "Result of is24HourClock: " + is24HourClock);
 
             return is24HourClock;
         }

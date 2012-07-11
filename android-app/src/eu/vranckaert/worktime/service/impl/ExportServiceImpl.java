@@ -17,12 +17,13 @@
 package eu.vranckaert.worktime.service.impl;
 
 import android.content.Context;
-import android.util.Log;
+import com.google.inject.Inject;
 import eu.vranckaert.worktime.constants.TextConstants;
 import eu.vranckaert.worktime.enums.Encoding;
 import eu.vranckaert.worktime.enums.export.ExportCsvSeparator;
 import eu.vranckaert.worktime.exceptions.export.GeneralExportException;
 import eu.vranckaert.worktime.service.ExportService;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.file.FileUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import jxl.CellView;
@@ -57,6 +58,9 @@ import java.util.Map;
  */
 public class ExportServiceImpl implements ExportService {
     private static final String LOG_TAG = ExportServiceImpl.class.getSimpleName();
+
+    @Inject
+    private Context ctx;
 
     @Override
     public File exportCsvFile(Context ctx, String filename, List<String> headers, List<String[]> values, ExportCsvSeparator separatorExport) throws GeneralExportException {
@@ -103,17 +107,17 @@ public class ExportServiceImpl implements ExportService {
             fos.write(bom);
             fos.write(textBytes);
         } catch (FileNotFoundException e) {
-            Log.e(LOG_TAG, "The file is not found", e);
+            Log.e(ctx, LOG_TAG, "The file is not found", e);
             throw new GeneralExportException("The file is not found, probably a file-system issue...", e);
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Exception occurred during export...", e);
+            Log.e(ctx, LOG_TAG, "Exception occurred during export...", e);
             throw new GeneralExportException("Exception occurred during export", e);
         } finally {
             if (fos != null) {
                 try {
                     fos.close();
                 } catch (IOException e) {
-                    Log.e(LOG_TAG, "Could not close the stream", e);
+                    Log.e(ctx, LOG_TAG, "Could not close the stream", e);
                 }
             }
         }
@@ -135,10 +139,10 @@ public class ExportServiceImpl implements ExportService {
 
         try {
             workbook = Workbook.createWorkbook(file, settings);
-            Log.d(LOG_TAG, "Excel workbook created for file " + file.getAbsolutePath());
+            Log.d(ctx, LOG_TAG, "Excel workbook created for file " + file.getAbsolutePath());
         } catch (IOException e) {
             String msg = "Something went wrong during the export";
-            Log.e(LOG_TAG, msg, e);
+            Log.e(ctx, LOG_TAG, msg, e);
             throw new GeneralExportException(msg + ": " + e.getMessage(), e);
         }
 
@@ -149,7 +153,7 @@ public class ExportServiceImpl implements ExportService {
             Integer[] maximumColumnLengths = new Integer[getNumberOfColumns(sheetName, headers, sheetValues)];
 
             WritableSheet sheet = workbook.createSheet(sheetName, sheetIndex);
-            Log.d(LOG_TAG, "Sheet with name " + sheetName + " created for workbook at index " + sheetIndex);
+            Log.d(ctx, LOG_TAG, "Sheet with name " + sheetName + " created for workbook at index " + sheetIndex);
             sheetIndex++;
 
             // Get the maps of display formats for this sheet
@@ -170,9 +174,9 @@ public class ExportServiceImpl implements ExportService {
 
             if (headers == null || headers.get(sheetName) == null || headers.get(sheetName).size() == 0) {
                 firstDataRow = headerRow;
-                Log.d(LOG_TAG, "No headers information found so the headers will start at row " + firstDataRow);
+                Log.d(ctx, LOG_TAG, "No headers information found so the headers will start at row " + firstDataRow);
             } else {
-                Log.d(LOG_TAG, "Header information found, processing headers now...");
+                Log.d(ctx, LOG_TAG, "Header information found, processing headers now...");
                 List<Object> headerValues = headers.get(sheetName);
 
                 for (int i = 0; i < headerValues.size(); i++) {
@@ -184,17 +188,17 @@ public class ExportServiceImpl implements ExportService {
 
                     WritableCell headerCell = createExcelCell(i, headerRow, headerValues.get(i), headerDisplayFormat, ExportService.EXCEL_HEADER_COLOR, maximumColumnLengths);
                     if (headerCell != null) {
-                        Log.d(LOG_TAG, "Writing content to header cell at column " + i + ", row " + headerRow + ".");
+                        Log.d(ctx, LOG_TAG, "Writing content to header cell at column " + i + ", row " + headerRow + ".");
                         try {
                             sheet.addCell(headerCell);
                         } catch (WriteException e) {
-                            Log.w(LOG_TAG, "For some reason the header cell for column " + i + " and row " + headerRow + " cannot be added", e);
+                            Log.w(ctx, LOG_TAG, "For some reason the header cell for column " + i + " and row " + headerRow + " cannot be added", e);
                         }
                     } else {
-                        Log.d(LOG_TAG, "No header data found to be displayed in cell with column " + i + " and row " + headerRow);
+                        Log.d(ctx, LOG_TAG, "No header data found to be displayed in cell with column " + i + " and row " + headerRow);
                     }
                 }
-                Log.d(LOG_TAG, "Header takes all place at row " + headerRow + ", data will start at row " + firstDataRow);
+                Log.d(ctx, LOG_TAG, "Header takes all place at row " + headerRow + ", data will start at row " + firstDataRow);
             }
 
             int row = firstDataRow;
@@ -214,14 +218,14 @@ public class ExportServiceImpl implements ExportService {
 
                     WritableCell cell = createExcelCell(column, row, cellValue, valueDisplayFormat, null, maximumColumnLengths);
                     if (cell != null) {
-                        Log.d(LOG_TAG, "Writing data to Excel workbook at sheet " + sheetName + " in cell at column " + column + " and row " + row);
+                        Log.d(ctx, LOG_TAG, "Writing data to Excel workbook at sheet " + sheetName + " in cell at column " + column + " and row " + row);
                         try {
                             sheet.addCell(cell);
                         } catch (WriteException e) {
-                            Log.w(LOG_TAG, "For some reason the cell for column " + column + " and row " + row + " cannot be added", e);
+                            Log.w(ctx, LOG_TAG, "For some reason the cell for column " + column + " and row " + row + " cannot be added", e);
                         }
                     } else {
-                        Log.d(LOG_TAG, "No data found to be displayed in cell at column " + column + " and row " + row);
+                        Log.d(ctx, LOG_TAG, "No data found to be displayed in cell at column " + column + " and row " + row);
                     }
                     column++;
                 }
@@ -236,10 +240,10 @@ public class ExportServiceImpl implements ExportService {
                             try {
                                 sheet.mergeCells(mergeRange[0], mergeRange[1], mergeRange[2], mergeRange[3]);
                             } catch (WriteException e) {
-                                Log.w(LOG_TAG, "Cells cannot be merged!");
+                                Log.w(ctx, LOG_TAG, "Cells cannot be merged!");
                             }
                         } else {
-                            Log.w(LOG_TAG, "No or not enough data found for merging cells!");
+                            Log.w(ctx, LOG_TAG, "No or not enough data found for merging cells!");
                         }
                     }
                 }
@@ -257,7 +261,7 @@ public class ExportServiceImpl implements ExportService {
                         CellView cellView = new CellView();
                         cellView.setSize(columnLength * 256); // Always multiply by 256, see the JXL documentation!
 
-                        Log.d(LOG_TAG, "Resizing cells in column " + sheetColumn + " on sheet " + sheetName);
+                        Log.d(ctx, LOG_TAG, "Resizing cells in column " + sheetColumn + " on sheet " + sheetName);
                         sheet.setColumnView(sheetColumn, cellView);
                     }
                 }
@@ -267,22 +271,22 @@ public class ExportServiceImpl implements ExportService {
             for (Integer column : hiddenColumnNumbers) {
                 CellView hiddenCellView = new CellView();
                 hiddenCellView.setHidden(true);
-                Log.d(LOG_TAG, "Hiding column " + column + " on sheet " + sheetName);
+                Log.d(ctx, LOG_TAG, "Hiding column " + column + " on sheet " + sheetName);
                 sheet.setColumnView(column, hiddenCellView);
             }
         }
 
-        Log.d(LOG_TAG, "Writing workbook to local storage at " + file.getAbsolutePath());
+        Log.d(ctx, LOG_TAG, "Writing workbook to local storage at " + file.getAbsolutePath());
         try {
             workbook.write();
             workbook.close();
         } catch (IOException e) {
             String msg = "A general IO Exception occured!";
-            Log.e(LOG_TAG, msg, e);
+            Log.e(ctx, LOG_TAG, msg, e);
             throw new GeneralExportException(msg, e);
         } catch (WriteException e) {
             String msg = "Could not write the Excel file to disk!";
-            Log.e(LOG_TAG, msg, e);
+            Log.e(ctx, LOG_TAG, msg, e);
             throw new GeneralExportException(msg, e);
         }
 
@@ -335,7 +339,7 @@ public class ExportServiceImpl implements ExportService {
                 file.createNewFile();
             }
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Probably a file-system issue...", e);
+            Log.e(ctx, LOG_TAG, "Probably a file-system issue...", e);
             throw new GeneralExportException("Probably a file-system issue...", e);
         }
 
@@ -387,7 +391,7 @@ public class ExportServiceImpl implements ExportService {
             String formula = (String) value;
             formula = formula.replace("[CR]", "" + (r+1));
             formula = formula.replace("[CC]", getExcelColumnName(c));
-            Log.d(LOG_TAG, "Formula for cell with column " + c + " and row " + r + " is " + formula);
+            Log.d(ctx, LOG_TAG, "Formula for cell with column " + c + " and row " + r + " is " + formula);
             formula = formula.substring(1);
             cell = new Formula(c, r, formula);
             currentColumnLength = 10;
@@ -409,7 +413,7 @@ public class ExportServiceImpl implements ExportService {
                 try {
                     cellFormat.setBackground(cellColor);
                 } catch (WriteException e) {
-                    Log.w(LOG_TAG, "Cannot change the background color of the cell at column " + c + " and row " + r, e);
+                    Log.w(ctx, LOG_TAG, "Cannot change the background color of the cell at column " + c + " and row " + r, e);
                 }
             }
 

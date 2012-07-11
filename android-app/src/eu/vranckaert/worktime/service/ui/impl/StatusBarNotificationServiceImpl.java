@@ -21,7 +21,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import com.google.inject.Inject;
 import com.jakewharton.notificationcompat2.NotificationCompat2;
 import eu.vranckaert.worktime.R;
@@ -35,6 +34,7 @@ import eu.vranckaert.worktime.service.impl.ProjectServiceImpl;
 import eu.vranckaert.worktime.service.impl.TaskServiceImpl;
 import eu.vranckaert.worktime.service.impl.TimeRegistrationServiceImpl;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
@@ -74,22 +74,22 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
 
     @Override
     public void addOrUpdateNotification(TimeRegistration registration) {
-        Log.d(LOG_TAG, "Handling status bar notifications...");
+        Log.d(context, LOG_TAG, "Handling status bar notifications...");
 
         boolean showStatusBarNotifications = Preferences.getShowStatusBarNotificationsPreference(context);
-        Log.d(LOG_TAG, "Status bar notifications enabled? " + (showStatusBarNotifications?"Yes":"No"));
+        Log.d(context, LOG_TAG, "Status bar notifications enabled? " + (showStatusBarNotifications?"Yes":"No"));
 
         if (registration == null) {
             registration = timeRegistrationService.getLatestTimeRegistration();
             if (registration == null) {
-                Log.d(LOG_TAG, "Cannot add a notification because no time registration is found!");
+                Log.d(context, LOG_TAG, "Cannot add a notification because no time registration is found!");
                 return;
             }
         }
 
         if (showStatusBarNotifications && registration != null && registration.isOngoingTimeRegistration()) {
             //Create the status bar notifications
-            Log.d(LOG_TAG, "Ongoing time registration... Refreshing the task and project...");
+            Log.d(context, LOG_TAG, "Ongoing time registration... Refreshing the task and project...");
             taskService.refresh(registration.getTask());
             projectService.refresh(registration.getTask().getProject());
 
@@ -106,11 +106,11 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
 
             if (registration.getId() == null) {
                 // creating...
-                Log.d(LOG_TAG, "A status bar notifications for project '" + projectName + "' and task '" + taskName + "' will be created");
+                Log.d(context, LOG_TAG, "A status bar notifications for project '" + projectName + "' and task '" + taskName + "' will be created");
                 ticker = context.getString(R.string.lbl_notif_new_tr_started);
             } else {
                 // updating...
-                Log.d(LOG_TAG, "The status bar notifications for project '" + projectName + "' and task '" + taskName + "' will be updated");
+                Log.d(context, LOG_TAG, "The status bar notifications for project '" + projectName + "' and task '" + taskName + "' will be updated");
                 ticker = context.getString(R.string.lbl_notif_update_tr);
             }
 
@@ -155,7 +155,7 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
      * @return An instance of the {@link NotificationManager}.
      */
     private NotificationManager getNotificationManager() {
-        Log.d(LOG_TAG, "Creating a NoticationManager instance");
+        Log.d(context, LOG_TAG, "Creating a NoticationManager instance");
 
         String ns = Context.NOTIFICATION_SERVICE;
         return (NotificationManager) context.getSystemService(ns);
@@ -167,7 +167,7 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
      * {@link Constants.StatusBarNotificationIds};
      */
     private void removeMessage(int id) {
-        Log.d(LOG_TAG, "Remove status bar notification messages with ID: " + id);
+        Log.d(context, LOG_TAG, "Remove status bar notification messages with ID: " + id);
 
         NotificationManager notificationManager = getNotificationManager();
         notificationManager.cancel(id);
@@ -177,7 +177,7 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
      * Removes all messages from the notification bar.
      */
     private void removeAllMessages() {
-        Log.d(LOG_TAG, "Remove all messages");
+        Log.d(context, LOG_TAG, "Remove all messages");
 
         NotificationManager notificationManager = getNotificationManager();
         notificationManager.cancelAll();
@@ -230,6 +230,6 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
         this.timeRegistrationService = new TimeRegistrationServiceImpl(ctx);
         this.projectService = new ProjectServiceImpl(ctx);
         this.taskService = new TaskServiceImpl(ctx);
-        Log.d(LOG_TAG, "Services ok!");
+        Log.d(context, LOG_TAG, "Services ok!");
     }
 }

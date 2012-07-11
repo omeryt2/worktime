@@ -17,11 +17,11 @@
 package eu.vranckaert.worktime.activities.timeregistrations.listadapter;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import eu.vranckaert.worktime.utils.context.Log;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class TimeRegistrationActionListAdapter extends ArrayAdapter<Object> {
      */
     public TimeRegistrationActionListAdapter(Activity ctx, List<Object> objects) {
         super(ctx, android.R.layout.simple_spinner_item, objects);
-        Log.d(LOG_TAG, "Creating the time registrations list adapter");
+        Log.d(ctx, LOG_TAG, "Creating the time registrations list adapter");
 
         this.ctx = ctx;
         this.objects = objects;
@@ -46,10 +46,10 @@ public class TimeRegistrationActionListAdapter extends ArrayAdapter<Object> {
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView row = null;
         if (convertView == null) {
-            Log.d(LOG_TAG, "Render a new line in the list");
+            Log.d(ctx, LOG_TAG, "Render a new line in the list");
             row = (TextView) ctx.getLayoutInflater().inflate(android.R.layout.simple_spinner_item, parent, false);
         } else {
-            Log.d(LOG_TAG, "Recycling an existing line in the list");
+            Log.d(ctx, LOG_TAG, "Recycling an existing line in the list");
             row = (TextView) convertView;
         }
 

@@ -17,13 +17,13 @@
 package eu.vranckaert.worktime.dao.impl;
 
 import android.content.Context;
-import android.util.Log;
 import com.google.inject.Inject;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import eu.vranckaert.worktime.dao.WidgetConfigurationDao;
 import eu.vranckaert.worktime.dao.generic.GenericDaoImpl;
 import eu.vranckaert.worktime.model.WidgetConfiguration;
+import eu.vranckaert.worktime.utils.context.Log;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class WidgetConfigurationDaoImpl extends GenericDaoImpl<WidgetConfigurati
             PreparedQuery<WidgetConfiguration> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Could not execute the query... Returning empty list.", e);
+            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning empty list.", e);
             return new ArrayList<WidgetConfiguration>();
         }
     }

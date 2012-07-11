@@ -18,7 +18,6 @@ package eu.vranckaert.worktime.activities.tasks;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,6 +36,7 @@ import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 import roboguice.inject.InjectExtra;
@@ -91,9 +91,9 @@ public class AddEditTaskActivity extends ActionBarGuiceActivity {
         tracker.trackPageView(TrackerConstants.PageView.ADD_EDIT_TASK_ACTIVITY);
 
         if (!inUpdateMode()) {
-            Log.d(LOG_TAG, "Adding task for project " + project.getName());
+            Log.d(getApplicationContext(), LOG_TAG, "Adding task for project " + project.getName());
         } else {
-            Log.d(LOG_TAG, "Editing task for project " + project.getName());
+            Log.d(getApplicationContext(), LOG_TAG, "Editing task for project " + project.getName());
             setTitle(R.string.lbl_edit_task_title);
             taskName.setText(editTask.getName());
         }
@@ -139,14 +139,14 @@ public class AddEditTaskActivity extends ActionBarGuiceActivity {
                             TrackerConstants.EventSources.ADD_EDIT_TASK_ACTIVITY,
                             TrackerConstants.EventActions.ADD_TASK
                     );
-                    Log.d(LOG_TAG, "New task persisted");
+                    Log.d(getApplicationContext(), LOG_TAG, "New task persisted");
                 } else {
                     taskService.update(task);
                     tracker.trackEvent(
                             TrackerConstants.EventSources.ADD_EDIT_TASK_ACTIVITY,
                             TrackerConstants.EventActions.EDIT_TASK
                     );
-                    Log.d(LOG_TAG, "Task with id " + task.getId() + " and name " + task.getName() + " is updated");
+                    Log.d(getApplicationContext(), LOG_TAG, "Task with id " + task.getId() + " and name " + task.getName() + " is updated");
                 }
 
                 return task;
@@ -155,7 +155,7 @@ public class AddEditTaskActivity extends ActionBarGuiceActivity {
             @Override
             protected void onPostExecute(Task task) {
                 if (inUpdateMode()) {
-                    Log.d(LOG_TAG, "About to update the wiget and notifications");
+                    Log.d(getApplicationContext(), LOG_TAG, "About to update the wiget and notifications");
                     TimeRegistration tr = timeRegistrationService.getLatestTimeRegistration();
                     if (tr != null && tr.getTask().getId().equals(task.getId())) {
                         widgetService.updateAllWidgets();

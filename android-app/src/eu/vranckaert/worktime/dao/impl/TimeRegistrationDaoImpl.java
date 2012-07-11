@@ -17,7 +17,6 @@
 package eu.vranckaert.worktime.dao.impl;
 
 import android.content.Context;
-import android.util.Log;
 import com.google.inject.Inject;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.PreparedDelete;
@@ -30,6 +29,7 @@ import eu.vranckaert.worktime.dao.generic.GenericDaoImpl;
 import eu.vranckaert.worktime.dao.utils.DatabaseHelper;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
+import eu.vranckaert.worktime.utils.context.Log;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             PreparedQuery<TimeRegistration> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Could not execute the query...");
+            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
             throwFatalException(e);
         }
 
@@ -90,7 +90,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             PreparedQuery<TimeRegistration> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Could not execute the query...");
+            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
             throwFatalException(e);
         }
 
@@ -100,7 +100,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
     public List<TimeRegistration> getTimeRegistrations(Date startDate, Date endDate, List<Task> tasks) {
         List<Integer> taskIds = null;
         if (tasks != null && !tasks.isEmpty()) {
-            Log.d(LOG_TAG, tasks.size() + " task(s) are taken into account while querying...");
+            Log.d(getContext(), LOG_TAG, tasks.size() + " task(s) are taken into account while querying...");
             for (Task task : tasks) {
                 if (taskIds == null) {
                     taskIds = new ArrayList<Integer>();
@@ -122,7 +122,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
         boolean includeOngoingTimeRegistration = false;
         Date now = new Date();
         if (endDate.after(now)) {
-            Log.e(LOG_TAG, "Ongoing time registration should be included in reporting result...");
+            Log.e(getContext(), LOG_TAG, "Ongoing time registration should be included in reporting result...");
             includeOngoingTimeRegistration = true;
         }
 
@@ -139,17 +139,17 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
                 where.and().in("taskId", taskIds);
             }
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Could not build the dates- and tasks-where-clause in the query...");
+            Log.e(getContext(), LOG_TAG, "Could not build the dates- and tasks-where-clause in the query...");
             throwFatalException(e);
         }
         qb.setWhere(where);
 
         try {
             PreparedQuery<TimeRegistration> pq = qb.prepare();
-            Log.d(LOG_TAG, "Prepared query: " + pq.toString());
+            Log.d(getContext(), LOG_TAG, "Prepared query: " + pq.toString());
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Could not execute the query...");
+            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
             throwFatalException(e);
         }
 
@@ -160,16 +160,16 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
     public List<TimeRegistration> findAll(int lowerLimit, int maxRows) {
         QueryBuilder<TimeRegistration,Integer> qb = dao.queryBuilder();
         try {
-            Log.d(LOG_TAG, "The starting row for the query is " + lowerLimit);
-            Log.d(LOG_TAG, "The maximum number of rows to load is " + maxRows);
+            Log.d(getContext(), LOG_TAG, "The starting row for the query is " + lowerLimit);
+            Log.d(getContext(), LOG_TAG, "The maximum number of rows to load is " + maxRows);
             qb.offset(Long.valueOf(lowerLimit));
             qb.limit(Long.valueOf(maxRows));
             qb.orderBy("startTime", false);
             PreparedQuery<TimeRegistration> pq = qb.prepare();
-            Log.d(LOG_TAG, pq.toString());
+            Log.d(getContext(), LOG_TAG, pq.toString());
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Could not execute the query...");
+            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
             throwFatalException(e);
         }
         return null;
@@ -187,10 +187,10 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             qb.setWhere(where);
 
             PreparedQuery<TimeRegistration> pq = qb.prepare();
-            Log.d(LOG_TAG, pq.toString());
+            Log.d(getContext(), LOG_TAG, pq.toString());
             return dao.queryForFirst(pq);
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Could not execute the query...");
+            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
             throwFatalException(e);
         }
         return null;
@@ -212,10 +212,10 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             qb.setWhere(where);
 
             PreparedQuery<TimeRegistration> pq = qb.prepare();
-            Log.d(LOG_TAG, pq.toString());
+            Log.d(getContext(), LOG_TAG, pq.toString());
             return dao.queryForFirst(pq);
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Could not execute the query...");
+            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
             throwFatalException(e);
         }
 
@@ -249,18 +249,18 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             }
 
             PreparedDelete<TimeRegistration> pd = db.prepare();
-            Log.d(LOG_TAG, pd.toString());
+            Log.d(getContext(), LOG_TAG, pd.toString());
             dao.delete(pd);
 
             countAfter = dao.countOf();
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Could not execute the query...");
+            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
             throwFatalException(e);
         }
 
         count = countBefore - countAfter;
 
-        Log.d(LOG_TAG, "number of deleted records: " + count);
+        Log.d(getContext(), LOG_TAG, "number of deleted records: " + count);
         return count;
     }
 }

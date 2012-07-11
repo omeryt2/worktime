@@ -19,10 +19,10 @@ package eu.vranckaert.worktime.providers;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.service.ui.impl.WidgetServiceImpl;
+import eu.vranckaert.worktime.utils.context.Log;
 
 public class MyAppWidgetProvider extends AppWidgetProvider {
     private static final String LOG_TAG = MyAppWidgetProvider.class.getName();
@@ -32,16 +32,16 @@ public class MyAppWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(LOG_TAG, "RECEIVE");
+        Log.d(context, LOG_TAG, "RECEIVE");
         super.onReceive(context, intent);
     }
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
-        Log.d(LOG_TAG, "DELETED");
+        Log.d(context, LOG_TAG, "DELETED");
 
         for (int id : appWidgetIds) {
-            Log.d(LOG_TAG, "Removing widget with id " + id);
+            Log.d(context, LOG_TAG, "Removing widget with id " + id);
             widgetService = new WidgetServiceImpl(context);
             widgetService.removeWidget(id);
         }
@@ -51,13 +51,13 @@ public class MyAppWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        Log.d(LOG_TAG, "ENABLED");
+        Log.d(context, LOG_TAG, "ENABLED");
         super.onEnabled(context);
     }
 
     @Override
     public void onDisabled(Context context) {
-        Log.d(LOG_TAG, "DISABLED");
+        Log.d(context, LOG_TAG, "DISABLED");
         super.onDisabled(context);
     }
 }

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.activities.projects;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -30,6 +30,7 @@ import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.impl.ProjectServiceImpl;
 import eu.vranckaert.worktime.service.impl.TaskServiceImpl;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.wizard.WizardActivity;
 
 import java.util.ArrayList;
@@ -104,11 +105,11 @@ public class CopyProjectActivity extends WizardActivity {
                 String comment = projectCommentInput.getText().toString();
                 
                 if (name.length() == 0) {
-                    Log.d(LOG_TAG, "A project name is required!");
+                    Log.d(getApplicationContext(), LOG_TAG, "A project name is required!");
                     showValidationError(projectnameRequired);
                     return false;
                 } else if (checkForDuplicateProjectNames(name)) {
-                    Log.d(LOG_TAG, "A project with this name already exists... Choose another name!");
+                    Log.d(getApplicationContext(), LOG_TAG, "A project with this name already exists... Choose another name!");
                     showValidationError(projectnameUnique);
                     return false;
                 }
@@ -221,13 +222,13 @@ public class CopyProjectActivity extends WizardActivity {
     @Override
     protected boolean onFinish(View view, View button) {
         newProject = projectService.save(newProject);
-        Log.d(LOG_TAG, "A new project has been created with id " + newProject.getId() + ". The id of the original project is " + originalProject.getId());
+        Log.d(getApplicationContext(), LOG_TAG, "A new project has been created with id " + newProject.getId() + ". The id of the original project is " + originalProject.getId());
         if (tasksForNewProject != null) {
             for (Task task : tasksForNewProject) {
                 Task newTask = (Task) task.clone();
                 newTask.setProject(newProject);
                 newTask = taskService.save(newTask);
-                Log.d(LOG_TAG, "A new task has been created with id " + newTask.getId() + " for project with id " + newProject.getId() + ". The id of the original task is " + task.getId());
+                Log.d(getApplicationContext(), LOG_TAG, "A new task has been created with id " + newTask.getId() + " for project with id " + newProject.getId() + ". The id of the original task is " + task.getId());
             }
         }
         setResult(RESULT_OK);

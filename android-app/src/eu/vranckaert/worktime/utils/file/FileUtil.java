@@ -174,11 +174,9 @@ public class FileUtil {
      */
     private static void checkIfDirectoryExists(File file) {
         if (file.exists() && file.isFile()) {
-            Log.d(LOG_TAG, "Directory seems to be a file... Deleting it now...");
             file.delete();
         }
         if (!file.exists()) {
-            Log.d(LOG_TAG, "Directory does not exist yet! Creating it now...");
             file.mkdir();
         }
     }

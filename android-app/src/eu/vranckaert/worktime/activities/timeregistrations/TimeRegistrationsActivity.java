@@ -19,7 +19,6 @@ package eu.vranckaert.worktime.activities.timeregistrations;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,6 +39,7 @@ import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceListActivity;
@@ -96,7 +96,7 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
 
         getListView().setOnItemClickListener(new ListView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(LOG_TAG, "Clicked on TR-item " + position);
+                Log.d(getApplicationContext(), LOG_TAG, "Clicked on TR-item " + position);
                 TimeRegistration selectedRegistration = timeRegistrations.get(position);
 
                 if (selectedRegistration.getId() == loadExtraTimeRegistration.getId()) {
@@ -143,7 +143,7 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
 
         if (dbReload) {
             initialRecordCount = recordCount;
-            Log.d(LOG_TAG, "totoal count of timeregistrations is " + initialRecordCount);
+            Log.d(getApplicationContext(), LOG_TAG, "totoal count of timeregistrations is " + initialRecordCount);
             currentLowerLimit = 0;
             if (startFresh) {
                 //(Re)Load the time registrations for the 'page'
@@ -158,7 +158,7 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
                 timeRegistrations.add(loadExtraTimeRegistration);
             }
 
-            Log.d(LOG_TAG, getTimeRegistrationsSize() + " timeregistrations loaded!");
+            Log.d(getApplicationContext(), LOG_TAG, getTimeRegistrationsSize() + " timeregistrations loaded!");
         }
 
         refillListView(timeRegistrations);
@@ -184,17 +184,17 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
 
                 currentLowerLimit = currentLowerLimit + maxRecordsToLoad;
                 List<TimeRegistration> extraTimeRegistrations = timeRegistrationService.findAll(currentLowerLimit, maxRecordsToLoad);
-                Log.d(LOG_TAG, "Loaded " + extraTimeRegistrations.size() + " extra time registrations");
+                Log.d(getApplicationContext(), LOG_TAG, "Loaded " + extraTimeRegistrations.size() + " extra time registrations");
 
                 timeRegistrations.remove(loadExtraTimeRegistration);
                 for (TimeRegistration timeRegistration : extraTimeRegistrations) {
                     timeRegistrations.add(timeRegistration);
                 }
 
-                Log.d(LOG_TAG, "Total time registrations loaded now: " + getTimeRegistrationsSize());
+                Log.d(getApplicationContext(), LOG_TAG, "Total time registrations loaded now: " + getTimeRegistrationsSize());
 
                 if (initialRecordCount > getTimeRegistrationsSize()) {
-                    Log.d(LOG_TAG, "We need an extra item in the list to load more time registrations!");
+                    Log.d(getApplicationContext(), LOG_TAG, "We need an extra item in the list to load more time registrations!");
                     timeRegistrations.add(loadExtraTimeRegistration);
                 }
                 return timeRegistrations;
@@ -204,11 +204,11 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
             protected void onPostExecute(Object object) {
                 progressBar.setVisibility(View.INVISIBLE);
                 if (object == null) {
-                    Log.w(LOG_TAG, "Loading extra items failed, reloading entire list!");
+                    Log.w(getApplicationContext(), LOG_TAG, "Loading extra items failed, reloading entire list!");
                     loadTimeRegistrations(true, false);
                     return;
                 }
-                Log.d(LOG_TAG, "Applying the changes...");
+                Log.d(getApplicationContext(), LOG_TAG, "Applying the changes...");
                 refillListView((List<TimeRegistration>) object);
             }
         };
@@ -248,10 +248,10 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
         switch (requestCode) {
             case Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION : {
                 if (resultCode == RESULT_OK) {
-                    Log.d(LOG_TAG, "The time registration has been updated");
+                    Log.d(getApplicationContext(), LOG_TAG, "The time registration has been updated");
                     loadTimeRegistrations(true, false);
                 } else if (resultCode == Constants.IntentResultCodes.RESULT_OK_SPLIT) {
-                    Log.d(LOG_TAG, "The time registration has been split");
+                    Log.d(getApplicationContext(), LOG_TAG, "The time registration has been split");
                     timeRegistrations.add(0, new TimeRegistration()); //Forces when reloading to load one extra record!
                     loadTimeRegistrations(true, false);
                 }
@@ -268,7 +268,7 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
         }
 
         if (resultCode == Constants.IntentResultCodes.RESULT_DELETED) {
-            Log.d(LOG_TAG, "One or more time registrations have been deleted.");
+            Log.d(getApplicationContext(), LOG_TAG, "One or more time registrations have been deleted.");
             loadTimeRegistrations(true, false);
         }
     }

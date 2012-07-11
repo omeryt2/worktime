@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.service.impl;
 
 import android.content.Context;
-import android.util.Log;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
@@ -27,6 +27,7 @@ import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.TaskService;
+import eu.vranckaert.worktime.utils.context.Log;
 
 import java.util.List;
 
@@ -91,11 +92,11 @@ public class TaskServiceImpl implements TaskService {
      */
     public void remove(Task task, boolean force) throws TaskStillInUseException {
         List<TimeRegistration> timeRegistrations = timeRegistrationDao.findTimeRegistrationsForTask(task);
-        Log.d(LOG_TAG, timeRegistrations.size() + " timeregistrations found coupled to the project to delete");
+        Log.d(ctx, LOG_TAG, timeRegistrations.size() + " timeregistrations found coupled to the project to delete");
         if(!timeRegistrations.isEmpty() && !force) {
             throw new TaskStillInUseException("The task is linked to existing time registrations!");
         } else if(force) {
-            Log.d(LOG_TAG, "Forcing to delete all timeregistrations linked to the tasj first!");
+            Log.d(ctx, LOG_TAG, "Forcing to delete all timeregistrations linked to the tasj first!");
             for (TimeRegistration treg : timeRegistrations) {
                 timeRegistrationDao.delete(treg);
             }

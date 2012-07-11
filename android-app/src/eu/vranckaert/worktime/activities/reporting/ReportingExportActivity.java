@@ -24,7 +24,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -50,6 +49,7 @@ import eu.vranckaert.worktime.model.dto.reporting.datalevels.ReportingDataLvl2;
 import eu.vranckaert.worktime.service.ExportService;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
@@ -214,7 +214,7 @@ public class ReportingExportActivity extends ActionBarGuiceActivity {
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        Log.d(LOG_TAG, "Received request to create loading dialog with id " + id);
+        Log.d(getApplicationContext(), LOG_TAG, "Received request to create loading dialog with id " + id);
         Dialog dialog = null;
         switch (id) {
             case Constants.Dialog.REPORTING_EXPORT_UNAVAILABLE: {
@@ -274,7 +274,7 @@ public class ReportingExportActivity extends ActionBarGuiceActivity {
                 break;
             }
             default:
-                Log.d(LOG_TAG, "Dialog id " + id + " is not supported in this activity!");
+                Log.d(getApplicationContext(), LOG_TAG, "Dialog id " + id + " is not supported in this activity!");
         }
         return dialog;
     }
@@ -284,15 +284,15 @@ public class ReportingExportActivity extends ActionBarGuiceActivity {
      * checks if an SD-card is available. If all these checks proceed the export will be launched.
      */
     private void save() {
-        Log.d(LOG_TAG, "Validate input...");
+        Log.d(getApplicationContext(), LOG_TAG, "Validate input...");
         if (!validate()) {
             return;
         }
 
-        Log.d(LOG_TAG, "Update the preferences...");
+        Log.d(getApplicationContext(), LOG_TAG, "Update the preferences...");
         updatePreferences();
 
-        Log.d(LOG_TAG, "Hide the soft keyboard if visible");
+        Log.d(getApplicationContext(), LOG_TAG, "Hide the soft keyboard if visible");
         ContextUtils.hideKeyboard(ReportingExportActivity.this, fileNameInput);
 
         if (ContextUtils.isSdCardAvailable() && ContextUtils.isSdCardWritable()) {
@@ -310,13 +310,13 @@ public class ReportingExportActivity extends ActionBarGuiceActivity {
     private boolean validate() {
         boolean valid = true;
         if (fileNameInput.getText().toString().length() < 3) {
-            Log.d(LOG_TAG, "Validation failed! Showing applicable error messages...");
+            Log.d(getApplicationContext(), LOG_TAG, "Validation failed! Showing applicable error messages...");
             fileNameInputRequired.setVisibility(View.VISIBLE);
             valid = false;
         }
 
         if (valid) {
-            Log.d(LOG_TAG, "Validation successful. Hiding all error messages...");
+            Log.d(getApplicationContext(), LOG_TAG, "Validation successful. Hiding all error messages...");
             fileNameInputRequired.setVisibility(View.GONE);
         }
         return valid;
@@ -329,18 +329,18 @@ public class ReportingExportActivity extends ActionBarGuiceActivity {
     private void updatePreferences() {
         ExportType exportType = ExportType.getByIndex(reportingTypeSpinner.getSelectedItemPosition());
         String filename = fileNameInput.getText().toString();
-        Log.d(LOG_TAG, "Save the (changed) filename and export type in the preferences");
+        Log.d(getApplicationContext(), LOG_TAG, "Save the (changed) filename and export type in the preferences");
         Preferences.setReportingExportFileName(ReportingExportActivity.this, fileNameInput.getText().toString());
         Preferences.setPreferredExportType(ReportingExportActivity.this, exportType);
 
         if (reportingCsvSeparatorSpinner.getVisibility() == View.VISIBLE) {
-            Log.d(LOG_TAG, "Save the (changed) CSV separator in the preferences");
+            Log.d(getApplicationContext(), LOG_TAG, "Save the (changed) CSV separator in the preferences");
             ExportCsvSeparator separatorExport = ExportCsvSeparator.getByIndex(reportingCsvSeparatorSpinner.getSelectedItemPosition());
             Preferences.setPreferredExportCSVSeparator(ReportingExportActivity.this, separatorExport);
         }
 
         if (reportingCsvSeparatorSpinner.getVisibility() == View.VISIBLE) {
-            Log.d(LOG_TAG, "Save the (changed) export data in the preferences");
+            Log.d(getApplicationContext(), LOG_TAG, "Save the (changed) export data in the preferences");
             ExportData exportData = ExportData.getByIndex(reportingDataSpinner.getSelectedItemPosition());
             Preferences.setPreferredExportData(ReportingExportActivity.this, exportData);
         }
@@ -355,14 +355,14 @@ public class ReportingExportActivity extends ActionBarGuiceActivity {
         AsyncTask task = new AsyncTask() {
             @Override
             protected void onPreExecute() {
-                Log.d(LOG_TAG, "About to show loading dialog for export");
+                Log.d(getApplicationContext(), LOG_TAG, "About to show loading dialog for export");
                 showDialog(Constants.Dialog.REPORTING_EXPORT_LOADING);
-                Log.d(LOG_TAG, "Loading dialog for export showing!");
+                Log.d(getApplicationContext(), LOG_TAG, "Loading dialog for export showing!");
             }
 
             @Override
             protected Object doInBackground(Object... objects) {
-                Log.d(LOG_TAG, "Starting export background process...");
+                Log.d(getApplicationContext(), LOG_TAG, "Starting export background process...");
                 ExportType exportType = ExportType.getByIndex(reportingTypeSpinner.getSelectedItemPosition());
                 String filename = fileNameInput.getText().toString();
 
@@ -381,17 +381,17 @@ public class ReportingExportActivity extends ActionBarGuiceActivity {
                         }
                     }
                 } catch (GeneralExportException e) {
-                    Log.e(LOG_TAG, "A general exception occurred during export!", e);
+                    Log.e(getApplicationContext(), LOG_TAG, "A general exception occurred during export!", e);
                 }
-                Log.d(LOG_TAG, "Export in background process finished!");
+                Log.d(getApplicationContext(), LOG_TAG, "Export in background process finished!");
                 return file;
             }
 
             @Override
             protected void onPostExecute(Object o) {
-                Log.d(LOG_TAG, "About to remove loading dialog for export");
+                Log.d(getApplicationContext(), LOG_TAG, "About to remove loading dialog for export");
                 removeDialog(Constants.Dialog.REPORTING_EXPORT_LOADING);
-                Log.d(LOG_TAG, "Loading dialog for export removed!");
+                Log.d(getApplicationContext(), LOG_TAG, "Loading dialog for export removed!");
 
                 if (o == null) {
                     showDialog(Constants.Dialog.REPORTING_EXPORT_ERROR);
@@ -634,10 +634,10 @@ public class ReportingExportActivity extends ActionBarGuiceActivity {
                         startRowLvl2 = startRow + tableRecords.size();
                     }
                     endRowLvl2 = startRow + tableRecords.size();
-                    Log.d(LOG_TAG, "Start row lvl2 (" + lvl2Record[2] + "): " + startRowLvl2 + " and end row lvl2: " + endRowLvl2);
+                    Log.d(getApplicationContext(), LOG_TAG, "Start row lvl2 (" + lvl2Record[2] + "): " + startRowLvl2 + " and end row lvl2: " + endRowLvl2);
                 }
                 lvl1Record[3] = "=SUM([CC]" + startRowLvl2 + ":[CC]" + endRowLvl2 + ")";
-                Log.d(LOG_TAG, "Formula for lvl 1 (" + lvl1Record[1] + "): " + lvl1Record[3]);
+                Log.d(getApplicationContext(), LOG_TAG, "Formula for lvl 1 (" + lvl1Record[1] + "): " + lvl1Record[3]);
             }
             String formulaLvl0 = "=";
             for (Integer totalRow : totalRowsForLvl0) {
@@ -723,7 +723,7 @@ public class ReportingExportActivity extends ActionBarGuiceActivity {
      * @return The Excel date that will be x hours, x minutes and x seconds after 31/11/1899 00:00:00,00000.
      */
     private Date getExcelTimeFromPeriod(Period period) {
-        Log.d(LOG_TAG, "Creating excel calendar date-time for period " + period);
+        Log.d(getApplicationContext(), LOG_TAG, "Creating excel calendar date-time for period " + period);
 
         /*
          * Specifying the GMT+0 time zone for the Excel calendar fixes the issue that for each excel time displayed a
@@ -743,26 +743,26 @@ public class ReportingExportActivity extends ActionBarGuiceActivity {
         cal.set(Calendar.MILLISECOND, 0);
         //cal.add(Calendar.HOUR, -36);
 
-        Log.d(LOG_TAG, "Default excel calendar before adding time: " + cal.getTime());
+        Log.d(getApplicationContext(), LOG_TAG, "Default excel calendar before adding time: " + cal.getTime());
 
         int hours = period.getHours();
         int minutes = period.getMinutes();
         int seconds = period.getSeconds();
 
         if (hours > 0) {
-            Log.d(LOG_TAG, "About to add hours to the excel calendar...");
+            Log.d(getApplicationContext(), LOG_TAG, "About to add hours to the excel calendar...");
             cal.add(Calendar.HOUR, hours);
-            Log.d(LOG_TAG, "Default excel calendar after adding hours: " + cal.getTime());
+            Log.d(getApplicationContext(), LOG_TAG, "Default excel calendar after adding hours: " + cal.getTime());
         }
         if (minutes > 0) {
-            Log.d(LOG_TAG, "About to add minutes to the excel calendar...");
+            Log.d(getApplicationContext(), LOG_TAG, "About to add minutes to the excel calendar...");
             cal.set(Calendar.MINUTE, minutes);
-            Log.d(LOG_TAG, "Default excel calendar after adding minutes: " + cal.getTime());
+            Log.d(getApplicationContext(), LOG_TAG, "Default excel calendar after adding minutes: " + cal.getTime());
         }
         if (seconds > 0) {
-            Log.d(LOG_TAG, "About to add seconds to the excel calendar...");
+            Log.d(getApplicationContext(), LOG_TAG, "About to add seconds to the excel calendar...");
             cal.set(Calendar.SECOND, seconds);
-            Log.d(LOG_TAG, "Default excel calendar after adding seconds: " + cal.getTime());
+            Log.d(getApplicationContext(), LOG_TAG, "Default excel calendar after adding seconds: " + cal.getTime());
         }
 
         return cal.getTime();

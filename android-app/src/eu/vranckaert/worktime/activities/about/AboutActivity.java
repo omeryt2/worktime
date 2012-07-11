@@ -19,7 +19,6 @@ package eu.vranckaert.worktime.activities.about;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,6 +29,7 @@ import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.dao.utils.DaoConstants;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceListActivity;
 
@@ -68,14 +68,14 @@ public class AboutActivity extends ActionBarGuiceListActivity {
     private void addClickEvent() {
         getListView().setOnItemClickListener(new ListView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(LOG_TAG, "Clicked on about item " + position);
+                Log.d(getApplicationContext(), LOG_TAG, "Clicked on about item " + position);
                 AboutListElement aboutListElement = aboutListElements.get(position);
 
                 if (aboutListElement.getIntent() != null) {
-                    Log.d(LOG_TAG, "An intent is found for this about item (" + aboutListElement.getTitle() + "), firing it now!");
+                    Log.d(getApplicationContext(), LOG_TAG, "An intent is found for this about item (" + aboutListElement.getTitle() + "), firing it now!");
                     startActivity(aboutListElement.getIntent());
                 } else {
-                    Log.d(LOG_TAG, "No intent is found to be fired for this about item (" + aboutListElement.getTitle() + ") !");
+                    Log.d(getApplicationContext(), LOG_TAG, "No intent is found to be fired for this about item (" + aboutListElement.getTitle() + ") !");
                 }
             }
         });

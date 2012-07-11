@@ -19,7 +19,6 @@ package eu.vranckaert.worktime.activities.projects;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,6 +38,7 @@ import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 import roboguice.inject.InjectExtra;
@@ -105,11 +105,11 @@ public class AddEditProjectActivity extends ActionBarGuiceActivity {
         final String comment = projectCommentInput.getText().toString();
         if (name.length() > 0) {
             if (checkForDuplicateProjectNames(name)) {
-                Log.d(LOG_TAG, "A project with this name already exists... Choose another name!");
+                Log.d(getApplicationContext(), LOG_TAG, "A project with this name already exists... Choose another name!");
                 projectnameUnique.setVisibility(View.VISIBLE);
             } else {
                 ContextUtils.hideKeyboard(AddEditProjectActivity.this, projectNameInput);
-                Log.d(LOG_TAG, "Ready to save new project");
+                Log.d(getApplicationContext(), LOG_TAG, "Ready to save new project");
 
                 AsyncTask<String, Void, Project> task = new AsyncTask<String, Void, Project>(){
                     @Override
@@ -134,14 +134,14 @@ public class AddEditProjectActivity extends ActionBarGuiceActivity {
                                     TrackerConstants.EventSources.ADD_EDIT_PROJECT_ACTIVITY,
                                     TrackerConstants.EventActions.ADD_PROJECT
                             );
-                            Log.d(LOG_TAG, "New project persisted");
+                            Log.d(getApplicationContext(), LOG_TAG, "New project persisted");
                         } else {
                             project = projectService.update(project);
                             tracker.trackEvent(
                                     TrackerConstants.EventSources.ADD_EDIT_PROJECT_ACTIVITY,
                                     TrackerConstants.EventActions.EDIT_PROJECT
                             );
-                            Log.d(LOG_TAG, "Project with id " + project.getId() + " and name " + project.getName() + " is updated");
+                            Log.d(getApplicationContext(), LOG_TAG, "Project with id " + project.getId() + " and name " + project.getName() + " is updated");
                         }
 
                         return project;
@@ -153,7 +153,7 @@ public class AddEditProjectActivity extends ActionBarGuiceActivity {
                             TimeRegistration latestTimeRegistration = timeRegistrationService.getLatestTimeRegistration();
                             timeRegistrationService.fullyInitialize(latestTimeRegistration);
                             if (latestTimeRegistration != null && latestTimeRegistration.getTask().getProject().getId().equals(project.getId())) {
-                                Log.d(LOG_TAG, "About to update the widget and notifications");
+                                Log.d(getApplicationContext(), LOG_TAG, "About to update the widget and notifications");
 
                                 taskService.refresh(latestTimeRegistration.getTask());
                                 projectService.refresh(latestTimeRegistration.getTask().getProject());
@@ -172,7 +172,7 @@ public class AddEditProjectActivity extends ActionBarGuiceActivity {
                 task.execute(name, comment);
             }
         } else {
-            Log.d(LOG_TAG, "Validation error!");
+            Log.d(getApplicationContext(), LOG_TAG, "Validation error!");
             projectnameRequired.setVisibility(View.VISIBLE);
         }
     }

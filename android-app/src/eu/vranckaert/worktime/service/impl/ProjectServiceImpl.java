@@ -17,7 +17,6 @@
 package eu.vranckaert.worktime.service.impl;
 
 import android.content.Context;
-import android.util.Log;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.TaskDao;
@@ -32,6 +31,7 @@ import eu.vranckaert.worktime.exceptions.ProjectStillInUseException;
 import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.WidgetConfiguration;
 import eu.vranckaert.worktime.service.ProjectService;
+import eu.vranckaert.worktime.utils.context.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,15 +117,15 @@ public class ProjectServiceImpl implements ProjectService {
         if (!projectForRemoval.isDefaultValue()) {
             return;
         }
-        Log.d(LOG_TAG, "Trying to remove project " + projectForRemoval.getName() + " while it's a default project");
+        Log.d(ctx, LOG_TAG, "Trying to remove project " + projectForRemoval.getName() + " while it's a default project");
 
         List<Project> availableProjects = dao.findAll();
         availableProjects.remove(projectForRemoval);
 
         if (availableProjects.size() > 0) {
-            Log.d(LOG_TAG, availableProjects.size() + " projects found to be the new default project");
+            Log.d(ctx, LOG_TAG, availableProjects.size() + " projects found to be the new default project");
             Project newDefaultProject = availableProjects.get(0);
-            Log.d(LOG_TAG, "New default project is " + newDefaultProject.getName());
+            Log.d(ctx, LOG_TAG, "New default project is " + newDefaultProject.getName());
             newDefaultProject.setDefaultValue(true);
             dao.update(newDefaultProject);
         }
@@ -137,14 +137,14 @@ public class ProjectServiceImpl implements ProjectService {
      * @param project The project that is removed.
      */
     private void checkSelectedProjectUponProjectRemoval(Project project) {
-        Log.d(LOG_TAG, "Checking if the project (" + project.getId() + " - " + project.getName() + ") is configured in widgets upon project removal");
+        Log.d(ctx, LOG_TAG, "Checking if the project (" + project.getId() + " - " + project.getName() + ") is configured in widgets upon project removal");
         List<WidgetConfiguration> widgetConfigurations = widgetConfigurationDao.findPerProjectId(project.getId());
-        Log.d(LOG_TAG, "Found " + widgetConfigurations + " widget configurations for this project.");
+        Log.d(ctx, LOG_TAG, "Found " + widgetConfigurations + " widget configurations for this project.");
         for (WidgetConfiguration wc : widgetConfigurations) {
             if (wc.getProjectId().equals(project.getId())) {
-                Log.d(LOG_TAG, "The project is used in widget with id " + wc.getWidgetId());
+                Log.d(ctx, LOG_TAG, "The project is used in widget with id " + wc.getWidgetId());
                 Project newSelectedProject = dao.findDefaultProject();
-                Log.d(LOG_TAG, "The new project that will be selected is " + newSelectedProject.getId() + " - " + newSelectedProject.getName());
+                Log.d(ctx, LOG_TAG, "The new project that will be selected is " + newSelectedProject.getId() + " - " + newSelectedProject.getName());
                 setSelectedProject(wc.getWidgetId(), newSelectedProject);
             }
         }
@@ -173,7 +173,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Project getSelectedProject(int widgetId) {
         WidgetConfiguration wc = widgetConfigurationDao.findById(widgetId);
         if (wc == null) {
-            Log.w(LOG_TAG, "No widget configuration is found for widget with id " + widgetId + ". One will be created with the default project");
+            Log.w(ctx, LOG_TAG, "No widget configuration is found for widget with id " + widgetId + ". One will be created with the default project");
 
             wc = new WidgetConfiguration(widgetId);
             Project defaultProject = dao.findDefaultProject();
@@ -186,17 +186,17 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = null;
 
         if (wc.getProjectId() != null) {
-            Log.d(LOG_TAG, "Selected project id found is " + wc.getProjectId());
+            Log.d(ctx, LOG_TAG, "Selected project id found is " + wc.getProjectId());
             project = dao.findById(wc.getProjectId());
-            Log.d(LOG_TAG, "Selected project has id " + project.getId() + " and name " + project.getName());
+            Log.d(ctx, LOG_TAG, "Selected project has id " + project.getId() + " and name " + project.getName());
         }
 
         if (project == null) {
-            Log.w(LOG_TAG, "No project is found for widget with id " + widgetId + ", updating the widget configuration to use the default project!");
+            Log.w(ctx, LOG_TAG, "No project is found for widget with id " + widgetId + ", updating the widget configuration to use the default project!");
             project = dao.findDefaultProject();
             wc.setProjectId(project.getId());
             widgetConfigurationDao.update(wc);
-            Log.w(LOG_TAG, "The default project is now used as selected project for widget " + widgetId + " and has id " + project.getId() + " and name " + project.getName());
+            Log.w(ctx, LOG_TAG, "The default project is now used as selected project for widget " + widgetId + " and has id " + project.getId() + " and name " + project.getName());
         }
 
         return project;
@@ -259,7 +259,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (!projectMarkedFinished.isDefaultValue()) {
             return dao.findDefaultProject();
         }
-        Log.d(LOG_TAG, "Trying to mark project " + projectMarkedFinished.getName() + " finished while it's a default project");
+        Log.d(ctx, LOG_TAG, "Trying to mark project " + projectMarkedFinished.getName() + " finished while it's a default project");
 
         List<Project> availableProjects = findUnfinishedProjects();
         availableProjects.remove(projectMarkedFinished);
@@ -268,9 +268,9 @@ public class ProjectServiceImpl implements ProjectService {
         dao.update(projectMarkedFinished);
 
         if (availableProjects.size() > 0) {
-            Log.d(LOG_TAG, availableProjects.size() + " projects found to be the new default project");
+            Log.d(ctx, LOG_TAG, availableProjects.size() + " projects found to be the new default project");
             Project newDefaultProject = availableProjects.get(0);
-            Log.d(LOG_TAG, "New default project is " + newDefaultProject.getName());
+            Log.d(ctx, LOG_TAG, "New default project is " + newDefaultProject.getName());
             newDefaultProject.setDefaultValue(true);
             dao.update(newDefaultProject);
             return newDefaultProject;

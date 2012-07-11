@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.dao.generic;
 
 import android.content.Context;
-import android.util.Log;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import eu.vranckaert.worktime.dao.utils.DatabaseHelper;
+import eu.vranckaert.worktime.utils.context.Log;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -51,7 +52,7 @@ public abstract class GenericDaoImpl<T, ID> implements GenericDao<T, ID> {
      * @param clazz The entity-class for which the DAO should be created!
      */
     public GenericDaoImpl(final java.lang.Class<T> clazz, final Context context) {
-        Log.d(LOG_TAG, "Creating DAO for " + clazz.getSimpleName() + " from " + getClass().getSimpleName());
+        Log.d(context, LOG_TAG, "Creating DAO for " + clazz.getSimpleName() + " from " + getClass().getSimpleName());
 
         OrmLiteSqliteOpenHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         try {
@@ -78,7 +79,7 @@ public abstract class GenericDaoImpl<T, ID> implements GenericDao<T, ID> {
      */
     protected void throwFatalException(SQLException e) {
         String message = "An unknown SQL exception occured while executing a basic SQL command!";
-        Log.e(LOG_TAG, message, e);
+        Log.e(context, LOG_TAG, message, e);
         throw new RuntimeException(message, e);
     }
 
@@ -175,7 +176,7 @@ public abstract class GenericDaoImpl<T, ID> implements GenericDao<T, ID> {
         } catch (SQLException e) {
             throwFatalException(e);
         }
-        Log.d(LOG_TAG, result + " records are deleted!");
+        Log.d(context, LOG_TAG, result + " records are deleted!");
     }
 
     /**

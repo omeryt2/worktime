@@ -21,7 +21,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -114,7 +113,7 @@ public class ContextUtils {
      */
     public static String getApplicationPackage(Context ctx) {
         String applicationPackageName = ctx.getApplicationInfo().packageName;
-        Log.d(LOG_TAG, "The application package name is " + applicationPackageName);
+        Log.d(ctx, LOG_TAG, "The application package name is " + applicationPackageName);
         return applicationPackageName;
     }
 

@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.Preference;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,11 +29,12 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 
 public class SeekBarPreference extends Preference implements OnSeekBarChangeListener {
 
-    private final String TAG = getClass().getName();
+    private final String LOG_TAG = getClass().getName();
 
     private static final String ANDROIDNS="http://schemas.android.com/apk/res/android";
     private static final String VRANCKAERTNS="http://schemas.android.com/apk/res/android/eu.vranckaert.worktime";
@@ -88,7 +88,7 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
                 mInterval = Integer.parseInt(newInterval);
         }
         catch(Exception e) {
-            Log.e(TAG, "Invalid interval value", e);
+            Log.e(getContext(), LOG_TAG, "Invalid interval value", e);
         }
 
     }
@@ -113,7 +113,7 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
         }
         catch(Exception e)
         {
-            Log.e(TAG, "Error creating seek bar preference", e);
+            Log.e(getContext(), LOG_TAG, "Error creating seek bar preference", e);
         }
 
         return layout;
@@ -142,7 +142,7 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
             }
         }
         catch(Exception ex) {
-            Log.e(TAG, "Error binding view: " + ex.toString());
+            Log.e(getContext(), LOG_TAG, "Error binding view: " + ex.toString());
         }
 
         updateView(view);
@@ -174,7 +174,7 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
 
         }
         catch(Exception e) {
-            Log.e(TAG, "Error updating seek bar preference", e);
+            Log.e(getContext(), LOG_TAG, "Error updating seek bar preference", e);
         }
 
     }
@@ -232,7 +232,7 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
                 temp = (Integer)defaultValue;
             }
             catch(Exception ex) {
-                Log.e(TAG, "Invalid default value: " + defaultValue.toString());
+                Log.e(getContext(), LOG_TAG, "Invalid default value: " + defaultValue.toString());
             }
 
             persistInt(temp);

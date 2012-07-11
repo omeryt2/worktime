@@ -23,7 +23,6 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.preferences.DatabaseBackupFileComparator;
@@ -33,6 +32,7 @@ import eu.vranckaert.worktime.exceptions.backup.BackupFileCouldNotBeWritten;
 import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import roboguice.activity.GuiceActivity;
 
@@ -119,7 +119,7 @@ public class RestoreFromSDActivity extends GuiceActivity {
             case Constants.Dialog.BACKUP_RESTORE_FILE_SEARCH_SHOW_LIST: {
                 List<String> fileNames = new ArrayList<String>();
                 for (File file : databaseBackupFiles) {
-                    Log.d(LOG_TAG, "Filename found: " + file.getName());
+                    Log.d(getApplicationContext(), LOG_TAG, "Filename found: " + file.getName());
                     fileNames.add(backupService.toString(RestoreFromSDActivity.this, file));
                 }
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -129,7 +129,7 @@ public class RestoreFromSDActivity extends GuiceActivity {
                                0,
                                new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialogInterface, int index) {
-                                        Log.d(LOG_TAG, "File at index " + index + " choosen.");
+                                        Log.d(getApplicationContext(), LOG_TAG, "File at index " + index + " choosen.");
                                         restoreFile = databaseBackupFiles.get(index);
                                         removeDialog(Constants.Dialog.BACKUP_RESTORE_FILE_SEARCH_SHOW_LIST);
                                         showDialog(Constants.Dialog.BACKUP_RESTORE_START_QUESTION);
@@ -138,7 +138,7 @@ public class RestoreFromSDActivity extends GuiceActivity {
                        )
                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
                            public void onCancel(DialogInterface dialogInterface) {
-                               Log.d(LOG_TAG, "No backup file chosen, close the activity");
+                               Log.d(getApplicationContext(), LOG_TAG, "No backup file chosen, close the activity");
                                RestoreFromSDActivity.this.finish();
                            }
                        });
@@ -216,7 +216,7 @@ public class RestoreFromSDActivity extends GuiceActivity {
 
             @Override
             protected Object doInBackground(Object... objects) {
-                Log.d(LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
+                Log.d(getApplicationContext(), LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
                 if(Looper.myLooper() == null) {
                     Looper.prepare();
                 }

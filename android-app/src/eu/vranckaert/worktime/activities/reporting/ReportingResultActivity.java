@@ -21,7 +21,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -55,6 +54,7 @@ import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
@@ -149,26 +149,26 @@ public class ReportingResultActivity extends ActionBarGuiceActivity {
                 switch (dataGrouping) {
                     case GROUPED_BY_START_DATE: {
                         if (dataOrder.equals(ReportingDataOrder.ASC)) {
-                            Log.d(LOG_TAG, "Ordering time registrations ASC on START-DATE");
+                            Log.d(getApplicationContext(), LOG_TAG, "Ordering time registrations ASC on START-DATE");
                             Collections.sort(timeRegistrations, new TimeRegistrationByStartDateAscComparator());
                         } else {
-                            Log.d(LOG_TAG, "Ordering time registrations DESC on START-DATE");
+                            Log.d(getApplicationContext(), LOG_TAG, "Ordering time registrations DESC on START-DATE");
                             Collections.sort(timeRegistrations, new TimeRegistrationByStartDateDescComparator());
                         }
                         break;
                     }
                     case GROUPED_BY_PROJECT: {
                         if (dataOrder.equals(ReportingDataOrder.ASC)) {
-                            Log.d(LOG_TAG, "Ordering time registrations ASC on PROJECT-NAME");
+                            Log.d(getApplicationContext(), LOG_TAG, "Ordering time registrations ASC on PROJECT-NAME");
                             Collections.sort(timeRegistrations, new TimeRegistrationByProjectNameAscComparator());
                         } else {
-                            Log.d(LOG_TAG, "Ordering time registrations DESC on PROJECT-NAME");
+                            Log.d(getApplicationContext(), LOG_TAG, "Ordering time registrations DESC on PROJECT-NAME");
                             Collections.sort(timeRegistrations, new TimeRegistrationByProjectNameDescComparator());
                         }
                         break;
                     }
                 }
-                Log.d(LOG_TAG, "Number of time registrations found: " + timeRegistrations.size());
+                Log.d(getApplicationContext(), LOG_TAG, "Number of time registrations found: " + timeRegistrations.size());
                 tableRecords = buildTableRecords(timeRegistrations, dataGrouping);
                 return tableRecords;
             }
@@ -201,25 +201,25 @@ public class ReportingResultActivity extends ActionBarGuiceActivity {
             row.addView(recordTotalCol3);
             row.addView(recordTotalCol4);
 
-            Log.d(LOG_TAG, "Level of record: " + record.getLevel());
+            Log.d(getApplicationContext(), LOG_TAG, "Level of record: " + record.getLevel());
             switch(record.getLevel()) {
                 case LVL0: {
-                    Log.d(LOG_TAG, "Setting color for row for record level 0");
+                    Log.d(getApplicationContext(), LOG_TAG, "Setting color for row for record level 0");
                     row.setBackgroundResource(R.color.table_record_lvl_n_0);
                     break;
                 }
                 case LVL1: {
-                    Log.d(LOG_TAG, "Setting color for row for record level 1");
+                    Log.d(getApplicationContext(), LOG_TAG, "Setting color for row for record level 1");
                     row.setBackgroundResource(R.color.table_record_lvl_n_1);
                     break;
                 }
                 case LVL2: {
-                    Log.d(LOG_TAG, "Setting color for row for record level 2");
+                    Log.d(getApplicationContext(), LOG_TAG, "Setting color for row for record level 2");
                     row.setBackgroundResource(R.color.table_record_lvl_n_2);
                     break;
                 }
                 case LVL3: {
-                    Log.d(LOG_TAG, "Setting color for row for record level 3");
+                    Log.d(getApplicationContext(), LOG_TAG, "Setting color for row for record level 3");
                     row.setBackgroundResource(R.color.table_record_lvl_n_3);
                     break;
                 }
@@ -377,7 +377,7 @@ public class ReportingResultActivity extends ActionBarGuiceActivity {
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        Log.d(LOG_TAG, "Received request to create dialog with id " + id);
+        Log.d(getApplicationContext(), LOG_TAG, "Received request to create dialog with id " + id);
         Dialog dialog = null;
         switch(id) {
             case Constants.Dialog.LOADING_REPORTING_RESULTS: {
@@ -391,7 +391,7 @@ public class ReportingResultActivity extends ActionBarGuiceActivity {
                 break;
             }
             default:
-                Log.e(LOG_TAG, "Dialog id " + id + " is not supported in this activity!");
+                Log.e(getApplicationContext(), LOG_TAG, "Dialog id " + id + " is not supported in this activity!");
         }
         return dialog;
     }

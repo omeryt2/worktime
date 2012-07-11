@@ -22,7 +22,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,6 +52,7 @@ import eu.vranckaert.worktime.service.ExportService;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateConstants;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
@@ -714,7 +714,7 @@ public class ReportingCriteriaActivity extends ActionBarGuiceActivity {
                                new DialogInterface.OnMultiChoiceClickListener() {
                                    @Override
                                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                                       Log.d(LOG_TAG, (isChecked?"Selecting":"Unselecting") + " document on position " + which + " with title '" + allDocuments[which].getName() + "'");
+                                       Log.d(getApplicationContext(), LOG_TAG, (isChecked?"Selecting":"Unselecting") + " document on position " + which + " with title '" + allDocuments[which].getName() + "'");
                                        if (isChecked) {
                                            selectedDocuments.add(allDocuments[which]);
                                        } else {
@@ -726,9 +726,9 @@ public class ReportingCriteriaActivity extends ActionBarGuiceActivity {
                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                            @Override
                            public void onClick(DialogInterface dialogInterface, int i) {
-                               Log.d(LOG_TAG, "Continuing to batch share with " + selectedDocuments.size() + " document(s)");
+                               Log.d(getApplicationContext(), LOG_TAG, "Continuing to batch share with " + selectedDocuments.size() + " document(s)");
                                if (selectedDocuments.size() == 0) {
-                                   Log.d(LOG_TAG, "Showing toast message notifying the user he must select a document to share");
+                                   Log.d(getApplicationContext(), LOG_TAG, "Showing toast message notifying the user he must select a document to share");
                                    Toast.makeText(ReportingCriteriaActivity.this, R.string.msg_reporting_criteria_batch_share_no_docs_selected, Toast.LENGTH_SHORT).show();
                                    return;
                                }
@@ -739,13 +739,13 @@ public class ReportingCriteriaActivity extends ActionBarGuiceActivity {
                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                            @Override
                            public void onClick(DialogInterface dialogInterface, int i) {
-                               Log.d(LOG_TAG, "Stopping the batch share procedure using the cancel button");
+                               Log.d(getApplicationContext(), LOG_TAG, "Stopping the batch share procedure using the cancel button");
                                removeDialog(Constants.Dialog.REPORTING_BATCH_SHARE);
                            }
                        })
                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
                            public void onCancel(DialogInterface dialogInterface) {
-                               Log.d(LOG_TAG, "Stopping the batch share procedure using the device back");
+                               Log.d(getApplicationContext(), LOG_TAG, "Stopping the batch share procedure using the device back");
                                removeDialog(Constants.Dialog.REPORTING_BATCH_SHARE);
                            }
                        });
@@ -758,7 +758,7 @@ public class ReportingCriteriaActivity extends ActionBarGuiceActivity {
     }
 
     private void batchShareDocuments(List<File> selectedDocuments) {
-        Log.d(LOG_TAG, "Sharing " + selectedDocuments.size() + " document(s)");
+        Log.d(getApplicationContext(), LOG_TAG, "Sharing " + selectedDocuments.size() + " document(s)");
 
         IntentUtil.sendSomething(
                 ReportingCriteriaActivity.this,

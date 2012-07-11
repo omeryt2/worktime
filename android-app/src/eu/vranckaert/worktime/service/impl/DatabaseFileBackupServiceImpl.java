@@ -18,13 +18,13 @@ package eu.vranckaert.worktime.service.impl;
 
 import android.app.backup.BackupManager;
 import android.content.Context;
-import android.util.Log;
 import eu.vranckaert.worktime.dao.utils.DaoConstants;
 import eu.vranckaert.worktime.exceptions.SDCardUnavailableException;
 import eu.vranckaert.worktime.exceptions.backup.BackupFileCouldNotBeCreated;
 import eu.vranckaert.worktime.exceptions.backup.BackupFileCouldNotBeWritten;
 import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.file.FileUtil;
@@ -56,17 +56,17 @@ public class DatabaseFileBackupServiceImpl implements BackupService {
 
         File folder = FileUtil.getBackupDir();
         if (folder.isFile()) {
-            Log.d(LOG_TAG, "Directory seems to be a file... Deleting it now...");
+            Log.d(ctx, LOG_TAG, "Directory seems to be a file... Deleting it now...");
             folder.delete();
             if (folder.isFile()) {
-                Log.d(LOG_TAG, "Directory still seems to be a file... hmmm... very strange... :\\");
+                Log.d(ctx, LOG_TAG, "Directory still seems to be a file... hmmm... very strange... :\\");
             }
         }
         if (!folder.exists()) {
-            Log.d(LOG_TAG, "Directory does not exist yet! Creating it now!");
+            Log.d(ctx, LOG_TAG, "Directory does not exist yet! Creating it now!");
             folder.mkdir();
             if (!folder.exists()) {
-                Log.d(LOG_TAG, "The directory still does not exist!");
+                Log.d(ctx, LOG_TAG, "The directory still does not exist!");
             }
         }
         FileUtil.enableForMTP(ctx, folder);
@@ -98,11 +98,11 @@ public class DatabaseFileBackupServiceImpl implements BackupService {
 
         File dbFile = new File(FileUtil.getDatabaseDirectory(ctx) + File.separator + DaoConstants.DATABASE);
         FileUtil.applyPermissions(dbFile, true, true, false, true);
-        Log.d(LOG_TAG, "Restoring backup to database file " + dbFile.getAbsolutePath());
+        Log.d(ctx, LOG_TAG, "Restoring backup to database file " + dbFile.getAbsolutePath());
         if (!dbFile.exists()) {
             try {
                 dbFile.createNewFile();
-                Log.d(LOG_TAG, "Need to create the DB file on the device first...");
+                Log.d(ctx, LOG_TAG, "Need to create the DB file on the device first...");
             } catch (IOException e) {}
         }
 
@@ -153,7 +153,7 @@ public class DatabaseFileBackupServiceImpl implements BackupService {
             parsedDate = df.parse(fileName);
         } catch (ParseException e) {
             String msg = "Failed to parse the backup file-name " + fileName + " to a date!";
-            Log.e(LOG_TAG, msg, e);
+            Log.e(ctx, LOG_TAG, msg, e);
             throw new RuntimeException(msg, e);
         }
         

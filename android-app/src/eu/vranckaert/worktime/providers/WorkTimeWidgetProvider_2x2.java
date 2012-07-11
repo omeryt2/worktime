@@ -19,9 +19,9 @@ package eu.vranckaert.worktime.providers;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
-import android.util.Log;
 import eu.vranckaert.worktime.service.ui.impl.StatusBarNotificationServiceImpl;
 import eu.vranckaert.worktime.service.ui.impl.WidgetServiceImpl;
+import eu.vranckaert.worktime.utils.context.Log;
 
 /**
  * User: DIRK VRANCKAERT
@@ -33,16 +33,16 @@ public class WorkTimeWidgetProvider_2x2 extends MyAppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Log.d(LOG_TAG, "UPDATE");
-        Log.d(LOG_TAG, "Number of widgets found: " + appWidgetIds.length);
+        Log.d(context, LOG_TAG, "UPDATE");
+        Log.d(context, LOG_TAG, "Number of widgets found: " + appWidgetIds.length);
 
         widgetService = new WidgetServiceImpl(context);
         statusBarNotificationService = new StatusBarNotificationServiceImpl(context);
 
         for(int appWidgetId : appWidgetIds) {
             AppWidgetProviderInfo widgetProviderInfo = appWidgetManager.getAppWidgetInfo(appWidgetId);
-            Log.d(LOG_TAG, "STARTING FOR WIDGET ID: " + appWidgetId);
-            Log.d(LOG_TAG, "PROVIDER: " + widgetProviderInfo.provider.toString());
+            Log.d(context, LOG_TAG, "STARTING FOR WIDGET ID: " + appWidgetId);
+            Log.d(context, LOG_TAG, "PROVIDER: " + widgetProviderInfo.provider.toString());
 
             widgetService.updateWidget2x2(appWidgetId);
         }

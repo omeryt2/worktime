@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
 import android.widget.Toast;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
@@ -41,6 +40,7 @@ import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
@@ -93,7 +93,7 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
-        Log.d(LOG_TAG, "Started the START TimeRegistration acitivity");
+        Log.d(getApplicationContext(), LOG_TAG, "Started the START TimeRegistration acitivity");
 
         TimeRegistration latestTimeRegistration = timeRegistrationService.getLatestTimeRegistration();
         if (latestTimeRegistration != null && latestTimeRegistration.isOngoingTimeRegistration()) {
@@ -157,7 +157,7 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
 
             @Override
             protected Object doInBackground(Object... objects) {
-                Log.d(LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
+                Log.d(getApplicationContext(), LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
                 if(Looper.myLooper() == null) {
                     Looper.prepare();
                 }
@@ -176,21 +176,21 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
                  * configured to happen (defined in the preferences).
                  */
                 if (Preferences.getTimeRegistrationsAutoClose60sGap(StartTimeRegistrationActivity.this)) {
-                    Log.d(LOG_TAG, "Check for gap between this new time registration and the previous one");
+                    Log.d(getApplicationContext(), LOG_TAG, "Check for gap between this new time registration and the previous one");
                     TimeRegistration previousTimeRegistration = timeRegistrationService.getPreviousTimeRegistration(newTr);
                     if (previousTimeRegistration != null) {
-                        Log.d(LOG_TAG, "The previous time registrations ended on " + previousTimeRegistration.getEndTime());
-                        Log.d(LOG_TAG, "The new time registration starts on " + newTr.getStartTime());
+                        Log.d(getApplicationContext(), LOG_TAG, "The previous time registrations ended on " + previousTimeRegistration.getEndTime());
+                        Log.d(getApplicationContext(), LOG_TAG, "The new time registration starts on " + newTr.getStartTime());
                         Duration duration = DateUtils.TimeCalculator.calculateExactDuration(
                                 StartTimeRegistrationActivity.this,
                                 newTr.getStartTime(),
                                 previousTimeRegistration.getEndTime()
                         );
-                        Log.d(LOG_TAG, "The duration between the previous end time and the new start time is " + duration);
+                        Log.d(getApplicationContext(), LOG_TAG, "The duration between the previous end time and the new start time is " + duration);
                         long durationMillis = duration.getMillis();
-                        Log.d(LOG_TAG, "The duration in milliseconds is " + durationMillis);
+                        Log.d(getApplicationContext(), LOG_TAG, "The duration in milliseconds is " + durationMillis);
                         if (durationMillis < 60000) {
-                            Log.d(LOG_TAG, "Gap is less than 60 seconds, setting start time to end time of previous registration");
+                            Log.d(getApplicationContext(), LOG_TAG, "Gap is less than 60 seconds, setting start time to end time of previous registration");
                             newTr.setStartTime(previousTimeRegistration.getEndTime());
                         }
                     }
@@ -250,7 +250,7 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
                 break;
             }
             case Constants.Dialog.LOADING_TIME_REGISTRATION_CHANGE: {
-                Log.d(LOG_TAG, "Creating loading dialog for starting a new time registration");
+                Log.d(getApplicationContext(), LOG_TAG, "Creating loading dialog for starting a new time registration");
                 dialog = ProgressDialog.show(
                         StartTimeRegistrationActivity.this,
                         "",
@@ -273,16 +273,16 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
                                -1,
                                new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialogInterface, int index) {
-                                        Log.d(LOG_TAG, "Task at index " + index + " choosen.");
+                                        Log.d(getApplicationContext(), LOG_TAG, "Task at index " + index + " choosen.");
                                         Task task = availableTasks.get(index);
-                                        Log.d(LOG_TAG, "About to create a time registration for task with name " + task.getName());
+                                        Log.d(getApplicationContext(), LOG_TAG, "About to create a time registration for task with name " + task.getName());
                                         createNewTimeRegistration(task);
                                     }
                                }
                        )
                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
                            public void onCancel(DialogInterface dialogInterface) {
-                               Log.d(LOG_TAG, "No task choosen, close the activity");
+                               Log.d(getApplicationContext(), LOG_TAG, "No task choosen, close the activity");
                                StartTimeRegistrationActivity.this.finish();
                            }
                        });

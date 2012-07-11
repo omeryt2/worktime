@@ -17,7 +17,6 @@
 package eu.vranckaert.worktime.service.impl;
 
 import android.content.Context;
-import android.util.Log;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.TaskDao;
@@ -29,6 +28,7 @@ import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
+import eu.vranckaert.worktime.utils.context.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,7 +76,7 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
     public List<TimeRegistration> findAll() {
         List<TimeRegistration> timeRegistrations = dao.findAll();
         for(TimeRegistration timeRegistration : timeRegistrations) {
-            Log.d(LOG_TAG, "Found timeregistration with ID: " + timeRegistration.getId() + " and according task with ID: " + timeRegistration.getTask().getId());
+            Log.d(ctx, LOG_TAG, "Found timeregistration with ID: " + timeRegistration.getId() + " and according task with ID: " + timeRegistration.getTask().getId());
             taskDao.refresh(timeRegistration.getTask());
             projectDao.refresh(timeRegistration.getTask().getProject());
         }
@@ -96,12 +96,12 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
     public List<TimeRegistration> getTimeRegistrations(Date startDate, Date endDate, Project project, Task task) {
         List<Task> tasks = new ArrayList<Task>();
         if (task != null) {
-            Log.d(LOG_TAG, "Querying for 1 specific task!");
+            Log.d(ctx, LOG_TAG, "Querying for 1 specific task!");
             tasks.add(task);
         } else if(project != null) {
-            Log.d(LOG_TAG, "Querying for a specific project!");
+            Log.d(ctx, LOG_TAG, "Querying for a specific project!");
             tasks = taskDao.findTasksForProject(project);
-            Log.d(LOG_TAG, "Number of tasks found for that project: " + tasks.size());
+            Log.d(ctx, LOG_TAG, "Number of tasks found for that project: " + tasks.size());
         }
 
         return dao.getTimeRegistrations(startDate, endDate, tasks);
@@ -146,7 +146,7 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
     public List<TimeRegistration> findAll(int lowerLimit, int maxRows) {
         List<TimeRegistration> timeRegistrations = dao.findAll(lowerLimit, maxRows);
         for(TimeRegistration timeRegistration : timeRegistrations) {
-            Log.d(LOG_TAG, "Found timeregistration with ID: " + timeRegistration.getId() + " and according task with ID: " + timeRegistration.getTask().getId());
+            Log.d(ctx, LOG_TAG, "Found timeregistration with ID: " + timeRegistration.getId() + " and according task with ID: " + timeRegistration.getTask().getId());
             taskDao.refresh(timeRegistration.getTask());
             projectDao.refresh(timeRegistration.getTask().getProject());
         }

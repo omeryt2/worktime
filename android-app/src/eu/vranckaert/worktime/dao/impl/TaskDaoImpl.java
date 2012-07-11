@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.dao.impl;
 
 import android.content.Context;
-import android.util.Log;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.stmt.PreparedQuery;
@@ -25,6 +25,7 @@ import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.generic.GenericDaoImpl;
 import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
+import eu.vranckaert.worktime.utils.context.Log;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -47,7 +48,7 @@ public class TaskDaoImpl extends GenericDaoImpl<Task, Integer> implements TaskDa
             PreparedQuery<Task> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
             return null;
         }
     }
@@ -69,7 +70,7 @@ public class TaskDaoImpl extends GenericDaoImpl<Task, Integer> implements TaskDa
             rowCount = Integer.parseInt(results.get(0)[0]);
         }
 
-        Log.d(LOG_TAG, "Rowcount: " + rowCount);
+        Log.d(getContext(), LOG_TAG, "Rowcount: " + rowCount);
 
         return rowCount;
     }
@@ -85,7 +86,7 @@ public class TaskDaoImpl extends GenericDaoImpl<Task, Integer> implements TaskDa
             PreparedQuery<Task> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
             return null;
         }
     }

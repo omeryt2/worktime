@@ -27,7 +27,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +58,7 @@ import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.service.ui.impl.StatusBarNotificationServiceImpl;
 import eu.vranckaert.worktime.service.ui.impl.WidgetServiceImpl;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
@@ -118,14 +118,14 @@ public class TimeRegistrationActionActivity extends Activity {
         loadServices();
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
-        Log.d(LOG_TAG, "Started the TimeRegistration Action activity");
+        Log.d(getApplicationContext(), LOG_TAG, "Started the TimeRegistration Action activity");
 
         if (timeRegistration == null) {
-            Log.e(LOG_TAG, "The time registration should never be null in the TimeRegistrationActionActivity!");
+            Log.e(getApplicationContext(), LOG_TAG, "The time registration should never be null in the TimeRegistrationActionActivity!");
             throw new RuntimeException("The time registration should never be null in the TimeRegistrationActionActivity!");
         } else {
             timeRegistrationService.fullyInitialize(timeRegistration);
-            Log.d(LOG_TAG, "Launching action-activity with timeRegistration " + timeRegistration);
+            Log.d(getApplicationContext(), LOG_TAG, "Launching action-activity with timeRegistration " + timeRegistration);
         }
 
         showDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
@@ -166,7 +166,7 @@ public class TimeRegistrationActionActivity extends Activity {
 
             @Override
             protected Object doInBackground(Object... objects) {
-                Log.d(LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
+                Log.d(getApplicationContext(), LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
                 if(Looper.myLooper() == null) {
                     Looper.prepare();
                 }
@@ -174,7 +174,7 @@ public class TimeRegistrationActionActivity extends Activity {
                 Date endTime = new Date();
 
                 if (timeRegistration.getEndTime() != null) {
-                    Log.w(LOG_TAG, "Data must be corrupt, time registration is already ended! Please clear all the data through the system settings of the application!");
+                    Log.w(getApplicationContext(), LOG_TAG, "Data must be corrupt, time registration is already ended! Please clear all the data through the system settings of the application!");
                     return new Object();
                 } else {
                     timeRegistration.setEndTime(endTime);
@@ -215,15 +215,15 @@ public class TimeRegistrationActionActivity extends Activity {
             @Override
             protected void onPostExecute(Object o) {
                 removeDialog(Constants.Dialog.LOADING_TIME_REGISTRATION_CHANGE);
-                Log.d(LOG_TAG, "Loading dialog removed from UI");
+                Log.d(getApplicationContext(), LOG_TAG, "Loading dialog removed from UI");
                 if (o != null) {
-                    Log.d(LOG_TAG, "Something went wrong, the data is corrupt");
+                    Log.d(getApplicationContext(), LOG_TAG, "Something went wrong, the data is corrupt");
                     Toast.makeText(TimeRegistrationActionActivity.this, R.string.err_time_registration_actions_dialog_corrupt_data, Toast.LENGTH_LONG).show();
                 } else if (o == null) {
-                    Log.d(LOG_TAG, "Successfully ended time registration");
+                    Log.d(getApplicationContext(), LOG_TAG, "Successfully ended time registration");
                     Toast.makeText(TimeRegistrationActionActivity.this, R.string.msg_widget_time_reg_ended, Toast.LENGTH_LONG).show();
                 }
-                Log.d(LOG_TAG, "Finishing activity...");
+                Log.d(getApplicationContext(), LOG_TAG, "Finishing activity...");
 
                 boolean askFinishTask = Preferences.getWidgetEndingTimeRegistrationFinishTaskPreference(getApplicationContext());
                 if (!askFinishTask) {
@@ -266,7 +266,7 @@ public class TimeRegistrationActionActivity extends Activity {
 
             @Override
             protected Long doInBackground(Date... boundaries) {
-                Log.d(LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
+                Log.d(getApplicationContext(), LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
                 if(Looper.myLooper() == null) {
                     Looper.prepare();
                 }
@@ -300,7 +300,7 @@ public class TimeRegistrationActionActivity extends Activity {
             @Override
             protected void onPostExecute(Long count) {
                 removeDialog(Constants.Dialog.TIME_REGISTRATIONS_DELETE_LOADING);
-                Log.d(LOG_TAG, "Loading dialog removed from UI");
+                Log.d(getApplicationContext(), LOG_TAG, "Loading dialog removed from UI");
 
                 String message = "";
                 if (count == 1l) {
@@ -310,7 +310,7 @@ public class TimeRegistrationActionActivity extends Activity {
                 }
                 Toast.makeText(TimeRegistrationActionActivity.this, message, Toast.LENGTH_LONG).show();
 
-                Log.d(LOG_TAG, "Finishing activity...");
+                Log.d(getApplicationContext(), LOG_TAG, "Finishing activity...");
                 setResult(Constants.IntentResultCodes.RESULT_DELETED);
                 finish();
             }
@@ -331,7 +331,7 @@ public class TimeRegistrationActionActivity extends Activity {
 
             @Override
             protected Object doInBackground(Object... objects) {
-                Log.d(LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
+                Log.d(getApplicationContext(), LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
                 if(Looper.myLooper() == null) {
                     Looper.prepare();
                 }
@@ -355,13 +355,13 @@ public class TimeRegistrationActionActivity extends Activity {
             @Override
             protected void onPostExecute(Object o) {
                 removeDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_LOADING);
-                Log.d(LOG_TAG, "Loading dialog removed from UI");
+                Log.d(getApplicationContext(), LOG_TAG, "Loading dialog removed from UI");
                 if (o != null) {
-                    Log.d(LOG_TAG, "Something went wrong...");
+                    Log.d(getApplicationContext(), LOG_TAG, "Something went wrong...");
                     Toast.makeText(TimeRegistrationActionActivity.this, R.string.err_time_registration_actions_dialog_corrupt_data, Toast.LENGTH_LONG).show();
                 }
 
-                Log.d(LOG_TAG, "Finishing activity...");
+                Log.d(getApplicationContext(), LOG_TAG, "Finishing activity...");
                 setResult(Constants.IntentResultCodes.RESULT_DELETED);
                 finish();
             }
@@ -383,7 +383,7 @@ public class TimeRegistrationActionActivity extends Activity {
 
             @Override
             protected Object doInBackground(Object... objects) {
-                Log.d(LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
+                Log.d(getApplicationContext(), LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
                 if(Looper.myLooper() == null) {
                     Looper.prepare();
                 }
@@ -407,8 +407,8 @@ public class TimeRegistrationActionActivity extends Activity {
             @Override
             protected void onPostExecute(Object o) {
                 removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION_LOADING);
-                Log.d(LOG_TAG, "Loading dialog removed from UI");
-                Log.d(LOG_TAG, "Finishing activity...");
+                Log.d(getApplicationContext(), LOG_TAG, "Loading dialog removed from UI");
+                Log.d(getApplicationContext(), LOG_TAG, "Finishing activity...");
                 setResult(RESULT_OK);
                 finish();
             }
@@ -430,7 +430,7 @@ public class TimeRegistrationActionActivity extends Activity {
 
             @Override
             protected Object doInBackground(Object... objects) {
-                Log.d(LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
+                Log.d(getApplicationContext(), LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
                 if(Looper.myLooper() == null) {
                     Looper.prepare();
                 }
@@ -448,13 +448,13 @@ public class TimeRegistrationActionActivity extends Activity {
             @Override
             protected void onPostExecute(Object o) {
                 removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION_LOADING);
-                Log.d(LOG_TAG, "Loading dialog removed from UI");
+                Log.d(getApplicationContext(), LOG_TAG, "Loading dialog removed from UI");
                 if (o != null) {
-                    Log.d(LOG_TAG, "Something went wrong...");
+                    Log.d(getApplicationContext(), LOG_TAG, "Something went wrong...");
                     Toast.makeText(TimeRegistrationActionActivity.this, R.string.err_time_registration_actions_dialog_corrupt_data, Toast.LENGTH_LONG).show();
                 }
 
-                Log.d(LOG_TAG, "Finishing activity...");
+                Log.d(getApplicationContext(), LOG_TAG, "Finishing activity...");
                 setResult(RESULT_OK);
                 finish();
             }
@@ -467,7 +467,7 @@ public class TimeRegistrationActionActivity extends Activity {
         Dialog dialog = null;
         switch(dialogId) {
             case Constants.Dialog.TIME_REGISTRATION_ACTION: {
-                Log.d(LOG_TAG, "Building the actions dialog");
+                Log.d(getApplicationContext(), LOG_TAG, "Building the actions dialog");
                 AlertDialog.Builder actionsDialog = new AlertDialog.Builder(this);
 
                 final Context mContext = TimeRegistrationActionActivity.this;
@@ -593,7 +593,7 @@ public class TimeRegistrationActionActivity extends Activity {
                 });
                 actionsDialog.setNegativeButton(android.R.string.cancel, new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d(LOG_TAG, "Cancelled ending TR when about to enter comment...");
+                        Log.d(getApplicationContext(), LOG_TAG, "Cancelled ending TR when about to enter comment...");
                         removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
                         setResult(RESULT_CANCELED);
                         finish();
@@ -602,7 +602,7 @@ public class TimeRegistrationActionActivity extends Activity {
                 actionsDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialogInterface) {
-                        Log.d(LOG_TAG, "Cancelled ending TR when about to enter comment...");
+                        Log.d(getApplicationContext(), LOG_TAG, "Cancelled ending TR when about to enter comment...");
                         removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
                         setResult(RESULT_CANCELED);
                         finish();
@@ -615,7 +615,7 @@ public class TimeRegistrationActionActivity extends Activity {
                 break;
             }
             case Constants.Dialog.LOADING_TIME_REGISTRATION_CHANGE: {
-                Log.d(LOG_TAG, "Creating loading dialog for ending the active time registration");
+                Log.d(getApplicationContext(), LOG_TAG, "Creating loading dialog for ending the active time registration");
                 dialog = ProgressDialog.show(
                         TimeRegistrationActionActivity.this,
                         "",
@@ -626,7 +626,7 @@ public class TimeRegistrationActionActivity extends Activity {
                 break;
             }
             case Constants.Dialog.TIME_REGISTRATION_ACTION_LOADING: {
-                Log.d(LOG_TAG, "Creating loading dialog for executing a tr-action");
+                Log.d(getApplicationContext(), LOG_TAG, "Creating loading dialog for executing a tr-action");
                 dialog = ProgressDialog.show(
                         TimeRegistrationActionActivity.this,
                         "",
@@ -637,7 +637,7 @@ public class TimeRegistrationActionActivity extends Activity {
                 break;
             }
             case Constants.Dialog.TIME_REGISTRATION_DELETE_LOADING: {
-                Log.d(LOG_TAG, "Creating loading dialog for deleting tr");
+                Log.d(getApplicationContext(), LOG_TAG, "Creating loading dialog for deleting tr");
                 dialog = ProgressDialog.show(
                         TimeRegistrationActionActivity.this,
                         "",
@@ -648,7 +648,7 @@ public class TimeRegistrationActionActivity extends Activity {
                 break;
             }
             case Constants.Dialog.TIME_REGISTRATIONS_DELETE_LOADING: {
-                Log.d(LOG_TAG, "Creating loading dialog for deleting tr's");
+                Log.d(getApplicationContext(), LOG_TAG, "Creating loading dialog for deleting tr's");
                 dialog = ProgressDialog.show(
                         TimeRegistrationActionActivity.this,
                         "",
@@ -867,12 +867,12 @@ public class TimeRegistrationActionActivity extends Activity {
      * @param commentEditText The {@link EditText} that is used for entering a comment in certain cases.
      */
     private void handleTimeRegistrationAction(TimeRegistrationAction action, EditText commentEditText, RadioGroup deleteContainer) {
-        Log.i(LOG_TAG, "Handling Time Registration action: " + action.toString());
+        Log.i(getApplicationContext(), LOG_TAG, "Handling Time Registration action: " + action.toString());
         switch (action) {
             case PUNCH_OUT: {
                 String comment = commentEditText.getText().toString();
                 if (comment != null)
-                    Log.d(LOG_TAG, "Time Registration will be saved with comment: " + comment);
+                    Log.d(getApplicationContext(), LOG_TAG, "Time Registration will be saved with comment: " + comment);
                 endTimeRegistration(comment);
                 break;
             }
@@ -934,12 +934,12 @@ public class TimeRegistrationActionActivity extends Activity {
                 int radioButtonId = deleteContainer.getCheckedRadioButtonId();
 
                 if (radioButtonId == R.id.tr_delete_current) {
-                    Log.d(LOG_TAG, "Deleting current time registration");
+                    Log.d(getApplicationContext(), LOG_TAG, "Deleting current time registration");
 
                     removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
                     showDialog(Constants.Dialog.DELETE_TIME_REGISTRATION_YES_NO);
                 } else if (radioButtonId == R.id.tr_delete_range) {
-                    Log.d(LOG_TAG, "Deleting all time registrations in range");
+                    Log.d(getApplicationContext(), LOG_TAG, "Deleting all time registrations in range");
                     if (removeRangeMinBoundary.after(removeRangeMaxBoundary)) {
                         showDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_BOUNDARY_PROBLEM);
                     } else {

@@ -18,7 +18,6 @@ package eu.vranckaert.worktime.activities.timeregistrations;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,6 +36,7 @@ import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
@@ -170,10 +170,10 @@ public class TimeRegistrationDetailsActivity extends ActionBarGuiceActivity {
         switch (requestCode) {
             case Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION: {
                 if (resultCode == RESULT_OK) {
-                    Log.d(LOG_TAG, "The time registration has been changed...");
+                    Log.d(getApplicationContext(), LOG_TAG, "The time registration has been changed...");
                     isUpdated = true;
                 } else if (resultCode == Constants.IntentResultCodes.RESULT_OK_SPLIT) {
-                    Log.d(LOG_TAG, "The time registration has been split!");
+                    Log.d(getApplicationContext(), LOG_TAG, "The time registration has been split!");
                     isUpdated = true;
                     isSplit = true;
                 }

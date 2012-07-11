@@ -16,7 +16,6 @@
 
 package eu.vranckaert.worktime.guice;
 
-import android.util.Log;
 import eu.vranckaert.worktime.dao.CommentHistoryDao;
 import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.TaskDao;
@@ -50,12 +49,8 @@ public class Module extends AbstractAndroidModule {
 
     @Override
     protected void configure() {
-        Log.i(LOG_TAG, "Configuring module " + getClass().getSimpleName());
-
         bindDaos();
         bindServices();
-
-        Log.i(LOG_TAG, "DAO's and services are now bound!");
     }
 
     private void bindDaos() {

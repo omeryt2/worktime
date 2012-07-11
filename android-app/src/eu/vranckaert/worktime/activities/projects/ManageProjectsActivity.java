@@ -21,7 +21,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,6 +47,7 @@ import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
@@ -101,7 +101,7 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
 
         getListView().setOnItemClickListener(new ListView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(LOG_TAG, "Clicked on project-item " + position);
+                Log.d(getApplicationContext(), LOG_TAG, "Clicked on project-item " + position);
                 Project selectedProject = projects.get(position);
                 openProjectDetailActivity(selectedProject);
             }
@@ -125,7 +125,7 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
             this.unfinishedProjects = projectService.findUnfinishedProjects();
         }
         Collections.sort(this.projects, new ProjectByNameComparator());
-        Log.d(LOG_TAG, projects.size() + " projects loaded!");
+        Log.d(getApplicationContext(), LOG_TAG, projects.size() + " projects loaded!");
         ManageProjectsListAdapter adapter = new ManageProjectsListAdapter(projects);
         adapter.notifyDataSetChanged();
         setListAdapter(adapter);
@@ -152,18 +152,18 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
      */
     private void deleteProject(Project project, boolean askConfirmation) {
         if (askConfirmation) {
-            Log.d(LOG_TAG, "Asking confirmation to remove a project");
+            Log.d(getApplicationContext(), LOG_TAG, "Asking confirmation to remove a project");
             projectToRemove = project;
             showDialog(Constants.Dialog.DELETE_PROJECT_YES_NO);
         } else {
             try {
-                Log.d(LOG_TAG, "Ready to actually remove the project!");
+                Log.d(getApplicationContext(), LOG_TAG, "Ready to actually remove the project!");
                 projectService.remove(project);
                 tracker.trackEvent(
                         TrackerConstants.EventSources.MANAGE_PROJECTS_ACTIVITY,
                         TrackerConstants.EventActions.DELETE_PROJECT
                 );
-                Log.d(LOG_TAG, "Project removed, ready to reload projects");
+                Log.d(getApplicationContext(), LOG_TAG, "Project removed, ready to reload projects");
                 loadProjects();
                 projectToRemove = null;
             } catch (AtLeastOneProjectRequiredException e) {
@@ -187,7 +187,7 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
         }
         
         if (!project.isFinished() && unfinishedTasks.size() > 0) {
-            Log.d(LOG_TAG, "Asking confirmation to finish a project");
+            Log.d(getApplicationContext(), LOG_TAG, "Asking confirmation to finish a project");
             projectToUpdate = project;
             showDialog(Constants.Dialog.ASK_FINISH_PROJECT_WITH_REMAINING_UNFINISHED_TASKS);
         } else {
@@ -306,11 +306,11 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
                 || requestCode == Constants.IntentRequestCodes.EDIT_PROJECT
                 || requestCode == Constants.IntentRequestCodes.COPY_PROJECT)
                 && resultCode == RESULT_OK) {
-            Log.d(LOG_TAG, "A new project is added or an existing one is edited which requires a reload of the project list!");
+            Log.d(getApplicationContext(), LOG_TAG, "A new project is added or an existing one is edited which requires a reload of the project list!");
             loadProjects();
         }
         if (requestCode == Constants.IntentRequestCodes.PROJECT_DETAILS && resultCode == RESULT_OK) {
-            Log.d(LOG_TAG, "A project has been updated on the project details view, it's necessary to reload the list of project upon return!");
+            Log.d(getApplicationContext(), LOG_TAG, "A project has been updated on the project details view, it's necessary to reload the list of project upon return!");
             loadProjects();
         }
         if (requestCode == Constants.IntentRequestCodes.PUNCH_BAR_START_TIME_REGISTRATION
@@ -329,49 +329,49 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
          */
         public ManageProjectsListAdapter(List<Project> projects) {
             super(ManageProjectsActivity.this, R.layout.list_item_projects, projects);
-            Log.d(LOG_TAG, "Creating the manage projects list adapater");
+            Log.d(getApplicationContext(), LOG_TAG, "Creating the manage projects list adapater");
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            Log.d(LOG_TAG, "Start rendering/recycling row " + position);
+            Log.d(getApplicationContext(), LOG_TAG, "Start rendering/recycling row " + position);
             View row;
             final Project project = projects.get(position);
-            Log.d(LOG_TAG, "Got project with name " + project.getName());
-            Log.d(LOG_TAG, "Is this project the default project?" + project.isDefaultValue());
+            Log.d(getApplicationContext(), LOG_TAG, "Got project with name " + project.getName());
+            Log.d(getApplicationContext(), LOG_TAG, "Is this project the default project?" + project.isDefaultValue());
 
             if (convertView == null) {
-                Log.d(LOG_TAG, "Render a new line in the list");
+                Log.d(getApplicationContext(), LOG_TAG, "Render a new line in the list");
                 row = getLayoutInflater().inflate(R.layout.list_item_projects, parent, false);
             } else {
-                Log.d(LOG_TAG, "Recycling an existing line in the list");
+                Log.d(getApplicationContext(), LOG_TAG, "Recycling an existing line in the list");
                 row = convertView;
             }
 
-            Log.d(LOG_TAG, "Ready to update the name of the project of the listitem...");
+            Log.d(getApplicationContext(), LOG_TAG, "Ready to update the name of the project of the listitem...");
             TextView projectName = (TextView) row.findViewById(R.id.projectname_listitem);
             projectName.setText(project.getName());
 
-            Log.d(LOG_TAG, "Render the finished image if the project is finished");
+            Log.d(getApplicationContext(), LOG_TAG, "Render the finished image if the project is finished");
             if (project.isFinished()) {
                 projectName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_finished, 0, 0, 0);
             } else {
                 projectName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
 
-            Log.d(LOG_TAG, "Done rendering row " + position);
+            Log.d(getApplicationContext(), LOG_TAG, "Done rendering row " + position);
             return row;
         }
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        Log.d(LOG_TAG, "In method onCreateContextMenu(...)");
+        Log.d(getApplicationContext(), LOG_TAG, "In method onCreateContextMenu(...)");
         if (v.getId() == android.R.id.list) {
             super.onCreateContextMenu(menu, v, menuInfo);
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
             int element = info.position;
-            Log.d(LOG_TAG, "Creating context menu for element " + element + " in list");
+            Log.d(getApplicationContext(), LOG_TAG, "Creating context menu for element " + element + " in list");
             Project projectForContext = projects.get(element);
 
             menu.setHeaderTitle(projectForContext.getName());
@@ -492,7 +492,7 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
      */
     private void openProjectDetailActivity(Project selectedProject) {
         Intent projectDetails = new Intent(this, ProjectDetailsActivity.class);
-        Log.d(LOG_TAG, "Putting project with name '" + selectedProject.getName() + "' on intent");
+        Log.d(getApplicationContext(), LOG_TAG, "Putting project with name '" + selectedProject.getName() + "' on intent");
         projectDetails.putExtra(Constants.Extras.PROJECT, selectedProject);
         startActivityForResult(projectDetails, Constants.IntentRequestCodes.PROJECT_DETAILS);
     }

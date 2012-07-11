@@ -23,7 +23,6 @@ import android.app.backup.FileBackupHelper;
 import android.app.backup.SharedPreferencesBackupHelper;
 import android.content.Context;
 import android.os.ParcelFileDescriptor;
-import android.util.Log;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.dao.utils.DaoConstants;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
@@ -60,7 +59,7 @@ public class DatabaseBackupAgent extends BackupAgentHelper {
         // Check if a backupFile already exists, if so, delete it.
         File backupFile = new File(getFilesDir(), DATABASE_BACKUP_FILE_NAME);
         if (backupFile.exists()) {
-            Log.d(LOG_TAG, "The database backup file already exists, deleting it now");
+            Log.d(getApplicationContext(), LOG_TAG, "The database backup file already exists, deleting it now");
             backupFile.delete();
         }
 
@@ -72,9 +71,9 @@ public class DatabaseBackupAgent extends BackupAgentHelper {
         File dbFile = new File(FileUtil.getDatabaseDirectory(this) + File.separator + DaoConstants.DATABASE);
         try {
             FileUtil.copyFile(dbFile, backupFile);
-            Log.d(LOG_TAG, "The content of the database file is correctly copied to the backup file");
+            Log.d(getApplicationContext(), LOG_TAG, "The content of the database file is correctly copied to the backup file");
         } catch (IOException e) {
-            Log.e(LOG_TAG, "The content of the database file could not be copied to the backup file", e);
+            Log.e(getApplicationContext(), LOG_TAG, "The content of the database file could not be copied to the backup file", e);
         }
 
         // Do the actual backup
@@ -82,7 +81,7 @@ public class DatabaseBackupAgent extends BackupAgentHelper {
 
         // Remove the backupFile again
         if (backupFile.exists()) {
-            Log.d(LOG_TAG, "The backup file will be removed again...");
+            Log.d(getApplicationContext(), LOG_TAG, "The backup file will be removed again...");
             backupFile.delete();
         }
     }
@@ -97,17 +96,17 @@ public class DatabaseBackupAgent extends BackupAgentHelper {
         if (!dbDir.exists()) {
             dbDir.mkdirs();
             FileUtil.applyPermissions(dbDir, true, true, false, true);
-            Log.d(LOG_TAG, "The database directory has been created");
+            Log.d(getApplicationContext(), LOG_TAG, "The database directory has been created");
         }
         // Then check if the db-file already exists
         File dbFile = new File(FileUtil.getDatabaseDirectory(this) + File.separator + DaoConstants.DATABASE);
-        Log.d(LOG_TAG, "Restoring backup to database file " + dbFile.getAbsolutePath());
+        Log.d(getApplicationContext(), LOG_TAG, "Restoring backup to database file " + dbFile.getAbsolutePath());
         if (!dbFile.exists()) {
             try {
                 dbFile.createNewFile();
-                Log.d(LOG_TAG, "Needed to create the DB file on the device first...");
+                Log.d(getApplicationContext(), LOG_TAG, "Needed to create the DB file on the device first...");
             } catch (IOException e) {
-                Log.e(LOG_TAG, "Could not create the database file, quiting restore now", e);
+                Log.e(getApplicationContext(), LOG_TAG, "Could not create the database file, quiting restore now", e);
                 return;
             }
 
@@ -120,25 +119,25 @@ public class DatabaseBackupAgent extends BackupAgentHelper {
         try {
             FileUtil.copyFile(backupFile, dbFile);
         } catch (IOException e) {
-            Log.e(LOG_TAG, "The database backup could not be restored, quitting restore now", e);
+            Log.e(getApplicationContext(), LOG_TAG, "The database backup could not be restored, quitting restore now", e);
             return;
         }
 
         // Remove the backupFile again
-        Log.d(LOG_TAG, "The backup file will be removed");
+        Log.d(getApplicationContext(), LOG_TAG, "The backup file will be removed");
         backupFile.delete();
 
-        Log.d(LOG_TAG, "Database restore was successful");
+        Log.d(getApplicationContext(), LOG_TAG, "Database restore was successful");
 
-        Log.d(LOG_TAG, "Ready to start updating the widget(s)");
+        Log.d(getApplicationContext(), LOG_TAG, "Ready to start updating the widget(s)");
         WidgetService widgetService = new WidgetServiceImpl(this);
         widgetService.updateAllWidgets();
 
-        Log.d(LOG_TAG, "Ready to start updating the notifications");
+        Log.d(getApplicationContext(), LOG_TAG, "Ready to start updating the notifications");
         StatusBarNotificationService notificationService = new StatusBarNotificationServiceImpl(this);
         notificationService.addOrUpdateNotification(null);
 
-        Log.d(LOG_TAG, "Adding notification for successful restore!");
+        Log.d(getApplicationContext(), LOG_TAG, "Adding notification for successful restore!");
         notificationService.addStatusBarNotificationForRestore();
     }
 }

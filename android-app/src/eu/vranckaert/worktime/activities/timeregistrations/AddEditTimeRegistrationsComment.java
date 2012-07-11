@@ -21,7 +21,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +33,7 @@ import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.CommentHistoryService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
+import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import roboguice.activity.GuiceActivity;
 import roboguice.inject.InjectExtra;
@@ -70,9 +70,9 @@ public class AddEditTimeRegistrationsComment extends GuiceActivity {
                 if (StringUtils.isBlank(timeRegistration.getComment())) {
                     enterNewComment = true;
                 }
-                Log.d(LOG_TAG, "Entering a new comment? " + enterNewComment);
+                Log.d(getApplicationContext(), LOG_TAG, "Entering a new comment? " + enterNewComment);
 
-                Log.d(LOG_TAG, "Creating enter comment dialog for a time registration");
+                Log.d(getApplicationContext(), LOG_TAG, "Creating enter comment dialog for a time registration");
                 AlertDialog.Builder commentDialog = new AlertDialog.Builder(this);
 
                 final Context mContext = AddEditTimeRegistrationsComment.this;
@@ -89,18 +89,18 @@ public class AddEditTimeRegistrationsComment extends GuiceActivity {
                 commentDialog.setCancelable(false);
                 commentDialog.setPositiveButton(android.R.string.ok, new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d(LOG_TAG, "CommentHistory entered, ready to save...");
+                        Log.d(getApplicationContext(), LOG_TAG, "CommentHistory entered, ready to save...");
                         removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
                         EditText commentEditText = (EditText) layout.findViewById(R.id.tr_comment);
                         String comment = commentEditText.getText().toString();
                         ContextUtils.hideKeyboard(mContext, commentEditText);
-                        Log.d(LOG_TAG, "Time Registration will be saved with comment: " + comment);
+                        Log.d(getApplicationContext(), LOG_TAG, "Time Registration will be saved with comment: " + comment);
                         updateComment(comment);
                     }
                 });
                 commentDialog.setNegativeButton(android.R.string.cancel, new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d(LOG_TAG, "Ending time registration cancelled on entering comment...");
+                        Log.d(getApplicationContext(), LOG_TAG, "Ending time registration cancelled on entering comment...");
                         removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
                         finish();
                     }
