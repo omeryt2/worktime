@@ -48,7 +48,7 @@ public class Configuration1x1Activity extends Activity {
         switch (requestCode) {
             case Constants.IntentRequestCodes.SELECT_PROJECT: {
                 if (resultCode == RESULT_OK) {
-                    widgetService.updateWidget1x1(widgetId);
+                    widgetService.updateWidget(widgetId);
 
                     Intent resultValue = new Intent();
                     resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);

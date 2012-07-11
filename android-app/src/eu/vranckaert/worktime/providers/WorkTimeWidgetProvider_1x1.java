@@ -44,7 +44,7 @@ public class WorkTimeWidgetProvider_1x1 extends MyAppWidgetProvider {
             Log.d(context, LOG_TAG, "STARTING FOR WIDGET ID: " + appWidgetId);
             Log.d(context, LOG_TAG, "PROVIDER: " + widgetProviderInfo.provider.toString());
 
-            widgetService.updateWidget1x1(appWidgetId);
+            widgetService.updateWidget(appWidgetId);
             statusBarNotificationService.addOrUpdateNotification(null);
         }
     }

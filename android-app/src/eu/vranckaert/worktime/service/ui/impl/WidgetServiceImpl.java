@@ -121,19 +121,26 @@ public class WidgetServiceImpl implements WidgetService {
         }
     }
 
-    @Override
-    public void updateWidget1x1(int widgetId) {
+    /**
+     * Updates the widget's content for the 1x1 widgets.
+     * @param widgetId The id of the widget to be updated.
+     */
+    private void updateWidget1x1(int widgetId) {
         Log.d(ctx, LOG_TAG, "Updating widget (1x1) with id " + widgetId);
 
         getViews(ctx, R.layout.worktime_appwidget_1x1);
 
-        // TODO widget specific stuff...
+        Project project = projectService.getSelectedProject(widgetId);
+        views.setCharSequence(R.id.widget_title, "setText", project.getName());
 
         commitView(ctx, widgetId, views, WorkTimeWidgetProvider_2x2.class);
     }
 
-    @Override
-    public void updateWidget2x2(int widgetId) {
+    /**
+     * Updates the widget's content for the 2x2 widgets.
+     * @param widgetId The id of the widget to be updated.
+     */
+    private void updateWidget2x2(int widgetId) {
         Log.d(ctx, LOG_TAG, "Updating widget (2x2) with id " + widgetId);
 
         getViews(ctx, R.layout.worktime_appwidget_2x2);
