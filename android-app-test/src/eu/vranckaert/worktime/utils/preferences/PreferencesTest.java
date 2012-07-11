@@ -44,22 +44,6 @@ public class PreferencesTest extends AndroidTestCase {
         Preferences preferences = new Preferences();
         assertNotNull(preferences);
     }
-    
-    public void testSelectedProjectId() {
-        Preferences.removePreference(ctx, Constants.Preferences.Keys.SELECTED_PROJECT_ID);
-
-        int projectIdNotFound = Preferences.getSelectedProjectId(ctx);
-        assertEquals("No project id should be found (result should be -1)", Constants.Preferences.SELECTED_PROJECT_ID_DEFAULT_VALUE, projectIdNotFound);
-        
-        int projectId = 100;
-        Preferences.setSelectedProjectId(ctx, projectId);
-        int projectIdFound = Preferences.getSelectedProjectId(ctx);
-        assertEquals("A project id is required (" + projectId + ")", projectId, projectIdFound);
-
-        Preferences.removePreference(ctx, Constants.Preferences.Keys.SELECTED_PROJECT_ID);
-        int projectIdDeleted = Preferences.getSelectedProjectId(ctx);
-        assertEquals("No project id should be found (result should be -1)", Constants.Preferences.SELECTED_PROJECT_ID_DEFAULT_VALUE, projectIdDeleted);
-    }
 
     public void testWidgetAskForTaskSelectionIfOnlyOne() {
         Preferences.removePreference(ctx, Constants.Preferences.Keys.WIDGET_ASK_FOR_TASK_SELECTION_IF_ONLY_ONE);
@@ -379,21 +363,5 @@ public class PreferencesTest extends AndroidTestCase {
         Preferences.removePreference(ctx, Constants.Preferences.Keys.TIME_REGISTRATION_SPLIT_DEFAULT_GAP);
         int valueDeleted = Preferences.getTimeRegistrationSplitDefaultGap(ctx);
         assertEquals("No value should be found (result should be 30)", Constants.Preferences.TIME_REGISTRATION_SPLIT_DEFAULT_GAP_DEFAULT_VALUE, valueDeleted);
-    }
-
-    public void testRemoveAllPreferences() {
-        Preferences.removePreference(ctx, Constants.Preferences.Keys.SELECTED_PROJECT_ID);
-
-        int valueNotFound = Preferences.getSelectedProjectId(ctx);
-        assertEquals("No value should be found", Constants.Preferences.SELECTED_PROJECT_ID_DEFAULT_VALUE, valueNotFound);
-
-        int value = 100;
-        Preferences.setSelectedProjectId(ctx, value);
-        int valueFound = Preferences.getSelectedProjectId(ctx);
-        assertEquals("A value should be found (" + value + ")", value, valueFound);
-
-        Preferences.removeAllPreferences(ctx);
-        int valueDeleted = Preferences.getSelectedProjectId(ctx);
-        assertEquals("No value should be found", Constants.Preferences.SELECTED_PROJECT_ID_DEFAULT_VALUE, valueDeleted);
     }
 }

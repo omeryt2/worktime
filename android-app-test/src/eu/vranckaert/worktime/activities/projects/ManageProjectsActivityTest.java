@@ -17,6 +17,7 @@
 package eu.vranckaert.worktime.activities.projects;
 
 import android.app.ListActivity;
+import android.test.UiThreadTest;
 import android.widget.EditText;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.dao.CommentHistoryDao;
@@ -78,6 +79,7 @@ public class ManageProjectsActivityTest extends ActivityTestCase<ManageProjectsA
         solo.assertCurrentActivity("The projects activity is expected", ManageProjectsActivity.class);
     }
 
+    @UiThreadTest
     public void testAddProject() {
         // Check that a project with this name does not exist already
         assertFalse("The project with name " + newProjectName + " should not yet be available!", solo.searchText(newProjectName));
@@ -95,6 +97,7 @@ public class ManageProjectsActivityTest extends ActivityTestCase<ManageProjectsA
         assertEquals("Two projects should be available now", 2, projectCount);
     }
 
+    @UiThreadTest
     public void testEditProject() {
         // Add a new project
         addProject(newProjectName);

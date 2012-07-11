@@ -16,6 +16,7 @@
 
 package eu.vranckaert.worktime.activities.projects;
 
+import android.test.UiThreadTest;
 import android.view.View;
 import android.widget.EditText;
 import eu.vranckaert.worktime.R;
@@ -23,6 +24,7 @@ import eu.vranckaert.worktime.dao.CommentHistoryDao;
 import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
+import eu.vranckaert.worktime.test.ActionBar;
 import eu.vranckaert.worktime.test.cases.ActivityTestCase;
 import eu.vranckaert.worktime.test.utils.TestUtil;
 
@@ -40,6 +42,7 @@ public class AddProjectActivityTest extends ActivityTestCase<AddEditProjectActiv
     public void beforeTestInsertData(TimeRegistrationDao trDao, ProjectDao pDao, TaskDao tDao, CommentHistoryDao cDao) {
     }
 
+    @UiThreadTest
     public void testValidationRequired() {
         // Check if by default the validation error are hidden
         View addProjectValidateRequired = solo.getView(R.id.projectname_required);
@@ -48,7 +51,7 @@ public class AddProjectActivityTest extends ActivityTestCase<AddEditProjectActiv
         assertEquals("The validation error message 'unique' should be gone", View.GONE, addProjectValidateUnique.getVisibility());
 
         // Try to add with empty values
-        solo.clickOnImageButton(1);
+        ActionBar.clickMenuItem(R.id.menu_add_project_activity_save, solo.getCurrentActivity());
         solo.assertCurrentActivity("The add/edit project activity is expected", AddEditProjectActivity.class);
         addProjectValidateRequired = solo.getView(R.id.projectname_required);
         addProjectValidateUnique = solo.getView(R.id.projectname_unique);
@@ -56,6 +59,7 @@ public class AddProjectActivityTest extends ActivityTestCase<AddEditProjectActiv
         assertEquals("The validation error message 'unique' should be gone", View.GONE, addProjectValidateUnique.getVisibility());
     }
 
+    @UiThreadTest
     public void testValidationUnique() {
         // Check if by default the validation error are hidden
         View addProjectValidateRequired = solo.getView(R.id.projectname_required);
@@ -69,7 +73,7 @@ public class AddProjectActivityTest extends ActivityTestCase<AddEditProjectActiv
 
         takeScreenshot();
 
-        solo.clickOnImageButton(1);
+        ActionBar.clickMenuItem(R.id.menu_add_project_activity_save, solo.getCurrentActivity());
         solo.assertCurrentActivity("The add/edit project activity is expected", AddEditProjectActivity.class);
         addProjectValidateRequired = solo.getView(R.id.projectname_required);
         addProjectValidateUnique = solo.getView(R.id.projectname_unique);
@@ -77,6 +81,7 @@ public class AddProjectActivityTest extends ActivityTestCase<AddEditProjectActiv
         assertEquals("The validation error message 'unique' should be visible", View.VISIBLE, addProjectValidateUnique.getVisibility());
     }
 
+    @UiThreadTest
     public void testAddValidProject() {
         // Check if by default the validation error are hidden
         View addProjectValidateRequired = solo.getView(R.id.projectname_required);
@@ -87,7 +92,7 @@ public class AddProjectActivityTest extends ActivityTestCase<AddEditProjectActiv
         // Enter a project name and save
         EditText addProjectName = (EditText) solo.getView(R.id.projectname);
         solo.enterText(addProjectName, "A custom project name");
-        solo.clickOnImageButton(1);
+        ActionBar.clickMenuItem(R.id.menu_add_project_activity_save, solo.getCurrentActivity());
         solo.waitForDialogToClose(TestUtil.Time.FIVE_SECONDS);
         assertEquals("As the activity should be ended no views are expected to be found!", 0, solo.getCurrentViews().size());
     }

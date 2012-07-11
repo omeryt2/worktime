@@ -22,7 +22,9 @@ import eu.vranckaert.worktime.dao.CommentHistoryDao;
 import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
+import eu.vranckaert.worktime.test.ActionBar;
 import eu.vranckaert.worktime.test.cases.ActivityTestCase;
+import eu.vranckaert.worktime.test.utils.TestUtil;
 
 /**
  * User: DIRK VRANCKAERT
@@ -40,7 +42,8 @@ public class TimeRegistrationsActivityTest extends ActivityTestCase<TimeRegistra
 
     public void testGoHome() {
         solo.assertCurrentActivity("The time registrations activity is expected", TimeRegistrationsActivity.class);
-        solo.clickOnImageButton(0);
+        ActionBar.clickMenuItem(android.R.id.home, solo.getCurrentActivity());
+        solo.waitForDialogToClose(TestUtil.Time.TEN_SECONDS);
         solo.assertCurrentActivity("The home activity is expected", HomeActivity.class);
     }
 
