@@ -70,6 +70,7 @@ public class EditTimeRegistrationProjectAndTask extends GuiceActivity {
     private TaskService taskService;
 
     private Project newSelectedProject = null;
+    private Project originalProject = null;
 
     private Task newSelectedTask = null;
 
@@ -81,7 +82,8 @@ public class EditTimeRegistrationProjectAndTask extends GuiceActivity {
         super.onCreate(savedInstanceState);
 
         availableProjects = loadAllProjects();
-        newSelectedProject = timeRegistration.getTask().getProject();
+        originalProject = timeRegistration.getTask().getProject();
+        newSelectedProject = originalProject;
         newSelectedTask = timeRegistration.getTask();
 
         showDialog(Constants.Dialog.CHOOSE_SELECTED_PROJECT);
@@ -229,8 +231,8 @@ public class EditTimeRegistrationProjectAndTask extends GuiceActivity {
         // If the time registration is currently ongoing we have to update
         // the selected project and the notifications
         if (timeRegistration.isOngoingTimeRegistration()) {
-            projectService.setSelectedProject(newSelectedProject);
-            widgetService.updateWidget();
+            List<Integer> widgetIds = projectService.changeSelectedProject(originalProject, newSelectedProject);
+            widgetService.updateWidgets(widgetIds);
             statusBarNotificationService.addOrUpdateNotification(timeRegistration);
         }
 

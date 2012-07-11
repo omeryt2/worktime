@@ -555,7 +555,7 @@ public class EditTimeRegistrationSplitActivity extends WizardActivity {
         trService.update(part1);
         trService.create(part2);
 
-        widgetService.updateWidget();
+        widgetService.updateAllWidgets();
 
         return true;
     }

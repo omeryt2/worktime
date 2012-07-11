@@ -132,7 +132,7 @@ public class DatabaseBackupAgent extends BackupAgentHelper {
 
         Log.d(LOG_TAG, "Ready to start updating the widget(s)");
         WidgetService widgetService = new WidgetServiceImpl(this);
-        widgetService.updateWidget();
+        widgetService.updateAllWidgets();
 
         Log.d(LOG_TAG, "Ready to start updating the notifications");
         StatusBarNotificationService notificationService = new StatusBarNotificationServiceImpl(this);

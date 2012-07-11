@@ -528,8 +528,6 @@ public class ReportingCriteriaActivity extends ActionBarGuiceActivity {
                 availableProjects = projectService.findAll();
                 Collections.sort(availableProjects, new ProjectByNameComparator());
 
-                Project selectedProject = projectService.getSelectedProject();
-
                 List<String> projects = new ArrayList<String>();
                 for (int i=0; i<availableProjects.size(); i++) {
                     Project project = availableProjects.get(i);

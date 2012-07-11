@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.guice;
 
 import android.util.Log;
@@ -20,10 +21,12 @@ import eu.vranckaert.worktime.dao.CommentHistoryDao;
 import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
+import eu.vranckaert.worktime.dao.WidgetConfigurationDao;
 import eu.vranckaert.worktime.dao.impl.CommentHistoryDaoImpl;
 import eu.vranckaert.worktime.dao.impl.ProjectDaoImpl;
 import eu.vranckaert.worktime.dao.impl.TaskDaoImpl;
 import eu.vranckaert.worktime.dao.impl.TimeRegistrationDaoImpl;
+import eu.vranckaert.worktime.dao.impl.WidgetConfigurationDaoImpl;
 import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.service.CommentHistoryService;
 import eu.vranckaert.worktime.service.ExportService;
@@ -60,6 +63,7 @@ public class Module extends AbstractAndroidModule {
         bind(ProjectDao.class).to(ProjectDaoImpl.class);
         bind(TaskDao.class).to(TaskDaoImpl.class);
         bind(CommentHistoryDao.class).to(CommentHistoryDaoImpl.class);
+        bind(WidgetConfigurationDao.class).to(WidgetConfigurationDaoImpl.class);
     }
 
     private void bindServices() {

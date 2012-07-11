@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.service.ui;
+
+import eu.vranckaert.worktime.model.Project;
+
+import java.util.List;
 
 /**
  * User: DIRK VRANCKAERT
@@ -22,7 +27,40 @@ package eu.vranckaert.worktime.service.ui;
  */
 public interface WidgetService {
     /**
-     * Updates the widget' content.
+     * Updates all widgets to match the current application state.
      */
-    void updateWidget();
+    void updateAllWidgets();
+
+    /**
+     * Updates all widgets for which the id is specified in the list.
+     * @param widgetIds The list of id's defining which widgets should be updated.
+     */
+    void updateWidgets(List<Integer> widgetIds);
+
+    /**
+     * Updates all the widgets that are configured for the specified {@link Project}.
+     * @param project Based on this variable a lookup is done on
+     * {@link eu.vranckaert.worktime.model.WidgetConfiguration} to check which widgets are configured for this
+     * {@link Project}. All linked widgets will be updated.
+     */
+    void updateWidgetsForProject(Project project);
+
+    /**
+     * Update the widget with a certain id. This will forward the call to the method that will handle the request for
+     * widgets of this size.
+     * @param id The id of the widget to be updated.
+     */
+    void updateWidget(int id);
+
+    /**
+     * Updates the widget's content for the 1x1 widgets.
+     * @param id The id of the widget to be updated.
+     */
+    void updateWidget1x1(int id);
+
+    /**
+     * Updates the widget's content for the 2x2 widgets.
+     * @param id The id of the widget to be updated.
+     */
+    void updateWidget2x2(int id);
 }

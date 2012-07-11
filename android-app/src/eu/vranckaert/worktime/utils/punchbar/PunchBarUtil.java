@@ -107,6 +107,7 @@ public class PunchBarUtil {
         } else {
             Intent intent = new Intent(ctx, StartTimeRegistrationActivity.class);
             intent.putExtra(Constants.Extras.TIME_REGISTRATION_START_ASK_FOR_PROJECT, true);
+            intent.putExtra(Constants.Extras.WIDGET_ID, -100);
             ctx.startActivityForResult(intent, Constants.IntentRequestCodes.PUNCH_BAR_START_TIME_REGISTRATION);
         }
     }

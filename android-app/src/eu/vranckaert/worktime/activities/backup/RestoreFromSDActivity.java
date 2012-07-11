@@ -223,7 +223,7 @@ public class RestoreFromSDActivity extends GuiceActivity {
 
                 try {
                     backupService.restore(getApplicationContext(), restoreFile);
-                    widgetService.updateWidget();
+                    widgetService.updateAllWidgets();
                     statusBarNotificationService.removeOngoingTimeRegistrationNotification();
                     statusBarNotificationService.addOrUpdateNotification(null);
 

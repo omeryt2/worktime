@@ -197,7 +197,7 @@ public class TimeRegistrationActionActivity extends Activity {
 
                     statusBarNotificationService.removeOngoingTimeRegistrationNotification();
 
-                    widgetService.updateWidget();
+                    widgetService.updateAllWidgets();
 
                     /*
                     * Creates a new backup to be sure that the data is always secure!
@@ -280,7 +280,7 @@ public class TimeRegistrationActionActivity extends Activity {
 
                 long count = timeRegistrationService.removeAllInRange(minBoundary, maxBoundary);
 
-                widgetService.updateWidget();
+                widgetService.updateAllWidgets();
 
                 TimeRegistration latestTimeRegistration = timeRegistrationService.getLatestTimeRegistration();
                 if (latestTimeRegistration != null && latestTimeRegistration.isOngoingTimeRegistration()) {
@@ -338,7 +338,7 @@ public class TimeRegistrationActionActivity extends Activity {
 
                 timeRegistrationService.remove(timeRegistration);
 
-                widgetService.updateWidget();
+                widgetService.updateAllWidgets();
 
                 if (timeRegistration.isOngoingTimeRegistration()) {
                     statusBarNotificationService.removeOngoingTimeRegistrationNotification();
@@ -394,7 +394,7 @@ public class TimeRegistrationActionActivity extends Activity {
                         TrackerConstants.EventActions.ADD_TR_COMMENT
                 );
                 timeRegistrationService.update(timeRegistration);
-                widgetService.updateWidget();
+                widgetService.updateWidgetsForProject(timeRegistration.getTask().getProject());
                 backupService.requestBackup(TimeRegistrationActionActivity.this);
 
                 if (StringUtils.isNotBlank(comment)) {
@@ -438,7 +438,7 @@ public class TimeRegistrationActionActivity extends Activity {
                 timeRegistration.setEndTime(null);
                 timeRegistrationService.update(timeRegistration);
 
-                widgetService.updateWidget();
+                widgetService.updateAllWidgets();
 
                 statusBarNotificationService.addOrUpdateNotification(timeRegistration);
 

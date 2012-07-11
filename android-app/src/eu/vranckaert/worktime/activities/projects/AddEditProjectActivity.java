@@ -157,7 +157,7 @@ public class AddEditProjectActivity extends ActionBarGuiceActivity {
 
                                 taskService.refresh(latestTimeRegistration.getTask());
                                 projectService.refresh(latestTimeRegistration.getTask().getProject());
-                                widgetService.updateWidget();
+                                widgetService.updateAllWidgets();
                                 statusBarNotificationService.addOrUpdateNotification(latestTimeRegistration);
                             }
                         }

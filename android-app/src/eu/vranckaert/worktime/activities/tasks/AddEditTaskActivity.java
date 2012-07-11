@@ -158,7 +158,7 @@ public class AddEditTaskActivity extends ActionBarGuiceActivity {
                     Log.d(LOG_TAG, "About to update the wiget and notifications");
                     TimeRegistration tr = timeRegistrationService.getLatestTimeRegistration();
                     if (tr != null && tr.getTask().getId().equals(task.getId())) {
-                        widgetService.updateWidget();
+                        widgetService.updateAllWidgets();
                         statusBarNotificationService.addOrUpdateNotification(tr);
                     }
                 }

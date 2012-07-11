@@ -81,32 +81,6 @@ public class Preferences {
     }
 
     /**
-     * Get the preference for key {@link Constants.Preferences.Keys#SELECTED_PROJECT_ID}. If no selected project id is
-     * found the default value will be {@link Constants.Preferences#SELECTED_PROJECT_ID_DEFAULT_VALUE}.
-     * @param ctx The context when getting the selected project id.
-     * @return The unique identifier of a {@link eu.vranckaert.worktime.model.Project} if one is found. Otherwise the
-     * default value {@link Constants.Preferences#SELECTED_PROJECT_ID_DEFAULT_VALUE}.
-     */
-    public static int getSelectedProjectId(Context ctx) {
-        return getSharedPreferences(ctx).getInt(
-                Constants.Preferences.Keys.SELECTED_PROJECT_ID,
-                Constants.Preferences.SELECTED_PROJECT_ID_DEFAULT_VALUE
-        );
-    }
-
-    /**
-     * Updates the preference {@link Constants.Preferences.Keys#SELECTED_PROJECT_ID}.
-     * @param ctx The context when updating the preference.
-     * @param projectId The projectId to put in the preferences.
-     * @param projectId The projectId to put in the preferences.
-     */
-    public static void setSelectedProjectId(Context ctx, int projectId) {
-        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
-        editor.putInt(Constants.Preferences.Keys.SELECTED_PROJECT_ID, projectId);
-        editor.commit();
-    }
-
-    /**
      * Get the preference for key {@link Constants.Preferences.Keys#WIDGET_ASK_FOR_TASK_SELECTION_IF_ONLY_ONE}.
      * If no value is found for the preference the default value will be
      * {@link Constants.Preferences#WIDGET_ASK_FOR_TASK_SELECTION_IF_ONLY_ONE_DEFAULT_VALUE}.

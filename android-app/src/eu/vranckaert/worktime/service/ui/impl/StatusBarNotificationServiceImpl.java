@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import com.google.inject.Inject;
+import com.jakewharton.notificationcompat2.NotificationCompat2;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.notifcationbar.EndTimeRegistration;
 import eu.vranckaert.worktime.constants.Constants;
@@ -34,7 +35,11 @@ import eu.vranckaert.worktime.service.impl.ProjectServiceImpl;
 import eu.vranckaert.worktime.service.impl.TaskServiceImpl;
 import eu.vranckaert.worktime.service.impl.TimeRegistrationServiceImpl;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
+import eu.vranckaert.worktime.utils.date.DateFormat;
+import eu.vranckaert.worktime.utils.date.DateUtils;
+import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
+import eu.vranckaert.worktime.utils.string.StringUtils;
 
 public class StatusBarNotificationServiceImpl implements StatusBarNotificationService {
     private static final String LOG_TAG = StatusBarNotificationServiceImpl.class.getSimpleName();
@@ -88,6 +93,7 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
             taskService.refresh(registration.getTask());
             projectService.refresh(registration.getTask().getProject());
 
+            String startTime = DateUtils.DateTimeConverter.convertDateTimeToString(registration.getStartTime(), DateFormat.MEDIUM, TimeFormat.MEDIUM, context);
             String projectName = registration.getTask().getProject().getName();
             String taskName = registration.getTask().getName();
 
@@ -108,8 +114,16 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
                 ticker = context.getString(R.string.lbl_notif_update_tr);
             }
 
+            String bigText = context.getString(R.string.lbl_notif_big_text_project) + ": " + projectName + "\n"
+                    + context.getString(R.string.lbl_notif_big_text_task) + ": " + taskName + "\n"
+                    + context.getString(R.string.lbl_notif_big_text_started_at) + " " + startTime;
+
+            if (StringUtils.isNotBlank(registration.getComment())) {
+                bigText += "\n" + context.getString(R.string.lbl_notif_big_text_comment) + ": " + registration.getComment();
+            }
+
             setStatusBarNotification(
-                    title, message, ticker, intent
+                    title, message, ticker, intent, bigText
             );
         }
     }
@@ -176,22 +190,36 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
      * @param ticker The ticker-text shown when the notification is created.
      * @param intent The intent to be launched when the notification is selected.
      */
-    private void setStatusBarNotification(String title, String message, String ticker, Intent intent) {
-        NotificationManager notificationManager = getNotificationManager();
+    private void setStatusBarNotification(String title, String message, String ticker, Intent intent, String bigText) {
+        // NotificationManager notificationManager = getNotificationManager();
 
         int icon = R.drawable.logo_notif_bar;
-        Long when = System.currentTimeMillis();
 
-        Notification notification = new Notification(icon, ticker, when);
-        notification.flags |= Notification.FLAG_NO_CLEAR;
+        // Notification notification = new Notification(icon, ticker, when);
+        // notification.flags |= Notification.FLAG_NO_CLEAR;
 
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        notification.setLatestEventInfo(context, title, message, contentIntent);
+        // notification.setLatestEventInfo(context, title, message, contentIntent);
 
-        notificationManager.notify(
-                Constants.StatusBarNotificationIds.ONGOING_TIME_REGISTRATION_MESSAGE,
-                notification
-        );
+        // notificationManager.notify(
+        //         Constants.StatusBarNotificationIds.ONGOING_TIME_REGISTRATION_MESSAGE,
+        //         notification
+        // );
+
+
+        final NotificationManager mgr = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+
+        NotificationCompat2.Builder builder = new NotificationCompat2.Builder(context)
+                .setSmallIcon(icon)
+                .setTicker(ticker)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setContentIntent(contentIntent)
+                .setPriority(NotificationCompat2.PRIORITY_LOW);
+
+        Notification notification = new NotificationCompat2.BigTextStyle(builder).bigText(bigText).build();
+        notification.flags |= Notification.FLAG_NO_CLEAR;
+        mgr.notify(Constants.StatusBarNotificationIds.ONGOING_TIME_REGISTRATION_MESSAGE, notification);
     }
 
     /**

@@ -52,6 +52,7 @@ import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceListActivity;
+import eu.vranckaert.worktime.utils.widget.WidgetUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -207,11 +208,17 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
 
             if (project.isFinished()) { // Project will be marked as not-finished
                 Project defaultProject = projectService.changeDefaultProjectUponProjectMarkedFinished(project);
-                Project selectedWidgetProject = projectService.getSelectedProject();
-                if (selectedWidgetProject.getId().equals(project.getId())) {
-                    projectService.setSelectedProject(defaultProject);
-                    widgetService.updateWidget();
+
+                List<Integer> widgetIds = WidgetUtil.getAllWidgetIds(ManageProjectsActivity.this);
+                List<Integer> widgetIdsForUpdate = new ArrayList<Integer>();
+                for (int widgetId : widgetIds) {
+                    Project selectedWidgetProject = projectService.getSelectedProject(widgetId);
+                    if (selectedWidgetProject.getId().equals(project.getId())) {
+                        projectService.setSelectedProject(widgetId, defaultProject);
+                        widgetIdsForUpdate.add(widgetId);
+                    }
                 }
+                widgetService.updateWidgets(widgetIdsForUpdate);
             }
             
             loadProjects();

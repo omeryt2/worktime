@@ -13,14 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.vranckaert.worktime.dao.utils;
 
-/**
- * @author Dirk Vranckaert
- *         Date: 29-sep-2010
- *         Time: 19:02:51
- */
-public interface DaoConstants {
-    public static final String DATABASE = "worktime.db";
-    public static final int VERSION = 23;
+package eu.vranckaert.worktime.dao;
+
+import eu.vranckaert.worktime.dao.generic.GenericDao;
+import eu.vranckaert.worktime.model.WidgetConfiguration;
+
+import java.util.List;
+
+public interface WidgetConfigurationDao extends GenericDao<WidgetConfiguration, Integer> {
+    /**
+     * Find all {@link WidgetConfiguration instances} that are stored with a specific project id.
+     * @param projectId The id of the project to search the widget configuration entities for.
+     * @return A list of {@link WidgetConfiguration}.
+     */
+    List<WidgetConfiguration> findPerProjectId(int projectId);
 }

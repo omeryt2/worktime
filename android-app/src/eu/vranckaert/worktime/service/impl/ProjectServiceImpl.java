@@ -19,19 +19,21 @@ package eu.vranckaert.worktime.service.impl;
 import android.content.Context;
 import android.util.Log;
 import com.google.inject.Inject;
-import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
+import eu.vranckaert.worktime.dao.WidgetConfigurationDao;
 import eu.vranckaert.worktime.dao.impl.ProjectDaoImpl;
+import eu.vranckaert.worktime.dao.impl.TaskDaoImpl;
 import eu.vranckaert.worktime.dao.impl.TimeRegistrationDaoImpl;
+import eu.vranckaert.worktime.dao.impl.WidgetConfigurationDaoImpl;
 import eu.vranckaert.worktime.exceptions.AtLeastOneProjectRequiredException;
 import eu.vranckaert.worktime.exceptions.ProjectStillInUseException;
 import eu.vranckaert.worktime.model.Project;
-import eu.vranckaert.worktime.model.TimeRegistration;
+import eu.vranckaert.worktime.model.WidgetConfiguration;
 import eu.vranckaert.worktime.service.ProjectService;
-import eu.vranckaert.worktime.utils.preferences.Preferences;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,6 +56,9 @@ public class ProjectServiceImpl implements ProjectService {
     @Inject
     private TaskDao taskDao;
 
+    @Inject
+    private WidgetConfigurationDao widgetConfigurationDao;
+
     /**
      * Enables the use of this service outside of RoboGuice!
      * @param ctx The context to insert
@@ -62,6 +67,8 @@ public class ProjectServiceImpl implements ProjectService {
         this.ctx = ctx;
         dao = new ProjectDaoImpl(ctx);
         timeRegistrationDao = new TimeRegistrationDaoImpl(ctx);
+        taskDao = new TaskDaoImpl(ctx);
+        widgetConfigurationDao = new WidgetConfigurationDaoImpl(ctx);
     }
 
     /**
@@ -125,14 +132,21 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     /**
-     * Checks if the removed project was the selected project to link to new {@link TimeRegistration} instances. If so
-     * set the default project as selected project.
-     * @param project The project to check for.
+     * Checks if the removed project was selected for a widget, if so the default project will be used from now on for
+     * all those widgets.
+     * @param project The project that is removed.
      */
     private void checkSelectedProjectUponProjectRemoval(Project project) {
-        int projectId = Preferences.getSelectedProjectId(ctx);
-        if (project.getId() == projectId) {
-            setSelectedProject(dao.findDefaultProject());
+        Log.d(LOG_TAG, "Checking if the project (" + project.getId() + " - " + project.getName() + ") is configured in widgets upon project removal");
+        List<WidgetConfiguration> widgetConfigurations = widgetConfigurationDao.findPerProjectId(project.getId());
+        Log.d(LOG_TAG, "Found " + widgetConfigurations + " widget configurations for this project.");
+        for (WidgetConfiguration wc : widgetConfigurations) {
+            if (wc.getProjectId().equals(project.getId())) {
+                Log.d(LOG_TAG, "The project is used in widget with id " + wc.getWidgetId());
+                Project newSelectedProject = dao.findDefaultProject();
+                Log.d(LOG_TAG, "The new project that will be selected is " + newSelectedProject.getId() + " - " + newSelectedProject.getName());
+                setSelectedProject(wc.getWidgetId(), newSelectedProject);
+            }
         }
     }
 
@@ -156,31 +170,65 @@ public class ProjectServiceImpl implements ProjectService {
     /**
      * {@inheritDoc}
      */
-    public Project getSelectedProject() {
-        int projectId = Preferences.getSelectedProjectId(ctx);
-        Log.d(LOG_TAG, "Selected project id found is " + projectId);
+    public Project getSelectedProject(int widgetId) {
+        WidgetConfiguration wc = widgetConfigurationDao.findById(widgetId);
+        if (wc == null) {
+            Log.w(LOG_TAG, "No widget configuration is found for widget with id " + widgetId + ". One will be created with the default project");
 
-        if (projectId == Constants.Preferences.SELECTED_PROJECT_ID_DEFAULT_VALUE) {
-            Log.d(LOG_TAG, "No project is found yet. Get the default project.");
-            Project project = dao.findDefaultProject();
-            Log.d(LOG_TAG, "Set the default project in the preferences to be the selected project");
-            Preferences.setSelectedProjectId(ctx, project.getId());
-            return project;
-        } else {
-            Project project = dao.findById(projectId);
-            if (project == null) {
-                project = dao.findDefaultProject();
-            }
-            Log.d(LOG_TAG, "The selected project has id " + project.getId() + " and name " + project.getName());
-            return project;
+            wc = new WidgetConfiguration(widgetId);
+            Project defaultProject = dao.findDefaultProject();
+            wc.setProjectId(defaultProject.getId());
+            widgetConfigurationDao.save(wc);
+
+            return defaultProject;
         }
+
+        Project project = null;
+
+        if (wc.getProjectId() != null) {
+            Log.d(LOG_TAG, "Selected project id found is " + wc.getProjectId());
+            project = dao.findById(wc.getProjectId());
+            Log.d(LOG_TAG, "Selected project has id " + project.getId() + " and name " + project.getName());
+        }
+
+        if (project == null) {
+            Log.w(LOG_TAG, "No project is found for widget with id " + widgetId + ", updating the widget configuration to use the default project!");
+            project = dao.findDefaultProject();
+            wc.setProjectId(project.getId());
+            widgetConfigurationDao.update(wc);
+            Log.w(LOG_TAG, "The default project is now used as selected project for widget " + widgetId + " and has id " + project.getId() + " and name " + project.getName());
+        }
+
+        return project;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setSelectedProject(Project project) {
-        Preferences.setSelectedProjectId(ctx, project.getId());
+    public void setSelectedProject(int widgetId, Project project) {
+        WidgetConfiguration wc = widgetConfigurationDao.findById(widgetId);
+        if (wc == null) {
+            wc = new WidgetConfiguration(widgetId);
+            widgetConfigurationDao.save(wc);
+        } else {
+            wc.setProjectId(project.getId());
+            widgetConfigurationDao.update(wc);
+        }
+    }
+
+    @Override
+    public List<Integer> changeSelectedProject(Project fromProject, Project toProject) {
+        List<Integer> widgetIds = new ArrayList<Integer>();
+
+        List<WidgetConfiguration> wcs = widgetConfigurationDao.findPerProjectId(fromProject.getId());
+        for (WidgetConfiguration wc : wcs) {
+            wc.setProjectId(toProject.getId());
+            widgetConfigurationDao.update(wc);
+
+            widgetIds.add(wc.getWidgetId());
+        }
+
+        return widgetIds;
     }
 
     /**

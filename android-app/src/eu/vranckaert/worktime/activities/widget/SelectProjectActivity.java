@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.activities.widget;
 
 import android.app.AlertDialog;
@@ -29,6 +30,7 @@ import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import roboguice.activity.GuiceActivity;
+import roboguice.inject.InjectExtra;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,6 +47,12 @@ public class SelectProjectActivity extends GuiceActivity {
 
     @Inject
     private WidgetService widgetService;
+
+    @InjectExtra(value = Constants.Extras.WIDGET_ID)
+    private Integer widgetId;
+
+    @InjectExtra(value = Constants.Extras.SKIP_WIDGET_UPDATE, optional = true)
+    private boolean skipWidgetUpdate = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +77,7 @@ public class SelectProjectActivity extends GuiceActivity {
                 Collections.sort(selectableProjects, new ProjectByNameComparator());
                 final List<Project> availableProjects = selectableProjects;
 
-                Project selectedProject = projectService.getSelectedProject();
+                Project selectedProject = projectService.getSelectedProject(widgetId);
                 int selectedProjectIndex = -1;
 
                 List<String> projects = new ArrayList<String>();
@@ -91,8 +99,9 @@ public class SelectProjectActivity extends GuiceActivity {
                                new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialogInterface, int index) {
                                         Project newSelectedProject = availableProjects.get(index);
-                                        projectService.setSelectedProject(newSelectedProject);
-                                        widgetService.updateWidget();
+                                        projectService.setSelectedProject(widgetId, newSelectedProject);
+                                        if (!skipWidgetUpdate)
+                                            widgetService.updateWidget(widgetId);
                                         setResult(RESULT_OK);
                                         SelectProjectActivity.this.finish();
                                     }
@@ -100,7 +109,6 @@ public class SelectProjectActivity extends GuiceActivity {
                        )
                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
                            public void onCancel(DialogInterface dialogInterface) {
-                               widgetService.updateWidget();
                                setResult(RESULT_CANCELED);
                                SelectProjectActivity.this.finish();
                            }

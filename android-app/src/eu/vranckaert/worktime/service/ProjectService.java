@@ -69,17 +69,30 @@ public interface ProjectService {
     /**
      * Retrieve the selected project to be displayed in the widget and to which new
      * {@link eu.vranckaert.worktime.model.TimeRegistration} instances will be linked to.
-     * @return The selected project. If no selected project is found the default project is used as the selected one.
+     * @param widgetId The id of the widget for which the selected project should be retrieved.
+     * @return The selected project. If no selected project is found for the specified widget id this method returns
+     * null.
      */
-    Project getSelectedProject();
+    Project getSelectedProject(int widgetId);
 
     /**
      * Change the selected project to be displayed in the widget and to which new
      * {@link eu.vranckaert.worktime.model.TimeRegistration} instances will be linked. CAUTION: changing the selected
-     * project for the widget does no automatically updates the widget!
+     * project for the widget does not update the widget!
+     * @param widgetId The id of the widget for which the project should be changed.
      * @param project The project to be set as selected project.
      */
-    void setSelectedProject(Project project);
+    void setSelectedProject(int widgetId, Project project);
+
+    /**
+     * Change the selected projected to be used in the widgets and to which new
+     * {@link eu.vranckaert.worktime.model.TimeRegistration} instances will be linked. CAUTION: changing the selected
+     * project for the widget does not update the widget!
+     * @param fromProject The project that used to be selected.
+     * @param toProject The project that should now be selected.
+     * @return Returns a list of widget ids for which the project has changed.
+     */
+    List<Integer> changeSelectedProject(Project fromProject, Project toProject);
 
     /**
      * Updates an existing project.

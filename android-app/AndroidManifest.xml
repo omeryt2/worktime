@@ -33,13 +33,21 @@
                    android:value="AEdPqrEAAAAIKBOIRHAdZEXSXtzuiIu5cs97amRuguwj7UtnfA" />
 
         <!-- Widget configuration -->
-        <receiver android:name=".providers.WorkTimeWidgetProvider" android:process=":otherPrivateProcess">
+        <receiver android:name=".providers.WorkTimeWidgetProvider_2x2" android:label="@string/lbl_widget_2x2_name">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
 			</intent-filter>
 			<meta-data android:name="android.appwidget.provider"
-					   android:resource="@xml/appwidget_info"/>
+					   android:resource="@xml/appwidget_2x2"/>
 		</receiver>
+
+        <receiver android:name=".providers.WorkTimeWidgetProvider_1x1" android:label="@string/lbl_widget_1x1_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/appwidget_1x1"/>
+        </receiver>
 
         <activity android:name=".activities.HomeActivity"
                   android:label="@string/app_name"
@@ -94,6 +102,14 @@
                   android:configChanges="orientation|keyboardHidden"/>
 
         <!-- Widget activities -->
+        <!-- Configuration -->
+        <activity android:name=".activities.widget.Configuration1x1Activity"
+                  android:theme="@style/Theme.Translucent"
+                  android:configChanges="orientation|keyboardHidden">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
         <!-- Start -->
         <activity android:name=".activities.widget.StartTimeRegistrationActivity"
                   android:theme="@style/Theme.Translucent"

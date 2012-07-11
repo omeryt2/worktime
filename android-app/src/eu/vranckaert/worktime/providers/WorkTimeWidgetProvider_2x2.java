@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.providers;
 
 import android.appwidget.AppWidgetManager;
@@ -31,8 +32,8 @@ import eu.vranckaert.worktime.service.ui.impl.WidgetServiceImpl;
  * Date: 07/02/11
  * Time: 20:58
  */
-public class WorkTimeWidgetProvider extends AppWidgetProvider {
-    private static final String LOG_TAG = WorkTimeWidgetProvider.class.getName();
+public class WorkTimeWidgetProvider_2x2 extends AppWidgetProvider {
+    private static final String LOG_TAG = WorkTimeWidgetProvider_2x2.class.getName();
 
     private WidgetService widgetService;
     private StatusBarNotificationService statusBarNotificationService;
@@ -56,9 +57,10 @@ public class WorkTimeWidgetProvider extends AppWidgetProvider {
             Log.d(LOG_TAG, "STARTING FOR WIDGET ID: " + appWidgetId);
             Log.d(LOG_TAG, "PROVIDER: " + widgetProviderInfo.provider.toString());
 
-            widgetService.updateWidget();
-            statusBarNotificationService.addOrUpdateNotification(null);
+            widgetService.updateWidget2x2(appWidgetId);
         }
+
+        statusBarNotificationService.addOrUpdateNotification(null);
     }
 
     @Override

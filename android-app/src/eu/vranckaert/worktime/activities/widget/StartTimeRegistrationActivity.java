@@ -78,7 +78,11 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
 
     @Inject
     private BackupService backupService;
-    
+
+    /**
+     * Parameters from the 'Extra Bundle'.
+     */
+    private Integer widgetId;
     private boolean selectProject;
 
     private List<Task> availableTasks;
@@ -91,9 +95,16 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         Log.d(LOG_TAG, "Started the START TimeRegistration acitivity");
 
-        Object extra = IntentUtil.getExtra(StartTimeRegistrationActivity.this, Constants.Extras.TIME_REGISTRATION_START_ASK_FOR_PROJECT);
-        if (extra != null) {
-            selectProject = (Boolean) extra;
+        TimeRegistration latestTimeRegistration = timeRegistrationService.getLatestTimeRegistration();
+        if (latestTimeRegistration != null && latestTimeRegistration.isOngoingTimeRegistration()) {
+            showDialog(Constants.Dialog.WARN_ONGOING_TR);
+            return;
+        }
+
+        widgetId = (Integer) IntentUtil.getExtra(StartTimeRegistrationActivity.this, Constants.Extras.WIDGET_ID);
+        Object extraAskForProject = IntentUtil.getExtra(StartTimeRegistrationActivity.this, Constants.Extras.TIME_REGISTRATION_START_ASK_FOR_PROJECT);
+        if (extraAskForProject != null) {
+            selectProject = (Boolean) extraAskForProject;
         } else {
             selectProject = false;
         }
@@ -107,11 +118,12 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
     
     private void showProjectChooser() {
         Intent intent = new Intent(StartTimeRegistrationActivity.this, SelectProjectActivity.class);
+        intent.putExtra(Constants.Extras.WIDGET_ID, widgetId);
         startActivityForResult(intent, Constants.IntentRequestCodes.SELECT_PROJECT);
     }
     
     private void showTaskChooser() {
-        Project selectedProject = projectService.getSelectedProject();
+        Project selectedProject = projectService.getSelectedProject(widgetId);
         if (Preferences.getSelectTaskHideFinished(getApplicationContext())) {
             availableTasks = taskService.findNotFinishedTasksForProject(selectedProject);
         } else {
@@ -193,8 +205,7 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
                 );
 
                 projectService.refresh(selectedTask.getProject());
-
-                widgetService.updateWidget();
+                widgetService.updateWidgetsForProject(newTr.getTask().getProject());
 
                 /*
                 * Creates a new backup to be sure that the data is always secure!
@@ -218,6 +229,26 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
     protected Dialog onCreateDialog(int dialogId) {
         Dialog dialog = null;
         switch(dialogId) {
+            case Constants.Dialog.WARN_ONGOING_TR: {
+                AlertDialog.Builder alertOngoingTR = new AlertDialog.Builder(this);
+                alertOngoingTR.setMessage(R.string.msg_already_ongoing_time_registration)
+                        .setCancelable(true)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                removeDialog(Constants.Dialog.WARN_ONGOING_TR);
+                                StartTimeRegistrationActivity.this.finish();
+                            }
+                        })
+                        .setOnCancelListener(new Dialog.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialogInterface) {
+                                removeDialog(Constants.Dialog.WARN_ONGOING_TR);
+                                StartTimeRegistrationActivity.this.finish();
+                            }
+                        });
+                dialog = alertOngoingTR.create();
+                break;
+            }
             case Constants.Dialog.LOADING_TIME_REGISTRATION_CHANGE: {
                 Log.d(LOG_TAG, "Creating loading dialog for starting a new time registration");
                 dialog = ProgressDialog.show(

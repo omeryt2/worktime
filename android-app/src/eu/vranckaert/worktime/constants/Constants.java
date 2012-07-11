@@ -82,6 +82,7 @@ public class Constants {
         public static final int TIME_REGISTRATION_DELETE_RANGE_MAX_BOUNDARY = 64;
         public static final int TIME_REGISTRATION_DELETE_RANGE_BOUNDARY_PROBLEM = 65;
         public static final int TIME_REGISTRATIONS_DELETE_LOADING = 66;
+        public static final int WARN_ONGOING_TR = 67;
     }
     public class IntentRequestCodes {
         public static final int ADD_PROJECT = 0;
@@ -104,7 +105,6 @@ public class Constants {
     public class Preferences {
         public static final String PREFERENCES_NAME = "WorkTime_0001";
 
-        public static final int SELECTED_PROJECT_ID_DEFAULT_VALUE = -1;
         public static final boolean WIDGET_ASK_FOR_TASK_SELECTION_IF_ONLY_ONE_DEFAULT_VALUE = true;
         public static final boolean ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE_DEFAULT_VALUE = true;
         public static final boolean WIDGET_ENDING_TIME_REGISTRATION_FINISH_TASK_PREFERENCE_DEFAULT_VALUE = false;
@@ -122,7 +122,6 @@ public class Constants {
         public static final int TIME_REGISTRATION_SPLIT_DEFAULT_GAP_DEFAULT_VALUE = 30;
 
         public class Keys {
-            public static final String SELECTED_PROJECT_ID = "selectedProjectId";
             public static final String WIDGET_ASK_FOR_TASK_SELECTION_IF_ONLY_ONE = "askForTaskSelectionIfOnlyOne";
             public static final String ENDING_TIME_REGISTRATION_COMMENT_PREFERENCE = "widgetEndingTimeRegistrationCommentPreference";
             public static final String WIDGET_ENDING_TIME_REGISTRATION_FINISH_TASK_PREFERENCE = "widgetEndingTimeRegistrationFinishTaskPreference";
@@ -161,6 +160,8 @@ public class Constants {
         public static final String DISPLAY_DURATION = "displayDuration";
         public static final String DATA_ORDER = "dataOrder";
         public static final String EXPORT_DTO = "exportDTO";
+        public static final String WIDGET_ID = "widgetId";
+        public static final String SKIP_WIDGET_UPDATE = "skipWidgetUpdate";
     }
     public class ContentMenuItemIds {
         public static final int PROJECT_DETAILS = 1;

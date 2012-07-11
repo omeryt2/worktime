@@ -308,7 +308,7 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
                 loadProjectTasks(project);
 
                 if (reloadWidget) {
-                    widgetService.updateWidget();
+                    widgetService.updateAllWidgets();
                 }
             } catch (TaskStillInUseException e) {
                 if (force) {

@@ -123,7 +123,7 @@ public class ResetApplicationPreferencesActivity extends GuiceActivity {
         protected void onPostExecute(Void aVoid) {
             removeDialog(Constants.Dialog.LOADING_RESET_APPLICATION);
 
-            widgetService.updateWidget();
+            widgetService.updateAllWidgets();
             notificationService.addOrUpdateNotification(null);
 
             finish();

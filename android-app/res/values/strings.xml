@@ -460,10 +460,13 @@
     <string name="lbl_about_bug_tracking_website">Report a Bug</string>
 
     <!-- WIDGET -->
+    <string name="lbl_widget_1x1_name">WorkTime (Per project 1x1)</string>
+    <string name="lbl_widget_2x2_name">WorkTime (2x2)</string>
     <string name="btn_widget_start">Punch In</string>
     <string name="btn_widget_stop">Punch Out</string>
     <string name="msg_widget_time_reg_created">Punched in</string>
     <string name="msg_widget_time_reg_ended">Punched out</string>
+    <string name="msg_already_ongoing_time_registration">A time registration is already ongoing. Finish that first before starting a new one.</string>
     <string name="msg_widget_ask_finish_task_title">Finish task?</string>
     <string name="msg_widget_ask_finish_task_message">Do you want to mark the task &#8216;%1$s&#8217; finished? This can be undone in the project details!</string>
     <string name="msg_no_tasks_available_choose_other_project">No tasks are available for the selected project. Select another project or go back and create a task for the project first.</string>
@@ -477,6 +480,10 @@
     <string name="lbl_notif_update_tr">A time registration is ongoing</string>
     <string name="lbl_notif_project_task_name">%1$s - %2$s</string>
     <string name="lbl_notif_title_ongoing_tr">Ongoing Time Registration</string>
+    <string name="lbl_notif_big_text_project">Project</string>
+    <string name="lbl_notif_big_text_task">Task</string>
+    <string name="lbl_notif_big_text_started_at">Started at</string>
+    <string name="lbl_notif_big_text_comment">Comment</string>
 
     <!-- WIZARD -->
     <string name="wizard_navigation_cancel">Cancel</string>
