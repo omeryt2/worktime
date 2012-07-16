@@ -18,10 +18,14 @@ package eu.vranckaert.worktime.activities.notifcationbar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 import com.google.inject.Inject;
+import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationActionActivity;
 import eu.vranckaert.worktime.constants.Constants;
+import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
+import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import roboguice.activity.GuiceActivity;
 
 /**
@@ -33,6 +37,9 @@ public class EndTimeRegistration extends GuiceActivity {
     @Inject
     private TimeRegistrationService timeRegistrationService;
 
+    @Inject
+    private StatusBarNotificationService statusBarNotificationService;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -40,10 +47,16 @@ public class EndTimeRegistration extends GuiceActivity {
     }
 
     private void launchStopTimeRegistrationActivity() {
-        Intent intent = new Intent(getApplicationContext(), TimeRegistrationActionActivity.class);
-        intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistrationService.getLatestTimeRegistration());
-        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
+        TimeRegistration timeRegistration = timeRegistrationService.getLatestTimeRegistration();
+        if (timeRegistration != null) {
+            Intent intent = new Intent(getApplicationContext(), TimeRegistrationActionActivity.class);
+            intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
+            intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
+        } else {
+            Toast.makeText(EndTimeRegistration.this, R.string.lbl_notif_no_tr_found, Toast.LENGTH_LONG);
+            statusBarNotificationService.removeOngoingTimeRegistrationNotification();
+        }
     }
 
     @Override

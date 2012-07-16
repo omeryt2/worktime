@@ -285,15 +285,19 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
         int element = info.position;
         TimeRegistration timeRegistration = timeRegistrations.get(element);
 
-        switch (item.getItemId()) {
-            case R.id.registrations_activity_edit:
-                Intent intent = new Intent(TimeRegistrationsActivity.this, TimeRegistrationActionActivity.class);
-                intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
-                startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
+        if (timeRegistration != null) {
+            switch (item.getItemId()) {
+                case R.id.registrations_activity_edit:
+                    Intent intent = new Intent(TimeRegistrationsActivity.this, TimeRegistrationActionActivity.class);
+                    intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
+                    startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
+                    break;
+                default:
+                    return super.onContextItemSelected(item);
+            }
         }
+
+        return true;
     }
 
     @Override
