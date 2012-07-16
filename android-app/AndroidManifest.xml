@@ -41,12 +41,12 @@
 					   android:resource="@xml/appwidget_2x2"/>
 		</receiver>
 
-        <receiver android:name=".providers.WorkTimeWidgetProvider_1x1" android:label="@string/lbl_widget_1x1_name">
+        <receiver android:name=".providers.WorkTimeWidgetProvider_2x1" android:label="@string/lbl_widget_2x1_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
-                       android:resource="@xml/appwidget_1x1"/>
+                       android:resource="@xml/appwidget_2x1"/>
         </receiver>
 
         <activity android:name=".activities.HomeActivity"
@@ -103,7 +103,7 @@
 
         <!-- Widget activities -->
         <!-- Configuration -->
-        <activity android:name=".activities.widget.Configuration1x1Activity"
+        <activity android:name=".activities.widget.Configuration2x1Activity"
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden">
             <intent-filter>

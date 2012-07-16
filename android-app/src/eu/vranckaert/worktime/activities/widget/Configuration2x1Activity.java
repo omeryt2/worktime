@@ -24,7 +24,7 @@ import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.service.ui.impl.WidgetServiceImpl;
 
-public class Configuration1x1Activity extends Activity {
+public class Configuration2x1Activity extends Activity {
     private Integer widgetId;
     private WidgetService widgetService;
 
@@ -32,12 +32,12 @@ public class Configuration1x1Activity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        widgetService = new WidgetServiceImpl(Configuration1x1Activity.this);
+        widgetService = new WidgetServiceImpl(Configuration2x1Activity.this);
         widgetId = getIntent().getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
         setResult(RESULT_CANCELED);
 
-        Intent selectProjectIntent = new Intent(Configuration1x1Activity.this, SelectProjectActivity.class);
+        Intent selectProjectIntent = new Intent(Configuration2x1Activity.this, SelectProjectActivity.class);
         selectProjectIntent.putExtra(Constants.Extras.WIDGET_ID, widgetId);
         selectProjectIntent.putExtra(Constants.Extras.SKIP_WIDGET_UPDATE, true);
         startActivityForResult(selectProjectIntent, Constants.IntentRequestCodes.SELECT_PROJECT);

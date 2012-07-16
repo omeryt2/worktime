@@ -20,6 +20,6 @@
     android:minWidth="140dp"
     android:minHeight="40dp"
     android:updatePeriodMillis="86400000"
-    android:initialLayout="@layout/worktime_appwidget_1x1"
-    android:configure="eu.vranckaert.worktime.activities.widget.Configuration1x1Activity">
+    android:initialLayout="@layout/worktime_appwidget_2x1"
+    android:configure="eu.vranckaert.worktime.activities.widget.Configuration2x1Activity">
 </appwidget-provider>

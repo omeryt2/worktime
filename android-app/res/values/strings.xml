@@ -460,8 +460,8 @@
     <string name="lbl_about_bug_tracking_website">Report a Bug</string>
 
     <!-- WIDGET -->
-    <string name="lbl_widget_1x1_name">WorkTime (Per project 1x1)</string>
-    <string name="lbl_widget_2x2_name">WorkTime (2x2)</string>
+    <string name="lbl_widget_2x1_name">WorkTime (Per project/task)</string>
+    <string name="lbl_widget_2x2_name">WorkTime</string>
     <string name="btn_widget_start">Punch In</string>
     <string name="btn_widget_stop">Punch Out</string>
     <string name="msg_widget_time_reg_created">Punched in</string>
