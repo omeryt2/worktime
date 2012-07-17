@@ -19,6 +19,7 @@ package eu.vranckaert.worktime.activities.widget;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
@@ -48,11 +49,14 @@ public class SelectProjectActivity extends GuiceActivity {
     @Inject
     private WidgetService widgetService;
 
-    @InjectExtra(value = Constants.Extras.WIDGET_ID)
+    @InjectExtra(value = Constants.Extras.WIDGET_ID, optional = true)
     private Integer widgetId;
 
-    @InjectExtra(value = Constants.Extras.SKIP_WIDGET_UPDATE, optional = true)
-    private boolean skipWidgetUpdate = false;
+    @InjectExtra(value = Constants.Extras.ONLY_SELECT, optional = true)
+    private boolean onlySelect = false;
+
+    @InjectExtra(value = Constants.Extras.UPDATE_WIDGET, optional = true)
+    private boolean updateWidget = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,14 +81,17 @@ public class SelectProjectActivity extends GuiceActivity {
                 Collections.sort(selectableProjects, new ProjectByNameComparator());
                 final List<Project> availableProjects = selectableProjects;
 
-                Project selectedProject = projectService.getSelectedProject(widgetId);
+                Project selectedProject = null;
+                if (widgetId != null) {
+                    selectedProject = projectService.getSelectedProject(widgetId);
+                }
                 int selectedProjectIndex = -1;
 
                 List<String> projects = new ArrayList<String>();
                 for (int i=0; i<availableProjects.size(); i++) {
                     Project project = availableProjects.get(i);
 
-                    if (selectedProject.getId() == project.getId()) {
+                    if (selectedProject != null && selectedProject.getId() == project.getId()) {
                         selectedProjectIndex = i;
                     }
 
@@ -99,10 +106,15 @@ public class SelectProjectActivity extends GuiceActivity {
                                new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialogInterface, int index) {
                                         Project newSelectedProject = availableProjects.get(index);
-                                        projectService.setSelectedProject(widgetId, newSelectedProject);
-                                        if (!skipWidgetUpdate)
+                                        if (!onlySelect && widgetId != null)
+                                            projectService.setSelectedProject(widgetId, newSelectedProject);
+
+                                        if (updateWidget)
                                             widgetService.updateWidget(widgetId);
-                                        setResult(RESULT_OK);
+
+                                        Intent resultValue = new Intent();
+                                        resultValue.putExtra(Constants.Extras.PROJECT, newSelectedProject);
+                                        setResult(RESULT_OK, resultValue);
                                         SelectProjectActivity.this.finish();
                                     }
                                }

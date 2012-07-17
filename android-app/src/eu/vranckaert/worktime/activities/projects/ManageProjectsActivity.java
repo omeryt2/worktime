@@ -38,7 +38,8 @@ import eu.vranckaert.worktime.comparators.project.ProjectByNameComparator;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.exceptions.AtLeastOneProjectRequiredException;
-import eu.vranckaert.worktime.exceptions.ProjectStillInUseException;
+import eu.vranckaert.worktime.exceptions.ProjectHasOngoingTimeRegistration;
+import eu.vranckaert.worktime.exceptions.ProjectStillHasTasks;
 import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
@@ -150,7 +151,7 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
      * @param askConfirmation If a confirmation should be requested to the user. If so the delete will no be executed
      * but a show dialog is called form where you have to call this method again with the askConfirmation parameter set
      */
-    private void deleteProject(Project project, boolean askConfirmation) {
+    private void deleteProject(Project project, boolean askConfirmation, boolean force) {
         if (askConfirmation) {
             Log.d(getApplicationContext(), LOG_TAG, "Asking confirmation to remove a project");
             projectToRemove = project;
@@ -158,7 +159,7 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
         } else {
             try {
                 Log.d(getApplicationContext(), LOG_TAG, "Ready to actually remove the project!");
-                projectService.remove(project);
+                projectService.remove(project, force);
                 tracker.trackEvent(
                         TrackerConstants.EventSources.MANAGE_PROJECTS_ACTIVITY,
                         TrackerConstants.EventActions.DELETE_PROJECT
@@ -166,10 +167,18 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
                 Log.d(getApplicationContext(), LOG_TAG, "Project removed, ready to reload projects");
                 loadProjects();
                 projectToRemove = null;
+
+                widgetService.updateAllWidgets();
             } catch (AtLeastOneProjectRequiredException e) {
                 Toast.makeText(ManageProjectsActivity.this, R.string.msg_delete_project_at_least_one_required,  Toast.LENGTH_LONG).show();
-            } catch (ProjectStillInUseException e) {
-                showDialog(Constants.Dialog.WARN_PROJECT_DELETE_PROJECT_STILL_IN_USE);
+            } catch (ProjectStillHasTasks e) {
+                if (e.hasTimeRegistrations()) {
+                    showDialog(Constants.Dialog.DELETE_ALL_TASKS_AND_TIME_REGISTRATIONS_OF_PROJECT_YES_NO);
+                } else {
+                    showDialog(Constants.Dialog.DELETE_ALL_TASKS_OF_PROJECT_YES_NO);
+                }
+            } catch (ProjectHasOngoingTimeRegistration e) {
+                showDialog(Constants.Dialog.WARN_ONGOING_TR);
             }
         }
     }
@@ -236,7 +245,7 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
 						   .setCancelable(false)
 						   .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int which) {
-									deleteProject(projectToRemove, false);
+									deleteProject(projectToRemove, false, false);
                                     removeDialog(Constants.Dialog.DELETE_PROJECT_YES_NO);
 								}
 							})
@@ -249,18 +258,68 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
 				dialog = alertRemoveAllRegs.create();
                 break;
             }
-            case Constants.Dialog.WARN_PROJECT_DELETE_PROJECT_STILL_IN_USE: {
+
+            case Constants.Dialog.DELETE_ALL_TASKS_OF_PROJECT_YES_NO: {
                 AlertDialog.Builder alertRemoveProjectNotPossible = new AlertDialog.Builder(this);
-				alertRemoveProjectNotPossible.setTitle(projectToRemove.getName())
-						   .setMessage(R.string.msg_delete_task_unavailable_still_in_use)
-						   .setCancelable(false)
-						   .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                               public void onClick(DialogInterface dialog, int which) {
-                                   projectToRemove = null;
-                                   removeDialog(Constants.Dialog.WARN_PROJECT_DELETE_PROJECT_STILL_IN_USE);
-                               }
-                           });
-				dialog = alertRemoveProjectNotPossible.create();
+                alertRemoveProjectNotPossible.setTitle(projectToRemove.getName())
+                        .setMessage(R.string.msg_delete_project_and_all_tasks)
+                        .setCancelable(false)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteProject(projectToRemove, false, true);
+                                removeDialog(Constants.Dialog.DELETE_ALL_TASKS_OF_PROJECT_YES_NO);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                projectToRemove = null;
+                                removeDialog(Constants.Dialog.DELETE_ALL_TASKS_OF_PROJECT_YES_NO);
+                            }
+                        });
+                dialog = alertRemoveProjectNotPossible.create();
+                break;
+            }
+            case Constants.Dialog.DELETE_ALL_TASKS_AND_TIME_REGISTRATIONS_OF_PROJECT_YES_NO: {
+                AlertDialog.Builder alertRemoveProjectNotPossible = new AlertDialog.Builder(this);
+                alertRemoveProjectNotPossible.setTitle(projectToRemove.getName())
+                        .setMessage(R.string.msg_delete_project_and_all_tasks_and_all_time_registrations)
+                        .setCancelable(false)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteProject(projectToRemove, false, true);
+                                removeDialog(Constants.Dialog.DELETE_ALL_TASKS_AND_TIME_REGISTRATIONS_OF_PROJECT_YES_NO);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                projectToRemove = null;
+                                removeDialog(Constants.Dialog.DELETE_ALL_TASKS_AND_TIME_REGISTRATIONS_OF_PROJECT_YES_NO);
+                            }
+                        });
+                dialog = alertRemoveProjectNotPossible.create();
+                break;
+            }
+            case Constants.Dialog.WARN_ONGOING_TR: {
+                AlertDialog.Builder ongoingTrDialog = new AlertDialog.Builder(this);
+                ongoingTrDialog.setTitle(projectToRemove.getName())
+                        .setMessage(R.string.msg_delete_project_ongoing_time_registration)
+                        .setCancelable(true)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                projectToRemove = null;
+                                removeDialog(Constants.Dialog.WARN_ONGOING_TR);
+                            }
+                        })
+                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialogInterface) {
+                                projectToRemove = null;
+                                removeDialog(Constants.Dialog.WARN_ONGOING_TR);
+                            }
+                        });;
+                dialog = ongoingTrDialog.create();
                 break;
             }
             case Constants.Dialog.ASK_FINISH_PROJECT_WITH_REMAINING_UNFINISHED_TASKS: {
@@ -435,7 +494,7 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
                 break;
             }
             case Constants.ContentMenuItemIds.PROJECT_DELETE: {
-                deleteProject(projectForContext, true);
+                deleteProject(projectForContext, true, false);
                 break;
             }
             case Constants.ContentMenuItemIds.PROJECT_MARK_FINISHED: {

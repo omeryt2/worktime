@@ -39,7 +39,6 @@ public class Configuration2x1Activity extends Activity {
 
         Intent selectProjectIntent = new Intent(Configuration2x1Activity.this, SelectProjectActivity.class);
         selectProjectIntent.putExtra(Constants.Extras.WIDGET_ID, widgetId);
-        selectProjectIntent.putExtra(Constants.Extras.SKIP_WIDGET_UPDATE, true);
         startActivityForResult(selectProjectIntent, Constants.IntentRequestCodes.SELECT_PROJECT);
     }
 
@@ -48,14 +47,25 @@ public class Configuration2x1Activity extends Activity {
         switch (requestCode) {
             case Constants.IntentRequestCodes.SELECT_PROJECT: {
                 if (resultCode == RESULT_OK) {
+                    Intent selectTaskIntent = new Intent(Configuration2x1Activity.this, SelectTaskActivity.class);
+                    selectTaskIntent.putExtra(Constants.Extras.WIDGET_ID, widgetId);
+                    selectTaskIntent.putExtra(Constants.Extras.ENABLE_SELECT_NONE_OPTION, true);
+                    startActivityForResult(selectTaskIntent, Constants.IntentRequestCodes.SELECT_TASK);
+                } else {
+                    finish();
+                }
+                break;
+            }
+            case Constants.IntentRequestCodes.SELECT_TASK: {
+                if (resultCode == RESULT_OK) {
                     widgetService.updateWidget(widgetId);
 
                     Intent resultValue = new Intent();
                     resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
                     setResult(RESULT_OK, resultValue);
                 }
+                finish();
             }
-            finish();
         }
     }
 }

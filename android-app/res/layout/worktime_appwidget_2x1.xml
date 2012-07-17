@@ -29,7 +29,7 @@
                   android:layout_gravity="center_horizontal"
                   android:singleLine="true"
                   android:ellipsize="end"/>
-        <Button android:id="@+id/widget_button"
+        <Button android:id="@+id/widget_actionbtn"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"/>

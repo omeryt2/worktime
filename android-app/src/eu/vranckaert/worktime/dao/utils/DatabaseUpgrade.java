@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.dao.utils;
 
 /**
@@ -35,6 +36,9 @@ public enum DatabaseUpgrade {
                 "id " + DataTypes.INTEGER + " PRIMARY KEY, " +
                 "projectId " + DataTypes.INTEGER +
             ");"
+    }),
+    UPGRADE3(24, new String[] {
+            "ALTER TABLE WidgetConfiguration add column taskId " + DataTypes.INTEGER + ";"
     })
     ;
 

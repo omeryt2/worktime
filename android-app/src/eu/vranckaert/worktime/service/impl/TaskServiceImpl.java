@@ -18,14 +18,20 @@ package eu.vranckaert.worktime.service.impl;
 
 import android.content.Context;
 import com.google.inject.Inject;
+import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
+import eu.vranckaert.worktime.dao.WidgetConfigurationDao;
+import eu.vranckaert.worktime.dao.impl.ProjectDaoImpl;
 import eu.vranckaert.worktime.dao.impl.TaskDaoImpl;
 import eu.vranckaert.worktime.dao.impl.TimeRegistrationDaoImpl;
+import eu.vranckaert.worktime.dao.impl.WidgetConfigurationDaoImpl;
+import eu.vranckaert.worktime.exceptions.AtLeastOneTaskRequiredException;
 import eu.vranckaert.worktime.exceptions.TaskStillInUseException;
 import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
+import eu.vranckaert.worktime.model.WidgetConfiguration;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.utils.context.Log;
 
@@ -46,12 +52,20 @@ public class TaskServiceImpl implements TaskService {
     private TaskDao dao;
 
     @Inject
+    private ProjectDao projectDao;
+
+    @Inject
+    private WidgetConfigurationDao widgetConfigurationDao;
+
+    @Inject
     private TimeRegistrationDao timeRegistrationDao;
 
     public TaskServiceImpl(Context ctx) {
         this.ctx = ctx;
         dao = new TaskDaoImpl(ctx);
+        projectDao = new ProjectDaoImpl(ctx);
         timeRegistrationDao = new TimeRegistrationDaoImpl(ctx);
+        widgetConfigurationDao = new WidgetConfigurationDaoImpl(ctx);
     }
 
     /**
@@ -90,15 +104,20 @@ public class TaskServiceImpl implements TaskService {
     /**
      * {@inheritDoc}
      */
-    public void remove(Task task, boolean force) throws TaskStillInUseException {
+    public void remove(Task task, boolean force) throws TaskStillInUseException, AtLeastOneTaskRequiredException {
         List<TimeRegistration> timeRegistrations = timeRegistrationDao.findTimeRegistrationsForTask(task);
         Log.d(ctx, LOG_TAG, timeRegistrations.size() + " timeregistrations found coupled to the project to delete");
         if(!timeRegistrations.isEmpty() && !force) {
             throw new TaskStillInUseException("The task is linked to existing time registrations!");
-        } else if(force) {
-            Log.d(ctx, LOG_TAG, "Forcing to delete all timeregistrations linked to the tasj first!");
-            for (TimeRegistration treg : timeRegistrations) {
-                timeRegistrationDao.delete(treg);
+        } else {
+            int numberOfTasks = dao.findTasksForProject(task.getProject()).size();
+            if (numberOfTasks == 1) {
+                throw new AtLeastOneTaskRequiredException("The last task of a project cannot manually be deleted");
+            } else if(force) {
+                Log.d(ctx, LOG_TAG, "Forcing to delete all timeregistrations linked to the tasj first!");
+                for (TimeRegistration treg : timeRegistrations) {
+                    timeRegistrationDao.delete(treg);
+                }
             }
         }
         dao.delete(task);
@@ -114,5 +133,74 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void removeAll() {
         dao.deleteAll();
+    }
+
+    @Override
+    public Task getSelectedTask(int widgetId) {
+        WidgetConfiguration wc = widgetConfigurationDao.findById(widgetId);
+        if (wc == null) {
+            Log.w(ctx, LOG_TAG, "No widget configuration is found for widget with id " + widgetId + ". One will be created with the default project");
+
+            wc = new WidgetConfiguration(widgetId);
+            Project defaultProject = projectDao.findDefaultProject();
+            List<Task> defaultTasks = dao.findTasksForProject(defaultProject);
+            if (!defaultTasks.isEmpty()) {
+                Task defaultTask = defaultTasks.get(0);
+                wc.setTask(defaultTask);
+                widgetConfigurationDao.save(wc);
+                return defaultTask;
+            } else {
+                String errorMsg = "The task data is corrupt! No task found for the widget with id " + widgetId + " because at least one task should be available for the default project!";
+                Log.e(ctx, LOG_TAG, errorMsg);
+                throw new RuntimeException(errorMsg);
+            }
+        }
+
+        Task task = null;
+
+        if (wc.getTask() != null) {
+            Log.d(ctx, LOG_TAG, "Selected task id found is " + wc.getTask().getId());
+            task = dao.findById(wc.getTask().getId());
+            if (task != null)
+                Log.d(ctx, LOG_TAG, "Selected task has id " + task.getId() + " and name " + task.getName());
+        }
+
+        if (task == null) {
+            Log.w(ctx, LOG_TAG, "No task is found for widget with id " + widgetId + ", updating the widget configuration to use a task of the default project!");
+            Project project = projectDao.findDefaultProject();
+            List<Task> defaultTasks = dao.findTasksForProject(project);
+            if (!defaultTasks.isEmpty()) {
+                task = defaultTasks.get(0);
+                wc.setTask(task);
+                Log.w(ctx, LOG_TAG, "The first task of the default project is now used as selected task for widget " + widgetId + " and has id " + task.getId() + " and name " + task.getName());
+                widgetConfigurationDao.update(wc);
+            } else {
+                String errorMsg = "The task data is corrupt! No task found for the widget with id " + widgetId + " because at least one task should be available for the default project!";
+                Log.e(ctx, LOG_TAG, errorMsg);
+                throw new RuntimeException(errorMsg);
+            }
+        }
+
+        return task;
+    }
+
+    @Override
+    public void setSelectedTask(Integer widgetId, Task task) {
+        WidgetConfiguration wc = widgetConfigurationDao.findById(widgetId);
+        if (wc == null) {
+            wc = new WidgetConfiguration(widgetId);
+            wc.setTask(task);
+            wc.setProject(null);
+            widgetConfigurationDao.save(wc);
+        } else {
+            wc.setTask(task);
+            wc.setProject(null);
+            widgetConfigurationDao.update(wc);
+        }
+    }
+
+    @Override
+    public List<Task> findAll() {
+        return dao.findAll();
     }
 }

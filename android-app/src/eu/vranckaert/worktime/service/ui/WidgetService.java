@@ -17,6 +17,8 @@
 package eu.vranckaert.worktime.service.ui;
 
 import eu.vranckaert.worktime.model.Project;
+import eu.vranckaert.worktime.model.Task;
+import eu.vranckaert.worktime.model.WidgetConfiguration;
 
 import java.util.List;
 
@@ -38,12 +40,13 @@ public interface WidgetService {
     void updateWidgets(List<Integer> widgetIds);
 
     /**
-     * Updates all the widgets that are configured for the specified {@link Project}.
-     * @param project Based on this variable a lookup is done on
+     * Updates all the widgets that are configured for the specified {@link Task} and all the widgets that are
+     * configured for the specified tasks' {@link Project}.
+     * @param task Based on this variable a lookup is done on
      * {@link eu.vranckaert.worktime.model.WidgetConfiguration} to check which widgets are configured for this
-     * {@link Project}. All linked widgets will be updated.
+     * {@link Task}. All related widgets will be updated.
      */
-    void updateWidgetsForProject(Project project);
+    void updateWidgetsForTask(Task task);
 
     /**
      * Update the widget with a certain id. This will forward the call to the method that will handle the request for
@@ -57,4 +60,12 @@ public interface WidgetService {
      * @param id The id of the widget.
      */
     void removeWidget(int id);
+
+    /**
+     * Get the {@link WidgetConfiguration} instance based on a widgetId. If the widget-id is not found in the database
+     * it returns null.
+     * @param widgetId The id of the widget.
+     * @return The {@link WidgetConfiguration} or null if not found.
+     */
+    WidgetConfiguration getWidgetConfiguration(int widgetId);
 }

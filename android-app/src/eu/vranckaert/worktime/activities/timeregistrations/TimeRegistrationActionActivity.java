@@ -394,7 +394,7 @@ public class TimeRegistrationActionActivity extends Activity {
                         TrackerConstants.EventActions.ADD_TR_COMMENT
                 );
                 timeRegistrationService.update(timeRegistration);
-                widgetService.updateWidgetsForProject(timeRegistration.getTask().getProject());
+                widgetService.updateWidgetsForTask(timeRegistration.getTask());
                 backupService.requestBackup(TimeRegistrationActionActivity.this);
 
                 if (StringUtils.isNotBlank(comment)) {

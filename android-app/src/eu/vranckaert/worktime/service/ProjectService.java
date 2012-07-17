@@ -17,7 +17,8 @@
 package eu.vranckaert.worktime.service;
 
 import eu.vranckaert.worktime.exceptions.AtLeastOneProjectRequiredException;
-import eu.vranckaert.worktime.exceptions.ProjectStillInUseException;
+import eu.vranckaert.worktime.exceptions.ProjectHasOngoingTimeRegistration;
+import eu.vranckaert.worktime.exceptions.ProjectStillHasTasks;
 import eu.vranckaert.worktime.model.Project;
 
 import java.util.List;
@@ -44,11 +45,15 @@ public interface ProjectService {
     /**
      * Remove a project.
      * @param project The project to remove.
+     * @param force If set to true all possible exception will be ignored and the project will be removed anyway.
      * @throws AtLeastOneProjectRequiredException If this project is the last project available this exception is
      * thrown.
-     * @throws ProjectStillInUseException If the project has one or more tasks this exception is thrown.
+     * @throws ProjectStillHasTasks If this project is linked with tasks (and possibly with time registrations) this
+     * exception is thrown.
+     * @throws ProjectHasOngoingTimeRegistration If the project is linked with ongoing time registrations (via it's
+     * tasks).
      */
-    void remove(Project project) throws AtLeastOneProjectRequiredException, ProjectStillInUseException;
+    void remove(Project project, boolean force) throws AtLeastOneProjectRequiredException, ProjectStillHasTasks, ProjectHasOngoingTimeRegistration;
 
     /**
      * Checks if a certain name for a project is already in use.
@@ -71,7 +76,7 @@ public interface ProjectService {
      * {@link eu.vranckaert.worktime.model.TimeRegistration} instances will be linked to.
      * @param widgetId The id of the widget for which the selected project should be retrieved.
      * @return The selected project. If no selected project is found for the specified widget id this method returns
-     * null.
+     * the default project.
      */
     Project getSelectedProject(int widgetId);
 

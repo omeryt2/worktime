@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package eu.vranckaert.worktime.dao.utils;
+package eu.vranckaert.worktime.exceptions;
 
-/**
- * @author Dirk Vranckaert
- *         Date: 29-sep-2010
- *         Time: 19:02:51
- */
-public interface DaoConstants {
-    public static final String DATABASE = "worktime.db";
-    public static final int VERSION = 24;
+public class ProjectHasOngoingTimeRegistration extends Exception {
+    public ProjectHasOngoingTimeRegistration(String s) {
+        super(s);
+    }
 }

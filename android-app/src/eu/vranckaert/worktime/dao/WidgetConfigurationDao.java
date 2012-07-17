@@ -23,9 +23,16 @@ import java.util.List;
 
 public interface WidgetConfigurationDao extends GenericDao<WidgetConfiguration, Integer> {
     /**
-     * Find all {@link WidgetConfiguration instances} that are stored with a specific project id.
+     * Find all {@link WidgetConfiguration} instances that are stored with a specific project id.
      * @param projectId The id of the project to search the widget configuration entities for.
      * @return A list of {@link WidgetConfiguration}.
      */
     List<WidgetConfiguration> findPerProjectId(int projectId);
+
+    /**
+     * Find all {@link WidgetConfiguration} instances that are stored with a specific task id.
+     * @param taskId The id of the project to search the widget configuration entities for.
+     * @return A list of {@link WidgetConfiguration}.
+     */
+    List<WidgetConfiguration> findPerTaskId(int taskId);
 }

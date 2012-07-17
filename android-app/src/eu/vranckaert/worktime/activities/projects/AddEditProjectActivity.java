@@ -30,6 +30,7 @@ import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.model.Project;
+import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
@@ -130,6 +131,12 @@ public class AddEditProjectActivity extends ActionBarGuiceActivity {
 
                         if (!inUpdateMode()) {
                             project = projectService.save(project);
+                            // Create a default task for the project
+                            Task defaultTask = new Task();
+                            defaultTask.setName(getString(R.string.default_task_name));
+                            defaultTask.setComment(getString(R.string.default_task_comment));
+                            defaultTask.setProject(project);
+                            taskService.save(defaultTask);
                             tracker.trackEvent(
                                     TrackerConstants.EventSources.ADD_EDIT_PROJECT_ACTIVITY,
                                     TrackerConstants.EventActions.ADD_PROJECT

@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.service;
 
+import eu.vranckaert.worktime.exceptions.AtLeastOneTaskRequiredException;
 import eu.vranckaert.worktime.exceptions.TaskStillInUseException;
 import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
@@ -65,8 +67,10 @@ public interface TaskService {
      * happen.
      * @throws TaskStillInUseException If the task is coupled to time registrations and the force-option is not
      * used this exception is thrown.
+     * @throws AtLeastOneTaskRequiredException If the task to be deleted is the only tasks that is still related to it's
+     * {@link Project} it cannot be removed.
      */
-    void remove(Task task, boolean force) throws TaskStillInUseException;
+    void remove(Task task, boolean force) throws TaskStillInUseException, AtLeastOneTaskRequiredException;
 
     /**
      * Refreshes the task status.
@@ -78,4 +82,30 @@ public interface TaskService {
      * Removes all items.
      */
     void removeAll();
+
+    /**
+     * Retrieve the selected task to be displayed in the widget and to which new
+     * {@link eu.vranckaert.worktime.model.TimeRegistration} instances will be linked to.
+     * @param widgetId The id of the widget for which the selected task should be retrieved.
+     * @return The selected task. If no selected task is found for the specified widget id this method returns the first
+     * task of the default project. If no default project is found or no tasks are linked to it a
+     * {@link RuntimeException} is thrown because this means the application data is corrupt!
+     */
+    Task getSelectedTask(int widgetId);
+
+    /**
+     * Change the selected task to be displayed in the widget and to which new
+     * {@link eu.vranckaert.worktime.model.TimeRegistration} instances will be linked. CAUTION: changing the selected
+     * task for the widget does not update the widget! The project-id in the corresponding
+     * {@link eu.vranckaert.worktime.model.WidgetConfiguration} will be removed and the task-id will be stored.
+     * @param widgetId The id of the widget for which the task should be changed.
+     * @param task The task to be set as selected project.
+     */
+    void setSelectedTask(Integer widgetId, Task task);
+
+    /**
+     * Find all tasks in the system.
+     * @return The list of {@link Task}s available.
+     */
+    List<Task> findAll();
 }

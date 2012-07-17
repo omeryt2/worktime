@@ -27,8 +27,11 @@ import eu.vranckaert.worktime.dao.impl.TaskDaoImpl;
 import eu.vranckaert.worktime.dao.impl.TimeRegistrationDaoImpl;
 import eu.vranckaert.worktime.dao.impl.WidgetConfigurationDaoImpl;
 import eu.vranckaert.worktime.exceptions.AtLeastOneProjectRequiredException;
-import eu.vranckaert.worktime.exceptions.ProjectStillInUseException;
+import eu.vranckaert.worktime.exceptions.ProjectHasOngoingTimeRegistration;
+import eu.vranckaert.worktime.exceptions.ProjectStillHasTasks;
 import eu.vranckaert.worktime.model.Project;
+import eu.vranckaert.worktime.model.Task;
+import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.model.WidgetConfiguration;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.utils.context.Log;
@@ -93,11 +96,26 @@ public class ProjectServiceImpl implements ProjectService {
     /**
      * {@inheritDoc}
      */
-    public void remove(Project project) throws AtLeastOneProjectRequiredException, ProjectStillInUseException {
-        if (dao.count() > 1L) {
+    public void remove(Project project, boolean force) throws AtLeastOneProjectRequiredException, ProjectStillHasTasks, ProjectHasOngoingTimeRegistration {
+        if (dao.count() > 1L || force) {
             int taskCount = taskDao.countTasksForProject(project);
-            if (taskCount > 0) {
-                throw new ProjectStillInUseException("The project is still linked with " + taskCount + " tasks! Remove them first!");
+            List<Task> tasksForProject = taskDao.findTasksForProject(project);
+            List<TimeRegistration> trsForProject = timeRegistrationDao.findTimeRegistrationsForTaks(tasksForProject);
+            if (taskCount > 0 && !force) {
+                for (TimeRegistration tr : trsForProject) {
+                    if (tr.isOngoingTimeRegistration()) {
+                        throw new ProjectHasOngoingTimeRegistration("The project has an ongoing time registration and thus cannot be removed.");
+                    }
+                }
+
+                throw new ProjectStillHasTasks("The project is still linked with " + taskCount + " tasks! Remove them first!", trsForProject.size()>0?true:false);
+            }
+            // Delete the project and all it's dependencies...
+            for (TimeRegistration tr : trsForProject) {
+                timeRegistrationDao.delete(tr);
+            }
+            for (Task task : tasksForProject) {
+                taskDao.delete(task);
             }
             dao.delete(project);
             if (project.isDefaultValue()) {
@@ -141,7 +159,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<WidgetConfiguration> widgetConfigurations = widgetConfigurationDao.findPerProjectId(project.getId());
         Log.d(ctx, LOG_TAG, "Found " + widgetConfigurations + " widget configurations for this project.");
         for (WidgetConfiguration wc : widgetConfigurations) {
-            if (wc.getProjectId().equals(project.getId())) {
+            if (wc.getProject().getId().equals(project.getId())) {
                 Log.d(ctx, LOG_TAG, "The project is used in widget with id " + wc.getWidgetId());
                 Project newSelectedProject = dao.findDefaultProject();
                 Log.d(ctx, LOG_TAG, "The new project that will be selected is " + newSelectedProject.getId() + " - " + newSelectedProject.getName());
@@ -177,7 +195,7 @@ public class ProjectServiceImpl implements ProjectService {
 
             wc = new WidgetConfiguration(widgetId);
             Project defaultProject = dao.findDefaultProject();
-            wc.setProjectId(defaultProject.getId());
+            wc.setProject(defaultProject);
             widgetConfigurationDao.save(wc);
 
             return defaultProject;
@@ -185,33 +203,35 @@ public class ProjectServiceImpl implements ProjectService {
 
         Project project = null;
 
-        if (wc.getProjectId() != null) {
-            Log.d(ctx, LOG_TAG, "Selected project id found is " + wc.getProjectId());
-            project = dao.findById(wc.getProjectId());
-            Log.d(ctx, LOG_TAG, "Selected project has id " + project.getId() + " and name " + project.getName());
+        if (wc.getProject() != null) {
+            Log.d(ctx, LOG_TAG, "Selected project id found is " + wc.getProject().getId());
+            project = dao.findById(wc.getProject().getId());
+            if (project != null)
+                Log.d(ctx, LOG_TAG, "Selected project has id " + project.getId() + " and name " + project.getName());
         }
 
         if (project == null) {
             Log.w(ctx, LOG_TAG, "No project is found for widget with id " + widgetId + ", updating the widget configuration to use the default project!");
             project = dao.findDefaultProject();
-            wc.setProjectId(project.getId());
-            widgetConfigurationDao.update(wc);
+            wc.setProject(project);
             Log.w(ctx, LOG_TAG, "The default project is now used as selected project for widget " + widgetId + " and has id " + project.getId() + " and name " + project.getName());
+            widgetConfigurationDao.update(wc);
         }
 
         return project;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void setSelectedProject(int widgetId, Project project) {
         WidgetConfiguration wc = widgetConfigurationDao.findById(widgetId);
         if (wc == null) {
             wc = new WidgetConfiguration(widgetId);
+            wc.setProject(project);
+            wc.setTask(null);
             widgetConfigurationDao.save(wc);
         } else {
-            wc.setProjectId(project.getId());
+            wc.setProject(project);
+            wc.setTask(null);
             widgetConfigurationDao.update(wc);
         }
     }
@@ -222,7 +242,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         List<WidgetConfiguration> wcs = widgetConfigurationDao.findPerProjectId(fromProject.getId());
         for (WidgetConfiguration wc : wcs) {
-            wc.setProjectId(toProject.getId());
+            wc.setProject(toProject);
             widgetConfigurationDao.update(wc);
 
             widgetIds.add(wc.getWidgetId());

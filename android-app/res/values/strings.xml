@@ -98,7 +98,10 @@
     <string name="lbl_project_details_tasks_nothing_found">No tasks available yet</string>
     <string name="msg_delete_task_confirmation">Do you want to delete this task?</string>
     <string name="msg_delete_task_and_linked_time_registrations_confirmation">Time registrations for this task have been found. Do you want to delete all those time registrations and the task or do nothing?</string>
-    <string name="msg_delete_task_unavailable_still_in_use">The project cannot be deleted as it is still used in some tasks. Please remove the tasks first and try again.</string>
+    <string name="msg_delete_task_unavailable_one_required_per_project">You cannot delete this task as every project should have at least one task. You can however try to delete the entire project.</string>
+    <string name="msg_delete_project_and_all_tasks">The project has tasks. Do you want to remove the project and all of it\'s tasks? This action cannot be undone!</string>
+    <string name="msg_delete_project_and_all_tasks_and_all_time_registrations">The project has tasks and time registrations. Do you want to remove the project and all of it\'s tasks and time registrations? This action cannot be undone!</string>
+    <string name="msg_delete_project_ongoing_time_registration">The project cannot be deleted because it has an ongoing time registration. Stop the time registration first and try again afterwards.</string>
     <string name="msg_mark_task_finished_not_possible_ongoing_tr">The task cannot be marked as finished as it\'s used in an ongoing time registration&#8230;</string>
     <string name="lbl_tasks_menu_edit">Edit task</string>
     <string name="lbl_tasks_menu_move">Move task</string>
@@ -467,13 +470,14 @@
     <string name="msg_widget_time_reg_created">Punched in</string>
     <string name="msg_widget_time_reg_ended">Punched out</string>
     <string name="msg_already_ongoing_time_registration">A time registration is already ongoing. Finish that first before starting a new one.</string>
+    <string name="lbl_punching_in">Starting a new time registration</string>
     <string name="msg_widget_ask_finish_task_title">Finish task?</string>
     <string name="msg_widget_ask_finish_task_message">Do you want to mark the task &#8216;%1$s&#8217; finished? This can be undone in the project details!</string>
-    <string name="msg_no_tasks_available_choose_other_project">No tasks are available for the selected project. Select another project or go back and create a task for the project first.</string>
     <string name="lbl_widget_instructions">Click the widget to open the app.</string>
     <string name="lbl_widget_title_select_project">Select project</string>
     <string name="lbl_widget_title_select_task">Select task</string>
-    <string name="lbl_punching_in">Starting a new time registration</string>
+    <string name="lbl_widget_select_no_task_option">Don\'t select a task</string>
+    <string name="msg_no_tasks_available_choose_other_project">No tasks are available for the selected project. Select another project or go back and create a task for the project first.</string>
 
     <!-- NOTIFICATION BAR -->
     <string name="lbl_notif_new_tr_started">A new time registration has been started</string>

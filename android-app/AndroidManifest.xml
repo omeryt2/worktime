@@ -122,6 +122,10 @@
         <activity android:name=".activities.widget.SelectProjectActivity"
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden"/>
+        <!-- Select project -->
+        <activity android:name=".activities.widget.SelectTaskActivity"
+                  android:theme="@style/Theme.Translucent"
+                  android:configChanges="orientation|keyboardHidden"/>
 
         <!-- Notification Bar activities -->
         <activity android:name=".activities.notifcationbar.EndTimeRegistration"

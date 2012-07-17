@@ -49,4 +49,17 @@ public class WidgetConfigurationDaoImpl extends GenericDaoImpl<WidgetConfigurati
             return new ArrayList<WidgetConfiguration>();
         }
     }
+
+    @Override
+    public List<WidgetConfiguration> findPerTaskId(int taskId) {
+        QueryBuilder<WidgetConfiguration, Integer> qb = dao.queryBuilder();
+        try {
+            qb.where().eq("taskId", taskId);
+            PreparedQuery<WidgetConfiguration> pq = qb.prepare();
+            return dao.query(pq);
+        } catch (SQLException e) {
+            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning empty list.", e);
+            return new ArrayList<WidgetConfiguration>();
+        }
+    }
 }

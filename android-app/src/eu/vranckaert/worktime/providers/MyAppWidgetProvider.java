@@ -39,10 +39,10 @@ public class MyAppWidgetProvider extends AppWidgetProvider {
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         Log.d(context, LOG_TAG, "DELETED");
+        widgetService = new WidgetServiceImpl(context);
 
         for (int id : appWidgetIds) {
             Log.d(context, LOG_TAG, "Removing widget with id " + id);
-            widgetService = new WidgetServiceImpl(context);
             widgetService.removeWidget(id);
         }
 

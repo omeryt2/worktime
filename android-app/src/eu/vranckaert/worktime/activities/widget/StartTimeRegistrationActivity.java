@@ -27,29 +27,25 @@ import android.os.Looper;
 import android.widget.Toast;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
-import eu.vranckaert.worktime.comparators.task.TaskByNameComparator;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
-import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
+import eu.vranckaert.worktime.model.WidgetConfiguration;
 import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
-import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
-import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import org.joda.time.Duration;
 import roboguice.activity.GuiceActivity;
+import roboguice.inject.InjectExtra;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -79,11 +75,11 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
     @Inject
     private BackupService backupService;
 
-    /**
-     * Parameters from the 'Extra Bundle'.
-     */
-    private Integer widgetId;
-    private boolean selectProject;
+    @InjectExtra(value = Constants.Extras.WIDGET_ID, optional = true)
+    private Integer widgetId = null;
+
+    @InjectExtra(value = Constants.Extras.UPDATE_WIDGET, optional = true)
+    private boolean updateWidget = false;
 
     private List<Task> availableTasks;
 
@@ -101,18 +97,19 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
             return;
         }
 
-        widgetId = (Integer) IntentUtil.getExtra(StartTimeRegistrationActivity.this, Constants.Extras.WIDGET_ID);
-        Object extraAskForProject = IntentUtil.getExtra(StartTimeRegistrationActivity.this, Constants.Extras.TIME_REGISTRATION_START_ASK_FOR_PROJECT);
-        if (extraAskForProject != null) {
-            selectProject = (Boolean) extraAskForProject;
-        } else {
-            selectProject = false;
-        }
-        
-        if (selectProject) {
+        // Get the widget id from the extra-bundel and search for the widget configuration.
+        if (widgetId == Constants.Others.PUNCH_BAR_WIDGET_ID) {
+            projectService.getSelectedProject(widgetId); // just to make sure punch-bar widget configuration exists!
             showProjectChooser();
         } else {
-            showTaskChooser();
+            WidgetConfiguration wc = widgetService.getWidgetConfiguration(widgetId);
+
+            if (wc.getTask() != null) {
+                Task task = taskService.getSelectedTask(widgetId);
+                createNewTimeRegistration(task);
+            } else if (wc.getProject() != null) {
+                showTaskChooser();
+            }
         }
     }
     
@@ -123,26 +120,10 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
     }
     
     private void showTaskChooser() {
-        Project selectedProject = projectService.getSelectedProject(widgetId);
-        if (Preferences.getSelectTaskHideFinished(getApplicationContext())) {
-            availableTasks = taskService.findNotFinishedTasksForProject(selectedProject);
-        } else {
-            availableTasks = taskService.findTasksForProject(selectedProject);
-        }
-        Collections.sort(availableTasks, new TaskByNameComparator());
-
-        if (availableTasks == null || availableTasks.size() == 0) {
-            showDialog(Constants.Dialog.NO_TASKS_AVAILABLE);
-        } else if (availableTasks.size() == 1) {
-            if (Preferences.getWidgetAskForTaskSelectionIfOnlyOnePreference(StartTimeRegistrationActivity.this)) {
-                showDialog(Constants.Dialog.CHOOSE_TASK);
-            } else {
-                Task task = availableTasks.get(0);
-                createNewTimeRegistration(task);
-            }
-        } else {
-            showDialog(Constants.Dialog.CHOOSE_TASK);
-        }
+        Intent intent = new Intent(StartTimeRegistrationActivity.this, SelectTaskActivity.class);
+        intent.putExtra(Constants.Extras.WIDGET_ID, widgetId);
+        intent.putExtra(Constants.Extras.ONLY_SELECT, true);
+        startActivityForResult(intent, Constants.IntentRequestCodes.SELECT_TASK);
     }
 
     private void createNewTimeRegistration(final Task selectedTask) {
@@ -205,7 +186,8 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
                 );
 
                 projectService.refresh(selectedTask.getProject());
-                widgetService.updateWidgetsForProject(newTr.getTask().getProject());
+                if (updateWidget)
+                    widgetService.updateWidgetsForTask(newTr.getTask());
 
                 /*
                 * Creates a new backup to be sure that the data is always secure!
@@ -260,58 +242,32 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
                 );
                 break;
             }
-            case Constants.Dialog.CHOOSE_TASK: {
-                List<String> tasks = new ArrayList<String>();
-                for (Task task : availableTasks) {
-                    tasks.add(task.getName());
-                }
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.lbl_widget_title_select_task)
-                       .setSingleChoiceItems(
-                               StringUtils.convertListToArray(tasks),
-                               -1,
-                               new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialogInterface, int index) {
-                                        Log.d(getApplicationContext(), LOG_TAG, "Task at index " + index + " choosen.");
-                                        Task task = availableTasks.get(index);
-                                        Log.d(getApplicationContext(), LOG_TAG, "About to create a time registration for task with name " + task.getName());
-                                        createNewTimeRegistration(task);
-                                    }
-                               }
-                       )
-                       .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                           public void onCancel(DialogInterface dialogInterface) {
-                               Log.d(getApplicationContext(), LOG_TAG, "No task choosen, close the activity");
-                               StartTimeRegistrationActivity.this.finish();
-                           }
-                       });
-                dialog = builder.create();
-                break;
-            }
-            case Constants.Dialog.NO_TASKS_AVAILABLE: {
-                AlertDialog.Builder alertNoTaskAvailable = new AlertDialog.Builder(this);
-				alertNoTaskAvailable.setMessage(R.string.msg_no_tasks_available_choose_other_project)
-						   .setCancelable(false)
-						   .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                               public void onClick(DialogInterface dialog, int which) {
-                                   removeDialog(Constants.Dialog.NO_TASKS_AVAILABLE);
-                                   StartTimeRegistrationActivity.this.finish();
-                               }
-                           });
-				dialog = alertNoTaskAvailable.create();
-                break;
-            }
         };
         return dialog;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.IntentRequestCodes.SELECT_PROJECT && resultCode == RESULT_OK) {
-            showTaskChooser();
-        } else if (requestCode == Constants.IntentRequestCodes.SELECT_PROJECT && resultCode == RESULT_CANCELED) {
-            finish();
+        switch (requestCode) {
+            case Constants.IntentRequestCodes.SELECT_PROJECT: {
+                if (resultCode == RESULT_OK) {
+                    showTaskChooser();
+                } else {
+                    finish();
+                }
+                break;
+            }
+            case Constants.IntentRequestCodes.SELECT_TASK: {
+                if (resultCode == RESULT_OK) {
+                    Task selectedTask = (Task) data.getExtras().get(Constants.Extras.TASK);
+                    createNewTimeRegistration(selectedTask);
+                } else {
+                    finish();
+                }
+                break;
+            }
+            default:
+                finish();
         }
     }
 

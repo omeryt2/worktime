@@ -31,8 +31,10 @@ import java.io.Serializable;
 public class WidgetConfiguration implements Serializable {
     @DatabaseField(id = true, generatedId = false, columnName = "id", dataType = DataType.INTEGER)
     private Integer widgetId;
-    @DatabaseField(columnName = "projectId", dataType = DataType.INTEGER)
-    private Integer projectId;
+    @DatabaseField(foreign = true, columnName = "projectId")
+    private Project project;
+    @DatabaseField(foreign = true, columnName = "taskId")
+    private Task task;
 
     public WidgetConfiguration() {
     }
@@ -49,11 +51,19 @@ public class WidgetConfiguration implements Serializable {
         this.widgetId = widgetId;
     }
 
-    public Integer getProjectId() {
-        return projectId;
+    public Project getProject() {
+        return project;
     }
 
-    public void setProjectId(Integer projectId) {
-        this.projectId = projectId;
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
     }
 }

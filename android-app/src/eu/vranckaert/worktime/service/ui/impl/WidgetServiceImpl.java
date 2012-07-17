@@ -35,6 +35,7 @@ import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.dao.WidgetConfigurationDao;
 import eu.vranckaert.worktime.dao.impl.WidgetConfigurationDaoImpl;
 import eu.vranckaert.worktime.model.Project;
+import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.model.WidgetConfiguration;
 import eu.vranckaert.worktime.providers.WorkTimeWidgetProvider_2x1;
@@ -101,7 +102,17 @@ public class WidgetServiceImpl implements WidgetService {
     }
 
     @Override
-    public void updateWidgetsForProject(Project project) {
+    public void updateWidgetsForTask(Task task) {
+        List<WidgetConfiguration> wcs = widgetConfigurationDao.findPerTaskId(task.getId());
+
+        for (WidgetConfiguration wc : wcs) {
+            updateWidget(wc.getWidgetId());
+        }
+
+        updateWidgetsForProject(task.getProject());
+    }
+
+    private void updateWidgetsForProject(Project project) {
         List<WidgetConfiguration> wcs = widgetConfigurationDao.findPerProjectId(project.getId());
 
         for (WidgetConfiguration wc : wcs) {
@@ -113,11 +124,13 @@ public class WidgetServiceImpl implements WidgetService {
     public void updateWidget(int id) {
         AppWidgetManager awm = AppWidgetManager.getInstance(ctx);
         AppWidgetProviderInfo info = awm.getAppWidgetInfo(id);
-        ComponentName componentName = info.provider;
-        if (componentName.getClassName().equals(WorkTimeWidgetProvider_2x1.class.getName())) {
-            updateWidget2x1(id);
-        } else if (componentName.getClassName().equals(WorkTimeWidgetProvider_2x2.class.getName())) {
-            updateWidget2x2(id);
+        if (info != null) {
+            ComponentName componentName = info.provider;
+            if (componentName.getClassName().equals(WorkTimeWidgetProvider_2x1.class.getName())) {
+                updateWidget2x1(id);
+            } else if (componentName.getClassName().equals(WorkTimeWidgetProvider_2x2.class.getName())) {
+                updateWidget2x2(id);
+            }
         }
     }
 
@@ -130,8 +143,28 @@ public class WidgetServiceImpl implements WidgetService {
 
         getViews(ctx, R.layout.worktime_appwidget_2x1);
 
-        Project project = projectService.getSelectedProject(widgetId);
-        views.setCharSequence(R.id.widget_title, "setText", project.getName());
+        // Set the project-name
+        WidgetConfiguration wc = widgetConfigurationDao.findById(widgetId);
+        if (wc == null) {
+            views.setCharSequence(R.id.widget_title, "setText", ctx.getString(R.string.loading));
+            return;
+        }
+
+        if (wc.getProject() != null) {
+            Project project = projectService.getSelectedProject(widgetId);
+            views.setCharSequence(R.id.widget_title, "setText", project.getName());
+        } else if (wc.getTask() != null) {
+            Task task = taskService.getSelectedTask(widgetId);
+            views.setCharSequence(R.id.widget_title, "setText", task.getName());
+        } else {
+            views.setCharSequence(R.id.widget_title, "setText", "Corrupt data!");
+        }
+
+        // Set the button and it's action
+        setPunchButton(widgetId);
+
+        enableWidgetOnClick();
+
 
         commitView(ctx, widgetId, views, WorkTimeWidgetProvider_2x2.class);
     }
@@ -145,57 +178,133 @@ public class WidgetServiceImpl implements WidgetService {
 
         getViews(ctx, R.layout.worktime_appwidget_2x2);
 
-        boolean timeRegistrationStarted = false;
-
-        Long numberOfTimeRegs = timeRegistrationService.count();
-
-        TimeRegistration lastTimeRegistration = null;
-        if(numberOfTimeRegs > 0L) {
-            lastTimeRegistration = timeRegistrationService.getLatestTimeRegistration();
-            timeRegistrationService.fullyInitialize(lastTimeRegistration);
-            Log.d(ctx, LOG_TAG, "The last time registration has ID " + lastTimeRegistration.getId());
-        } else {
-            Log.d(ctx, LOG_TAG, "No timeregstrations found yet!");
-        }
-
         //Update the selected project
         Project selectedProject = projectService.getSelectedProject(widgetId);
         views.setCharSequence(R.id.widget_projectname, "setText", selectedProject.getName());
 
-        if(numberOfTimeRegs == 0L || (lastTimeRegistration != null &&
-                (!lastTimeRegistration.isOngoingTimeRegistration() || !lastTimeRegistration.getTask().getProject().getId().equals(selectedProject.getId())) )) {
-            Log.d(ctx, LOG_TAG, "No timeregistrations found yet or it's an ended timeregistration");
-            views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_start));
-            //Enable on click for the start button
-            Log.d(ctx, LOG_TAG, "Couple the start button to an on click action");
-            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, StartTimeRegistrationActivity.class, null, widgetId);
-        } else if(lastTimeRegistration != null && lastTimeRegistration.isOngoingTimeRegistration() && lastTimeRegistration.getTask().getProject().getId().equals(selectedProject.getId())) {
-            Log.d(ctx, LOG_TAG, "This is an ongoing time registration");
-            views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_stop));
-            //Enable on click for the stop button
-            Log.d(ctx, LOG_TAG, "Couple the stop button to an on click action.");
-            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, TimeRegistrationActionActivity.class, lastTimeRegistration, widgetId);
-            timeRegistrationStarted = true;
-        }
+        // Set the button and it's action
+        boolean timeRegistrationStarted = setPunchButton(widgetId);
 
         //Enable on click for the entire widget to open the app
-        Log.d(ctx, LOG_TAG, "Couple the widget background to an on click action. On click opens the home activity");
-        Intent homeAppIntent = new Intent(ctx, HomeActivity.class);
-        PendingIntent homeAppPendingIntent = PendingIntent.getActivity(ctx, 0, homeAppIntent, 0);
-        views.setOnClickPendingIntent(R.id.widget, homeAppPendingIntent);
+        enableWidgetOnClick();
 
         //Enable on click for the widget title to open the app if a registration is just started, or to open the
         //"select project" popup to change the selected project.
         Log.d(ctx, LOG_TAG, "Couple the widget title background to an on click action.");
         if (timeRegistrationStarted) {
             Log.d(ctx, LOG_TAG, "On click opens the home activity");
+            Intent homeAppIntent = new Intent(ctx, HomeActivity.class);
+            PendingIntent homeAppPendingIntent = PendingIntent.getActivity(ctx, 0, homeAppIntent, 0);
             views.setOnClickPendingIntent(R.id.widget_bgtop, homeAppPendingIntent);
         } else {
             Log.d(ctx, LOG_TAG, "On click opens a chooser-dialog for selecting the a project");
-            startBackgroundWorkActivity(ctx, R.id.widget_bgtop, SelectProjectActivity.class, null, widgetId);
+            startBackgroundWorkActivity(ctx, R.id.widget_bgtop, SelectProjectActivity.class, null, null, widgetId);
         }
 
         commitView(ctx, widgetId, views, WorkTimeWidgetProvider_2x2.class);
+    }
+
+    private boolean setPunchButton(int widgetId) {
+        boolean ongoingTimeRegistration = false;
+
+        WidgetConfiguration wc = widgetConfigurationDao.findById(widgetId);
+        if (wc.getProject() != null) {
+            Project project = projectService.getSelectedProject(widgetId);
+            return setPunchButton(widgetId, project);
+        } else if (wc.getTask() != null) {
+            Task task = taskService.getSelectedTask(widgetId);
+            return setPunchButton(widgetId, task);
+        } else {
+            String errorMsg = "Invalid widget configuration found for widget with id " + widgetId + ". Cause: no project or task found in the configuration, at least one of both should be available! The punch-button will not be set!";
+            Log.w(ctx, LOG_TAG, errorMsg);
+            throw new RuntimeException(errorMsg);
+        }
+    }
+
+    /**
+     * Configure the "punch in"/"punch out" button to display the correct value and handle an on click correctly.
+     * @param widgetId The id of the widget for which the button needs to be configured.
+     * @param project The {@link Project} configured on that widget to be used to start/end a time registration for.
+     * @return {@link Boolean#TRUE} if a time registration is ongoing for this project, {@link Boolean#FALSE} if not.
+     */
+    private boolean setPunchButton(int widgetId, Project project) {
+        boolean ongoingTimeRegistration = false;
+
+        Long numberOfTimeRegs = timeRegistrationService.count();
+        TimeRegistration lastTimeRegistration = null;
+        if(numberOfTimeRegs > 0L) {
+            lastTimeRegistration = timeRegistrationService.getLatestTimeRegistration();
+            timeRegistrationService.fullyInitialize(lastTimeRegistration);
+            Log.d(ctx, LOG_TAG, "The last time registration has ID " + lastTimeRegistration.getId());
+        } else {
+            Log.d(ctx, LOG_TAG, "No time registrations found yet!");
+        }
+
+        if(numberOfTimeRegs == 0L || (lastTimeRegistration != null &&
+                (!lastTimeRegistration.isOngoingTimeRegistration() || !lastTimeRegistration.getTask().getProject().getId().equals(project.getId())) )) {
+            Log.d(ctx, LOG_TAG, "No time registrations found yet or it's an ended time registration");
+            views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_start));
+            //Enable on click for the start button
+            Log.d(ctx, LOG_TAG, "Couple the start button to an on click action");
+            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, StartTimeRegistrationActivity.class, null, null, widgetId);
+        } else if(lastTimeRegistration != null && lastTimeRegistration.isOngoingTimeRegistration() && lastTimeRegistration.getTask().getProject().getId().equals(project.getId())) {
+            Log.d(ctx, LOG_TAG, "This is an ongoing time registration");
+            views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_stop));
+            //Enable on click for the stop button
+            Log.d(ctx, LOG_TAG, "Couple the stop button to an on click action.");
+            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, TimeRegistrationActionActivity.class, lastTimeRegistration, null, widgetId);
+            ongoingTimeRegistration = true;
+        }
+
+        return ongoingTimeRegistration;
+    }
+
+    /**
+     * Configure the "punch in"/"punch out" button to display the correct value and handle an on click correctly.
+     * @param widgetId The id of the widget for which the button needs to be configured.
+     * @param task The {@link Task} configured on that widget to be used to start/end a time registration for.
+     * @return {@link Boolean#TRUE} if a time registration is ongoing for this task, {@link Boolean#FALSE} if not.
+     */
+    private boolean setPunchButton(int widgetId, Task task) {
+        boolean ongoingTimeRegistration = false;
+
+        Long numberOfTimeRegs = timeRegistrationService.count();
+        TimeRegistration lastTimeRegistration = null;
+        if(numberOfTimeRegs > 0L) {
+            lastTimeRegistration = timeRegistrationService.getLatestTimeRegistration();
+            timeRegistrationService.fullyInitialize(lastTimeRegistration);
+            Log.d(ctx, LOG_TAG, "The last time registration has ID " + lastTimeRegistration.getId());
+        } else {
+            Log.d(ctx, LOG_TAG, "No time registrations found yet!");
+        }
+
+        if(numberOfTimeRegs == 0L || (lastTimeRegistration != null &&
+                (!lastTimeRegistration.isOngoingTimeRegistration() || !lastTimeRegistration.getTask().getId().equals(task.getId())) )) {
+            Log.d(ctx, LOG_TAG, "No time registrations found yet or it's an ended time registration");
+            views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_start));
+            //Enable on click for the start button
+            Log.d(ctx, LOG_TAG, "Couple the start button to an on click action");
+            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, StartTimeRegistrationActivity.class, null, task, widgetId);
+        } else if(lastTimeRegistration != null && lastTimeRegistration.isOngoingTimeRegistration() && lastTimeRegistration.getTask().getId().equals(task.getId())) {
+            Log.d(ctx, LOG_TAG, "This is an ongoing time registration");
+            views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_stop));
+            //Enable on click for the stop button
+            Log.d(ctx, LOG_TAG, "Couple the stop button to an on click action.");
+            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, TimeRegistrationActionActivity.class, lastTimeRegistration, null, widgetId);
+            ongoingTimeRegistration = true;
+        }
+
+        return ongoingTimeRegistration;
+    }
+
+    /**
+     * Enable the on click for the entire widget to open the app.
+     */
+    private void enableWidgetOnClick() {
+        Log.d(ctx, LOG_TAG, "Couple the widget background to an on click action. On click opens the home activity");
+        Intent homeAppIntent = new Intent(ctx, HomeActivity.class);
+        PendingIntent homeAppPendingIntent = PendingIntent.getActivity(ctx, 0, homeAppIntent, 0);
+        views.setOnClickPendingIntent(R.id.widget, homeAppPendingIntent);
     }
 
     @Override
@@ -209,6 +318,11 @@ public class WidgetServiceImpl implements WidgetService {
         }
     }
 
+    @Override
+    public WidgetConfiguration getWidgetConfiguration(int widgetId) {
+        return widgetConfigurationDao.findById(widgetId);
+    }
+
     /**
      * Starts an activity that should do something in the background after clicking a button on the widget. That doesn't
      * mean that the activity cannot ask the user for any input/choice/... It only means that the launched
@@ -217,15 +331,23 @@ public class WidgetServiceImpl implements WidgetService {
      * @param ctx The widget's context.
      * @param resId The resource id of the view on the widget on which to bind the on click action.
      * @param activity The activity that will do some background processing.
+     * @param timeRegistration The {@link TimeRegistration} for which an {@link Intent} should be created. If null it
+     * will not be put on the {@link Intent}.
+     * @param task The {@link Task} for which an {@link Intent} should be created. If null it will not be put on the
+     * {@link Intent}.
+     * @param widgetId The id of the widget for which an intent should be created.
      * @param extraFlags Extra flags for the activities.
      */
-    private void startBackgroundWorkActivity(Context ctx, int resId, Class<? extends Activity> activity, TimeRegistration timeRegistration, int widgetId, int... extraFlags) {
+    private void startBackgroundWorkActivity(Context ctx, int resId, Class<? extends Activity> activity, TimeRegistration timeRegistration, Task task, int widgetId, int... extraFlags) {
         int defaultFlags = Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK;
 
         Intent intent = new Intent(ctx, activity);
         if (timeRegistration != null)
             intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
+        if (task != null)
+            intent.putExtra(Constants.Extras.TASK, task);
         intent.putExtra(Constants.Extras.WIDGET_ID, widgetId);
+        intent.putExtra(Constants.Extras.UPDATE_WIDGET, true);
         intent.setFlags(defaultFlags);
 
         if(extraFlags != null) {

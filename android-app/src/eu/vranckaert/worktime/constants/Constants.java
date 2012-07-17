@@ -32,7 +32,6 @@ public class Constants {
         public static final int NO_TASKS_AVAILABLE = 11;
         public static final int DELETE_TASK_YES_NO = 12;
         public static final int DELETE_TIME_REGISTRATIONS_OF_TASK_YES_NO = 13;
-        public static final int WARN_PROJECT_DELETE_PROJECT_STILL_IN_USE = 14;
         public static final int TIME_REGISTRATION_ACTION = 15;
         public static final int CHOOSE_DATE = 17;
         public static final int CHOOSE_TIME = 18;
@@ -83,6 +82,9 @@ public class Constants {
         public static final int TIME_REGISTRATION_DELETE_RANGE_BOUNDARY_PROBLEM = 65;
         public static final int TIME_REGISTRATIONS_DELETE_LOADING = 66;
         public static final int WARN_ONGOING_TR = 67;
+        public static final int DELETE_TASK_AT_LEAST_ONE_REQUIRED = 68;
+        public static final int DELETE_ALL_TASKS_OF_PROJECT_YES_NO = 69;
+        public static final int DELETE_ALL_TASKS_AND_TIME_REGISTRATIONS_OF_PROJECT_YES_NO = 70;
     }
     public class IntentRequestCodes {
         public static final int ADD_PROJECT = 0;
@@ -97,6 +99,7 @@ public class Constants {
         public static final int PUNCH_BAR_END_TIME_REGISTRATION = 10;
         public static final int SELECT_PROJECT = 11;
         public static final int COPY_PROJECT = 12;
+        public static final int SELECT_TASK = 13;
     }
     public class IntentResultCodes {
         public static final int RESULT_OK_SPLIT = 100;
@@ -155,13 +158,14 @@ public class Constants {
         public static final String TIME_REGISTRATION_PREVIOUS = "timeRegistrationPrevious";
         public static final String TIME_REGISTRATION_START_DATE = "timeRegistrationStartDate";
         public static final String TIME_REGISTRATION_END_DATE = "timeRegistrationEndDate";
-        public static final String TIME_REGISTRATION_START_ASK_FOR_PROJECT = "timeRegistrationStartAskForProject";
         public static final String DATA_GROUPING = "dataGrouping";
         public static final String DISPLAY_DURATION = "displayDuration";
         public static final String DATA_ORDER = "dataOrder";
         public static final String EXPORT_DTO = "exportDTO";
         public static final String WIDGET_ID = "widgetId";
-        public static final String SKIP_WIDGET_UPDATE = "skipWidgetUpdate";
+        public static final String ONLY_SELECT = "onlySelect";
+        public static final String ENABLE_SELECT_NONE_OPTION = "enableSelectNoneOption";
+        public static final String UPDATE_WIDGET = "updateWidget";
     }
     public class ContentMenuItemIds {
         public static final int PROJECT_DETAILS = 1;
@@ -185,5 +189,10 @@ public class Constants {
     public class StatusBarNotificationIds {
         public static final int ONGOING_TIME_REGISTRATION_MESSAGE = 1;
         public static final int RESTORE_SUCCESSFUL = 2;
+    }
+
+    public class Others {
+        /* The default id for the punch-bar */
+        public static final int PUNCH_BAR_WIDGET_ID = -100;
     }
 }
