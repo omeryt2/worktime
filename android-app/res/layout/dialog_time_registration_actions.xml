@@ -30,7 +30,8 @@
     <LinearLayout android:id="@+id/tr_comment_container"
                   android:layout_height="wrap_content"
                   android:layout_width="fill_parent"
-                  android:orientation="vertical">
+                  android:orientation="vertical"
+                  android:visibility="gone">
         <EditText android:id="@+id/tr_comment"
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
@@ -48,7 +49,8 @@
     <LinearLayout android:id="@+id/tr_delete_container"
                   android:layout_height="wrap_content"
                   android:layout_width="fill_parent"
-                  android:orientation="vertical">
+                  android:orientation="vertical"
+                  android:visibility="gone">
         <RadioGroup android:id="@+id/tr_delete_radio_container"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content">

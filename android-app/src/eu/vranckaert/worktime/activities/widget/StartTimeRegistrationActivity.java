@@ -266,8 +266,6 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
                 }
                 break;
             }
-            default:
-                finish();
         }
     }
 

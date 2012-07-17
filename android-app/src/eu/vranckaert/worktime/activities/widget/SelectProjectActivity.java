@@ -115,14 +115,14 @@ public class SelectProjectActivity extends GuiceActivity {
                                         Intent resultValue = new Intent();
                                         resultValue.putExtra(Constants.Extras.PROJECT, newSelectedProject);
                                         setResult(RESULT_OK, resultValue);
-                                        SelectProjectActivity.this.finish();
+                                        finish();
                                     }
                                }
                        )
                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
                            public void onCancel(DialogInterface dialogInterface) {
                                setResult(RESULT_CANCELED);
-                               SelectProjectActivity.this.finish();
+                               finish();
                            }
                        });
                 dialog = builder.create();

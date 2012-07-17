@@ -357,7 +357,7 @@ public class WidgetServiceImpl implements WidgetService {
                 }
             }
         }
-        PendingIntent pendingIntent = PendingIntent.getActivity(ctx, widgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(ctx, widgetId, intent, PendingIntent.FLAG_ONE_SHOT);
         views.setOnClickPendingIntent(resId, pendingIntent);
     }
 
