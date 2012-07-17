@@ -396,6 +396,7 @@ public class TimeRegistrationActionActivity extends Activity {
                 timeRegistrationService.update(timeRegistration);
                 widgetService.updateWidgetsForTask(timeRegistration.getTask());
                 backupService.requestBackup(TimeRegistrationActionActivity.this);
+                statusBarNotificationService.addOrUpdateNotification(timeRegistration);
 
                 if (StringUtils.isNotBlank(comment)) {
                     commentHistoryService.updateLastComment(comment);
