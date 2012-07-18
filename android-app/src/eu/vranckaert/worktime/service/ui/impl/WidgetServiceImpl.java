@@ -339,7 +339,7 @@ public class WidgetServiceImpl implements WidgetService {
      * @param extraFlags Extra flags for the activities.
      */
     private void startBackgroundWorkActivity(Context ctx, int resId, Class<? extends Activity> activity, TimeRegistration timeRegistration, Task task, int widgetId, int... extraFlags) {
-        int defaultFlags = Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK;
+        int defaultFlags = Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK;
 
         Intent intent = new Intent(ctx, activity);
         if (timeRegistration != null)
@@ -357,7 +357,7 @@ public class WidgetServiceImpl implements WidgetService {
                 }
             }
         }
-        PendingIntent pendingIntent = PendingIntent.getActivity(ctx, widgetId, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(ctx, widgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(resId, pendingIntent);
     }
 

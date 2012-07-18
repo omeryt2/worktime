@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.widget.Toast;
 import com.google.inject.Inject;
+import com.google.inject.internal.Nullable;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
@@ -76,7 +77,8 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
     private BackupService backupService;
 
     @InjectExtra(value = Constants.Extras.WIDGET_ID, optional = true)
-    private Integer widgetId = null;
+    @Nullable
+    private Integer widgetId;
 
     @InjectExtra(value = Constants.Extras.UPDATE_WIDGET, optional = true)
     private boolean updateWidget = false;
@@ -98,7 +100,9 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
         }
 
         // Get the widget id from the extra-bundel and search for the widget configuration.
-        if (widgetId == Constants.Others.PUNCH_BAR_WIDGET_ID) {
+        if (widgetId == null) {
+            showTaskChooser();
+        } else if (widgetId == Constants.Others.PUNCH_BAR_WIDGET_ID) {
             projectService.getSelectedProject(widgetId); // just to make sure punch-bar widget configuration exists!
             showProjectChooser();
         } else {
