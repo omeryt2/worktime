@@ -69,11 +69,6 @@ public class HomeActivity extends ActionBarGuiceActivity {
         tracker.trackPageView(TrackerConstants.PageView.HOME_ACTIVITY);
 
         initiateDatabase();
-
-        /*
-         * Creates a new backup to be sure that the data is always secure!
-         */
-        backupService.requestBackup(HomeActivity.this);
     }
 
     private void initiateDatabase() {

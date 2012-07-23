@@ -33,7 +33,21 @@ public interface StatusBarNotificationService {
     void addOrUpdateNotification(TimeRegistration registration);
 
     /**
-     * Add a new notification in the status bar to notify that a backup-restore is successful.
+     * Add a new notification in the status bar to notify that a restore is successful.
+     * @param success Defines if the restore was successful or not. Based on this parameter different messages can be
+     *                shown.
+     * @param text The text to be shown for this notification. If null default values will be used.
+     * @param bigText The big-text to be shown in this notification. If null default values will be used.
      */
-    void addStatusBarNotificationForRestore();
+    void addStatusBarNotificationForRestore(boolean success, String text, String bigText);
+
+    /**
+     * Add a new notification in the status bar to notify that a backup has been created successfully.
+     * @param backupLocation    The location where the backup is created.
+     * @param success           Defines if the backup was successful or not. Based on this parameter different messages
+     *                          can be shown.
+     * @param text              The text to be shown for this notification. If null default values will be used.
+     * @param bigText           The big-text to be shown in this notification. If null default values will be used.
+     */
+    void addStatusBarNotificationForBackup(String backupLocation, boolean success, String text, String bigText);
 }

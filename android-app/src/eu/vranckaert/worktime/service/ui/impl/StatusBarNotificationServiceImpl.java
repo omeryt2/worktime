@@ -41,6 +41,8 @@ import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 
+import java.util.Date;
+
 public class StatusBarNotificationServiceImpl implements StatusBarNotificationService {
     private static final String LOG_TAG = StatusBarNotificationServiceImpl.class.getSimpleName();
 
@@ -123,31 +125,85 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
             }
 
             setStatusBarNotification(
-                    title, message, ticker, intent, bigText
+                    title, message, ticker, intent, bigText, null, Constants.StatusBarNotificationIds.ONGOING_TIME_REGISTRATION_MESSAGE, NotificationCompat2.PRIORITY_LOW, null, true
             );
         }
     }
 
+    public void addStatusBarNotificationForBackup(boolean success) {
+
+    }
+
     @Override
-    public void addStatusBarNotificationForRestore() {
-        CharSequence ticker = context.getString(R.string.msg_restore_notification_ticker);
-        CharSequence title = context.getString(R.string.msg_restore_notification_title);
-        CharSequence message = context.getString(R.string.msg_restore_notification_message);
+    public void addStatusBarNotificationForBackup(String backupLocation, boolean success, String text, String bigText) {
+        boolean showStatusBarNotifications = Preferences.getShowStatusBarNotificationsPreference(context);
 
-        NotificationManager notificationManager = getNotificationManager();
+        if (!showStatusBarNotifications) {
+            return;
+        }
 
-        int icon = R.drawable.logo_notif_bar;
-        Long when = System.currentTimeMillis();
+        String ticker = null;
+        String title = null;
+        String message = null;
+        String bigTextMessage = null;
+        int drawable = -1;
 
-        Notification notification = new Notification(icon, ticker, when);
+        if (success) {
+            ticker = context.getString(R.string.msg_backup_successful_notification_ticker);
+            title = context.getString(R.string.msg_backup_successful_notification_title);
+            message = context.getString(R.string.msg_backup_successful_notification_message);
+            bigTextMessage = context.getString(R.string.msg_backup_successful_notification_big_text_message, DateUtils.DateTimeConverter.convertDateTimeToString(new Date(), DateFormat.MEDIUM, TimeFormat.MEDIUM, context), backupLocation);
+            drawable = R.drawable.backup_restore_notif_bar;
+        } else {
+            ticker = context.getString(R.string.msg_backup_failed_notification_ticker);
+            title = context.getString(R.string.msg_backup_failed_notification_title);
+            message = context.getString(R.string.msg_backup_failed_notification_message);
+            bigTextMessage = context.getString(R.string.msg_backup_failed_notification_big_text_message);
+            drawable = R.drawable.failure_notif_bar;
+        }
 
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, null, 0);
-        notification.setLatestEventInfo(context, title, message, contentIntent);
+        if (text != null)
+            message = text;
+        if (bigText != null)
+            bigTextMessage = bigText;
 
-        notificationManager.notify(
-                Constants.StatusBarNotificationIds.RESTORE_SUCCESSFUL,
-                notification
-        );
+        setStatusBarNotification(title, message, ticker, new Intent(), bigTextMessage, null, Constants.StatusBarNotificationIds.BACKUP, NotificationCompat2.PRIORITY_HIGH, drawable, false);
+    }
+
+    @Override
+    public void addStatusBarNotificationForRestore(boolean success, String text, String bigText) {
+        boolean showStatusBarNotifications = Preferences.getShowStatusBarNotificationsPreference(context);
+
+        if (!showStatusBarNotifications) {
+            return;
+        }
+
+        String ticker = null;
+        String title = null;
+        String message = null;
+        String bigTextMessage = null;
+        int drawable = -1;
+
+        if (success) {
+            ticker = context.getString(R.string.msg_restore_successful_notification_ticker);
+            title = context.getString(R.string.msg_restore_successful_notification_title);
+            message = context.getString(R.string.msg_restore_successful_notification_message);
+            bigTextMessage = context.getString(R.string.msg_restore_successful_notification_big_text_message, DateUtils.DateTimeConverter.convertDateTimeToString(new Date(), DateFormat.MEDIUM, TimeFormat.MEDIUM, context));
+            drawable = R.drawable.backup_restore_notif_bar;
+        } else {
+            ticker = context.getString(R.string.msg_restore_failed_notification_ticker);
+            title = context.getString(R.string.msg_restore_failed_notification_title);
+            message = context.getString(R.string.msg_restore_failed_notification_message);
+            bigTextMessage = context.getString(R.string.msg_restore_failed_notification_big_text_message);
+            drawable = R.drawable.failure_notif_bar;
+        }
+
+        if (text != null)
+            message = text;
+        if (bigText != null)
+            bigTextMessage = bigText;
+
+        setStatusBarNotification(title, message, ticker, new Intent(), bigTextMessage, null, Constants.StatusBarNotificationIds.RESTORE, NotificationCompat2.PRIORITY_HIGH, drawable, false);
     }
 
     /**
@@ -190,22 +246,12 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
      * @param ticker The ticker-text shown when the notification is created.
      * @param intent The intent to be launched when the notification is selected.
      */
-    private void setStatusBarNotification(String title, String message, String ticker, Intent intent, String bigText) {
-        // NotificationManager notificationManager = getNotificationManager();
-
+    private void setStatusBarNotification(String title, String message, String ticker, Intent intent, String bigText, String bigContentTitle, int notificationId, int priority, Integer iconDrawable, boolean fixed) {
         int icon = R.drawable.logo_notif_bar;
-
-        // Notification notification = new Notification(icon, ticker, when);
-        // notification.flags |= Notification.FLAG_NO_CLEAR;
+        if (iconDrawable != null)
+            icon = iconDrawable;
 
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        // notification.setLatestEventInfo(context, title, message, contentIntent);
-
-        // notificationManager.notify(
-        //         Constants.StatusBarNotificationIds.ONGOING_TIME_REGISTRATION_MESSAGE,
-        //         notification
-        // );
-
 
         final NotificationManager mgr = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
 
@@ -215,11 +261,16 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
                 .setContentTitle(title)
                 .setContentText(message)
                 .setContentIntent(contentIntent)
-                .setPriority(NotificationCompat2.PRIORITY_LOW);
+                .setPriority(priority);
 
-        Notification notification = new NotificationCompat2.BigTextStyle(builder).bigText(bigText).build();
-        notification.flags |= Notification.FLAG_NO_CLEAR;
-        mgr.notify(Constants.StatusBarNotificationIds.ONGOING_TIME_REGISTRATION_MESSAGE, notification);
+        NotificationCompat2.BigTextStyle bigTextStyle = new NotificationCompat2.BigTextStyle(builder).bigText(bigText);
+        if (bigContentTitle != null) {
+            bigTextStyle.setBigContentTitle(bigContentTitle);
+        }
+        Notification notification = bigTextStyle.build();
+        if (fixed)
+            notification.flags |= Notification.FLAG_NO_CLEAR;
+        mgr.notify(notificationId, notification);
     }
 
     /**

@@ -27,26 +27,26 @@
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="14"/>
 
     <application android:label="WorkTime" android:icon="@drawable/logo"
-                 android:name=".guice.Application" android:backupAgent=".utils.context.DatabaseBackupAgent">
+                 android:name=".guice.Application" android:backupAgent=".utils.context.BackupAgent">
         <!-- Backup service configuration -->
         <meta-data android:name="com.google.android.backup.api_key"
                    android:value="AEdPqrEAAAAIKBOIRHAdZEXSXtzuiIu5cs97amRuguwj7UtnfA" />
 
         <!-- Widget configuration -->
-        <receiver android:name=".providers.WorkTimeWidgetProvider_2x2" android:label="@string/lbl_widget_2x2_name">
+        <receiver android:name=".providers.WorkTimeWidgetProvider_2x2_Project" android:label="@string/lbl_widget_2x2_name">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
 			</intent-filter>
 			<meta-data android:name="android.appwidget.provider"
-					   android:resource="@xml/appwidget_2x2"/>
+					   android:resource="@xml/appwidget_2x2_project"/>
 		</receiver>
 
-        <receiver android:name=".providers.WorkTimeWidgetProvider_2x1" android:label="@string/lbl_widget_2x1_name">
+        <receiver android:name=".providers.WorkTimeWidgetProvider_2x1_ProjectTask" android:label="@string/lbl_widget_2x1_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
-                       android:resource="@xml/appwidget_2x1"/>
+                       android:resource="@xml/appwidget_2x1_project_task"/>
         </receiver>
 
         <activity android:name=".activities.HomeActivity"
@@ -135,8 +135,12 @@
         <!-- Backup and Restore activities -->
         <activity android:name=".activities.backup.BackupRestoreInfoActivity"
                   android:theme="@style/Theme.Translucent"
-                  android:configChanges="orientation|keyboardHidden"/>
-        <!-- Old backup system -->
+                  android:configChanges="orientation|keyboardHidden">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="eu.vranckaert.worktime.BACKUP_DOC"/>
+            </intent-filter>
+        </activity>
         <activity android:name=".activities.backup.BackupToSDActivity"
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden">

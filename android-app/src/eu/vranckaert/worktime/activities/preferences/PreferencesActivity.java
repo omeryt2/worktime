@@ -24,7 +24,6 @@ import android.preference.PreferenceScreen;
 import android.view.MenuItem;
 import android.view.Window;
 import eu.vranckaert.worktime.R;
-import eu.vranckaert.worktime.activities.backup.BackupRestoreInfoActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.OSContants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
@@ -85,6 +84,9 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
         //Category NOTIFICATIONS
         createCategoryButton(ctx, preferences, R.string.pref_stat_bar_notifs_category_title, NotificationsPreferencesActivity.class);
 
+        //Category BACKUP AND RESTORE
+        createCategoryButton(ctx, preferences, R.string.pref_backup_category_title, BackupPreferencesActivity.class);
+
         //Category RESET APPLICATION
         Preference resetAppItem = new Preference(ctx);
         resetAppItem.setTitle(R.string.pref_reset_application_title);
@@ -112,25 +114,6 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
                 return true;
             }
         });
-
-        //Category BACKUP INFO
-        Preference backupInfoItem = new Preference(ctx);
-        backupInfoItem.setTitle(R.string.pref_backup_restore_doc_title);
-        backupInfoItem.setSummary(R.string.pref_backup_restore_doc_summary);
-        preferences.addPreference(backupInfoItem);
-        backupInfoItem.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Intent intent = new Intent(PreferencesActivity.this, BackupRestoreInfoActivity.class);
-                startActivity(intent);
-                return true;
-            }
-        });
-
-        if (!ContextUtils.isStableBuild(PreferencesActivity.this)) {
-            //Category BACKUP (old system)
-            createCategoryButton(ctx, preferences, R.string.pref_backup_category_title, BackupPreferencesActivity.class);
-        }
     }
 
     private void createCategoryButton(final Context ctx, final PreferenceScreen preferences,

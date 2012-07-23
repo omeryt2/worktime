@@ -198,11 +198,6 @@ public class TimeRegistrationActionActivity extends Activity {
                     statusBarNotificationService.removeOngoingTimeRegistrationNotification();
 
                     widgetService.updateAllWidgets();
-
-                    /*
-                    * Creates a new backup to be sure that the data is always secure!
-                    */
-                    backupService.requestBackup(TimeRegistrationActionActivity.this);
                 }
 
                 if (StringUtils.isNotBlank(comment)) {
@@ -395,7 +390,6 @@ public class TimeRegistrationActionActivity extends Activity {
                 );
                 timeRegistrationService.update(timeRegistration);
                 widgetService.updateWidgetsForTask(timeRegistration.getTask());
-                backupService.requestBackup(TimeRegistrationActionActivity.this);
                 statusBarNotificationService.addOrUpdateNotification(timeRegistration);
 
                 if (StringUtils.isNotBlank(comment)) {

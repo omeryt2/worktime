@@ -38,8 +38,8 @@ import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.model.WidgetConfiguration;
-import eu.vranckaert.worktime.providers.WorkTimeWidgetProvider_2x1;
-import eu.vranckaert.worktime.providers.WorkTimeWidgetProvider_2x2;
+import eu.vranckaert.worktime.providers.WorkTimeWidgetProvider_2x1_ProjectTask;
+import eu.vranckaert.worktime.providers.WorkTimeWidgetProvider_2x2_Project;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
@@ -126,22 +126,22 @@ public class WidgetServiceImpl implements WidgetService {
         AppWidgetProviderInfo info = awm.getAppWidgetInfo(id);
         if (info != null) {
             ComponentName componentName = info.provider;
-            if (componentName.getClassName().equals(WorkTimeWidgetProvider_2x1.class.getName())) {
-                updateWidget2x1(id);
-            } else if (componentName.getClassName().equals(WorkTimeWidgetProvider_2x2.class.getName())) {
-                updateWidget2x2(id);
+            if (componentName.getClassName().equals(WorkTimeWidgetProvider_2x1_ProjectTask.class.getName())) {
+                updateWidget2x1ProjectTask(id);
+            } else if (componentName.getClassName().equals(WorkTimeWidgetProvider_2x2_Project.class.getName())) {
+                updateWidget2x2Project(id);
             }
         }
     }
 
     /**
-     * Updates the widget's content for the 2x1 widgets.
+     * Updates the widget's content for the 2x1 widgets for a project or task.
      * @param widgetId The id of the widget to be updated.
      */
-    private void updateWidget2x1(int widgetId) {
+    private void updateWidget2x1ProjectTask(int widgetId) {
         Log.d(ctx, LOG_TAG, "Updating widget (2x1) with id " + widgetId);
 
-        getViews(ctx, R.layout.worktime_appwidget_2x1);
+        getViews(ctx, R.layout.worktime_appwidget_2x1_project_task);
 
         // Set the project-name
         WidgetConfiguration wc = widgetConfigurationDao.findById(widgetId);
@@ -166,17 +166,17 @@ public class WidgetServiceImpl implements WidgetService {
         enableWidgetOnClick();
 
 
-        commitView(ctx, widgetId, views, WorkTimeWidgetProvider_2x2.class);
+        commitView(ctx, widgetId, views, WorkTimeWidgetProvider_2x1_ProjectTask.class);
     }
 
     /**
-     * Updates the widget's content for the 2x2 widgets.
+     * Updates the widget's content for the 2x2 widgets for projects.
      * @param widgetId The id of the widget to be updated.
      */
-    private void updateWidget2x2(int widgetId) {
+    private void updateWidget2x2Project(int widgetId) {
         Log.d(ctx, LOG_TAG, "Updating widget (2x2) with id " + widgetId);
 
-        getViews(ctx, R.layout.worktime_appwidget_2x2);
+        getViews(ctx, R.layout.worktime_appwidget_2x2_project);
 
         //Update the selected project
         Project selectedProject = projectService.getSelectedProject(widgetId);
@@ -201,7 +201,7 @@ public class WidgetServiceImpl implements WidgetService {
             startBackgroundWorkActivity(ctx, R.id.widget_bgtop, SelectProjectActivity.class, null, null, widgetId);
         }
 
-        commitView(ctx, widgetId, views, WorkTimeWidgetProvider_2x2.class);
+        commitView(ctx, widgetId, views, WorkTimeWidgetProvider_2x2_Project.class);
     }
 
     private boolean setPunchButton(int widgetId) {

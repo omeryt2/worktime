@@ -16,7 +16,6 @@
 
 package eu.vranckaert.worktime.service.impl;
 
-import android.app.backup.BackupManager;
 import android.content.Context;
 import eu.vranckaert.worktime.dao.utils.DaoConstants;
 import eu.vranckaert.worktime.exceptions.SDCardUnavailableException;
@@ -165,11 +164,5 @@ public class DatabaseFileBackupServiceImpl implements BackupService {
         );
 
         return result;
-    }
-
-    @Override
-    public void requestBackup(Context ctx) {
-        BackupManager bm = new BackupManager(ctx);
-        bm.dataChanged();
     }
 }

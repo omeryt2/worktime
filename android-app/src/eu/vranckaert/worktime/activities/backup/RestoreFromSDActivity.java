@@ -223,15 +223,20 @@ public class RestoreFromSDActivity extends GuiceActivity {
 
                 try {
                     backupService.restore(getApplicationContext(), restoreFile);
-                    widgetService.updateAllWidgets();
-                    statusBarNotificationService.removeOngoingTimeRegistrationNotification();
-                    statusBarNotificationService.addOrUpdateNotification(null);
 
-                } catch (BackupFileCouldNotBeWritten e) {
-                    error = getString(R.string.warning_msg_sd_car_unavailable);
+                    statusBarNotificationService.addStatusBarNotificationForRestore(true, null, null);
                 } catch (SDCardUnavailableException e) {
+                    error = getString(R.string.warning_msg_sd_car_unavailable);
+                    String errorShort = getString(R.string.warning_msg_sd_car_unavailable_short);
+                    statusBarNotificationService.addStatusBarNotificationForRestore(false, errorShort, error);
+                } catch (BackupFileCouldNotBeWritten backupFileCouldNotBeWritten) {
                     error = getString(R.string.msg_backup_restore_writing_backup_file_not_written);
+                    statusBarNotificationService.addStatusBarNotificationForRestore(false, null, null);
                 }
+                widgetService.updateAllWidgets();
+                statusBarNotificationService.removeOngoingTimeRegistrationNotification();
+                statusBarNotificationService.addOrUpdateNotification(null);
+
                 return null;
             }
 

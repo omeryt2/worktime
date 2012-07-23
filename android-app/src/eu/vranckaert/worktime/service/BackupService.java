@@ -67,10 +67,4 @@ public interface BackupService {
      * @return The presentation of a backup file in a readable format.
      */
     String toString(Context ctx, File backupFile);
-
-    /**
-     * Request a create a new backup to the Google cloud.
-     * @param ctx The context.
-     */
-    void requestBackup(Context ctx);
 }

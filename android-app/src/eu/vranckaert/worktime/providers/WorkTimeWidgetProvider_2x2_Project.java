@@ -28,8 +28,8 @@ import eu.vranckaert.worktime.utils.context.Log;
  * Date: 07/02/11
  * Time: 20:58
  */
-public class WorkTimeWidgetProvider_2x1 extends MyAppWidgetProvider {
-    private static final String LOG_TAG = WorkTimeWidgetProvider_2x1.class.getName();
+public class WorkTimeWidgetProvider_2x2_Project extends MyAppWidgetProvider {
+    private static final String LOG_TAG = WorkTimeWidgetProvider_2x2_Project.class.getName();
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -45,7 +45,8 @@ public class WorkTimeWidgetProvider_2x1 extends MyAppWidgetProvider {
             Log.d(context, LOG_TAG, "PROVIDER: " + widgetProviderInfo.provider.toString());
 
             widgetService.updateWidget(appWidgetId);
-            statusBarNotificationService.addOrUpdateNotification(null);
         }
+
+        statusBarNotificationService.addOrUpdateNotification(null);
     }
 }

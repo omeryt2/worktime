@@ -29,6 +29,7 @@ import eu.vranckaert.worktime.exceptions.SDCardUnavailableException;
 import eu.vranckaert.worktime.exceptions.backup.BackupFileCouldNotBeCreated;
 import eu.vranckaert.worktime.exceptions.backup.BackupFileCouldNotBeWritten;
 import eu.vranckaert.worktime.service.BackupService;
+import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import roboguice.activity.GuiceActivity;
 
@@ -42,6 +43,9 @@ public class BackupToSDActivity extends GuiceActivity {
 
     @Inject
     private BackupService backupService;
+
+    @Inject
+    private StatusBarNotificationService statusBarNotificationService;
 
     private String result;
     private String error;
@@ -58,15 +62,22 @@ public class BackupToSDActivity extends GuiceActivity {
             @Override
             protected Object doInBackground(Object... objects) {
                 try {
-                    return backupService.backup(getApplicationContext());
+                    String backupLocation = backupService.backup(getApplicationContext());
+
+                    statusBarNotificationService.addStatusBarNotificationForBackup(backupLocation, true, null, null);
+                    return backupLocation;
                 } catch (SDCardUnavailableException e) {
                     error = getString(R.string.warning_msg_sd_car_unavailable);
+                    String errorShort = getString(R.string.warning_msg_sd_car_unavailable_short);
+                    statusBarNotificationService.addStatusBarNotificationForBackup(null, false, errorShort, error);
                     return false;
                 } catch (BackupFileCouldNotBeCreated backupFileCouldNotBeCreated) {
                     error = getString(R.string.msg_backup_restore_writing_backup_file_not_be_created);
+                    statusBarNotificationService.addStatusBarNotificationForBackup(null, false, null, null);
                     return false;
                 } catch (BackupFileCouldNotBeWritten backupFileCouldNotBeWritten) {
                     error = getString(R.string.msg_backup_restore_writing_backup_file_not_written);
+                    statusBarNotificationService.addStatusBarNotificationForBackup(null, false, null, null);
                     return false;
                 }
             }

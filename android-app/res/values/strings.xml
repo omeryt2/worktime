@@ -44,6 +44,7 @@
 	<string name="dialog_title_error">Error</string>
     <!-- GENERAL - WARNINGS -->
     <string name="warning_msg_sd_car_unavailable">Make sure the SD-card is in the device and the SD-card is mounted.</string>
+    <string name="warning_msg_sd_car_unavailable_short">No SD-card found</string>
 
     <!-- DEFUALT VALUES DB -->
     <string name="default_project_name">Default Project</string>
@@ -407,7 +408,7 @@
     <string name="pref_projects_tasks_select_project_hide_finished_title">Hide finished projects in selection</string>
     <string name="pref_projects_tasks_select_project_hide_finished_summary_on">Finished projects are hidden when selecting projects from a list</string>
     <string name="pref_projects_tasks_select_project_hide_finished_summary_off">Finished projects are shown when selecting projects from a list</string>
-    <string name="pref_backup_category_title">Old backup system</string>
+    <string name="pref_backup_category_title">Backup and Restore</string>
     <string name="pref_backup_title">Backup</string>
     <string name="pref_backup_summary">Backup all WorkTime data on this device</string>
     <string name="pref_restore_title">Restore</string>
@@ -434,7 +435,6 @@
     <string name="pref_reset_category_title">Reset preferences</string>
     <string name="pref_reset_category_summary">Restore the factory default preferences for this application</string>
     <!-- BACKUP -->
-    <!-- OLD BACKUP SYSTEM -->
     <string name="lbl_backup_restore_writing_backup_sd">Writing backup to SD-card</string>
     <string name="msg_backup_restore_writing_backup_sd_success">The backup is written to your SD-card: %1$s</string>
     <string name="msg_backup_restore_writing_backup_file_not_be_created">The backup file on the SD-card could not be created. Check the SD-card to be mounted and try again. If the error keeps appearing please report a bug.</string>
@@ -445,11 +445,23 @@
     <string name="lbl_backup_restore_restoring_backup_from_sd">Restoring backup &#8216;%1$s&#8217; from SD-card</string>
     <string name="msg_backup_restore_are_your_sure">Restoring this backup will erase all the current data and replace it with the backup data. Even if the backup data seems to be corrupt afterwards. This action cannot be undone. Are you sure you want to continue the restore of the backup &#8216;%1$s&#8217;?</string>
     <string name="msg_backup_restore_success">The backup file %1$s is successfully restored. Restart the application and check if the data is correct. Otherwise try to restore another backup if available.</string>
-    <!-- NEW BACKUP SYSTEM -->
-    <string name="msg_restore_notification_ticker">Successful restore of backup</string>
-    <string name="msg_restore_notification_title">Restore Successful</string>
-    <string name="msg_restore_notification_message">The backup has been successfully restored</string>
     <string name="lbl_backup_restore_documentation_title">Backup/Restore Documentation</string>
+    <string name="msg_backup_successful_notification_ticker">Successfully created backup</string>
+    <string name="msg_backup_successful_notification_title">WorkTime Backup Successful</string>
+    <string name="msg_backup_successful_notification_message">The backup has been successfully created</string>
+    <string name="msg_backup_successful_notification_big_text_message">You successfully created a backup file at %1$s. The file is stored at: %2$s</string>
+    <string name="msg_backup_failed_notification_ticker">Creation of backup failed</string>
+    <string name="msg_backup_failed_notification_title">WorkTime Backup Failed</string>
+    <string name="msg_backup_failed_notification_message">The backup could not be created</string>
+    <string name="msg_backup_failed_notification_big_text_message">The backup could not be created. This can have various reasons. You can try again, however if you keep having this problem you should look for some help online.</string>
+    <string name="msg_restore_successful_notification_ticker">Successful restore of backup</string>
+    <string name="msg_restore_successful_notification_title">WorkTime Restore Successful</string>
+    <string name="msg_restore_successful_notification_message">The backup has been successfully restored</string>
+    <string name="msg_restore_successful_notification_big_text_message">You successfully restored a backup file at %1$s</string>
+    <string name="msg_restore_failed_notification_ticker">Restore of backup failed</string>
+    <string name="msg_restore_failed_notification_title">WorkTime Restore Failed</string>
+    <string name="msg_restore_failed_notification_message">The backup could not be restored</string>
+    <string name="msg_restore_failed_notification_big_text_message">The backup could not be restored. This can have various reasons. You can try again, however if you keep having this problem you should look for some help online.</string>
     <!-- ABOUT -->
     <string name="lbl_about_title">About</string>
     <string name="lbl_about_project">Project</string>

@@ -15,6 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
+
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Old backup system -->
     <PreferenceScreen android:title="@string/pref_backup_title"
@@ -30,5 +31,10 @@
     <PreferenceScreen android:title="@string/pref_backup_send_title"
                       android:summary="@string/pref_backup_send_summary">
         <intent android:action="eu.vranckaert.worktime.SD_BACKUP_SEND"/>
+    </PreferenceScreen>
+
+    <PreferenceScreen android:title="@string/pref_backup_restore_doc_title"
+                      android:summary="@string/pref_backup_restore_doc_summary">
+        <intent android:action="eu.vranckaert.worktime.BACKUP_DOC"/>
     </PreferenceScreen>
 </PreferenceScreen>

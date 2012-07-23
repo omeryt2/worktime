@@ -188,7 +188,8 @@ public class Constants {
      */
     public class StatusBarNotificationIds {
         public static final int ONGOING_TIME_REGISTRATION_MESSAGE = 1;
-        public static final int RESTORE_SUCCESSFUL = 2;
+        public static final int RESTORE = 2;
+        public static final int BACKUP = 3;
     }
 
     public class Others {

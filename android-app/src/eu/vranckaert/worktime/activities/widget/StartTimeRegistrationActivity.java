@@ -193,11 +193,6 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
                 if (updateWidget)
                     widgetService.updateWidgetsForTask(newTr.getTask());
 
-                /*
-                * Creates a new backup to be sure that the data is always secure!
-                */
-                backupService.requestBackup(StartTimeRegistrationActivity.this);
-
                 return null;
             }
 
