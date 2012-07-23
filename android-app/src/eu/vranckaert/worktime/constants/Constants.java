@@ -87,16 +87,16 @@ public class Constants {
         public static final int DELETE_ALL_TASKS_AND_TIME_REGISTRATIONS_OF_PROJECT_YES_NO = 70;
     }
     public class IntentRequestCodes {
-        public static final int ADD_PROJECT = 0;
-        public static final int ADD_TASK = 1;
-        public static final int EDIT_PROJECT = 2;
-        public static final int EDIT_TASK = 3;
-        public static final int PROJECT_DETAILS = 4;
-        public static final int REGISTRATION_DETAILS = 5;
-        public static final int TIME_REGISTRATION_ACTION = 6;
-        public static final int TIME_REGISTRATION_EDIT_DIALOG = 7;
-        public static final int PUNCH_BAR_START_TIME_REGISTRATION = 9;
-        public static final int PUNCH_BAR_END_TIME_REGISTRATION = 10;
+        public static final int REGISTRATION_DETAILS = 1;
+        public static final int TIME_REGISTRATION_ACTION = 2;
+        public static final int TIME_REGISTRATION_EDIT_DIALOG = 3;
+        public static final int START_TIME_REGISTRATION = 4;
+        public static final int END_TIME_REGISTRATION = 5;
+        public static final int ADD_PROJECT = 6;
+        public static final int ADD_TASK = 7;
+        public static final int EDIT_PROJECT = 8;
+        public static final int EDIT_TASK = 9;
+        public static final int PROJECT_DETAILS = 10;
         public static final int SELECT_PROJECT = 11;
         public static final int COPY_PROJECT = 12;
         public static final int SELECT_TASK = 13;

@@ -110,8 +110,8 @@ public class HomeActivity extends ActionBarGuiceActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.IntentRequestCodes.PUNCH_BAR_START_TIME_REGISTRATION
-                || requestCode == Constants.IntentRequestCodes.PUNCH_BAR_END_TIME_REGISTRATION) {
+        if (requestCode == Constants.IntentRequestCodes.START_TIME_REGISTRATION
+                || requestCode == Constants.IntentRequestCodes.END_TIME_REGISTRATION) {
             PunchBarUtil.configurePunchBar(HomeActivity.this, timeRegistrationService, taskService, projectService);
         }
     }

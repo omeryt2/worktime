@@ -161,6 +161,7 @@
     <string name="lbl_time_registration_actions_dialog_choose_action_spinner_prompt">Select an action&#8230;</string>
     <string-array name="array_time_registration_actions_dialog_choose_action_spinner">
         <item>Punch Out</item>
+        <item>Punch Out and start next</item>
         <item>Split</item>
         <item>Open details</item>
         <item>Edit starting time</item>

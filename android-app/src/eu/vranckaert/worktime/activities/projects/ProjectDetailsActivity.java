@@ -510,10 +510,10 @@ public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
                     projectUpdated = true;
                 }
                 break;
-            case Constants.IntentRequestCodes.PUNCH_BAR_START_TIME_REGISTRATION:
+            case Constants.IntentRequestCodes.START_TIME_REGISTRATION:
                 PunchBarUtil.configurePunchBar(ProjectDetailsActivity.this, timeRegistrationService, taskService, projectService);
                 break;
-            case Constants.IntentRequestCodes.PUNCH_BAR_END_TIME_REGISTRATION:
+            case Constants.IntentRequestCodes.END_TIME_REGISTRATION:
                 PunchBarUtil.configurePunchBar(ProjectDetailsActivity.this, timeRegistrationService, taskService, projectService);
                 break;
         }

@@ -31,19 +31,20 @@ import java.util.List;
  * the action in the correct position (according to the {@link TimeRegistrationAction#order} value that you defined for
  * the action).</li>
  * <li>Handle the new option in the activity method:
- * {@link eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationActionActivity#handleTimeRegistrationAction(TimeRegistrationAction, android.widget.EditText)}</li>
+ * {@link eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationActionActivity#handleTimeRegistrationAction(TimeRegistrationAction, android.widget.EditText, android.widget.RadioGroup)}</li>
  * </ul>
  */
 public enum TimeRegistrationAction {
     PUNCH_OUT(0, TimeRegistrationActionScope.ONGOING_TIME_REGISTRATION),
-    SPLIT(1, TimeRegistrationActionScope.BOTH),
-    TIME_REGISTRATION_DETAILS(2, TimeRegistrationActionScope.BOTH),
-    EDIT_STARTING_TIME(3, TimeRegistrationActionScope.BOTH),
-    EDIT_END_TIME(4, TimeRegistrationActionScope.ENDED_TIME_REGISTRATION),
-    RESTART_TIME_REGISTRATION(5, TimeRegistrationActionScope.ENDED_TIME_REGISTRATION),
-    EDIT_PROJECT_AND_TASK(6, TimeRegistrationActionScope.BOTH),
-    SET_COMMENT(7, TimeRegistrationActionScope.BOTH),
-    DELETE_TIME_REGISTRATION(8, TimeRegistrationActionScope.BOTH);
+    PUNCH_OUT_AND_START_NEXT(1, TimeRegistrationActionScope.ONGOING_TIME_REGISTRATION),
+    SPLIT(2, TimeRegistrationActionScope.BOTH),
+    TIME_REGISTRATION_DETAILS(3, TimeRegistrationActionScope.BOTH),
+    EDIT_STARTING_TIME(4, TimeRegistrationActionScope.BOTH),
+    EDIT_END_TIME(5, TimeRegistrationActionScope.ENDED_TIME_REGISTRATION),
+    RESTART_TIME_REGISTRATION(6, TimeRegistrationActionScope.ENDED_TIME_REGISTRATION),
+    EDIT_PROJECT_AND_TASK(7, TimeRegistrationActionScope.BOTH),
+    SET_COMMENT(8, TimeRegistrationActionScope.BOTH),
+    DELETE_TIME_REGISTRATION(9, TimeRegistrationActionScope.BOTH);
 
     private int order;
     private int originalOrder;

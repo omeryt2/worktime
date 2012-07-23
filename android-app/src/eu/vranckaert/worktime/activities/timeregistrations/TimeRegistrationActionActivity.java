@@ -40,6 +40,7 @@ import android.widget.TableLayout;
 import android.widget.Toast;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.timeregistrations.listadapter.TimeRegistrationActionListAdapter;
+import eu.vranckaert.worktime.activities.widget.StartTimeRegistrationActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.enums.timeregistration.TimeRegistrationAction;
@@ -96,6 +97,7 @@ public class TimeRegistrationActionActivity extends Activity {
      * Extras
      */
     private TimeRegistration timeRegistration;
+    private Integer widgetId;
 
     /**
      * Google Analytics Tracker
@@ -136,6 +138,7 @@ public class TimeRegistrationActionActivity extends Activity {
      */
     private void loadExtras() {
         timeRegistration = (TimeRegistration) getIntent().getExtras().get(Constants.Extras.TIME_REGISTRATION);
+        widgetId = (Integer) getIntent().getExtras().get(Constants.Extras.WIDGET_ID);
     }
 
     /**
@@ -155,8 +158,9 @@ public class TimeRegistrationActionActivity extends Activity {
      * {@link Preferences#getWidgetEndingTimeRegistrationFinishTaskPreference(android.content.Context)} returns
      * {@link Boolean#TRUE} the user will be asked to end the task.
      * @param comment The comment to be put in the {@link TimeRegistration}.
+     * @param startNew If a new time registration should be started after ending the current one.
      */
-    private void endTimeRegistration(final String comment) {
+    private void endTimeRegistration(final String comment, final boolean startNew) {
         AsyncTask threading = new AsyncTask() {
 
             @Override
@@ -221,11 +225,19 @@ public class TimeRegistrationActionActivity extends Activity {
                 Log.d(getApplicationContext(), LOG_TAG, "Finishing activity...");
 
                 boolean askFinishTask = Preferences.getWidgetEndingTimeRegistrationFinishTaskPreference(getApplicationContext());
-                if (!askFinishTask) {
+                if (startNew) {
+                    if (widgetId == null) {
+                        widgetId = Constants.Others.PUNCH_BAR_WIDGET_ID;
+                    }
+                    Intent intent = new Intent(TimeRegistrationActionActivity.this, StartTimeRegistrationActivity.class);
+                    intent.putExtra(Constants.Extras.WIDGET_ID, widgetId);
+                    intent.putExtra(Constants.Extras.UPDATE_WIDGET, true);
+                    startActivityForResult(intent, Constants.IntentRequestCodes.START_TIME_REGISTRATION);
+                } else if (askFinishTask) {
+                    showDialog(Constants.Dialog.ASK_FINISH_TASK);
+                } else {
                     setResult(RESULT_OK);
                     finish();
-                } else {
-                    showDialog(Constants.Dialog.ASK_FINISH_TASK);
                 }
             }
         };
@@ -514,6 +526,7 @@ public class TimeRegistrationActionActivity extends Activity {
 
                         switch (action) {
                             case PUNCH_OUT:
+                            case PUNCH_OUT_AND_START_NEXT:
                                 if (Preferences.getEndingTimeRegistrationCommentPreference(getApplicationContext())) {
                                     commentContainer.setVisibility(View.VISIBLE);
                                 }
@@ -868,7 +881,14 @@ public class TimeRegistrationActionActivity extends Activity {
                 String comment = commentEditText.getText().toString();
                 if (comment != null)
                     Log.d(getApplicationContext(), LOG_TAG, "Time Registration will be saved with comment: " + comment);
-                endTimeRegistration(comment);
+                endTimeRegistration(comment, false);
+                break;
+            }
+            case PUNCH_OUT_AND_START_NEXT: {
+                String comment = commentEditText.getText().toString();
+                if (comment != null)
+                    Log.d(getApplicationContext(), LOG_TAG, "Time Registration will be saved with comment: " + comment);
+                endTimeRegistration(comment, true);
                 break;
             }
             case SPLIT: {

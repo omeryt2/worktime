@@ -372,8 +372,8 @@ public class ManageProjectsActivity extends ActionBarGuiceListActivity {
             Log.d(getApplicationContext(), LOG_TAG, "A project has been updated on the project details view, it's necessary to reload the list of project upon return!");
             loadProjects();
         }
-        if (requestCode == Constants.IntentRequestCodes.PUNCH_BAR_START_TIME_REGISTRATION
-                || requestCode == Constants.IntentRequestCodes.PUNCH_BAR_END_TIME_REGISTRATION) {
+        if (requestCode == Constants.IntentRequestCodes.START_TIME_REGISTRATION
+                || requestCode == Constants.IntentRequestCodes.END_TIME_REGISTRATION) {
             PunchBarUtil.configurePunchBar(ManageProjectsActivity.this, timeRegistrationService, taskService, projectService);
         }
     }
