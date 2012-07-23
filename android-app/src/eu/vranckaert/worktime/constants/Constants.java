@@ -145,6 +145,8 @@ public class Constants {
             public static final String EXPORT_DATA = "exportData";
             public static final String EXPORT_CSV_SEPARATOR = "exportCsvSeparator";
             public static final String BACKUP_LOCATION = "backupLocation";
+            public static final String TIME_REGISTRATION_DEFAULT_ACTION_ONGOING_TR = "timeRegistrationDefaultActionOngoingTr";
+            public static final String TIME_REGISTRATION_DEFAULT_ACTION_FINISHED_TR = "timeRegistrationDefaultActionFinishedTr";
         }
     }
     public class Disk {

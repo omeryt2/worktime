@@ -23,6 +23,7 @@ import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.enums.export.ExportCsvSeparator;
 import eu.vranckaert.worktime.enums.export.ExportData;
 import eu.vranckaert.worktime.enums.export.ExportType;
+import eu.vranckaert.worktime.enums.timeregistration.TimeRegistrationAction;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.HourPreference12Or24;
 import eu.vranckaert.worktime.utils.file.FileUtil;
@@ -620,6 +621,58 @@ public class Preferences {
     public static void setBackupLocation(Context ctx, File backupLocation) {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
         editor.putString(Constants.Preferences.Keys.BACKUP_LOCATION, backupLocation.getAbsolutePath());
+        editor.commit();
+    }
+
+    /**
+     * Get the preference for key {@link Constants.Preferences.Keys#TIME_REGISTRATION_DEFAULT_ACTION_ONGOING_TR}. If no
+     * value is found for the preference the default value will be {@link TimeRegistrationAction#PUNCH_OUT}.
+     * @param ctx The context when getting the preference for the default action.
+     * @return The {@link TimeRegistrationAction} for the user-preference.
+     */
+    public static TimeRegistrationAction getDefaultTimeRegistrationActionForOngoingTr(Context ctx) {
+        String action = getSharedPreferences(ctx).getString(
+                Constants.Preferences.Keys.TIME_REGISTRATION_DEFAULT_ACTION_ONGOING_TR,
+                TimeRegistrationAction.PUNCH_OUT.toString()
+        );
+
+        return TimeRegistrationAction.valueOf(action);
+    }
+
+    /**
+     * Updates the preference {@link Constants.Preferences.Keys#TIME_REGISTRATION_DEFAULT_ACTION_ONGOING_TR}.
+     * @param ctx The context when updating the preference.
+     * @param action The {@link TimeRegistrationAction} representing the action that needs to be selected by default.
+     */
+    public static void setDefaultTimeRegistrationActionForOngoingTr(Context ctx, TimeRegistrationAction action) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(Constants.Preferences.Keys.TIME_REGISTRATION_DEFAULT_ACTION_ONGOING_TR, action.toString());
+        editor.commit();
+    }
+
+    /**
+     * Get the preference for key {@link Constants.Preferences.Keys#TIME_REGISTRATION_DEFAULT_ACTION_FINISHED_TR}. If no
+     * value is found for the preference the default value will be {@link TimeRegistrationAction#SPLIT}.
+     * @param ctx The context when getting the preference for the default action.
+     * @return The {@link TimeRegistrationAction} for the user-preference.
+     */
+    public static TimeRegistrationAction getDefaultTimeRegistrationActionForFinishedTr(Context ctx) {
+        String action = getSharedPreferences(ctx).getString(
+                Constants.Preferences.Keys.TIME_REGISTRATION_DEFAULT_ACTION_FINISHED_TR,
+                TimeRegistrationAction.SPLIT.toString()
+        );
+
+        return TimeRegistrationAction.valueOf(action);
+    }
+
+    /**
+     * Updates the preference {@link Constants.Preferences.Keys#TIME_REGISTRATION_DEFAULT_ACTION_FINISHED_TR}.
+     * @param ctx The context when updating the preference.
+     * @param action The {@link TimeRegistrationAction} representing the action that needs to be selected by default.
+     */
+    public static void setDefaultTimeRegistrationActionForFinishedTr(Context ctx, TimeRegistrationAction action) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(Constants.Preferences.Keys.TIME_REGISTRATION_DEFAULT_ACTION_FINISHED_TR, action.toString());
         editor.commit();
     }
 }

@@ -157,6 +157,7 @@
     <!-- REGISTRATION EDIT-ACTIONS -->
     <string name="lbl_time_registration_actions_punching_out">Ending the time registration</string>
     <string name="err_time_registration_actions_dialog_corrupt_data">Corrupt data! Clear the application data!</string>
+    <string name="err_time_registration_restart_not_possible_only_latest_time_registration">Only the latest time registration can be restarted!</string>
     <string name="lbl_time_registration_actions_dialog_title_choose_action">Choose action</string>
     <string name="lbl_time_registration_actions_dialog_choose_action_spinner_prompt">Select an action&#8230;</string>
     <string-array name="array_time_registration_actions_dialog_choose_action_spinner">
@@ -170,6 +171,48 @@
         <item>Edit project and task</item>
         <item>Set comment</item>
         <item>Delete</item>
+    </string-array>
+    <!-- Actions that can be chosen as default option for ongoing TR's -->
+    <string-array name="pref_time_registrations_default_tr_action_ongoing_options">
+        <item>Punch Out</item>
+        <item>Punch Out and start next</item>
+        <item>Split</item>
+        <item>Open details</item>
+        <item>Edit starting time</item>
+        <item>Edit project and task</item>
+        <item>Set comment</item>
+        <item>Delete</item>
+    </string-array>
+    <string-array name="pref_time_registrations_default_tr_action_ongoing_option_values">
+        <item>PUNCH_OUT</item>
+        <item>PUNCH_OUT_AND_START_NEXT</item>
+        <item>SPLIT</item>
+        <item>TIME_REGISTRATION_DETAILS</item>
+        <item>EDIT_STARTING_TIME</item>
+        <item>EDIT_PROJECT_AND_TASK</item>
+        <item>SET_COMMENT</item>
+        <item>DELETE_TIME_REGISTRATION</item>
+    </string-array>
+    <!-- Actions that can be chosen as default option for finished TR's -->
+    <string-array name="pref_time_registrations_default_tr_action_finished_options">
+        <item>Split</item>
+        <item>Open details</item>
+        <item>Edit starting time</item>
+        <item>Edit end time</item>
+        <item>Restart</item>
+        <item>Edit project and task</item>
+        <item>Set comment</item>
+        <item>Delete</item>
+    </string-array>
+    <string-array name="pref_time_registrations_default_tr_action_finished_option_values">
+        <item>SPLIT</item>
+        <item>TIME_REGISTRATION_DETAILS</item>
+        <item>EDIT_STARTING_TIME</item>
+        <item>EDIT_END_TIME</item>
+        <item>RESTART_TIME_REGISTRATION</item>
+        <item>EDIT_PROJECT_AND_TASK</item>
+        <item>SET_COMMENT</item>
+        <item>DELETE_TIME_REGISTRATION</item>
     </string-array>
     <string name="lbl_time_registration_actions_dialog_btn_reuse_last_comment">Reuse last comment</string>
     <string name="lbl_time_registration_actions_dialog_removing_time_registrations_range_selection_min_boundary_title">Select the minimum start date</string>
@@ -431,6 +474,13 @@
     <string name="pref_time_registrations_punch_bar_enabled_on_all_screens_title">Punch-bar on all screens</string>
     <string name="pref_time_registrations_punch_bar_enabled_on_all_screens_summary_on">The punch-bar will be shown on all screens</string>
     <string name="pref_time_registrations_punch_bar_enabled_on_all_screens_summary_off">The punch-bar will only be shown on the main screen</string>
+
+    <string name="pref_time_registrations_default_tr_action_ongoing_title">Default action for ongoing Time Registrations</string>
+    <string name="pref_time_registrations_default_tr_action_ongoing_summary">Select the default action that will be selected in the dialog when performing an action on an ongoing time registration.</string>
+    <string name="pref_time_registrations_default_tr_action_finished_title">Default action for finished Time Registrations</string>
+    <string name="pref_time_registrations_default_tr_action_finished_summary">Select the default action that will be selected in the dialog when performing an action on a finished time registration.</string>
+    <string name="pref_time_registrations_default_tr_action_dialog_title">Select the default action</string>
+
     <string name="pref_time_registrations_split_default_gap_title">Default gap when splitting</string>
     <string name="pref_time_registrations_split_default_gap_summary">Gap in minutes:</string>
     <string name="pref_time_registrations_split_default_gap_summary_text">Define the default gap in minutes when splitting two time registrations</string>

@@ -442,14 +442,18 @@ public class TimeRegistrationActionActivity extends Activity {
                     Looper.prepare();
                 }
 
-                timeRegistration.setEndTime(null);
-                timeRegistrationService.update(timeRegistration);
+                if (timeRegistrationService.getLatestTimeRegistration().getId().equals(timeRegistration.getId())) {
+                    timeRegistration.setEndTime(null);
+                    timeRegistrationService.update(timeRegistration);
 
-                widgetService.updateAllWidgets();
+                    widgetService.updateAllWidgets();
 
-                statusBarNotificationService.addOrUpdateNotification(timeRegistration);
+                    statusBarNotificationService.addOrUpdateNotification(timeRegistration);
 
-                return null;
+                    return null;
+                } else {
+                    return -1;
+                }
             }
 
             @Override
@@ -457,8 +461,8 @@ public class TimeRegistrationActionActivity extends Activity {
                 removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION_LOADING);
                 Log.d(getApplicationContext(), LOG_TAG, "Loading dialog removed from UI");
                 if (o != null) {
-                    Log.d(getApplicationContext(), LOG_TAG, "Something went wrong...");
-                    Toast.makeText(TimeRegistrationActionActivity.this, R.string.err_time_registration_actions_dialog_corrupt_data, Toast.LENGTH_LONG).show();
+                    Log.d(getApplicationContext(), LOG_TAG, "Could not restart time registration because it's not the latest!");
+                    Toast.makeText(TimeRegistrationActionActivity.this, R.string.err_time_registration_restart_not_possible_only_latest_time_registration, Toast.LENGTH_LONG).show();
                 }
 
                 Log.d(getApplicationContext(), LOG_TAG, "Finishing activity...");
@@ -507,12 +511,16 @@ public class TimeRegistrationActionActivity extends Activity {
                 actionSpinner.setAdapter(actionsAdapter);
                 // Set default value...
                 if (timeRegistration.isOngoingTimeRegistration()) {
-                    actionSpinner.setSelection(TimeRegistrationAction.PUNCH_OUT.getOrder());
+                    actionSpinner.setSelection(
+                        Preferences.getDefaultTimeRegistrationActionForOngoingTr(TimeRegistrationActionActivity.this).getOrder()
+                    );
                     if (Preferences.getEndingTimeRegistrationCommentPreference(getApplicationContext())) {
                         commentEditText.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    actionSpinner.setSelection(TimeRegistrationAction.SPLIT.getOrder());
+                    actionSpinner.setSelection(
+                        Preferences.getDefaultTimeRegistrationActionForFinishedTr(TimeRegistrationActionActivity.this).getOrder()
+                    );
                 }
                 actionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override

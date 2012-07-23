@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
   ~ Copyright 2012 Dirk Vranckaert
   ~
@@ -35,6 +36,22 @@
             android:title="@string/pref_time_registrations_punch_bar_enabled_on_all_screens_title"
             android:summaryOn="@string/pref_time_registrations_punch_bar_enabled_on_all_screens_summary_on"
             android:summaryOff="@string/pref_time_registrations_punch_bar_enabled_on_all_screens_summary_off" />
+    <ListPreference
+            android:key="timeRegistrationDefaultActionOngoingTr"
+            android:defaultValue="PUNCH_OUT"
+            android:title="@string/pref_time_registrations_default_tr_action_ongoing_title"
+            android:summary="@string/pref_time_registrations_default_tr_action_ongoing_summary"
+            android:entries="@array/pref_time_registrations_default_tr_action_ongoing_options"
+            android:entryValues="@array/pref_time_registrations_default_tr_action_ongoing_option_values"
+            android:dialogTitle="@string/pref_time_registrations_default_tr_action_dialog_title" />
+    <ListPreference
+            android:key="timeRegistrationDefaultActionFinishedTr"
+            android:defaultValue="SPLIT"
+            android:title="@string/pref_time_registrations_default_tr_action_finished_title"
+            android:summary="@string/pref_time_registrations_default_tr_action_finished_summary"
+            android:entries="@array/pref_time_registrations_default_tr_action_finished_options"
+            android:entryValues="@array/pref_time_registrations_default_tr_action_finished_option_values"
+            android:dialogTitle="@string/pref_time_registrations_default_tr_action_dialog_title" />
     <eu.vranckaert.worktime.utils.view.SeekBarPreference
             android:key="timeRegistrationSplitDefaultGap"
             android:title="@string/pref_time_registrations_split_default_gap_title"
