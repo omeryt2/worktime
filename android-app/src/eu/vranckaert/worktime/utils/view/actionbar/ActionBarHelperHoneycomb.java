@@ -72,9 +72,7 @@ public class ActionBarHelperHoneycomb extends ActionBarHelper {
     }
 
     @Override
-    public void setHomeButtonEnabled(boolean enabled) {
-        mActivity.getActionBar().setHomeButtonEnabled(enabled);
-    }
+    public void setHomeButtonEnabled(boolean enabled) {}
 
     /**
      * Returns a {@link android.content.Context} suitable for inflating layouts for the action bar. The
