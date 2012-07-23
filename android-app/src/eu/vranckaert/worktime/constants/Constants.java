@@ -144,6 +144,7 @@ public class Constants {
             public static final String EXPORT_TYPE = "exportType";
             public static final String EXPORT_DATA = "exportData";
             public static final String EXPORT_CSV_SEPARATOR = "exportCsvSeparator";
+            public static final String BACKUP_LOCATION = "backupLocation";
         }
     }
     public class Disk {

@@ -24,6 +24,7 @@ import android.util.Log;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.OSContants;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
+import eu.vranckaert.worktime.utils.preferences.Preferences;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -123,22 +124,37 @@ public class FileUtil {
     }
 
     /**
-     * Get the directory to be used to save/read backup-files.
-     * @return a {@link File} representing the backup directory.
+     * Get the default directory to be used to save/read backup-files.
+     * @return a {@link File} representing the default backup directory.
      */
-    public static File getBackupDir() {
+    public static File getDefaultBackupDir() {
         File dir = Environment.getExternalStorageDirectory();
         File file = new File(
                 dir.getAbsolutePath() +
-                File.separator +
-                Constants.Disk.BACKUP_DIRECTORY +
-                File.separator
+                        File.separator +
+                        Constants.Disk.BACKUP_DIRECTORY +
+                        File.separator
         );
 
-        applyPermissions(file);
+        checkIfDirectoryExists(file);
+        applyPermissions(file, true, true, false);
+
+        return file;
+    }
+
+    /**
+     * Get the directory to be used to save/read backup-files.
+     * @return a {@link File} representing the backup directory.
+     */
+    public static File getBackupDir(Context ctx) {
+        File file = Preferences.getBackupLocation(ctx);
+        if (file == null) {
+            file = getDefaultBackupDir();
+        }
 
         checkIfDirectoryExists(file);
-        
+        applyPermissions(file, true, true, false);
+
         return file;
     }
 

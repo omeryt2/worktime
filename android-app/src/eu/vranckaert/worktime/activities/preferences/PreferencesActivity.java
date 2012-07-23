@@ -16,8 +16,10 @@
 
 package eu.vranckaert.worktime.activities.preferences;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
@@ -29,6 +31,9 @@ import eu.vranckaert.worktime.constants.OSContants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
+import eu.vranckaert.worktime.utils.file.FileUtil;
+import eu.vranckaert.worktime.utils.preferences.Preferences;
+import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuicePreferenceActivity;
 import roboguice.activity.GuicePreferenceActivity;
@@ -59,6 +64,17 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
 
         configurePreferences(PreferencesActivity.this);
         createPreferences(PreferencesActivity.this);
+
+        // In order to be able to set a default value for the backup location it needs to be already stored in the preferences.
+        // The following code checks if the preference already exists, if not it sets the default value for the preference.
+        SharedPreferences sp = PreferencesActivity.this.getSharedPreferences(Constants.Preferences.PREFERENCES_NAME, Activity.MODE_PRIVATE);
+        String backupLocation = sp.getString(
+                Constants.Preferences.Keys.BACKUP_LOCATION,
+                null
+        );
+        if (StringUtils.isBlank(backupLocation)) {
+            Preferences.setBackupLocation(PreferencesActivity.this, FileUtil.getDefaultBackupDir());
+        }
     }
 
     private void configurePreferences(GuicePreferenceActivity ctx) {

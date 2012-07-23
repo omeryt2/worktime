@@ -17,6 +17,7 @@
 package eu.vranckaert.worktime.service.impl;
 
 import android.content.Context;
+import com.google.inject.Inject;
 import eu.vranckaert.worktime.dao.utils.DaoConstants;
 import eu.vranckaert.worktime.exceptions.SDCardUnavailableException;
 import eu.vranckaert.worktime.exceptions.backup.BackupFileCouldNotBeCreated;
@@ -46,6 +47,9 @@ import java.util.List;
 public class DatabaseFileBackupServiceImpl implements BackupService {
     private static final String LOG_TAG = DatabaseFileBackupServiceImpl.class.getSimpleName();
 
+    @Inject
+    private Context ctx;
+
     public String backup(Context ctx) throws SDCardUnavailableException, BackupFileCouldNotBeCreated, BackupFileCouldNotBeWritten {
         String fileName = BASE_FILE_NAME + DateUtils.DateTimeConverter.getUniqueTimestampString() + FILE_EXTENSION;
 
@@ -53,7 +57,7 @@ public class DatabaseFileBackupServiceImpl implements BackupService {
             throw new SDCardUnavailableException("Make sure the SD-card is in the device and the SD-card is mounted.");
         }
 
-        File folder = FileUtil.getBackupDir();
+        File folder = FileUtil.getBackupDir(ctx);
         if (folder.isFile()) {
             Log.d(ctx, LOG_TAG, "Directory seems to be a file... Deleting it now...");
             folder.delete();
@@ -70,7 +74,7 @@ public class DatabaseFileBackupServiceImpl implements BackupService {
         }
         FileUtil.enableForMTP(ctx, folder);
 
-        File backupFile = new File(FileUtil.getBackupDir().getAbsolutePath(), fileName);
+        File backupFile = new File(FileUtil.getBackupDir(ctx).getAbsolutePath(), fileName);
         FileUtil.applyPermissions(backupFile, true, true, false);
         try {
             backupFile.createNewFile();
@@ -119,7 +123,7 @@ public class DatabaseFileBackupServiceImpl implements BackupService {
             throw new SDCardUnavailableException("Make sure the SD-card is in the device and the SD-card is mounted.");
         }
 
-        File backupDirectory = FileUtil.getBackupDir();
+        File backupDirectory = FileUtil.getBackupDir(ctx);
 
         if (!backupDirectory.exists()) {
             return null;

@@ -25,8 +25,10 @@ import eu.vranckaert.worktime.enums.export.ExportData;
 import eu.vranckaert.worktime.enums.export.ExportType;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.HourPreference12Or24;
+import eu.vranckaert.worktime.utils.file.FileUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -586,6 +588,38 @@ public class Preferences {
     public static void setTimeRegistrationSplitDefaultGap(Context ctx, int minutes) {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
         editor.putInt(Constants.Preferences.Keys.TIME_REGISTRATION_SPLIT_DEFAULT_GAP, minutes);
+        editor.commit();
+    }
+
+    /**
+     * Get the preference for key {@link Constants.Preferences.Keys#BACKUP_LOCATION}. If no value is found for the
+     * preference the default value will be retrieved from
+     * {@link eu.vranckaert.worktime.utils.file.FileUtil#getDefaultBackupDir()}.
+     * @param ctx The context when getting the preference for the backup location.
+     * @return The {@link File} that represents the user-specified backup location (or if nothing is specified the
+     * default backup location).
+     */
+    public static File getBackupLocation(Context ctx) {
+        String backupLocation = getSharedPreferences(ctx).getString(
+                Constants.Preferences.Keys.BACKUP_LOCATION,
+                null
+        );
+
+        if (StringUtils.isNotBlank(backupLocation)) {
+            return new File(backupLocation);
+        } else {
+            return FileUtil.getDefaultBackupDir();
+        }
+    }
+
+    /**
+     * Updates the preference {@link Constants.Preferences.Keys#BACKUP_LOCATION}.
+     * @param ctx The context when updating the preference.
+     * @param backupLocation The {@link File} representing the location where backup files should be stored.
+     */
+    public static void setBackupLocation(Context ctx, File backupLocation) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(Constants.Preferences.Keys.BACKUP_LOCATION, backupLocation.getAbsolutePath());
         editor.commit();
     }
 }

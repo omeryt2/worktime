@@ -415,6 +415,8 @@
     <string name="pref_restore_summary">Restore the WorkTime data on this device from a previous backup from this or another device</string>
     <string name="pref_backup_send_title">Send backup&#8230;</string>
     <string name="pref_backup_send_summary">Send backup-file to your computer through email</string>
+    <string name="pref_backup_location_title">Location of backups</string>
+    <string name="pref_backup_location_summary">Set the location where backup files should be stored. If the configured location cannot be accessed the default location will be used.</string>
     <string name="lbl_pref_backup_send_app_chooser_title">Choose application to send backup with</string>
     <string name="pref_backup_restore_doc_title">Backup/Restore documentation</string>
     <string name="pref_backup_restore_doc_summary">Read the backup/restore functionality documentation.</string>
