@@ -450,6 +450,10 @@
     <string name="pref_backup_restore_doc_title">Backup/Restore documentation</string>
     <string name="pref_backup_restore_doc_summary">Read the backup/restore functionality documentation.</string>
     <string name="pref_time_registrations_category_title">Time Registrations</string>
+    <string name="pref_time_registrations_sub_category_general_title">General</string>
+    <string name="pref_time_registrations_sub_category_punch_in_title">Punch In</string>
+    <string name="pref_time_registrations_sub_category_punch_out_title">Punch Out</string>
+    <string name="pref_time_registrations_sub_category_action_dialog_title">Action Dialog</string>
     <string name="pref_time_registrations_auto_close_60s_gap_title">Auto close 60s gap</string>
     <string name="pref_time_registrations_auto_close_60s_gap_summary_on">The start time of the a newly started time registration will be modified to close maximum a 60s gap with the previous time registration</string>
     <string name="pref_time_registrations_auto_close_60s_gap_summary_off">The start time of the a newly started time registration will not be modified.</string>
@@ -463,10 +467,10 @@
     <string name="pref_widget_ask_for_task_selection_if_only_one_summary_on">If only one task is selectable, ask me to select a task when starting a time registration</string>
     <string name="pref_widget_ask_for_task_selection_if_only_one_summary_off">If only one task is selectable, do not ask me to select a task when starting a time registration but auto-select the only task found</string>
     <string name="pref_widget_ask_for_comment_title">Ask for comment?</string>
-    <string name="pref_widget_ask_for_comment_summary_on">Ending a time registration will ask for a summary for the registration.</string>
-    <string name="pref_widget_ask_for_comment_summary_off">Ending a time registration will not ask to enter a summary for the registation.</string>
+    <string name="pref_widget_ask_for_comment_summary_on">Ask to enter a comment in the action dialog for the option \'Punch Out\'.</string>
+    <string name="pref_widget_ask_for_comment_summary_off">Do not ask to enter a comment in the action dialog for the option \'Punch Out\'.</string>
     <string name="pref_widget_ask_for_finishing_task_title">Ask for finishing task?</string>
-    <string name="pref_widget_ask_for_finishing_task_summary_on">Ending a time registration will ask if you want to finish the selected task.</string>
+    <string name="pref_widget_ask_for_finishing_task_summary_on">Ending a time registration will ask if you want to finish the selected task. This does not work for the action dialog option \'Punch Out and start next\'!</string>
     <string name="pref_widget_ask_for_finishing_task_summary_off">Ending a time registration will not ask if you want to finish the selected task.</string>
     <string name="pref_time_registrations_default_tr_action_ongoing_title">Default action for ongoing Time Registrations</string>
     <string name="pref_time_registrations_default_tr_action_ongoing_summary">Select the default action that will be selected in the dialog when performing an action on an ongoing time registration.</string>
