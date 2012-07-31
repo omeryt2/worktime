@@ -94,9 +94,6 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
         //Category DATE AND TIME
         createCategoryButton(ctx, preferences, R.string.pref_date_and_time_category_title, DateTimePreferencesActivity.class);
 
-        //Category WIDGET
-        createCategoryButton(ctx, preferences, R.string.pref_widget_category_title, WidgetPreferencesActivity.class);
-
         //Category NOTIFICATIONS
         createCategoryButton(ctx, preferences, R.string.pref_stat_bar_notifs_category_title, NotificationsPreferencesActivity.class);
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package eu.vranckaert.worktime.activities.widget;
+package eu.vranckaert.worktime.activities.projects;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

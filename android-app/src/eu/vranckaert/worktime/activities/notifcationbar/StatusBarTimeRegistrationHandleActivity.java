@@ -33,7 +33,7 @@ import roboguice.activity.GuiceActivity;
  * Date: 27/04/11
  * Time: 21:46
  */
-public class EndTimeRegistration extends GuiceActivity {
+public class StatusBarTimeRegistrationHandleActivity extends GuiceActivity {
     @Inject
     private TimeRegistrationService timeRegistrationService;
 
@@ -54,7 +54,7 @@ public class EndTimeRegistration extends GuiceActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
         } else {
-            Toast.makeText(EndTimeRegistration.this, R.string.lbl_notif_no_tr_found, Toast.LENGTH_LONG);
+            Toast.makeText(StatusBarTimeRegistrationHandleActivity.this, R.string.lbl_notif_no_tr_found, Toast.LENGTH_LONG);
             statusBarNotificationService.removeOngoingTimeRegistrationNotification();
         }
     }

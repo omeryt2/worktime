@@ -25,7 +25,7 @@ import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.HomeActivity;
 import eu.vranckaert.worktime.activities.punchbar.PunchBarClickListener;
 import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationActionActivity;
-import eu.vranckaert.worktime.activities.widget.StartTimeRegistrationActivity;
+import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationPunchInActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.ProjectService;
@@ -105,7 +105,7 @@ public class PunchBarUtil {
             intent.putExtra(Constants.Extras.TIME_REGISTRATION, lastTimeRegistration);
             ctx.startActivityForResult(intent, Constants.IntentRequestCodes.END_TIME_REGISTRATION);
         } else {
-            Intent intent = new Intent(ctx, StartTimeRegistrationActivity.class);
+            Intent intent = new Intent(ctx, TimeRegistrationPunchInActivity.class);
             intent.putExtra(Constants.Extras.WIDGET_ID, Constants.Others.PUNCH_BAR_WIDGET_ID);
             intent.putExtra(Constants.Extras.UPDATE_WIDGET, true);
             ctx.startActivityForResult(intent, Constants.IntentRequestCodes.START_TIME_REGISTRATION);

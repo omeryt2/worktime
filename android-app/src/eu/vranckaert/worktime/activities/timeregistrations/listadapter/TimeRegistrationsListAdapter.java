@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import eu.vranckaert.worktime.R;
-import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationsActivity;
+import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationListActivity;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateFormat;
@@ -37,12 +37,12 @@ import java.util.List;
 public class TimeRegistrationsListAdapter extends ArrayAdapter<TimeRegistration> {
     private final String LOG_TAG = TimeRegistrationsListAdapter.class.getSimpleName();
 
-    private TimeRegistrationsActivity ctx;
+    private TimeRegistrationListActivity ctx;
     private List<TimeRegistration> timeRegistrations;
     /**
      * {@inheritDoc}
      */
-    public TimeRegistrationsListAdapter(TimeRegistrationsActivity ctx, List<TimeRegistration> timeRegistrations) {
+    public TimeRegistrationsListAdapter(TimeRegistrationListActivity ctx, List<TimeRegistration> timeRegistrations) {
         super(ctx, R.layout.list_item_time_registrations, timeRegistrations);
         Log.d(ctx, LOG_TAG, "Creating the time registrations list adapter");
 

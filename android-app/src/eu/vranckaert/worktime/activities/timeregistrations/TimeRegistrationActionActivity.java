@@ -24,9 +24,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,14 +35,11 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TableLayout;
-import android.widget.Toast;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.timeregistrations.listadapter.TimeRegistrationActionListAdapter;
-import eu.vranckaert.worktime.activities.widget.StartTimeRegistrationActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.enums.timeregistration.TimeRegistrationAction;
-import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.service.CommentHistoryService;
@@ -153,330 +148,10 @@ public class TimeRegistrationActionActivity extends Activity {
         backupService = new DatabaseFileBackupServiceImpl();
     }
 
-    /**
-     * Updates the {@link TimeRegistration} with a comment (if entered) and sets an end date and time. If the preference
-     * {@link Preferences#getWidgetEndingTimeRegistrationFinishTaskPreference(android.content.Context)} returns
-     * {@link Boolean#TRUE} the user will be asked to end the task.
-     * @param comment The comment to be put in the {@link TimeRegistration}.
-     * @param startNew If a new time registration should be started after ending the current one.
-     */
-    private void endTimeRegistration(final String comment, final boolean startNew) {
-        AsyncTask threading = new AsyncTask() {
-
-            @Override
-            protected void onPreExecute() {
-                showDialog(Constants.Dialog.LOADING_TIME_REGISTRATION_CHANGE);
-            }
-
-            @Override
-            protected Object doInBackground(Object... objects) {
-                Log.d(getApplicationContext(), LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
-                if(Looper.myLooper() == null) {
-                    Looper.prepare();
-                }
-
-                Date endTime = new Date();
-
-                if (timeRegistration.getEndTime() != null) {
-                    Log.w(getApplicationContext(), LOG_TAG, "Data must be corrupt, time registration is already ended! Please clear all the data through the system settings of the application!");
-                    return new Object();
-                } else {
-                    timeRegistration.setEndTime(endTime);
-                    // Issue 102 - If no comment is entered when ending TR (and thus the parameter 'comment' is null),
-                    // then the already entered comment is gone.
-                    // latestRegistration.setComment(null);
-                    if (StringUtils.isNotBlank(comment)) {
-                        timeRegistration.setComment(comment);
-                        tracker.trackEvent(
-                                TrackerConstants.EventSources.TIME_REGISTRATION_ACTION_ACTIVITY,
-                                TrackerConstants.EventActions.ADD_TR_COMMENT
-                        );
-                    }
-                    timeRegistrationService.update(timeRegistration);
-
-                    tracker.trackEvent(
-                            TrackerConstants.EventSources.TIME_REGISTRATION_ACTION_ACTIVITY,
-                            TrackerConstants.EventActions.END_TIME_REGISTRATION
-                    );
-
-                    statusBarNotificationService.removeOngoingTimeRegistrationNotification();
-
-                    widgetService.updateAllWidgets();
-                }
-
-                if (StringUtils.isNotBlank(comment)) {
-                    commentHistoryService.updateLastComment(comment);
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                removeDialog(Constants.Dialog.LOADING_TIME_REGISTRATION_CHANGE);
-                Log.d(getApplicationContext(), LOG_TAG, "Loading dialog removed from UI");
-                if (o != null) {
-                    Log.d(getApplicationContext(), LOG_TAG, "Something went wrong, the data is corrupt");
-                    Toast.makeText(TimeRegistrationActionActivity.this, R.string.err_time_registration_actions_dialog_corrupt_data, Toast.LENGTH_LONG).show();
-                } else if (o == null) {
-                    Log.d(getApplicationContext(), LOG_TAG, "Successfully ended time registration");
-                    Toast.makeText(TimeRegistrationActionActivity.this, R.string.msg_widget_time_reg_ended, Toast.LENGTH_LONG).show();
-                }
-                Log.d(getApplicationContext(), LOG_TAG, "Finishing activity...");
-
-                boolean askFinishTask = Preferences.getWidgetEndingTimeRegistrationFinishTaskPreference(getApplicationContext());
-                if (startNew) {
-                    if (widgetId == null) {
-                        widgetId = Constants.Others.PUNCH_BAR_WIDGET_ID;
-                    }
-                    Intent intent = new Intent(TimeRegistrationActionActivity.this, StartTimeRegistrationActivity.class);
-                    intent.putExtra(Constants.Extras.WIDGET_ID, widgetId);
-                    intent.putExtra(Constants.Extras.UPDATE_WIDGET, true);
-                    startActivityForResult(intent, Constants.IntentRequestCodes.START_TIME_REGISTRATION);
-                } else if (askFinishTask) {
-                    showDialog(Constants.Dialog.ASK_FINISH_TASK);
-                } else {
-                    setResult(RESULT_OK);
-                    finish();
-                }
-            }
-        };
-        threading.execute();
-    }
-
-    /**
-     * After a positive response from the user the specified task will be marked as finished. This will only be
-     * triggered when ending a {@link TimeRegistration} and when the preference
-     * {@link Preferences#getWidgetEndingTimeRegistrationFinishTaskPreference(android.content.Context)} returns
-     * {@link Boolean#TRUE}.
-     * @param task The {@link Task} that should be marked as finished ({@link Task#finished}).
-     */
-    private void finishTask(Task task) {
-        task.setFinished(true);
-        taskService.update(task);
-
-        tracker.trackEvent(
-                TrackerConstants.EventSources.TIME_REGISTRATION_ACTION_ACTIVITY,
-                TrackerConstants.EventActions.MARK_TASK_FINISHED
-        );
-
-        setResult(RESULT_OK);
-        finish();
-    }
-
-    private void deleteTimeRegistrations(Date minBoundary, Date maxBoundary) {
-        AsyncTask<Date, Void, Long> threading = new AsyncTask<Date, Void, Long>() {
-            @Override
-            protected void onPreExecute() {
-                showDialog(Constants.Dialog.TIME_REGISTRATIONS_DELETE_LOADING);
-            }
-
-            @Override
-            protected Long doInBackground(Date... boundaries) {
-                Log.d(getApplicationContext(), LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
-                if(Looper.myLooper() == null) {
-                    Looper.prepare();
-                }
-
-                Date minBoundary = boundaries[0];
-                if (minBoundary != null)
-                    minBoundary = DateUtils.Various.setMinTimeValueOfDay(minBoundary);
-                Date maxBoundary = boundaries[1];
-                if (maxBoundary != null)
-                    maxBoundary = DateUtils.Various.setMaxTimeValueOfDay(maxBoundary);
-
-                long count = timeRegistrationService.removeAllInRange(minBoundary, maxBoundary);
-
-                widgetService.updateAllWidgets();
-
-                TimeRegistration latestTimeRegistration = timeRegistrationService.getLatestTimeRegistration();
-                if (latestTimeRegistration != null && latestTimeRegistration.isOngoingTimeRegistration()) {
-                    statusBarNotificationService.addOrUpdateNotification(latestTimeRegistration);
-                } else {
-                    statusBarNotificationService.removeOngoingTimeRegistrationNotification();
-                }
-
-                tracker.trackEvent(
-                        TrackerConstants.EventSources.TIME_REGISTRATION_ACTION_ACTIVITY,
-                        TrackerConstants.EventActions.DELETE_TIME_REGISTRATIONS_IN_RANGE
-                );
-
-                return count;
-            }
-
-            @Override
-            protected void onPostExecute(Long count) {
-                removeDialog(Constants.Dialog.TIME_REGISTRATIONS_DELETE_LOADING);
-                Log.d(getApplicationContext(), LOG_TAG, "Loading dialog removed from UI");
-
-                String message = "";
-                if (count == 1l) {
-                    message = getString(R.string.msg_time_registration_actions_dialog_removing_time_registrations_range_done_single, count);
-                } else {
-                    message = getString(R.string.msg_time_registration_actions_dialog_removing_time_registrations_range_done_multiple, count);
-                }
-                Toast.makeText(TimeRegistrationActionActivity.this, message, Toast.LENGTH_LONG).show();
-
-                Log.d(getApplicationContext(), LOG_TAG, "Finishing activity...");
-                setResult(Constants.IntentResultCodes.RESULT_DELETED);
-                finish();
-            }
-        };
-        threading.execute(minBoundary, maxBoundary);
-    }
-
-    /**
-     * Deletes a {@link TimeRegistration} instance from the database.
-     */
-    private void deleteTimeRegistration() {
-        AsyncTask threading = new AsyncTask() {
-
-            @Override
-            protected void onPreExecute() {
-                showDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_LOADING);
-            }
-
-            @Override
-            protected Object doInBackground(Object... objects) {
-                Log.d(getApplicationContext(), LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
-                if(Looper.myLooper() == null) {
-                    Looper.prepare();
-                }
-
-                timeRegistrationService.remove(timeRegistration);
-
-                widgetService.updateAllWidgets();
-
-                if (timeRegistration.isOngoingTimeRegistration()) {
-                    statusBarNotificationService.removeOngoingTimeRegistrationNotification();
-                }
-
-                tracker.trackEvent(
-                        TrackerConstants.EventSources.TIME_REGISTRATION_ACTION_ACTIVITY,
-                        TrackerConstants.EventActions.DELETE_TIME_REGISTRATION
-                );
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                removeDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_LOADING);
-                Log.d(getApplicationContext(), LOG_TAG, "Loading dialog removed from UI");
-                if (o != null) {
-                    Log.d(getApplicationContext(), LOG_TAG, "Something went wrong...");
-                    Toast.makeText(TimeRegistrationActionActivity.this, R.string.err_time_registration_actions_dialog_corrupt_data, Toast.LENGTH_LONG).show();
-                }
-
-                Log.d(getApplicationContext(), LOG_TAG, "Finishing activity...");
-                setResult(Constants.IntentResultCodes.RESULT_DELETED);
-                finish();
-            }
-        };
-        threading.execute();
-    }
-
-    /**
-     * Updates the comment of a {@link TimeRegistration}.
-     * @param comment The comment to be put in the {@link TimeRegistration}.
-     */
-    private void updateTimeRegistration(final String comment) {
-        AsyncTask threading = new AsyncTask() {
-
-            @Override
-            protected void onPreExecute() {
-                showDialog(Constants.Dialog.TIME_REGISTRATION_ACTION_LOADING);
-            }
-
-            @Override
-            protected Object doInBackground(Object... objects) {
-                Log.d(getApplicationContext(), LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
-                if(Looper.myLooper() == null) {
-                    Looper.prepare();
-                }
-
-                timeRegistration.setComment(comment);
-                tracker.trackEvent(
-                        TrackerConstants.EventSources.TIME_REGISTRATION_ACTION_ACTIVITY,
-                        TrackerConstants.EventActions.ADD_TR_COMMENT
-                );
-                timeRegistrationService.update(timeRegistration);
-                widgetService.updateWidgetsForTask(timeRegistration.getTask());
-                statusBarNotificationService.addOrUpdateNotification(timeRegistration);
-
-                if (StringUtils.isNotBlank(comment)) {
-                    commentHistoryService.updateLastComment(comment);
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION_LOADING);
-                Log.d(getApplicationContext(), LOG_TAG, "Loading dialog removed from UI");
-                Log.d(getApplicationContext(), LOG_TAG, "Finishing activity...");
-                setResult(RESULT_OK);
-                finish();
-            }
-        };
-        threading.execute();
-    }
-
-    /**
-     * Resets the end date of a {@link TimeRegistration} so that the
-     * {@link eu.vranckaert.worktime.model.TimeRegistration#isOngoingTimeRegistration()} is {@link Boolean#TRUE} again.
-     */
-    private void restartTimeRegistration() {
-        AsyncTask threading = new AsyncTask() {
-
-            @Override
-            protected void onPreExecute() {
-                showDialog(Constants.Dialog.TIME_REGISTRATION_ACTION_LOADING);
-            }
-
-            @Override
-            protected Object doInBackground(Object... objects) {
-                Log.d(getApplicationContext(), LOG_TAG, "Is there already a looper? " + (Looper.myLooper() != null));
-                if(Looper.myLooper() == null) {
-                    Looper.prepare();
-                }
-
-                if (timeRegistrationService.getLatestTimeRegistration().getId().equals(timeRegistration.getId())) {
-                    timeRegistration.setEndTime(null);
-                    timeRegistrationService.update(timeRegistration);
-
-                    widgetService.updateAllWidgets();
-
-                    statusBarNotificationService.addOrUpdateNotification(timeRegistration);
-
-                    return null;
-                } else {
-                    return -1;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION_LOADING);
-                Log.d(getApplicationContext(), LOG_TAG, "Loading dialog removed from UI");
-                if (o != null) {
-                    Log.d(getApplicationContext(), LOG_TAG, "Could not restart time registration because it's not the latest!");
-                    Toast.makeText(TimeRegistrationActionActivity.this, R.string.err_time_registration_restart_not_possible_only_latest_time_registration, Toast.LENGTH_LONG).show();
-                }
-
-                Log.d(getApplicationContext(), LOG_TAG, "Finishing activity...");
-                setResult(RESULT_OK);
-                finish();
-            }
-        };
-        threading.execute();
-    }
-
     @Override
     protected Dialog onCreateDialog(int dialogId) {
         Dialog dialog = null;
-        switch(dialogId) {
+        switch (dialogId) {
             case Constants.Dialog.TIME_REGISTRATION_ACTION: {
                 Log.d(getApplicationContext(), LOG_TAG, "Building the actions dialog");
                 AlertDialog.Builder actionsDialog = new AlertDialog.Builder(this);
@@ -512,14 +187,14 @@ public class TimeRegistrationActionActivity extends Activity {
                 // Set default value...
                 if (timeRegistration.isOngoingTimeRegistration()) {
                     actionSpinner.setSelection(
-                        Preferences.getDefaultTimeRegistrationActionForOngoingTr(TimeRegistrationActionActivity.this).getOrder()
+                            Preferences.getDefaultTimeRegistrationActionForOngoingTr(TimeRegistrationActionActivity.this).getOrder()
                     );
                     if (Preferences.getEndingTimeRegistrationCommentPreference(getApplicationContext())) {
                         commentEditText.setVisibility(View.VISIBLE);
                     }
                 } else {
                     actionSpinner.setSelection(
-                        Preferences.getDefaultTimeRegistrationActionForFinishedTr(TimeRegistrationActionActivity.this).getOrder()
+                            Preferences.getDefaultTimeRegistrationActionForFinishedTr(TimeRegistrationActionActivity.this).getOrder()
                     );
                 }
                 actionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -544,7 +219,7 @@ public class TimeRegistrationActionActivity extends Activity {
                                 break;
                             case DELETE_TIME_REGISTRATION:
                                 deleteContainer.setVisibility(View.VISIBLE);
-                                final TableLayout deleteRangeContainer  = (TableLayout) layout.findViewById(R.id.tr_delete_range_container);
+                                final TableLayout deleteRangeContainer = (TableLayout) layout.findViewById(R.id.tr_delete_range_container);
                                 deleteRangeFromButton = (Button) layout.findViewById(R.id.tr_delete_range_date_from);
                                 deleteRangeToButton = (Button) layout.findViewById(R.id.tr_delete_range_date_to);
 
@@ -630,28 +305,6 @@ public class TimeRegistrationActionActivity extends Activity {
 
                 break;
             }
-            case Constants.Dialog.LOADING_TIME_REGISTRATION_CHANGE: {
-                Log.d(getApplicationContext(), LOG_TAG, "Creating loading dialog for ending the active time registration");
-                dialog = ProgressDialog.show(
-                        TimeRegistrationActionActivity.this,
-                        "",
-                        getString(R.string.lbl_time_registration_actions_punching_out),
-                        true,
-                        false
-                );
-                break;
-            }
-            case Constants.Dialog.TIME_REGISTRATION_ACTION_LOADING: {
-                Log.d(getApplicationContext(), LOG_TAG, "Creating loading dialog for executing a tr-action");
-                dialog = ProgressDialog.show(
-                        TimeRegistrationActionActivity.this,
-                        "",
-                        getString(R.string.lbl_time_registration_actions_dialog_updating_time_registration),
-                        true,
-                        false
-                );
-                break;
-            }
             case Constants.Dialog.TIME_REGISTRATION_DELETE_LOADING: {
                 Log.d(getApplicationContext(), LOG_TAG, "Creating loading dialog for deleting tr");
                 dialog = ProgressDialog.show(
@@ -672,76 +325,6 @@ public class TimeRegistrationActionActivity extends Activity {
                         true,
                         false
                 );
-                break;
-            }
-            case Constants.Dialog.ASK_FINISH_TASK: {
-                // Issue 89: No null-check on latestTimeRegistration required because it can never be null as at least
-                // one time registration should be started in order to be able to stop one..!
-                final Task task = timeRegistrationService.getLatestTimeRegistration().getTask();
-                taskService.refresh(task);
-
-                AlertDialog.Builder alertRemoveAllRegs = new AlertDialog.Builder(this);
-				alertRemoveAllRegs.setTitle(R.string.msg_widget_ask_finish_task_title)
-						   .setMessage(getString(R.string.msg_widget_ask_finish_task_message, task.getName()))
-						   .setCancelable(false)
-						   .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									finishTask(task);
-                                    removeDialog(Constants.Dialog.ASK_FINISH_TASK);
-								}
-							})
-						   .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-                                    setResult(RESULT_OK);
-                                    finish();
-									removeDialog(Constants.Dialog.ASK_FINISH_TASK);
-								}
-							});
-				dialog = alertRemoveAllRegs.create();
-                break;
-            }
-            case Constants.Dialog.DELETE_TIME_REGISTRATION_YES_NO: {
-                AlertDialog.Builder alertRemoveReg = new AlertDialog.Builder(this);
-                alertRemoveReg
-                        .setMessage(R.string.msg_time_registration_actions_dialog_removing_time_registration_confirmation)
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                removeDialog(Constants.Dialog.DELETE_TIME_REGISTRATION_YES_NO);
-                                deleteTimeRegistration();
-                                setResult(RESULT_OK);
-                                finish();
-                            }
-                        })
-                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                removeDialog(Constants.Dialog.DELETE_TIME_REGISTRATION_YES_NO);
-                                setResult(RESULT_OK);
-                                finish();
-                            }
-                        });
-                dialog = alertRemoveReg.create();
-                break;
-            }
-            case Constants.Dialog.DELETE_TIME_REGISTRATIONS_YES_NO: {
-                AlertDialog.Builder alertRemoveReg = new AlertDialog.Builder(this);
-                alertRemoveReg
-                        .setMessage(R.string.msg_time_registration_actions_dialog_removing_time_registrations_confirmation)
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                removeDialog(Constants.Dialog.DELETE_TIME_REGISTRATIONS_YES_NO);
-                                deleteTimeRegistrations(removeRangeMinBoundary != null ? removeRangeMinBoundary.getTime() : null, removeRangeMaxBoundary != null ? removeRangeMaxBoundary.getTime() : null);
-                            }
-                        })
-                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                removeDialog(Constants.Dialog.DELETE_TIME_REGISTRATIONS_YES_NO);
-                                setResult(RESULT_OK);
-                                finish();
-                            }
-                        });
-                dialog = alertRemoveReg.create();
                 break;
             }
             case Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_MIN_BOUNDARY: {
@@ -857,21 +440,22 @@ public class TimeRegistrationActionActivity extends Activity {
                 dialog = alertDeleteBoundariesProblem.create();
                 break;
             }
-        };
+        }
+        ;
         return dialog;
     }
 
     private void updateDateRangeSelectionButtons() {
         if (deleteRangeFromButton != null && removeRangeMinBoundary != null)
             deleteRangeFromButton.setText(
-                DateUtils.DateTimeConverter.convertDateToString(removeRangeMinBoundary.getTime(), DateFormat.MEDIUM, TimeRegistrationActionActivity.this)
+                    DateUtils.DateTimeConverter.convertDateToString(removeRangeMinBoundary.getTime(), DateFormat.MEDIUM, TimeRegistrationActionActivity.this)
             );
         else if (deleteRangeFromButton != null)
             deleteRangeFromButton.setText(R.string.none);
 
         if (deleteRangeToButton != null && removeRangeMaxBoundary != null)
             deleteRangeToButton.setText(
-                DateUtils.DateTimeConverter.convertDateToString(removeRangeMaxBoundary.getTime(), DateFormat.MEDIUM, TimeRegistrationActionActivity.this)
+                    DateUtils.DateTimeConverter.convertDateToString(removeRangeMaxBoundary.getTime(), DateFormat.MEDIUM, TimeRegistrationActionActivity.this)
             );
         else if (deleteRangeToButton != null)
             deleteRangeToButton.setText(R.string.none);
@@ -879,30 +463,37 @@ public class TimeRegistrationActionActivity extends Activity {
 
     /**
      * Handles all the possible {@link TimeRegistrationAction}s.
-     * @param action The actions to handle of type {@link TimeRegistrationAction}.
+     *
+     * @param action          The actions to handle of type {@link TimeRegistrationAction}.
      * @param commentEditText The {@link EditText} that is used for entering a comment in certain cases.
      */
     private void handleTimeRegistrationAction(TimeRegistrationAction action, EditText commentEditText, RadioGroup deleteContainer) {
         Log.i(getApplicationContext(), LOG_TAG, "Handling Time Registration action: " + action.toString());
         switch (action) {
-            case PUNCH_OUT: {
-                String comment = commentEditText.getText().toString();
-                if (comment != null)
-                    Log.d(getApplicationContext(), LOG_TAG, "Time Registration will be saved with comment: " + comment);
-                endTimeRegistration(comment, false);
-                break;
-            }
+            case PUNCH_OUT:
             case PUNCH_OUT_AND_START_NEXT: {
                 String comment = commentEditText.getText().toString();
-                if (comment != null)
+                if (StringUtils.isNotBlank(comment)) {
                     Log.d(getApplicationContext(), LOG_TAG, "Time Registration will be saved with comment: " + comment);
-                endTimeRegistration(comment, true);
+                    timeRegistration.setComment(comment);
+                    tracker.trackEvent(
+                            TrackerConstants.EventSources.TIME_REGISTRATION_ACTION_ACTIVITY,
+                            TrackerConstants.EventActions.ADD_TR_COMMENT
+                    );
+                }
+
+                timeRegistration.setComment(comment);
+                Intent intent = new Intent(this, TimeRegistrationPunchOutActivity.class);
+                intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
+                intent.putExtra(Constants.Extras.TIME_REGISTRATION_CONTINUE_WITH_NEW, action == TimeRegistrationAction.PUNCH_OUT ? false : true);
+                startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT);
+
                 break;
             }
             case SPLIT: {
-                Intent intent = new Intent(this, EditTimeRegistrationSplitActivity.class);
+                Intent intent = new Intent(this, TimeRegistrationSplitActivity.class);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
-                startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT_DIALOG);
+                startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT);
                 break;
             }
             case TIME_REGISTRATION_DETAILS: {
@@ -911,7 +502,7 @@ public class TimeRegistrationActionActivity extends Activity {
                 TimeRegistration nextTimeRegistration = timeRegistrationService.getNextTimeRegistration(timeRegistration);
                 timeRegistrationService.fullyInitialize(nextTimeRegistration);
 
-                Intent intent = new Intent(this, TimeRegistrationDetailsActivity.class);
+                Intent intent = new Intent(this, TimeRegistrationDetailActivity.class);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION_PREVIOUS, previousTimeRegistration);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION_NEXT, nextTimeRegistration);
@@ -922,35 +513,41 @@ public class TimeRegistrationActionActivity extends Activity {
                 TimeRegistration previousTimeRegistration = timeRegistrationService.getPreviousTimeRegistration(timeRegistration);
                 timeRegistrationService.fullyInitialize(previousTimeRegistration);
 
-                Intent intent = new Intent(this, EditTimeRegistrationStartTimeActivity.class);
+                Intent intent = new Intent(this, TimeRegistrationEditStartTimeActivity.class);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION_PREVIOUS, previousTimeRegistration);
-                startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT_DIALOG);
+                startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT);
                 break;
             }
             case EDIT_END_TIME: {
                 TimeRegistration nextTimeRegistration = timeRegistrationService.getNextTimeRegistration(timeRegistration);
                 timeRegistrationService.fullyInitialize(nextTimeRegistration);
 
-                Intent intent = new Intent(this, EditTimeRegistrationEndTimeActivity.class);
+                Intent intent = new Intent(this, TimeRegistrationEditEndTimeActivity.class);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION_NEXT, nextTimeRegistration);
-                startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT_DIALOG);
+                startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT);
                 break;
             }
             case RESTART_TIME_REGISTRATION: {
-                restartTimeRegistration();
+                Intent intent = new Intent(this, TimeRegistrationRestartActivity.class);
+                intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
+                startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT);
+
                 break;
             }
             case EDIT_PROJECT_AND_TASK: {
-                Intent intent = new Intent(this, EditTimeRegistrationProjectAndTask.class);
+                Intent intent = new Intent(this, TimeRegistrationEditProjectAndTaskActivity.class);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
-                startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT_DIALOG);
+                startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT);
                 break;
             }
             case SET_COMMENT: {
                 String comment = commentEditText.getText().toString();
-                updateTimeRegistration(comment);
+                Intent intent = new Intent(this, TimeRegistrationSetCommentActivity.class);
+                intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
+                intent.putExtra(Constants.Extras.TIME_REGISTRATION_COMMENT, comment);
+                startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT);
                 break;
             }
             case DELETE_TIME_REGISTRATION: {
@@ -959,15 +556,18 @@ public class TimeRegistrationActionActivity extends Activity {
                 if (radioButtonId == R.id.tr_delete_current) {
                     Log.d(getApplicationContext(), LOG_TAG, "Deleting current time registration");
 
-                    removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
-                    showDialog(Constants.Dialog.DELETE_TIME_REGISTRATION_YES_NO);
+                    Intent intent = new Intent(TimeRegistrationActionActivity.this, TimeRegistrationDeleteActivity.class);
+                    intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
+                    startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT);
                 } else if (radioButtonId == R.id.tr_delete_range) {
                     Log.d(getApplicationContext(), LOG_TAG, "Deleting all time registrations in range");
                     if (removeRangeMinBoundary.after(removeRangeMaxBoundary)) {
                         showDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_BOUNDARY_PROBLEM);
                     } else {
-                        removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
-                        showDialog(Constants.Dialog.DELETE_TIME_REGISTRATIONS_YES_NO);
+                        Intent intent = new Intent(TimeRegistrationActionActivity.this, TimeRegistrationDeleteActivity.class);
+                        intent.putExtra(Constants.Extras.TIME_REGISTRATION_START_DATE, removeRangeMinBoundary != null ? removeRangeMinBoundary.getTime() : null);
+                        intent.putExtra(Constants.Extras.TIME_REGISTRATION_END_DATE, removeRangeMaxBoundary != null ? removeRangeMaxBoundary.getTime() : null);
+                        startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT);
                     }
                 }
                 break;
@@ -977,9 +577,10 @@ public class TimeRegistrationActionActivity extends Activity {
 
     /**
      * Builds the list adapter based on the allowed actions.
+     *
      * @param allowedActions The allowed {@link TimeRegistrationAction}s retrieved by for a specific
-     * {@link TimeRegistration} that can be retrieved using
-     * {@link TimeRegistrationAction#getTimeRegistrationActions(eu.vranckaert.worktime.model.TimeRegistration)}.
+     *                       {@link TimeRegistration} that can be retrieved using
+     *                       {@link TimeRegistrationAction#getTimeRegistrationActions(eu.vranckaert.worktime.model.TimeRegistration)}.
      */
     private TimeRegistrationActionListAdapter getFilteredActionsAdapter(List<TimeRegistrationAction> allowedActions) {
         List<TimeRegistrationAction> allActions = Arrays.asList(TimeRegistrationAction.values());

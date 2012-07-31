@@ -20,6 +20,8 @@ import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
+import eu.vranckaert.worktime.activities.projects.SelectProjectActivity;
+import eu.vranckaert.worktime.activities.tasks.SelectTaskActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.service.ui.impl.WidgetServiceImpl;

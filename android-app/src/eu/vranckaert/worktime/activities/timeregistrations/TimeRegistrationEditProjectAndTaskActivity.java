@@ -48,8 +48,8 @@ import java.util.List;
  * Date: 28/04/11
  * Time: 13:48
  */
-public class EditTimeRegistrationProjectAndTask extends GuiceActivity {
-    private static final String LOG_TAG = EditTimeRegistrationProjectAndTask.class.getSimpleName();
+public class TimeRegistrationEditProjectAndTaskActivity extends GuiceActivity {
+    private static final String LOG_TAG = TimeRegistrationEditProjectAndTaskActivity.class.getSimpleName();
 
     @InjectExtra(Constants.Extras.TIME_REGISTRATION)
     private TimeRegistration timeRegistration;
@@ -94,7 +94,7 @@ public class EditTimeRegistrationProjectAndTask extends GuiceActivity {
      */
     private List<Project> loadAllProjects() {
         List<Project> availableProjects = new ArrayList<Project>();
-        if (Preferences.getSelectProjectHideFinished(EditTimeRegistrationProjectAndTask.this)) {
+        if (Preferences.getSelectProjectHideFinished(TimeRegistrationEditProjectAndTaskActivity.this)) {
             Log.d(getApplicationContext(), LOG_TAG, "About to load unfinished projects...");
             availableProjects = projectService.findUnfinishedProjects();
         } else {

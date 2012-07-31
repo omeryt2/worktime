@@ -52,8 +52,8 @@ import java.util.List;
  * Date: 05/02/11
  * Time: 18:58
  */
-public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
-    private static final String LOG_TAG = TimeRegistrationsActivity.class.getSimpleName();
+public class TimeRegistrationListActivity extends ActionBarGuiceListActivity {
+    private static final String LOG_TAG = TimeRegistrationListActivity.class.getSimpleName();
 
     @Inject
     private TimeRegistrationService timeRegistrationService;
@@ -114,7 +114,7 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
                     nextTimeRegistration = timeRegistrations.get(position - 1);
                 }
 
-                Intent intent = new Intent(TimeRegistrationsActivity.this, TimeRegistrationDetailsActivity.class);
+                Intent intent = new Intent(TimeRegistrationListActivity.this, TimeRegistrationDetailActivity.class);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION, selectedRegistration);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION_PREVIOUS, previousTimeRegistration);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION_NEXT, nextTimeRegistration);
@@ -220,7 +220,7 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
         listOfNewTimeRegistrations.addAll(timeRegistrations);
 
         if (getListView().getAdapter() == null) {
-            TimeRegistrationsListAdapter adapter = new TimeRegistrationsListAdapter(TimeRegistrationsActivity.this, listOfNewTimeRegistrations);
+            TimeRegistrationsListAdapter adapter = new TimeRegistrationsListAdapter(TimeRegistrationListActivity.this, listOfNewTimeRegistrations);
             setListAdapter(adapter);
         } else {
             ((TimeRegistrationsListAdapter) getListView().getAdapter()).refill(listOfNewTimeRegistrations);
@@ -228,7 +228,7 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
     }
 
     public void onPunchButtonClick(View view) {
-        PunchBarUtil.onPunchButtonClick(TimeRegistrationsActivity.this, timeRegistrationService);
+        PunchBarUtil.onPunchButtonClick(TimeRegistrationListActivity.this, timeRegistrationService);
     }
 
     public int getTimeRegistrationsSize() {
@@ -258,11 +258,11 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
                 break;
             }
             case Constants.IntentRequestCodes.START_TIME_REGISTRATION: {
-                PunchBarUtil.configurePunchBar(TimeRegistrationsActivity.this, timeRegistrationService, taskService, projectService);
+                PunchBarUtil.configurePunchBar(TimeRegistrationListActivity.this, timeRegistrationService, taskService, projectService);
                 break;
             }
             case Constants.IntentRequestCodes.END_TIME_REGISTRATION: {
-                PunchBarUtil.configurePunchBar(TimeRegistrationsActivity.this, timeRegistrationService, taskService, projectService);
+                PunchBarUtil.configurePunchBar(TimeRegistrationListActivity.this, timeRegistrationService, taskService, projectService);
                 break;
             }
         }
@@ -288,7 +288,7 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
         if (timeRegistration != null) {
             switch (item.getItemId()) {
                 case R.id.registrations_activity_edit:
-                    Intent intent = new Intent(TimeRegistrationsActivity.this, TimeRegistrationActionActivity.class);
+                    Intent intent = new Intent(TimeRegistrationListActivity.this, TimeRegistrationActionActivity.class);
                     intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
                     startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
                     break;
@@ -314,10 +314,10 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                IntentUtil.goBack(TimeRegistrationsActivity.this);
+                IntentUtil.goBack(TimeRegistrationListActivity.this);
                 break;
             case R.id.menu_time_registrations_activity_report:
-                Intent intent = new Intent(TimeRegistrationsActivity.this, ReportingCriteriaActivity.class);
+                Intent intent = new Intent(TimeRegistrationListActivity.this, ReportingCriteriaActivity.class);
                 startActivity(intent);
                 break;
         }
@@ -328,7 +328,7 @@ public class TimeRegistrationsActivity extends ActionBarGuiceListActivity {
     protected void onResume() {
         super.onResume();
 
-        PunchBarUtil.configurePunchBar(TimeRegistrationsActivity.this, timeRegistrationService, taskService, projectService);
+        PunchBarUtil.configurePunchBar(TimeRegistrationListActivity.this, timeRegistrationService, taskService, projectService);
         
         if (initialLoad) {
             initialLoad = false;

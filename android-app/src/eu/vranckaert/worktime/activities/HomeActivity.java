@@ -28,7 +28,7 @@ import eu.vranckaert.worktime.activities.about.AboutActivity;
 import eu.vranckaert.worktime.activities.preferences.PreferencesActivity;
 import eu.vranckaert.worktime.activities.projects.ManageProjectsActivity;
 import eu.vranckaert.worktime.activities.reporting.ReportingCriteriaActivity;
-import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationsActivity;
+import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationListActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.service.BackupService;
@@ -83,7 +83,7 @@ public class HomeActivity extends ActionBarGuiceActivity {
     }
 
     public void onTimeRegistrationsClick(View view) {
-        launchActivity(TimeRegistrationsActivity.class);
+        launchActivity(TimeRegistrationListActivity.class);
     }
 
     public void onProjectsClick(View view) {

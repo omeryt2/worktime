@@ -27,7 +27,7 @@ public class Constants {
         public static final int DELETE_TIME_REGISTRATION_YES_NO = 1;
         public static final int DELETE_TIME_REGISTRATIONS_YES_NO = 2;
         public static final int CHOOSE_SELECTED_PROJECT = 8;
-        public static final int LOADING_TIME_REGISTRATION_CHANGE = 9;
+        public static final int LOADING_TIME_REGISTRATION_PUNCH_OUT = 9;
         public static final int CHOOSE_TASK = 10;
         public static final int NO_TASKS_AVAILABLE = 11;
         public static final int DELETE_TASK_YES_NO = 12;
@@ -89,7 +89,7 @@ public class Constants {
     public class IntentRequestCodes {
         public static final int REGISTRATION_DETAILS = 1;
         public static final int TIME_REGISTRATION_ACTION = 2;
-        public static final int TIME_REGISTRATION_EDIT_DIALOG = 3;
+        public static final int TIME_REGISTRATION_EDIT = 3;
         public static final int START_TIME_REGISTRATION = 4;
         public static final int END_TIME_REGISTRATION = 5;
         public static final int ADD_PROJECT = 6;
@@ -157,6 +157,7 @@ public class Constants {
         public static final String PROJECT = "project";
         public static final String TASK = "task";
         public static final String TIME_REGISTRATION = "timeRegistration";
+        public static final String TIME_REGISTRATION_CONTINUE_WITH_NEW = "timeRegistrationStartNew";
         public static final String TIME_REGISTRATION_NEXT = "timeRegistrationNext";
         public static final String TIME_REGISTRATION_PREVIOUS = "timeRegistrationPrevious";
         public static final String TIME_REGISTRATION_START_DATE = "timeRegistrationStartDate";
@@ -169,6 +170,7 @@ public class Constants {
         public static final String ONLY_SELECT = "onlySelect";
         public static final String ENABLE_SELECT_NONE_OPTION = "enableSelectNoneOption";
         public static final String UPDATE_WIDGET = "updateWidget";
+        public static final String TIME_REGISTRATION_COMMENT = "timeRegistrationComment";
     }
     public class ContentMenuItemIds {
         public static final int PROJECT_DETAILS = 1;

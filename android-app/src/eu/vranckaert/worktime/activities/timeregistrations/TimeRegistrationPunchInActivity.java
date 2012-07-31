@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package eu.vranckaert.worktime.activities.widget;
+package eu.vranckaert.worktime.activities.timeregistrations;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -28,6 +28,8 @@ import android.widget.Toast;
 import com.google.inject.Inject;
 import com.google.inject.internal.Nullable;
 import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.activities.projects.SelectProjectActivity;
+import eu.vranckaert.worktime.activities.tasks.SelectTaskActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.model.Task;
@@ -55,8 +57,8 @@ import java.util.List;
  * Date: 09/02/11
  * Time: 23:25
  */
-public class StartTimeRegistrationActivity extends GuiceActivity {
-    private static final String LOG_TAG = StartTimeRegistrationActivity.class.getSimpleName();
+public class TimeRegistrationPunchInActivity extends GuiceActivity {
+    private static final String LOG_TAG = TimeRegistrationPunchInActivity.class.getSimpleName();
 
     @Inject
     private WidgetService widgetService;
@@ -118,13 +120,13 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
     }
     
     private void showProjectChooser() {
-        Intent intent = new Intent(StartTimeRegistrationActivity.this, SelectProjectActivity.class);
+        Intent intent = new Intent(TimeRegistrationPunchInActivity.this, SelectProjectActivity.class);
         intent.putExtra(Constants.Extras.WIDGET_ID, widgetId);
         startActivityForResult(intent, Constants.IntentRequestCodes.SELECT_PROJECT);
     }
     
     private void showTaskChooser() {
-        Intent intent = new Intent(StartTimeRegistrationActivity.this, SelectTaskActivity.class);
+        Intent intent = new Intent(TimeRegistrationPunchInActivity.this, SelectTaskActivity.class);
         intent.putExtra(Constants.Extras.WIDGET_ID, widgetId);
         intent.putExtra(Constants.Extras.ONLY_SELECT, true);
         startActivityForResult(intent, Constants.IntentRequestCodes.SELECT_TASK);
@@ -137,7 +139,7 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
 
             @Override
             protected void onPreExecute() {
-                showDialog(Constants.Dialog.LOADING_TIME_REGISTRATION_CHANGE);
+                showDialog(Constants.Dialog.LOADING_TIME_REGISTRATION_PUNCH_OUT);
             }
 
             @Override
@@ -160,14 +162,14 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
                  * This is to prevent gaps in the time registrations that should be modified manual. This is default
                  * configured to happen (defined in the preferences).
                  */
-                if (Preferences.getTimeRegistrationsAutoClose60sGap(StartTimeRegistrationActivity.this)) {
+                if (Preferences.getTimeRegistrationsAutoClose60sGap(TimeRegistrationPunchInActivity.this)) {
                     Log.d(getApplicationContext(), LOG_TAG, "Check for gap between this new time registration and the previous one");
                     TimeRegistration previousTimeRegistration = timeRegistrationService.getPreviousTimeRegistration(newTr);
                     if (previousTimeRegistration != null) {
                         Log.d(getApplicationContext(), LOG_TAG, "The previous time registrations ended on " + previousTimeRegistration.getEndTime());
                         Log.d(getApplicationContext(), LOG_TAG, "The new time registration starts on " + newTr.getStartTime());
                         Duration duration = DateUtils.TimeCalculator.calculateExactDuration(
-                                StartTimeRegistrationActivity.this,
+                                TimeRegistrationPunchInActivity.this,
                                 newTr.getStartTime(),
                                 previousTimeRegistration.getEndTime()
                         );
@@ -198,8 +200,8 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
 
             @Override
             protected void onPostExecute(Object o) {
-                removeDialog(Constants.Dialog.LOADING_TIME_REGISTRATION_CHANGE);
-                Toast.makeText(StartTimeRegistrationActivity.this, R.string.msg_widget_time_reg_created, Toast.LENGTH_LONG).show();
+                removeDialog(Constants.Dialog.LOADING_TIME_REGISTRATION_PUNCH_OUT);
+                Toast.makeText(TimeRegistrationPunchInActivity.this, R.string.msg_widget_time_reg_created, Toast.LENGTH_LONG).show();
                 finish();
             }
         };
@@ -217,23 +219,23 @@ public class StartTimeRegistrationActivity extends GuiceActivity {
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 removeDialog(Constants.Dialog.WARN_ONGOING_TR);
-                                StartTimeRegistrationActivity.this.finish();
+                                TimeRegistrationPunchInActivity.this.finish();
                             }
                         })
                         .setOnCancelListener(new Dialog.OnCancelListener() {
                             @Override
                             public void onCancel(DialogInterface dialogInterface) {
                                 removeDialog(Constants.Dialog.WARN_ONGOING_TR);
-                                StartTimeRegistrationActivity.this.finish();
+                                TimeRegistrationPunchInActivity.this.finish();
                             }
                         });
                 dialog = alertOngoingTR.create();
                 break;
             }
-            case Constants.Dialog.LOADING_TIME_REGISTRATION_CHANGE: {
+            case Constants.Dialog.LOADING_TIME_REGISTRATION_PUNCH_OUT: {
                 Log.d(getApplicationContext(), LOG_TAG, "Creating loading dialog for starting a new time registration");
                 dialog = ProgressDialog.show(
-                        StartTimeRegistrationActivity.this,
+                        TimeRegistrationPunchInActivity.this,
                         "",
                         getString(R.string.lbl_punching_in),
                         true,

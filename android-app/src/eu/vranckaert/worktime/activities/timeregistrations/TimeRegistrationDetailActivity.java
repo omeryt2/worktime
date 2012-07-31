@@ -52,8 +52,8 @@ import roboguice.inject.InjectView;
  * Date: 27/04/11
  * Time: 15:59
  */
-public class TimeRegistrationDetailsActivity extends ActionBarGuiceActivity {
-    private static final String LOG_TAG = TimeRegistrationDetailsActivity.class.getSimpleName();
+public class TimeRegistrationDetailActivity extends ActionBarGuiceActivity {
+    private static final String LOG_TAG = TimeRegistrationDetailActivity.class.getSimpleName();
 
     @InjectView(R.id.start)
     private TextView timeRegistrationStart;
@@ -162,7 +162,7 @@ public class TimeRegistrationDetailsActivity extends ActionBarGuiceActivity {
     }
 
     public void onPunchButtonClick(View view) {
-        PunchBarUtil.onPunchButtonClick(TimeRegistrationDetailsActivity.this, timeRegistrationService);
+        PunchBarUtil.onPunchButtonClick(TimeRegistrationDetailActivity.this, timeRegistrationService);
     }
 
     @Override
@@ -186,11 +186,11 @@ public class TimeRegistrationDetailsActivity extends ActionBarGuiceActivity {
                 break;
             }
             case Constants.IntentRequestCodes.START_TIME_REGISTRATION: {
-                PunchBarUtil.configurePunchBar(TimeRegistrationDetailsActivity.this, timeRegistrationService, taskService, projectService);
+                PunchBarUtil.configurePunchBar(TimeRegistrationDetailActivity.this, timeRegistrationService, taskService, projectService);
                 break;
             }
             case Constants.IntentRequestCodes.END_TIME_REGISTRATION: {
-                PunchBarUtil.configurePunchBar(TimeRegistrationDetailsActivity.this, timeRegistrationService, taskService, projectService);
+                PunchBarUtil.configurePunchBar(TimeRegistrationDetailActivity.this, timeRegistrationService, taskService, projectService);
                 break;
             }
         }
@@ -205,7 +205,7 @@ public class TimeRegistrationDetailsActivity extends ActionBarGuiceActivity {
     protected void onResume() {
         super.onResume();
 
-        PunchBarUtil.configurePunchBar(TimeRegistrationDetailsActivity.this, timeRegistrationService, taskService, projectService);
+        PunchBarUtil.configurePunchBar(TimeRegistrationDetailActivity.this, timeRegistrationService, taskService, projectService);
 
         if (initialLoad) {
             initialLoad = false;
@@ -236,10 +236,10 @@ public class TimeRegistrationDetailsActivity extends ActionBarGuiceActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                IntentUtil.goBack(TimeRegistrationDetailsActivity.this);
+                IntentUtil.goBack(TimeRegistrationDetailActivity.this);
                 break;
             case R.id.menu_time_registration_details_activity_edit:
-                Intent intent = new Intent(TimeRegistrationDetailsActivity.this, TimeRegistrationActionActivity.class);
+                Intent intent = new Intent(TimeRegistrationDetailActivity.this, TimeRegistrationActionActivity.class);
                 intent.putExtra(Constants.Extras.TIME_REGISTRATION, registration);
                 startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
                 break;

@@ -238,9 +238,6 @@
     <string name="lbl_registration_edit_validation_error_greater_than_equal_to">The specified date/time needs to be after or equal to the limit. Press ok and correct this error. Limit is %1$s</string>
     <string name="lbl_registration_edit_validation_error_less_than">The specified date/time needs to be before the limit. Press ok and correct this error. Limit is %1$s</string>
     <string name="lbl_registration_edit_validation_error_greater_than">The specified date/time needs to be after the limit. Press ok and correct your error. Limit is %1$s</string>
-    <!-- ADD/EDIT COMMENT -->
-    <string name="lbl_registration_add_comment">Add comment</string>
-    <string name="lbl_registration_edit_comment">Edit comment</string>
     <!-- SPLIT REGISTRATIONS-->
     <string name="lbl_registration_split_title">Split Time Registration</string>
     <string name="lbl_registration_split_cancel_dialog">Do you want to cancel?</string>
@@ -410,7 +407,6 @@
         <item>6</item>
         <item>7</item>
     </string-array>
-
     <string name="pref_date_and_time_time_registrations_precision_prompt">Time precision</string>
     <string name="pref_date_and_time_time_registrations_precision_summary">Choose the time precision strategy to use.</string>
     <string name="pref_date_and_time_time_registrations_precision_dialog_title">Select time precision</string>
@@ -424,24 +420,13 @@
     </string-array>
     <string name="pref_date_and_time_time_registrations_precision_option_seconds">Seconds</string>
     <string name="pref_date_and_time_time_registrations_precision_option_minutes">Minutes</string>
-
-    <string name="pref_widget_category_title">Widget</string>
-    <string name="pref_widget_ask_for_task_selection_if_only_one_title">Ask for task if only one available</string>
-    <string name="pref_widget_ask_for_task_selection_if_only_one_summary_on">If only one task is selectable, ask me to select a task when starting a time registration</string>
-    <string name="pref_widget_ask_for_task_selection_if_only_one_summary_off">If only one task is selectable, do not ask me to select a task when starting a time registration but auto-select the only task found</string>
-    <string name="pref_widget_ask_for_comment_title">Ask for comment?</string>
-    <string name="pref_widget_ask_for_comment_summary_on">Ending a time registration will ask for a summary for the registration.</string>
-    <string name="pref_widget_ask_for_comment_summary_off">Ending a time registration will not ask to enter a summary for the registation.</string>
-    <string name="pref_widget_ask_for_finishing_task_title">Ask for finishing task?</string>
-    <string name="pref_widget_ask_for_finishing_task_summary_on">Ending a time registration will ask if you want to finish the selected task.</string>
-    <string name="pref_widget_ask_for_finishing_task_summary_off">Ending a time registration will not ask if you want to finish the selected task.</string>
-    <string name="pref_stat_bar_notifs_category_title">Notifications</string>
     <string name="pref_reset_preferences_title">Reset Preferences</string>
     <string name="pref_reset_preferences_confirmation_message">This operation will reset all your preferences of WorkTime to the system defaults. This cannot be undone! Are you sure you want to continue with the reset?</string>
     <string name="pref_reset_application_title">Reset Application</string>
     <string name="pref_reset_application_summary">This option will remove all your data and restore the initial data to start clean</string>
     <string name="pref_rest_application_confirmation_message">This operation will delete all your data and cannot be undone! Preferences are not reset. Are you sure you want to continue with the reset?</string>
     <string name="pref_rest_application_loading_dialog_message">Resetting application...</string>
+    <string name="pref_stat_bar_notifs_category_title">Notifications</string>
     <string name="pref_stat_bar_notifs_ask_for_comment_title">Show status bar notifications?</string>
     <string name="pref_stat_bar_notifs_ask_for_comment_summary_on">Notifications will be shown in the status bar.</string>
     <string name="pref_stat_bar_notifs_ask_for_comment_summary_off">No notifications will be shown in the status bar.</string>
@@ -474,13 +459,20 @@
     <string name="pref_time_registrations_punch_bar_enabled_on_all_screens_title">Punch-bar on all screens</string>
     <string name="pref_time_registrations_punch_bar_enabled_on_all_screens_summary_on">The punch-bar will be shown on all screens</string>
     <string name="pref_time_registrations_punch_bar_enabled_on_all_screens_summary_off">The punch-bar will only be shown on the main screen</string>
-
+    <string name="pref_widget_ask_for_task_selection_if_only_one_title">Ask for task if only one available</string>
+    <string name="pref_widget_ask_for_task_selection_if_only_one_summary_on">If only one task is selectable, ask me to select a task when starting a time registration</string>
+    <string name="pref_widget_ask_for_task_selection_if_only_one_summary_off">If only one task is selectable, do not ask me to select a task when starting a time registration but auto-select the only task found</string>
+    <string name="pref_widget_ask_for_comment_title">Ask for comment?</string>
+    <string name="pref_widget_ask_for_comment_summary_on">Ending a time registration will ask for a summary for the registration.</string>
+    <string name="pref_widget_ask_for_comment_summary_off">Ending a time registration will not ask to enter a summary for the registation.</string>
+    <string name="pref_widget_ask_for_finishing_task_title">Ask for finishing task?</string>
+    <string name="pref_widget_ask_for_finishing_task_summary_on">Ending a time registration will ask if you want to finish the selected task.</string>
+    <string name="pref_widget_ask_for_finishing_task_summary_off">Ending a time registration will not ask if you want to finish the selected task.</string>
     <string name="pref_time_registrations_default_tr_action_ongoing_title">Default action for ongoing Time Registrations</string>
     <string name="pref_time_registrations_default_tr_action_ongoing_summary">Select the default action that will be selected in the dialog when performing an action on an ongoing time registration.</string>
     <string name="pref_time_registrations_default_tr_action_finished_title">Default action for finished Time Registrations</string>
     <string name="pref_time_registrations_default_tr_action_finished_summary">Select the default action that will be selected in the dialog when performing an action on a finished time registration.</string>
     <string name="pref_time_registrations_default_tr_action_dialog_title">Select the default action</string>
-
     <string name="pref_time_registrations_split_default_gap_title">Default gap when splitting</string>
     <string name="pref_time_registrations_split_default_gap_summary">Gap in minutes:</string>
     <string name="pref_time_registrations_split_default_gap_summary_text">Define the default gap in minutes when splitting two time registrations</string>
@@ -515,6 +507,7 @@
     <string name="msg_restore_failed_notification_title">WorkTime Restore Failed</string>
     <string name="msg_restore_failed_notification_message">The backup could not be restored</string>
     <string name="msg_restore_failed_notification_big_text_message">The backup could not be restored. This can have various reasons. You can try again, however if you keep having this problem you should look for some help online.</string>
+
     <!-- ABOUT -->
     <string name="lbl_about_title">About</string>
     <string name="lbl_about_project">Project</string>
@@ -536,8 +529,8 @@
     <string name="msg_widget_time_reg_ended">Punched out</string>
     <string name="msg_already_ongoing_time_registration">A time registration is already ongoing. Finish that first before starting a new one.</string>
     <string name="lbl_punching_in">Starting a new time registration</string>
-    <string name="msg_widget_ask_finish_task_title">Finish task?</string>
-    <string name="msg_widget_ask_finish_task_message">Do you want to mark the task &#8216;%1$s&#8217; finished? This can be undone in the project details!</string>
+    <string name="lbl_time_registration_punch_out_ask_finish_task_title">Finish task?</string>
+    <string name="msg_time_registration_punch_out_ask_finish_task_title">Do you want to mark the task &#8216;%1$s&#8217; finished? This can be undone in the project details!</string>
     <string name="lbl_widget_instructions">Click the widget to open the app.</string>
     <string name="lbl_widget_title_select_project">Select project</string>
     <string name="lbl_widget_title_select_task">Select task</string>

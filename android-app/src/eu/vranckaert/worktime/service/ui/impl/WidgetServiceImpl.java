@@ -28,9 +28,9 @@ import android.widget.RemoteViews;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.HomeActivity;
+import eu.vranckaert.worktime.activities.projects.SelectProjectActivity;
 import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationActionActivity;
-import eu.vranckaert.worktime.activities.widget.SelectProjectActivity;
-import eu.vranckaert.worktime.activities.widget.StartTimeRegistrationActivity;
+import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationPunchInActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.dao.WidgetConfigurationDao;
 import eu.vranckaert.worktime.dao.impl.WidgetConfigurationDaoImpl;
@@ -246,7 +246,7 @@ public class WidgetServiceImpl implements WidgetService {
             views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_start));
             //Enable on click for the start button
             Log.d(ctx, LOG_TAG, "Couple the start button to an on click action");
-            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, StartTimeRegistrationActivity.class, null, null, widgetId);
+            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, TimeRegistrationPunchInActivity.class, null, null, widgetId);
         } else if(lastTimeRegistration != null && lastTimeRegistration.isOngoingTimeRegistration() && lastTimeRegistration.getTask().getProject().getId().equals(project.getId())) {
             Log.d(ctx, LOG_TAG, "This is an ongoing time registration");
             views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_stop));
@@ -284,7 +284,7 @@ public class WidgetServiceImpl implements WidgetService {
             views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_start));
             //Enable on click for the start button
             Log.d(ctx, LOG_TAG, "Couple the start button to an on click action");
-            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, StartTimeRegistrationActivity.class, null, task, widgetId);
+            startBackgroundWorkActivity(ctx, R.id.widget_actionbtn, TimeRegistrationPunchInActivity.class, null, task, widgetId);
         } else if(lastTimeRegistration != null && lastTimeRegistration.isOngoingTimeRegistration() && lastTimeRegistration.getTask().getId().equals(task.getId())) {
             Log.d(ctx, LOG_TAG, "This is an ongoing time registration");
             views.setCharSequence(R.id.widget_actionbtn, "setText", ctx.getString(R.string.btn_widget_stop));

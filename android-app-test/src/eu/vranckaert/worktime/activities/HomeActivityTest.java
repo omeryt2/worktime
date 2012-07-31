@@ -21,7 +21,7 @@ import eu.vranckaert.worktime.activities.about.AboutActivity;
 import eu.vranckaert.worktime.activities.preferences.PreferencesActivity;
 import eu.vranckaert.worktime.activities.projects.ManageProjectsActivity;
 import eu.vranckaert.worktime.activities.reporting.ReportingCriteriaActivity;
-import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationsActivity;
+import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationListActivity;
 import eu.vranckaert.worktime.dao.CommentHistoryDao;
 import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.TaskDao;
@@ -46,8 +46,8 @@ public class HomeActivityTest extends ActivityTestCase<HomeActivity> {
     public void testClickTimeRegistrationsButton() {
         solo.assertCurrentActivity("The home activity is expected", HomeActivity.class);
         solo.clickOnButton(0);
-        solo.waitForActivity(TimeRegistrationsActivity.class.getSimpleName());
-        solo.assertCurrentActivity("The time registrations activity is expected", TimeRegistrationsActivity.class);
+        solo.waitForActivity(TimeRegistrationListActivity.class.getSimpleName());
+        solo.assertCurrentActivity("The time registrations activity is expected", TimeRegistrationListActivity.class);
     }
 
     public void testClickProjectsButton() {

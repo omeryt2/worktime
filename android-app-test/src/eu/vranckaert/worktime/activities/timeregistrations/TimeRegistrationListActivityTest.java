@@ -31,9 +31,9 @@ import eu.vranckaert.worktime.test.utils.TestUtil;
  * Date: 20/03/12
  * Time: 9:41
  */
-public class TimeRegistrationsActivityTest extends ActivityTestCase<TimeRegistrationsActivity> {
-    public TimeRegistrationsActivityTest() {
-        super(TimeRegistrationsActivity.class);
+public class TimeRegistrationListActivityTest extends ActivityTestCase<TimeRegistrationListActivity> {
+    public TimeRegistrationListActivityTest() {
+        super(TimeRegistrationListActivity.class);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class TimeRegistrationsActivityTest extends ActivityTestCase<TimeRegistra
     }
 
     public void testGoHome() {
-        solo.assertCurrentActivity("The time registrations activity is expected", TimeRegistrationsActivity.class);
+        solo.assertCurrentActivity("The time registrations activity is expected", TimeRegistrationListActivity.class);
         ActionBar.clickMenuItem(android.R.id.home, solo.getCurrentActivity());
         solo.waitForDialogToClose(TestUtil.Time.TEN_SECONDS);
         solo.assertCurrentActivity("The home activity is expected", HomeActivity.class);
