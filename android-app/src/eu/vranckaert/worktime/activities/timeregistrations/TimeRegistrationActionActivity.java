@@ -21,7 +21,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -93,6 +92,8 @@ public class TimeRegistrationActionActivity extends Activity {
      */
     private TimeRegistration timeRegistration;
     private Integer widgetId;
+    private TimeRegistrationAction defaultAction;
+    private Boolean skipDialog;
 
     /**
      * Google Analytics Tracker
@@ -125,7 +126,11 @@ public class TimeRegistrationActionActivity extends Activity {
             Log.d(getApplicationContext(), LOG_TAG, "Launching action-activity with timeRegistration " + timeRegistration);
         }
 
-        showDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
+        if (skipDialog && defaultAction != null) {
+            handleTimeRegistrationAction(defaultAction);
+        } else {
+            showDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
+        }
     }
 
     /**
@@ -134,6 +139,11 @@ public class TimeRegistrationActionActivity extends Activity {
     private void loadExtras() {
         timeRegistration = (TimeRegistration) getIntent().getExtras().get(Constants.Extras.TIME_REGISTRATION);
         widgetId = (Integer) getIntent().getExtras().get(Constants.Extras.WIDGET_ID);
+        defaultAction = (TimeRegistrationAction) getIntent().getExtras().get(Constants.Extras.DEFAULT_ACTION);
+        skipDialog = (Boolean) getIntent().getExtras().get(Constants.Extras.SKIP_DIALOG);
+        if (skipDialog == null) {
+            skipDialog = false;
+        }
     }
 
     /**
@@ -156,8 +166,7 @@ public class TimeRegistrationActionActivity extends Activity {
                 Log.d(getApplicationContext(), LOG_TAG, "Building the actions dialog");
                 AlertDialog.Builder actionsDialog = new AlertDialog.Builder(this);
 
-                final Context mContext = TimeRegistrationActionActivity.this;
-                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+                LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
                 final View layout = inflater.inflate(R.layout.dialog_time_registration_actions,
                         (ViewGroup) findViewById(R.id.dialog_layout_root));
 
@@ -185,17 +194,18 @@ public class TimeRegistrationActionActivity extends Activity {
                 actionsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 actionSpinner.setAdapter(actionsAdapter);
                 // Set default value...
-                if (timeRegistration.isOngoingTimeRegistration()) {
-                    actionSpinner.setSelection(
-                            Preferences.getDefaultTimeRegistrationActionForOngoingTr(TimeRegistrationActionActivity.this).getOrder()
-                    );
-                    if (Preferences.getEndingTimeRegistrationCommentPreference(getApplicationContext())) {
-                        commentEditText.setVisibility(View.VISIBLE);
+                if (defaultAction == null) {
+                    if (timeRegistration.isOngoingTimeRegistration()) {
+                        actionSpinner.setSelection(
+                                Preferences.getDefaultTimeRegistrationActionForOngoingTr(TimeRegistrationActionActivity.this).getOrder()
+                        );
+                    } else {
+                        actionSpinner.setSelection(
+                                Preferences.getDefaultTimeRegistrationActionForFinishedTr(TimeRegistrationActionActivity.this).getOrder()
+                        );
                     }
                 } else {
-                    actionSpinner.setSelection(
-                            Preferences.getDefaultTimeRegistrationActionForFinishedTr(TimeRegistrationActionActivity.this).getOrder()
-                    );
+                    actionSpinner.setSelection(defaultAction.getOrder());
                 }
                 actionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -277,9 +287,9 @@ public class TimeRegistrationActionActivity extends Activity {
                 actionsDialog.setPositiveButton(android.R.string.ok, new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         removeDialog(Constants.Dialog.TIME_REGISTRATION_ACTION);
-                        ContextUtils.hideKeyboard(mContext, commentEditText);
+                        ContextUtils.hideKeyboard(TimeRegistrationActionActivity.this, commentEditText);
                         TimeRegistrationAction action = TimeRegistrationAction.getByIndex(actions, actionSpinner.getSelectedItemPosition());
-                        handleTimeRegistrationAction(action, commentEditText, (RadioGroup) layout.findViewById(R.id.tr_delete_radio_container));
+                        handleTimeRegistrationAction(action);
                     }
                 });
                 actionsDialog.setNegativeButton(android.R.string.cancel, new AlertDialog.OnClickListener() {
@@ -465,10 +475,16 @@ public class TimeRegistrationActionActivity extends Activity {
      * Handles all the possible {@link TimeRegistrationAction}s.
      *
      * @param action          The actions to handle of type {@link TimeRegistrationAction}.
-     * @param commentEditText The {@link EditText} that is used for entering a comment in certain cases.
      */
-    private void handleTimeRegistrationAction(TimeRegistrationAction action, EditText commentEditText, RadioGroup deleteContainer) {
+    private void handleTimeRegistrationAction(TimeRegistrationAction action) {
         Log.i(getApplicationContext(), LOG_TAG, "Handling Time Registration action: " + action.toString());
+
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View layout = inflater.inflate(R.layout.dialog_time_registration_actions,
+                (ViewGroup) findViewById(R.id.dialog_layout_root));
+        final EditText commentEditText = (EditText) layout.findViewById(R.id.tr_comment);
+        final RadioGroup deleteContainer = (RadioGroup) layout.findViewById(R.id.tr_delete_radio_container);
+
         switch (action) {
             case PUNCH_OUT:
             case PUNCH_OUT_AND_START_NEXT: {

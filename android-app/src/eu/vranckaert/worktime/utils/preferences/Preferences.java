@@ -675,4 +675,28 @@ public class Preferences {
         editor.putString(Constants.Preferences.Keys.TIME_REGISTRATION_DEFAULT_ACTION_FINISHED_TR, action.toString());
         editor.commit();
     }
+
+    /**
+     * Get the preference for key {@link Constants.Preferences.Keys#IMMEDIATE_PUNCH_OUT}. If no value is found for the
+     * preference the default value will be {@link Constants.Preferences#IMMEDIATE_PUNCH_OUT_DEFAULT_VALUE}.
+     * @param ctx The context when getting the preference for immediate punch out.
+     * @return The {@link Boolean} for the user-preference.
+     */
+    public static boolean getImmediatePunchOut(Context ctx) {
+        return getSharedPreferences(ctx).getBoolean(
+                Constants.Preferences.Keys.IMMEDIATE_PUNCH_OUT,
+                Constants.Preferences.IMMEDIATE_PUNCH_OUT_DEFAULT_VALUE
+        );
+    }
+
+    /**
+     * Updates the preference {@link Constants.Preferences.Keys#IMMEDIATE_PUNCH_OUT}.
+     * @param ctx The context when updating the preference.
+     * @param immediatePunchOut The {@link Boolean} representing if immediate punch out should be active or not.
+     */
+    public static void setImmediatePunchOut(Context ctx, boolean immediatePunchOut) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.putBoolean(Constants.Preferences.Keys.IMMEDIATE_PUNCH_OUT, immediatePunchOut);
+        editor.commit();
+    }
 }

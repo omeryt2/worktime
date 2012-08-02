@@ -469,6 +469,9 @@
     <string name="pref_widget_ask_for_comment_title">Ask for comment?</string>
     <string name="pref_widget_ask_for_comment_summary_on">Ask to enter a comment in the action dialog for the option \'Punch Out\'.</string>
     <string name="pref_widget_ask_for_comment_summary_off">Do not ask to enter a comment in the action dialog for the option \'Punch Out\'.</string>
+    <string name="pref_immediate_punch_out_title">Immediate punch out</string>
+    <string name="pref_immediate_punch_out_summary_on">The action dialog is skipped and the punch out is done immediately (not possible to enter a comment on punch out).</string>
+    <string name="pref_immediate_punch_out_summary_off">The action dialog is shown first in which you can choose another action to be executed instead of punching out.</string>
     <string name="pref_widget_ask_for_finishing_task_title">Ask for finishing task?</string>
     <string name="pref_widget_ask_for_finishing_task_summary_on">Ending a time registration will ask if you want to finish the selected task. This does not work for the action dialog option \'Punch Out and start next\'!</string>
     <string name="pref_widget_ask_for_finishing_task_summary_off">Ending a time registration will not ask if you want to finish the selected task.</string>

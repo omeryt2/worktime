@@ -30,6 +30,7 @@ import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
+import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
@@ -51,15 +52,18 @@ import java.util.GregorianCalendar;
 public class TimeRegistrationEditStartTimeActivity extends GuiceActivity {
     private static final String LOG_TAG = TimeRegistrationEditStartTimeActivity.class.getSimpleName();
 
+    @Inject
+    private TimeRegistrationService timeRegistrationService;
+
+    @Inject
+    private StatusBarNotificationService statusBarNotificationService;
+
     @InjectExtra(Constants.Extras.TIME_REGISTRATION)
     private TimeRegistration timeRegistration;
 
     @InjectExtra(value = Constants.Extras.TIME_REGISTRATION_PREVIOUS)
     @Nullable
     private TimeRegistration previousTimeRegistration;
-
-    @Inject
-    private TimeRegistrationService timeRegistrationService;
 
     private Calendar newStartTime = null;
     private Calendar lowerLimit = null;
@@ -246,17 +250,6 @@ public class TimeRegistrationEditStartTimeActivity extends GuiceActivity {
             Log.d(getApplicationContext(), LOG_TAG, "No validation errors...");
             updateTimeRegistration();
         }
-
-//        if (lowerLimit != null && !newStartTime.getTime().after(lowerLimit)) {
-//            Log.d(getApplicationContext(), LOG_TAG, "The new start time is not after the lowerLimit!");
-//            showDialog(Constants.Dialog.VALIDATION_DATE_LOWER_LIMIT);
-//        } else if (higherLimit != null && !newStartTime.getTime().before(higherLimit)) {
-//            Log.d(getApplicationContext(), LOG_TAG, "The new start time is not before the higherLimit!");
-//            showDialog(Constants.Dialog.VALIDATION_DATE_HIGHER_LIMIT);
-//        } else {
-//            Log.d(getApplicationContext(), LOG_TAG, "No validation errors...");
-//            updateTimeRegistration();
-//        }
     }
 
     /**
@@ -337,6 +330,7 @@ public class TimeRegistrationEditStartTimeActivity extends GuiceActivity {
     private void updateTimeRegistration() {
         timeRegistration.setStartTime(newStartTime.getTime());
         timeRegistrationService.update(timeRegistration);
+        statusBarNotificationService.addOrUpdateNotification(timeRegistration);
         setResult(RESULT_OK);
         finish();
     }

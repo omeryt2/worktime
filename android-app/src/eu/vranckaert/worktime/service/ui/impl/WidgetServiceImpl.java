@@ -34,6 +34,7 @@ import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationPunch
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.dao.WidgetConfigurationDao;
 import eu.vranckaert.worktime.dao.impl.WidgetConfigurationDaoImpl;
+import eu.vranckaert.worktime.enums.timeregistration.TimeRegistrationAction;
 import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
@@ -48,6 +49,7 @@ import eu.vranckaert.worktime.service.impl.TaskServiceImpl;
 import eu.vranckaert.worktime.service.impl.TimeRegistrationServiceImpl;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.Log;
+import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.widget.WidgetUtil;
 
 import java.util.List;
@@ -163,7 +165,7 @@ public class WidgetServiceImpl implements WidgetService {
         // Set the button and it's action
         setPunchButton(widgetId);
 
-        enableWidgetOnClick();
+        enableWidgetOnClick(R.id.widget);
 
 
         commitView(ctx, widgetId, views, WorkTimeWidgetProvider_2x1_ProjectTask.class);
@@ -186,16 +188,14 @@ public class WidgetServiceImpl implements WidgetService {
         boolean timeRegistrationStarted = setPunchButton(widgetId);
 
         //Enable on click for the entire widget to open the app
-        enableWidgetOnClick();
+        enableWidgetOnClick(R.id.widget);
 
         //Enable on click for the widget title to open the app if a registration is just started, or to open the
         //"select project" popup to change the selected project.
         Log.d(ctx, LOG_TAG, "Couple the widget title background to an on click action.");
         if (timeRegistrationStarted) {
             Log.d(ctx, LOG_TAG, "On click opens the home activity");
-            Intent homeAppIntent = new Intent(ctx, HomeActivity.class);
-            PendingIntent homeAppPendingIntent = PendingIntent.getActivity(ctx, 0, homeAppIntent, 0);
-            views.setOnClickPendingIntent(R.id.widget_bgtop, homeAppPendingIntent);
+            enableWidgetOnClick(R.id.widget_bgtop);
         } else {
             Log.d(ctx, LOG_TAG, "On click opens a chooser-dialog for selecting the a project");
             startBackgroundWorkActivity(ctx, R.id.widget_bgtop, SelectProjectActivity.class, null, null, widgetId);
@@ -299,12 +299,13 @@ public class WidgetServiceImpl implements WidgetService {
 
     /**
      * Enable the on click for the entire widget to open the app.
+     * @param resId The resource id on which should be clicked.
      */
-    private void enableWidgetOnClick() {
+    private void enableWidgetOnClick(int resId) {
         Log.d(ctx, LOG_TAG, "Couple the widget background to an on click action. On click opens the home activity");
         Intent homeAppIntent = new Intent(ctx, HomeActivity.class);
         PendingIntent homeAppPendingIntent = PendingIntent.getActivity(ctx, 0, homeAppIntent, 0);
-        views.setOnClickPendingIntent(R.id.widget, homeAppPendingIntent);
+        views.setOnClickPendingIntent(resId, homeAppPendingIntent);
     }
 
     @Override
@@ -349,6 +350,11 @@ public class WidgetServiceImpl implements WidgetService {
         intent.putExtra(Constants.Extras.WIDGET_ID, widgetId);
         intent.putExtra(Constants.Extras.UPDATE_WIDGET, true);
         intent.setFlags(defaultFlags);
+
+        if (Preferences.getImmediatePunchOut(ctx)) {
+            intent.putExtra(Constants.Extras.DEFAULT_ACTION, TimeRegistrationAction.PUNCH_OUT);
+            intent.putExtra(Constants.Extras.SKIP_DIALOG, true);
+        }
 
         if(extraFlags != null) {
             for (int flag : extraFlags) {

@@ -23,9 +23,11 @@ import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationActionActivity;
 import eu.vranckaert.worktime.constants.Constants;
+import eu.vranckaert.worktime.enums.timeregistration.TimeRegistrationAction;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
+import eu.vranckaert.worktime.utils.preferences.Preferences;
 import roboguice.activity.GuiceActivity;
 
 /**
@@ -51,10 +53,14 @@ public class StatusBarTimeRegistrationHandleActivity extends GuiceActivity {
         if (timeRegistration != null) {
             Intent intent = new Intent(getApplicationContext(), TimeRegistrationActionActivity.class);
             intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
+            if (Preferences.getImmediatePunchOut(this)) {
+                intent.putExtra(Constants.Extras.DEFAULT_ACTION, TimeRegistrationAction.PUNCH_OUT);
+                intent.putExtra(Constants.Extras.SKIP_DIALOG, true);
+            }
             intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
         } else {
-            Toast.makeText(StatusBarTimeRegistrationHandleActivity.this, R.string.lbl_notif_no_tr_found, Toast.LENGTH_LONG);
+            Toast.makeText(this, R.string.lbl_notif_no_tr_found, Toast.LENGTH_LONG);
             statusBarNotificationService.removeOngoingTimeRegistrationNotification();
         }
     }

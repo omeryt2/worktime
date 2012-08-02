@@ -28,6 +28,7 @@ import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.OSContants;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
+import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.Log;
@@ -51,10 +52,13 @@ public class TimeRegistrationSplitActivity extends WizardActivity {
     private static final String LOG_TAG = TimeRegistrationSplitActivity.class.getSimpleName();
 
     @Inject
-    TimeRegistrationService trService;
+    private TimeRegistrationService trService;
 
     @Inject
-    WidgetService widgetService;
+    private WidgetService widgetService;
+
+    @Inject
+    private StatusBarNotificationService statusBarNotificationService;
 
     private TimeRegistration originalTimeRegistration;
     private int defaultSplitGap;
@@ -556,6 +560,7 @@ public class TimeRegistrationSplitActivity extends WizardActivity {
         trService.create(part2);
 
         widgetService.updateAllWidgets();
+        statusBarNotificationService.addOrUpdateNotification(part2);
 
         return true;
     }

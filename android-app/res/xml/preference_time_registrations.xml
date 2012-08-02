@@ -38,6 +38,16 @@
                 android:title="@string/pref_time_registrations_punch_bar_enabled_on_all_screens_title"
                 android:summaryOn="@string/pref_time_registrations_punch_bar_enabled_on_all_screens_summary_on"
                 android:summaryOff="@string/pref_time_registrations_punch_bar_enabled_on_all_screens_summary_off" />
+        <eu.vranckaert.worktime.utils.view.SeekBarPreference
+                android:key="timeRegistrationSplitDefaultGap"
+                android:title="@string/pref_time_registrations_split_default_gap_title"
+                vranckaert:summaryText="@string/pref_time_registrations_split_default_gap_summary_text"
+                android:summary="@string/pref_time_registrations_split_default_gap_summary"
+                vranckaert:min="1"
+                android:max="120"
+                android:defaultValue="30"
+                vranckaert:unitsLeft=""
+                vranckaert:unitsRight="@string/pref_time_registrations_split_default_gap_units_right"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_time_registrations_sub_category_punch_in_title">
         <CheckBoxPreference
@@ -48,6 +58,12 @@
                 android:summaryOff="@string/pref_widget_ask_for_task_selection_if_only_one_summary_off" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_time_registrations_sub_category_punch_out_title">
+        <CheckBoxPreference
+                android:key="immediatePunchOut"
+                android:defaultValue="false"
+                android:title="@string/pref_immediate_punch_out_title"
+                android:summaryOn="@string/pref_immediate_punch_out_summary_on"
+                android:summaryOff="@string/pref_immediate_punch_out_summary_off" />
         <CheckBoxPreference
                 android:key="widgetEndingTimeRegistrationFinishTaskPreference"
                 android:defaultValue="false"
@@ -78,15 +94,5 @@
                 android:title="@string/pref_widget_ask_for_comment_title"
                 android:summaryOn="@string/pref_widget_ask_for_comment_summary_on"
                 android:summaryOff="@string/pref_widget_ask_for_comment_summary_off" />
-        <eu.vranckaert.worktime.utils.view.SeekBarPreference
-                android:key="timeRegistrationSplitDefaultGap"
-                android:title="@string/pref_time_registrations_split_default_gap_title"
-                vranckaert:summaryText="@string/pref_time_registrations_split_default_gap_summary_text"
-                android:summary="@string/pref_time_registrations_split_default_gap_summary"
-                vranckaert:min="1"
-                android:max="120"
-                android:defaultValue="30"
-                vranckaert:unitsLeft=""
-                vranckaert:unitsRight="@string/pref_time_registrations_split_default_gap_units_right"/>
     </PreferenceCategory>
 </PreferenceScreen>

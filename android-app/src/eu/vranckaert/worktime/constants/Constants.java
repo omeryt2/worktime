@@ -123,6 +123,7 @@ public class Constants {
         public static final boolean TIME_REGISTRATION_PUNCH_BAR_ENABLED_FROM_HOME_SCREEN_DEFAULT_VALUE = true;
         public static final boolean TIME_REGISTRATION_PUNCH_BAR_ENABLED_ON_ALL_SCREENS_DEFAULT_VALUE = false;
         public static final int TIME_REGISTRATION_SPLIT_DEFAULT_GAP_DEFAULT_VALUE = 30;
+        public static final boolean IMMEDIATE_PUNCH_OUT_DEFAULT_VALUE = false;
 
         public class Keys {
             public static final String WIDGET_ASK_FOR_TASK_SELECTION_IF_ONLY_ONE = "askForTaskSelectionIfOnlyOne";
@@ -147,6 +148,7 @@ public class Constants {
             public static final String BACKUP_LOCATION = "backupLocation";
             public static final String TIME_REGISTRATION_DEFAULT_ACTION_ONGOING_TR = "timeRegistrationDefaultActionOngoingTr";
             public static final String TIME_REGISTRATION_DEFAULT_ACTION_FINISHED_TR = "timeRegistrationDefaultActionFinishedTr";
+            public static final String IMMEDIATE_PUNCH_OUT = "immediatePunchOut";
         }
     }
     public class Disk {
@@ -171,6 +173,8 @@ public class Constants {
         public static final String ENABLE_SELECT_NONE_OPTION = "enableSelectNoneOption";
         public static final String UPDATE_WIDGET = "updateWidget";
         public static final String TIME_REGISTRATION_COMMENT = "timeRegistrationComment";
+        public static final String DEFAULT_ACTION = "defaultAction";
+        public static final String SKIP_DIALOG = "skipDialog";
     }
     public class ContentMenuItemIds {
         public static final int PROJECT_DETAILS = 1;
