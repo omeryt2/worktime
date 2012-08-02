@@ -332,7 +332,7 @@
     </string-array>
     <string name="lbl_reporting_export_filename">Filename</string>
     <string name="lbl_reporting_export_filename_required">The filename is required and should contain at least 3 characters</string>
-    <string name="lbl_reporting_export_csv_separator">CSV Seperator</string>
+    <string name="lbl_reporting_export_csv_separator">CSV Separator</string>
     <string name="reporting_export_csv_separator_prompt">Select CSV Separator</string>
     <string-array name="array_reporting_export_csv_separator_options">
         <item>Comma (,)</item>
