@@ -37,7 +37,7 @@
                   android:layout_height="wrap_content"
                   android:lines="3"
                   android:singleLine="false"
-                  android:inputType="textMultiLine|textCapSentences|textAutoComplete|textAutoCorrect"
+                  android:inputType="textMultiLine|textImeMultiLine|textCapSentences|textAutoComplete|textAutoCorrect"
                   android:gravity="top"/>
 
         <Button android:id="@+id/tr_reuse_btn"

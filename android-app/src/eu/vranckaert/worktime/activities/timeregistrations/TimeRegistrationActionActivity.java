@@ -31,6 +31,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TableLayout;
@@ -107,6 +108,7 @@ public class TimeRegistrationActionActivity extends Activity {
     private Calendar removeRangeMaxBoundary = null;
     private Button deleteRangeFromButton = null;
     private Button deleteRangeToButton = null;
+    private RadioGroup deleteRadioContainer = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,7 +195,8 @@ public class TimeRegistrationActionActivity extends Activity {
                 TimeRegistrationActionListAdapter actionsAdapter = getFilteredActionsAdapter(actions);
                 actionsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 actionSpinner.setAdapter(actionsAdapter);
-                // Set default value...
+
+                // Set default value for action...
                 if (defaultAction == null) {
                     if (timeRegistration.isOngoingTimeRegistration()) {
                         actionSpinner.setSelection(
@@ -240,12 +243,11 @@ public class TimeRegistrationActionActivity extends Activity {
 
                                 updateDateRangeSelectionButtons();
 
-                                RadioGroup deleteRadioContainer = (RadioGroup) layout.findViewById(R.id.tr_delete_radio_container);
+                                deleteRadioContainer = (RadioGroup) layout.findViewById(R.id.tr_delete_radio_container);
                                 deleteRadioContainer.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                                     @Override
-                                    public void onCheckedChanged(RadioGroup radioGroup, int index) {
-                                        int checkedId = radioGroup.getCheckedRadioButtonId();
-                                        switch (checkedId) {
+                                    public void onCheckedChanged(RadioGroup radioGroup, int id) {
+                                        switch (id) {
                                             case R.id.tr_delete_current: {
                                                 deleteRangeContainer.setVisibility(View.GONE);
                                                 break;
@@ -265,12 +267,13 @@ public class TimeRegistrationActionActivity extends Activity {
                                                         showDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_MAX_BOUNDARY);
                                                     }
                                                 });
-
                                                 break;
                                             }
                                         }
+                                        //TODO remove this: radioGroup.check(id);
                                     }
                                 });
+                                //TODO remove this: deleteCurrentRadio.setChecked(true);
                                 deleteRadioContainer.check(R.id.tr_delete_current);
                                 break;
                         }
@@ -483,7 +486,8 @@ public class TimeRegistrationActionActivity extends Activity {
         final View layout = inflater.inflate(R.layout.dialog_time_registration_actions,
                 (ViewGroup) findViewById(R.id.dialog_layout_root));
         final EditText commentEditText = (EditText) layout.findViewById(R.id.tr_comment);
-        final RadioGroup deleteContainer = (RadioGroup) layout.findViewById(R.id.tr_delete_radio_container);
+        final RadioButton deleteCurrentRadio = (RadioButton) layout.findViewById(R.id.tr_delete_current);
+        final RadioButton deleteRangeRadio = (RadioButton) layout.findViewById(R.id.tr_delete_range);
 
         switch (action) {
             case PUNCH_OUT:
@@ -567,23 +571,28 @@ public class TimeRegistrationActionActivity extends Activity {
                 break;
             }
             case DELETE_TIME_REGISTRATION: {
-                int radioButtonId = deleteContainer.getCheckedRadioButtonId();
+                int checkedId = deleteRadioContainer.getCheckedRadioButtonId();
 
-                if (radioButtonId == R.id.tr_delete_current) {
-                    Log.d(getApplicationContext(), LOG_TAG, "Deleting current time registration");
+                switch (checkedId) {
+                    case R.id.tr_delete_current: {
+                        Log.d(getApplicationContext(), LOG_TAG, "Deleting current time registration");
 
-                    Intent intent = new Intent(TimeRegistrationActionActivity.this, TimeRegistrationDeleteActivity.class);
-                    intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
-                    startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT);
-                } else if (radioButtonId == R.id.tr_delete_range) {
-                    Log.d(getApplicationContext(), LOG_TAG, "Deleting all time registrations in range");
-                    if (removeRangeMinBoundary.after(removeRangeMaxBoundary)) {
-                        showDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_BOUNDARY_PROBLEM);
-                    } else {
                         Intent intent = new Intent(TimeRegistrationActionActivity.this, TimeRegistrationDeleteActivity.class);
-                        intent.putExtra(Constants.Extras.TIME_REGISTRATION_START_DATE, removeRangeMinBoundary != null ? removeRangeMinBoundary.getTime() : null);
-                        intent.putExtra(Constants.Extras.TIME_REGISTRATION_END_DATE, removeRangeMaxBoundary != null ? removeRangeMaxBoundary.getTime() : null);
+                        intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
                         startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT);
+                        break;
+                    }
+                    case R.id.tr_delete_range: {
+                        Log.d(getApplicationContext(), LOG_TAG, "Deleting all time registrations in range");
+                        if (removeRangeMinBoundary.after(removeRangeMaxBoundary)) {
+                            showDialog(Constants.Dialog.TIME_REGISTRATION_DELETE_RANGE_BOUNDARY_PROBLEM);
+                        } else {
+                            Intent intent = new Intent(TimeRegistrationActionActivity.this, TimeRegistrationDeleteActivity.class);
+                            intent.putExtra(Constants.Extras.TIME_REGISTRATION_START_DATE, removeRangeMinBoundary != null ? removeRangeMinBoundary.getTime() : null);
+                            intent.putExtra(Constants.Extras.TIME_REGISTRATION_END_DATE, removeRangeMaxBoundary != null ? removeRangeMaxBoundary.getTime() : null);
+                            startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_EDIT);
+                        }
+                        break;
                     }
                 }
                 break;
