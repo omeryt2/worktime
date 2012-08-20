@@ -174,7 +174,7 @@ public class IntentUtil {
 
         if (files != null && files.size() == 1) {
             Log.d(activity, LOG_TAG, "Adding one file...");
-            emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:/" + files.get(0)));
+            emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///" + files.get(0)));
         } else if(files != null) {
             Log.d(activity, LOG_TAG, "Adding multiple files...");
             ArrayList<Uri> uris = new ArrayList<Uri>();
