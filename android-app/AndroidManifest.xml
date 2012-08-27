@@ -169,7 +169,7 @@
         </activity>
 
         <!-- Notification Bar activities -->
-        <activity android:name=".activities.notifcationbar.StatusBarTimeRegistrationHandleActivity"
+        <activity android:name=".activities.notifcationbar.StatusBarPunchOutHandleActivity"
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden"/>
 

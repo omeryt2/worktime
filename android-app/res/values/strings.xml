@@ -554,6 +554,9 @@
     <string name="lbl_notif_big_text_started_at">Started at</string>
     <string name="lbl_notif_big_text_comment">Comment</string>
     <string name="lbl_notif_no_tr_found">For some reason no time registration could be found for this notification. The notification will now be removed.</string>
+    <string name="lbl_notif_action_punch_out">Punch Out</string>
+    <string name="lbl_notif_action_split">Split</string>
+    <string name="lbl_notif_action_others">Others</string>
 
     <!-- WIZARD -->
     <string name="wizard_navigation_cancel">Cancel</string>

@@ -24,9 +24,13 @@ import android.content.Intent;
 import com.google.inject.Inject;
 import com.jakewharton.notificationcompat2.NotificationCompat2;
 import eu.vranckaert.worktime.R;
-import eu.vranckaert.worktime.activities.notifcationbar.StatusBarTimeRegistrationHandleActivity;
+import eu.vranckaert.worktime.activities.HomeActivity;
+import eu.vranckaert.worktime.activities.notifcationbar.StatusBarPunchOutHandleActivity;
+import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationActionActivity;
+import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationSplitActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.model.TimeRegistration;
+import eu.vranckaert.worktime.model.notification.NotificationAction;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
@@ -103,8 +107,7 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
             String message = context.getString(R.string.lbl_notif_project_task_name, projectName, taskName);
             String ticker = null;
 
-            Intent intent = new Intent(context, StatusBarTimeRegistrationHandleActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            Intent intent = new Intent(context, HomeActivity.class);
 
             if (registration.getId() == null) {
                 // creating...
@@ -124,8 +127,28 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
                 bigText += "\n" + context.getString(R.string.lbl_notif_big_text_comment) + ": " + registration.getComment();
             }
 
+
+            // Prepare the notification action buttons for jelly bean (4.1) and up!
+            Intent punchOutActionIntent = new Intent(context, StatusBarPunchOutHandleActivity.class);
+            punchOutActionIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            punchOutActionIntent.putExtra(Constants.Extras.TIME_REGISTRATION, registration);
+
+            Intent splitActionIntent = new Intent(context, TimeRegistrationSplitActivity.class);
+            splitActionIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            splitActionIntent.putExtra(Constants.Extras.TIME_REGISTRATION, registration);
+
+            Intent othersActionIntent = new Intent(context, TimeRegistrationActionActivity.class);
+            othersActionIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            othersActionIntent.putExtra(Constants.Extras.TIME_REGISTRATION, registration);
+
+            NotificationAction punchOutAction = new NotificationAction(context.getString(R.string.lbl_notif_action_punch_out), punchOutActionIntent);
+            NotificationAction splitAction = new NotificationAction(context.getString(R.string.lbl_notif_action_split), splitActionIntent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
+            NotificationAction othersAction = new NotificationAction(context.getString(R.string.lbl_notif_action_others), othersActionIntent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
+
             setStatusBarNotification(
-                    title, message, ticker, intent, bigText, null, Constants.StatusBarNotificationIds.ONGOING_TIME_REGISTRATION_MESSAGE, NotificationCompat2.PRIORITY_LOW, null, true
+                    title, message, ticker, intent, bigText, null,
+                    Constants.StatusBarNotificationIds.ONGOING_TIME_REGISTRATION_MESSAGE,
+                    NotificationCompat2.PRIORITY_LOW, null, true, punchOutAction, splitAction, othersAction
             );
         }
     }
@@ -241,12 +264,20 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
 
     /**
      * Creates a new status bar notification message.
-     * @param title The title of the notification.
-     * @param message The message of the notification.
-     * @param ticker The ticker-text shown when the notification is created.
-     * @param intent The intent to be launched when the notification is selected.
+     * @param title              The title of the notification.
+     * @param message            The message of the notification.
+     * @param ticker             The ticker-text shown when the notification is created.
+     * @param intent             The intent to be launched when the notification is selected.
+     * @param bigText            The 'big-text' to be shown in the 4.1 and up OS versions.
+     * @param bigContentTitle    The title to be shown when a big-text is shown in the 4.1 and up OS versions.
+     * @param notificationId     The id of the notification.
+     * @param priority           The priority of the notification.
+     * @param iconDrawable       The icon of the notification.
+     * @param fixed              If the notification can be removed by the user or not.
+     * @param actions            The possible actions of type {@link NotificationAction} that be performed the
+     *                           notification. The actions will only be used on 4.1 and up OS versions.
      */
-    private void setStatusBarNotification(String title, String message, String ticker, Intent intent, String bigText, String bigContentTitle, int notificationId, int priority, Integer iconDrawable, boolean fixed) {
+    private void setStatusBarNotification(String title, String message, String ticker, Intent intent, String bigText, String bigContentTitle, int notificationId, int priority, Integer iconDrawable, boolean fixed, NotificationAction... actions) {
         int icon = R.drawable.logo_notif_bar;
         if (iconDrawable != null)
             icon = iconDrawable;
@@ -262,6 +293,10 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
                 .setContentText(message)
                 .setContentIntent(contentIntent)
                 .setPriority(priority);
+
+        for (NotificationAction action : actions) {
+            builder.addAction(action.getDrawable(), action.getText(), PendingIntent.getActivity(context, action.getIntentRequestCode(), action.getIntent(), 0));
+        }
 
         NotificationCompat2.BigTextStyle bigTextStyle = new NotificationCompat2.BigTextStyle(builder).bigText(bigText);
         if (bigContentTitle != null) {

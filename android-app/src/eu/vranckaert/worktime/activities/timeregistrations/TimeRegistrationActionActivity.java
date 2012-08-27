@@ -95,6 +95,7 @@ public class TimeRegistrationActionActivity extends Activity {
     private Integer widgetId;
     private TimeRegistrationAction defaultAction;
     private Boolean skipDialog;
+    private Boolean onlyAction;
 
     /**
      * Google Analytics Tracker
@@ -141,10 +142,18 @@ public class TimeRegistrationActionActivity extends Activity {
     private void loadExtras() {
         timeRegistration = (TimeRegistration) getIntent().getExtras().get(Constants.Extras.TIME_REGISTRATION);
         widgetId = (Integer) getIntent().getExtras().get(Constants.Extras.WIDGET_ID);
+
+        // Extras for setting a default action
         defaultAction = (TimeRegistrationAction) getIntent().getExtras().get(Constants.Extras.DEFAULT_ACTION);
         skipDialog = (Boolean) getIntent().getExtras().get(Constants.Extras.SKIP_DIALOG);
         if (skipDialog == null) {
             skipDialog = false;
+        }
+        // Use this together with default action to set that can be used in the dialog (the one action will be the
+        // 'default action'
+        onlyAction = (Boolean) getIntent().getExtras().get(Constants.Extras.ONLY_ACTION);
+        if (onlyAction == null) {
+            onlyAction = false;
         }
     }
 
@@ -209,6 +218,9 @@ public class TimeRegistrationActionActivity extends Activity {
                     }
                 } else {
                     actionSpinner.setSelection(defaultAction.getOrder());
+                    if (onlyAction) {
+                        actionSpinner.setEnabled(false);
+                    }
                 }
                 actionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -270,10 +282,8 @@ public class TimeRegistrationActionActivity extends Activity {
                                                 break;
                                             }
                                         }
-                                        //TODO remove this: radioGroup.check(id);
                                     }
                                 });
-                                //TODO remove this: deleteCurrentRadio.setChecked(true);
                                 deleteRadioContainer.check(R.id.tr_delete_current);
                                 break;
                         }

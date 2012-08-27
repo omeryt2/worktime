@@ -175,6 +175,7 @@ public class Constants {
         public static final String TIME_REGISTRATION_COMMENT = "timeRegistrationComment";
         public static final String DEFAULT_ACTION = "defaultAction";
         public static final String SKIP_DIALOG = "skipDialog";
+        public static final String ONLY_ACTION = "onlyAction";
     }
     public class ContentMenuItemIds {
         public static final int PROJECT_DETAILS = 1;

@@ -35,7 +35,7 @@ import roboguice.activity.GuiceActivity;
  * Date: 27/04/11
  * Time: 21:46
  */
-public class StatusBarTimeRegistrationHandleActivity extends GuiceActivity {
+public class StatusBarPunchOutHandleActivity extends GuiceActivity {
     @Inject
     private TimeRegistrationService timeRegistrationService;
 
@@ -53,9 +53,11 @@ public class StatusBarTimeRegistrationHandleActivity extends GuiceActivity {
         if (timeRegistration != null) {
             Intent intent = new Intent(getApplicationContext(), TimeRegistrationActionActivity.class);
             intent.putExtra(Constants.Extras.TIME_REGISTRATION, timeRegistration);
+            intent.putExtra(Constants.Extras.DEFAULT_ACTION, TimeRegistrationAction.PUNCH_OUT);
             if (Preferences.getImmediatePunchOut(this)) {
-                intent.putExtra(Constants.Extras.DEFAULT_ACTION, TimeRegistrationAction.PUNCH_OUT);
                 intent.putExtra(Constants.Extras.SKIP_DIALOG, true);
+            } else {
+                intent.putExtra(Constants.Extras.ONLY_ACTION, true);
             }
             intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivityForResult(intent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
