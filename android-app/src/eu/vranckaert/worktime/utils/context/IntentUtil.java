@@ -157,10 +157,9 @@ public class IntentUtil {
         Log.d(activity, LOG_TAG, "About to send something...");
         Log.d(activity, LOG_TAG, "At least one attachment included? " + (files.size()>0?"Yes":"No"));
 
-        String action = Intent.ACTION_SEND;
+        String action = Intent.ACTION_SEND_MULTIPLE;
         if (files != null && files.size() > 1) {
             Log.d(activity, LOG_TAG, "More than one attachment included");
-            action = Intent.ACTION_SEND_MULTIPLE;
         }
 
         Intent emailIntent = new Intent(action);
