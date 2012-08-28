@@ -526,6 +526,7 @@ public class ReportingExportActivity extends ActionBarGuiceActivity {
         rawHeaders.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_projectcomment));
         rawHeaders.add("");
         rawHeaders.add("");
+        rawHeaders.add("Duration by Excel (not always correct)");
         rawHeaders.add(getString(R.string.lbl_reporting_results_export_raw_data_csv_total_time));
         //Construct raw body
         rawValues = buildExcelRawBodyData(exportDto.getTimeRegistrations());
@@ -561,9 +562,10 @@ public class ReportingExportActivity extends ActionBarGuiceActivity {
         dataValuesColumnFormat.put(8, new jxl.write.DateFormat("dd/mm/yyyy hh:mm"));
         dataValuesColumnFormat.put(9, new jxl.write.DateFormat("dd/mm/yyyy hh:mm"));
         dataValuesColumnFormat.put(10, new jxl.write.DateFormat("[h]:mm"));
+        dataValuesColumnFormat.put(11, new jxl.write.DateFormat("[h]:mm"));
         valuesColumnFormat.put(dataSheetName, dataValuesColumnFormat);
         // Hidden columns
-        hiddenColumns.put(dataSheetName, Arrays.asList(new Integer[]{8, 9}));
+        hiddenColumns.put(dataSheetName, Arrays.asList(new Integer[]{8, 9, 10}));
 
         try {
             return exportService.exportXlsFile(ReportingExportActivity.this, filename, headers, values, headersColumnFormat, valuesColumnFormat, hiddenColumns, null, true);
@@ -701,15 +703,44 @@ public class ReportingExportActivity extends ActionBarGuiceActivity {
                 projectComment = timeRegistration.getTask().getProject().getComment();
             }
 
-            String totalDuration = "=IF(J[CR]=\"\",NOW()-I[CR],J[CR]-I[CR])";
+            String excelCalculatedTotalDuration = "=IF(J[CR]=\"\",NOW()-I[CR],J[CR]-I[CR])";
+            List<TimeRegistration> timeRegistrationsForCalculation = new ArrayList<TimeRegistration>();
+            timeRegistrationsForCalculation.add(timeRegistration);
+            Date totalDuration = getExcelTimeFromPeriod(DateUtils.TimeCalculator.calculatePeriod(ReportingExportActivity.this, timeRegistrationsForCalculation));
 
             Object[] exportLine = {
-                    startDate, startTime, endDate, endTime, trComment,
-                    projectName, taskName, projectComment, startDateTime, endDateTime, totalDuration
+                    convertToExcelDateTime(startDate), convertToExcelDateTime(startTime),
+                    convertToExcelDateTime(endDate), convertToExcelDateTime(endTime), trComment,
+                    projectName, taskName, projectComment, convertToExcelDateTime(startDateTime),
+                    convertToExcelDateTime(endDateTime), excelCalculatedTotalDuration, totalDuration
             };
             rawValues.add(exportLine);
         }
         return rawValues;
+    }
+
+    /**
+     * Convert a date to date that can be used correctly in Excel. That requires to set the timezone to GMT+0, otherwise
+     * there will be difference in the time dipslayed, being the difference of your timezone and GMT+0. See issue 132.
+     * @param dateTime The date to make compatible with Excel.
+     * @return An Excel compatible {@link Date}.
+     */
+    private Date convertToExcelDateTime(Date dateTime) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+
+        Calendar oCal = Calendar.getInstance();
+        oCal.setTime(dateTime);
+
+        cal.set(Calendar.YEAR, oCal.get(Calendar.YEAR));
+        cal.set(Calendar.MONTH, oCal.get(Calendar.MONTH));
+        cal.set(Calendar.DAY_OF_MONTH, oCal.get(Calendar.DAY_OF_MONTH));
+        cal.set(Calendar.HOUR_OF_DAY, oCal.get(Calendar.HOUR_OF_DAY));
+        cal.set(Calendar.MINUTE, oCal.get(Calendar.MINUTE));
+        cal.set(Calendar.SECOND, oCal.get(Calendar.SECOND));
+        cal.set(Calendar.MILLISECOND, oCal.get(Calendar.MILLISECOND));
+
+        return cal.getTime();
     }
 
     /**
