@@ -23,6 +23,8 @@ import android.os.Environment;
 import android.util.Log;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.OSContants;
+import eu.vranckaert.worktime.exceptions.file.ExternalStorageNotAvailableException;
+import eu.vranckaert.worktime.exceptions.file.ExternalStorageNotWritableException;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 
@@ -319,6 +321,28 @@ public class FileUtil {
         boolean result = file.delete();
         if (!result) {
             Log.w(LOG_TAG, "Could not remove file " + file.getAbsolutePath());
+        }
+    }
+
+    /**
+     * Checks the availability of the external storage. Does not return anything. Just throws an exception if for some
+     * reason the external storage is not accessible.
+     * @throws ExternalStorageNotWritableException This exception is thrown if the external storage is available but not
+     * writable.
+     * @throws ExternalStorageNotAvailableException This exception is thrown because the external storage is nor
+     * writable nor readable (so not at all available).
+     */
+    public static void checkExternalStorageState()
+            throws ExternalStorageNotWritableException, ExternalStorageNotAvailableException {
+        String state = Environment.getExternalStorageState();
+
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            // We can read and write the media
+            return;
+        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            throw new ExternalStorageNotWritableException();
+        } else {
+            throw new ExternalStorageNotAvailableException();
         }
     }
 }

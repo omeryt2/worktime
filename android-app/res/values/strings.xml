@@ -43,6 +43,11 @@
 	<!-- GENERAL - DIALOG -->
 	<string name="dialog_title_error">Error</string>
     <!-- GENERAL - WARNINGS -->
+    <string name="warning_msg_external_storage_unavailable">The storage is not available at the moment. Make sure it\'s mounted and try again. On older devices an SD-card is expected.</string>
+    <string name="warning_msg_external_storage_unavailable_short">The storage is not available.</string>
+    <string name="warning_msg_external_storage_unwritable">The storage is not writable. You can try again, if this errors stays contact a specialist.</string>
+    <string name="warning_msg_external_storage_unwritable_short">The storage is not writable.</string>
+    <!-- TODO refactor the 'sd_car' exceptions, should not be used but use the external storage strings -->
     <string name="warning_msg_sd_car_unavailable">Make sure the SD-card is in the device and the SD-card is mounted.</string>
     <string name="warning_msg_sd_car_unavailable_short">No SD-card found</string>
 
@@ -573,4 +578,14 @@
     <string name="content_description_delete_project">Delete project</string>
     <string name="content_description_add_project">Add project</string>
     <string name="content_description_delete_task">Delete task</string>
+
+    <!-- Directory Picker -->
+    <string name="directorypicker_btn_choose">Select</string>
+    <string name="directorypicker_btn_create">Create directory</string>
+    <string name="directorypicker_dialog_create_title">Create directory</string>
+    <string name="directorypicker_dialog_create_message">Enter a name for the new directory</string>
+    <string name="directorypicker_exc_create_already_exists">Directory already exists.</string>
+    <string name="directorypicker_exc_create_unknown_error">Could not create the new directory. Please try again.</string>
+    <string name="directorypicker_exc_cannot_read_dir">Could not read folder contents.</string>
+
 </resources>

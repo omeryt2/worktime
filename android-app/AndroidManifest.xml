@@ -206,5 +206,10 @@
                 <action android:name="eu.vranckaert.worktime.SD_BACKUP_SEND"/>
             </intent-filter>
         </activity>
+
+        <!-- DirectoryPicker activity -->
+        <activity android:name="eu.vranckaert.worktime.utils.file.DirectoryPicker"
+                  android:theme="@style/AppTheme"
+                  android:configChanges="orientation|keyboardHidden"/>
     </application>
 </manifest>

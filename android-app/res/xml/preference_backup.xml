@@ -33,9 +33,9 @@
         <intent android:action="eu.vranckaert.worktime.SD_BACKUP_SEND"/>
     </PreferenceScreen>
 
-    <EditTextPreference android:key="backupLocation"
-                        android:title="@string/pref_backup_location_title"
-                        android:summary="@string/pref_backup_location_summary"/>
+    <Preference android:key="backupLocation"
+                android:title="@string/pref_backup_location_title"
+                android:summary="@string/pref_backup_location_summary"/>
 
     <PreferenceScreen android:title="@string/pref_backup_restore_doc_title"
                       android:summary="@string/pref_backup_restore_doc_summary">
