@@ -726,6 +726,9 @@ public class ReportingExportActivity extends ActionBarGuiceActivity {
      * @return An Excel compatible {@link Date}.
      */
     private Date convertToExcelDateTime(Date dateTime) {
+        if (dateTime == null)
+            return null;
+
         Calendar cal = Calendar.getInstance();
         cal.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
 
