@@ -42,7 +42,8 @@ public class WorkTimeWidgetProvider_2x1_ProjectTask extends MyAppWidgetProvider 
         for(int appWidgetId : appWidgetIds) {
             AppWidgetProviderInfo widgetProviderInfo = appWidgetManager.getAppWidgetInfo(appWidgetId);
             Log.d(context, LOG_TAG, "STARTING FOR WIDGET ID: " + appWidgetId);
-            Log.d(context, LOG_TAG, "PROVIDER: " + widgetProviderInfo.provider.toString());
+            if (widgetProviderInfo != null && widgetProviderInfo.provider != null)
+                Log.d(context, LOG_TAG, "PROVIDER: " + widgetProviderInfo.provider.toString());
 
             widgetService.updateWidget(appWidgetId);
             statusBarNotificationService.addOrUpdateNotification(null);
