@@ -50,6 +50,7 @@
     <!-- TODO refactor the 'sd_car' exceptions, should not be used but use the external storage strings -->
     <string name="warning_msg_sd_car_unavailable">Make sure the SD-card is in the device and the SD-card is mounted.</string>
     <string name="warning_msg_sd_car_unavailable_short">No SD-card found</string>
+    <string name="acra_crash_report_send">The application has crashed and a crash-report has been sent to the developers</string>
 
     <!-- DEFUALT VALUES DB -->
     <string name="default_project_name">Default Project</string>

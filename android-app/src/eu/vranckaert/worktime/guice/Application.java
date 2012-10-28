@@ -15,13 +15,29 @@
  */
 package eu.vranckaert.worktime.guice;
 
+import eu.vranckaert.worktime.R;
+import org.acra.ACRA;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
 import roboguice.application.GuiceApplication;
 
 import java.util.List;
 
+@ReportsCrashes(formKey = "",
+                mailTo = "",
+                customReportContent = {},
+                mode = ReportingInteractionMode.TOAST,
+                resToastText = R.string.acra_crash_report_send)
 public class Application extends GuiceApplication {
     @Override
     protected void addApplicationModules(List<com.google.inject.Module> modules) {
         modules.add(new Module());
+    }
+
+    @Override
+    public void onCreate() {
+        // The following line triggers the initialization of ACRA
+        ACRA.init(this);
+        super.onCreate();
     }
 }
