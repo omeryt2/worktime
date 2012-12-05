@@ -123,7 +123,7 @@ public class TimeRegistrationAddActivity extends WizardActivity {
                     break;
                 }
                 case PAGE_ENTER_END_TIME: {
-                    initEndTime();
+                    initEndTime(endTime != null ? endTime : startTime);
                     break;
                 }
                 case PAGE_SELECT_PROJECT_AND_TASK: {
@@ -147,7 +147,7 @@ public class TimeRegistrationAddActivity extends WizardActivity {
                     break;
                 }
                 case PAGE_ENTER_END_TIME: {
-                    initEndTime();
+                    initEndTime(endTime != null && startTime.before(endTime) ? endTime : startTime);
                     break;
                 }
                 case PAGE_SELECT_PROJECT_AND_TASK: {
@@ -338,7 +338,7 @@ public class TimeRegistrationAddActivity extends WizardActivity {
         return true;
     }
 
-    private void initEndTime() {
+    private void initEndTime(final Calendar defaultTime) {
         TimeRegistration latestTimeRegistration = trService.getLatestTimeRegistration();
 
         CheckBox ongoingTr = (CheckBox)getActiveView().findViewById(R.id.time_registration_add_wizard_ongoing);
@@ -370,13 +370,13 @@ public class TimeRegistrationAddActivity extends WizardActivity {
         }
 
         ongoingTr.setChecked(isOngoing);
-        initDateTimePicker(startTime, R.id.time_registration_add_wizard_end_date, R.id.time_registration_add_wizard_end_time);
+        initDateTimePicker(defaultTime, R.id.time_registration_add_wizard_end_date, R.id.time_registration_add_wizard_end_time);
 
         ongoingTr.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 isOngoing = checked;
-                TimeRegistrationAddActivity.this.initEndTime();
+                TimeRegistrationAddActivity.this.initEndTime(defaultTime);
             }
         });
     }
