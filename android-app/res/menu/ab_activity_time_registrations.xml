@@ -17,6 +17,11 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_time_registrations_activity_add"
+          android:title="@string/time_registrations_ab_menu_add"
+          android:icon="@drawable/ic_content_new"
+          android:orderInCategory="1"
+          android:showAsAction="always" />
     <item android:id="@+id/menu_time_registrations_activity_report"
           android:title="@string/time_registrations_ab_menu_report"
           android:icon="@drawable/ic_collections_view_as_list"

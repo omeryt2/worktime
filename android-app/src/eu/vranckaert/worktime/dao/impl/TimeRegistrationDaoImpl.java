@@ -263,4 +263,34 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
         Log.d(getContext(), LOG_TAG, "number of deleted records: " + count);
         return count;
     }
+
+    @Override
+    public boolean doesInterfereWithTimeRegistration(Date time) {
+        if (time == null) {
+            return false;
+        }
+
+        QueryBuilder<TimeRegistration,Integer> qb = dao.queryBuilder();
+        try {
+            qb.limit(1L);
+
+            Where where = qb.where();
+            where.le("startTime", time);
+            Where orClause = where.isNull("endTime").or().gt("endTime", time);
+            where.and(where, orClause);
+            qb.setWhere(where);
+
+            PreparedQuery<TimeRegistration> pq = qb.prepare();
+            Log.d(getContext(), LOG_TAG, pq.toString());
+            TimeRegistration tr = dao.queryForFirst(pq);
+            if (tr != null) {
+                return true;
+            }
+        } catch (SQLException e) {
+            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
+            throwFatalException(e);
+        }
+
+        return false;
+    }
 }

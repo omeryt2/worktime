@@ -102,13 +102,13 @@ public class TimeRegistrationDeleteActivity extends GuiceActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 removeDialog(Constants.Dialog.DELETE_TIME_REGISTRATION_YES_NO);
                                 deleteTimeRegistration();
-                                endActivity(RESULT_OK);
+                                endActivity(Constants.IntentResultCodes.RESULT_DELETED);
                             }
                         })
                         .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 removeDialog(Constants.Dialog.DELETE_TIME_REGISTRATION_YES_NO);
-                                endActivity(RESULT_OK);
+                                endActivity(RESULT_CANCELED);
                             }
                         });
                 dialog = alertRemoveReg.create();
@@ -128,7 +128,7 @@ public class TimeRegistrationDeleteActivity extends GuiceActivity {
                         .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 removeDialog(Constants.Dialog.DELETE_TIME_REGISTRATIONS_YES_NO);
-                                setResult(RESULT_OK);
+                                endActivity(Constants.IntentResultCodes.RESULT_DELETED);
                                 finish();
                             }
                         });

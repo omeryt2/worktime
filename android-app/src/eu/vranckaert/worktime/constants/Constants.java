@@ -85,6 +85,8 @@ public class Constants {
         public static final int DELETE_TASK_AT_LEAST_ONE_REQUIRED = 68;
         public static final int DELETE_ALL_TASKS_OF_PROJECT_YES_NO = 69;
         public static final int DELETE_ALL_TASKS_AND_TIME_REGISTRATIONS_OF_PROJECT_YES_NO = 70;
+        public static final int TIME_REGISTRATION_ADD_SELECT_PROJECT = 71;
+        public static final int TIME_REGISTRATION_ADD_SELECT_TASK = 72;
     }
     public class IntentRequestCodes {
         public static final int REGISTRATION_DETAILS = 1;

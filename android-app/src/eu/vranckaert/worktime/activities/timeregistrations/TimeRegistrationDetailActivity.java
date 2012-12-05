@@ -183,6 +183,10 @@ public class TimeRegistrationDetailActivity extends ActionBarGuiceActivity {
                     projectService.refresh(registration.getTask().getProject());
                     updateView();
                 }
+                if (resultCode == Constants.IntentResultCodes.RESULT_DELETED) {
+                    setResult(Constants.IntentResultCodes.RESULT_DELETED);
+                    finish();
+                }
                 break;
             }
             case Constants.IntentRequestCodes.START_TIME_REGISTRATION: {

@@ -117,6 +117,9 @@
         <activity android:name=".activities.timeregistrations.TimeRegistrationSplitActivity"
                   android:theme="@style/AppTheme"
                   android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".activities.timeregistrations.TimeRegistrationAddActivity"
+                  android:theme="@style/AppTheme"
+                  android:configChanges="orientation|keyboardHidden"/>
         <!-- Reporting -->
         <activity android:name=".activities.reporting.ReportingCriteriaActivity"
                   android:theme="@style/AppTheme"

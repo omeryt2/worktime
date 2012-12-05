@@ -145,6 +145,7 @@
 
     <!-- REGISTRATIONS -->
     <string name="lbl_registrations_title">Time Registrations</string>
+    <string name="time_registrations_ab_menu_add">Add Time Registration</string>
     <string name="time_registrations_ab_menu_report">Reporting</string>
     <string name="lbl_empty_registration_list">No time registrations available yet</string>
     <string name="now">Until now&#8230;</string>
@@ -262,6 +263,35 @@
     <string name="lbl_registration_split_part_three_starts_on">Starts on:</string>
     <string name="lbl_registration_split_part_three_ends_on">Ends on:</string>
     <string name="lbl_registration_split_part_three_duration">Duration:</string>
+    <!-- ADD REGISTRATION -->
+    <string name="lbl_registration_add_title">Add Time Registration</string>
+    <string name="lbl_registration_add_cancel_dialog">Do you want to cancel?</string>
+    <string name="msg_registration_add_cancel_dialog">If you cancel the new time registration will not be saved. Do you want to continue?</string>
+    <string name="lbl_registration_add_part_one_title">Start Time</string>
+    <string name="lbl_registration_add_part_two_title">End Time</string>
+    <string name="lbl_registration_add_part_three_title">Project and Task</string>
+    <string name="lbl_registration_add_part_four_title">Comment</string>
+    <string name="lbl_registration_add_part_five_title">Review</string>
+    <string name="lbl_registration_add_info">Using this wizard you can manually create a time registration. Important to know when creating a time registration is that a nor the start time nor the end time can overlap with another time registration. On each step the date and time selected will be validated.\n\nPress next to continue...</string>
+    <string name="lbl_registration_add_part_two_ongoing_time_registration">Mark as ongoing time registration</string>
+    <string name="lbl_registration_add_part_three_project_label">Project</string>
+    <string name="lbl_registration_add_part_three_task_label">Task</string>
+    <string name="lbl_registration_add_part_three_project_none_selected">Select Project</string>
+    <string name="lbl_registration_add_part_three_task_none_selected">Select Task</string>
+    <string name="lbl_registration_add_part_five_start">Start: </string>
+    <string name="lbl_registration_add_part_five_end">End: </string>
+    <string name="lbl_registration_add_part_five_duration">Duration: </string>
+    <string name="lbl_registration_add_part_five_comment">Comment:</string>
+    <string name="lbl_registration_add_part_five_project">Project: </string>
+    <string name="lbl_registration_add_part_five_task">Task: </string>
+    <string name="lbl_registration_add_part_five_no_comment">(No commented specified)</string>
+    <string name="lbl_registration_add_validation_start_time_part_of_other">The specified time is within the time-span of another time registration. Please choose another start time.</string>
+    <string name="lbl_registration_add_validation_start_time_limit_now">The time cannot be in the future!</string>
+    <string name="lbl_registration_add_validation_end_time_greater_than_start_time">The chosen end time must be greater than the chosen start time.</string>
+    <string name="lbl_registration_add_validation_end_time_limit">The chosen end time exceeds cannot be greater than the next time registration being: %1$s</string>
+    <string name="lbl_registration_add_validation_end_time_limit_now">The time cannot be in the future!</string>
+    <string name="lbl_registration_add_validation_project_required">No project and task are selected. Please select a project and task and continue.</string>
+    <string name="lbl_registration_add_validation_task_required">No task is selected. Please select a task and continue.</string>
 
     <!-- REPORTING -->
     <!-- Criteria -->

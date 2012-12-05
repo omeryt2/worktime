@@ -19,6 +19,7 @@ import eu.vranckaert.worktime.dao.generic.GenericDao;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -94,4 +95,13 @@ public interface TimeRegistrationDao extends GenericDao<TimeRegistration, Intege
      * @return The number of {@link TimeRegistration} instances that are removed permanently.
      */
     long deleteAllInRange(Date minBoundary, Date maxBoundary);
+
+
+    /**
+     * Checks if a given time if after (>=) the start time and before (<) the end time of any time registration. So
+     * checks if another time
+     * @param time The time to check for.
+     * @return True if the time is part of another time registration, false if not.
+     */
+    boolean doesInterfereWithTimeRegistration(Date time);
 }

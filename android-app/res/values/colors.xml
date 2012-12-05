@@ -37,6 +37,7 @@
     <color name="infoproject">#ff999999</color>
     <color name="list_separator">#ffcccccc</color>
     <color name="grey">#ff878787</color>
+    <color name="wizard_page_title">#ff3a4aff</color>
 
     <!-- Reporting result -->
     <color name="table_record_lvl_n_0">#ffffffff</color>

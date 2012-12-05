@@ -31,6 +31,7 @@ import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.utils.context.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -184,5 +185,10 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
     @Override
     public long removeAllInRange(Date minBoundary, Date maxBoundary) {
         return dao.deleteAllInRange(minBoundary, maxBoundary);
+    }
+
+    @Override
+    public boolean doesInterfereWithTimeRegistration(Date time) {
+        return dao.doesInterfereWithTimeRegistration(time);
     }
 }

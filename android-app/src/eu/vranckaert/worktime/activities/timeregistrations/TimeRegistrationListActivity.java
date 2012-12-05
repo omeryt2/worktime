@@ -67,8 +67,6 @@ public class TimeRegistrationListActivity extends ActionBarGuiceListActivity {
     private StatusBarNotificationService statusBarNotificationService;
 
     List<TimeRegistration> timeRegistrations;
-    //Vars for deleting time registrations
-    TimeRegistration timeRegistrationToDelete = null;
 
     private AnalyticsTracker tracker;
 
@@ -316,9 +314,13 @@ public class TimeRegistrationListActivity extends ActionBarGuiceListActivity {
             case android.R.id.home:
                 IntentUtil.goBack(TimeRegistrationListActivity.this);
                 break;
+            case R.id.menu_time_registrations_activity_add:
+                Intent addIntent = new Intent(TimeRegistrationListActivity.this, TimeRegistrationAddActivity.class);
+                startActivity(addIntent);
+                break;
             case R.id.menu_time_registrations_activity_report:
-                Intent intent = new Intent(TimeRegistrationListActivity.this, ReportingCriteriaActivity.class);
-                startActivity(intent);
+                Intent reportingIntent = new Intent(TimeRegistrationListActivity.this, ReportingCriteriaActivity.class);
+                startActivity(reportingIntent);
                 break;
         }
         return super.onOptionsItemSelected(item);

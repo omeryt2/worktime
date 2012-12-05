@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ScrollView;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.string.StringUtils;
@@ -258,6 +259,8 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
      * @param nextIndex The index of the new page.
      */
     private void changePage(int currentIndex, int nextIndex) {
+        scrollUp();
+
         boolean isInitialLoad = false;
         if (currentIndex == -1)
             isInitialLoad = true;
@@ -288,6 +291,11 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
         }
 
         invalidateNavigation(nextIndex);
+    }
+
+    private void scrollUp() {
+        ScrollView scrollView = (ScrollView) findViewById(R.id.wizard_content_container);
+        scrollView.scrollTo(0, 0);
     }
 
     /**
