@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ScrollView;
 import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
@@ -193,6 +194,7 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View button) {
+                clearFocusAndRemoveSoftKeyboard(button);
                 cancel(button);
             }
         });
@@ -201,6 +203,7 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View button) {
+                clearFocusAndRemoveSoftKeyboard(button);
                 boolean result = onFinish(getActiveView(), button);
                 if (result)
                     closeOnFinish();
@@ -211,6 +214,7 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View button) {
+                clearFocusAndRemoveSoftKeyboard(button);
                 openNextPage();
             }
         });
@@ -219,6 +223,7 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View button) {
+                clearFocusAndRemoveSoftKeyboard(button);
                 openPreviousPage();
             }
         });
@@ -650,5 +655,14 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Removes the focus for a view and (if it was shown) the soft keyboard.
+     * @param view The view on which to remove the focus and soft keyboard.
+     */
+    public void clearFocusAndRemoveSoftKeyboard(View view) {
+        view.clearFocus();
+        ContextUtils.hideKeyboard(this, view);
     }
 }

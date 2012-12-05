@@ -448,15 +448,6 @@ public class TimeRegistrationSplitActivity extends WizardActivity {
         return calendar;
     }
 
-    /**
-     * Removes the focus for a view and (if it was shown) the soft keyboard.
-     * @param view The view on which to remove the focus and soft keyboard.
-     */
-    private void clearFocusAndRemoveSoftKeyboard(View view) {
-        view.clearFocus();
-        ContextUtils.hideKeyboard(TimeRegistrationSplitActivity.this, view);
-    }
-
     @Override
     protected void afterPageChange(int currentViewIndex, int previousViewIndex, View view) {
         switch (currentViewIndex) {
