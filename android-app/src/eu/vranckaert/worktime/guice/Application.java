@@ -16,6 +16,7 @@
 package eu.vranckaert.worktime.guice;
 
 import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.utils.context.ContextUtils;
 import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
@@ -24,10 +25,7 @@ import roboguice.application.GuiceApplication;
 
 import java.util.List;
 
-@ReportsCrashes(formKey = "",
-                mailTo = "dirkvranckaert@gmail.com",
-                mode = ReportingInteractionMode.TOAST,
-                resToastText = R.string.acra_crash_report_send)
+@ReportsCrashes(formKey = "dEhWRHpBM1ZFenAxZ25lbFFGWndjdFE6MQ")
 public class Application extends GuiceApplication {
     @Override
     protected void addApplicationModules(List<com.google.inject.Module> modules) {
@@ -37,7 +35,9 @@ public class Application extends GuiceApplication {
     @Override
     public void onCreate() {
         // The following line triggers the initialization of ACRA
-        ACRA.init(this);
+        if (ContextUtils.isStableBuild(this)) {
+            ACRA.init(this);
+        }
         super.onCreate();
     }
 }
