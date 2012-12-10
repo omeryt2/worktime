@@ -26,7 +26,6 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.widget.Toast;
 import com.google.inject.Inject;
-import com.google.inject.internal.Nullable;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.projects.SelectProjectActivity;
 import eu.vranckaert.worktime.activities.tasks.SelectTaskActivity;
@@ -46,9 +45,10 @@ import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import org.joda.time.Duration;
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 
+import com.google.inject.internal.Nullable;
 import java.util.Date;
 import java.util.List;
 
@@ -57,7 +57,7 @@ import java.util.List;
  * Date: 09/02/11
  * Time: 23:25
  */
-public class TimeRegistrationPunchInActivity extends GuiceActivity {
+public class TimeRegistrationPunchInActivity extends RoboActivity {
     private static final String LOG_TAG = TimeRegistrationPunchInActivity.class.getSimpleName();
 
     @Inject

@@ -36,7 +36,7 @@ import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuicePreferenceActivity;
-import roboguice.activity.GuicePreferenceActivity;
+import roboguice.activity.RoboPreferenceActivity;
 
 /**
  * User: DIRK VRANCKAERT
@@ -77,11 +77,11 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
         }
     }
 
-    private void configurePreferences(GuicePreferenceActivity ctx) {
+    private void configurePreferences(RoboPreferenceActivity ctx) {
         ctx.getPreferenceManager().setSharedPreferencesName(Constants.Preferences.PREFERENCES_NAME);
     }
 
-    private void createPreferences(GuicePreferenceActivity ctx) {
+    private void createPreferences(RoboPreferenceActivity ctx) {
         PreferenceScreen preferences = ctx.getPreferenceManager().createPreferenceScreen(ctx);
         setPreferenceScreen(preferences);
 

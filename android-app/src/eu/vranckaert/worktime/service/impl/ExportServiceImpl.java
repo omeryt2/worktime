@@ -38,6 +38,7 @@ import jxl.write.WritableCellFormat;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
+import roboguice.inject.ContextSingleton;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -60,6 +61,7 @@ public class ExportServiceImpl implements ExportService {
     private static final String LOG_TAG = ExportServiceImpl.class.getSimpleName();
 
     @Inject
+    @ContextSingleton
     private Context ctx;
 
     @Override

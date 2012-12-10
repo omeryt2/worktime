@@ -36,7 +36,7 @@ import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ import java.util.List;
  * Date: 28/04/11
  * Time: 13:48
  */
-public class TimeRegistrationEditProjectAndTaskActivity extends GuiceActivity {
+public class TimeRegistrationEditProjectAndTaskActivity extends RoboActivity {
     private static final String LOG_TAG = TimeRegistrationEditProjectAndTaskActivity.class.getSimpleName();
 
     @InjectExtra(Constants.Extras.TIME_REGISTRATION)

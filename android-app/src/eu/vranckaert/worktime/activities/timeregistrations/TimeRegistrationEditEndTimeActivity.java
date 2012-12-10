@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 import com.google.inject.Inject;
-import com.google.inject.internal.Nullable;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.model.TimeRegistration;
@@ -36,8 +35,9 @@ import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.HourPreference12Or24;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
+import com.google.inject.internal.Nullable;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -48,7 +48,7 @@ import java.util.GregorianCalendar;
  * Date: 28/04/11
  * Time: 16:38
  */
-public class TimeRegistrationEditEndTimeActivity extends GuiceActivity {
+public class TimeRegistrationEditEndTimeActivity extends RoboActivity {
     private static final String LOG_TAG = TimeRegistrationEditEndTimeActivity.class.getSimpleName();
 
     @InjectExtra(Constants.Extras.TIME_REGISTRATION)

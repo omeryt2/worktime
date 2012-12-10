@@ -23,9 +23,9 @@ import android.os.Bundle;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.RoboActivity;
 
-public class ResetPreferencesActivity extends GuiceActivity {
+public class ResetPreferencesActivity extends RoboActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +47,7 @@ public class ResetPreferencesActivity extends GuiceActivity {
                                public void onClick(DialogInterface dialogInterface, int i) {
                                    dismissDialog(Constants.Dialog.RESET_PREFERENCES_CONFIRMATION);
                                    Preferences.removeAllPreferences(ResetPreferencesActivity.this);
+                                   finish();
                                }
                            })
                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

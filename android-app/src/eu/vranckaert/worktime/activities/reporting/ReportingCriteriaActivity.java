@@ -36,7 +36,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.google.inject.Inject;
-import com.google.inject.internal.Nullable;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.project.ProjectByNameComparator;
 import eu.vranckaert.worktime.comparators.task.TaskByNameComparator;
@@ -65,6 +64,7 @@ import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
+import com.google.inject.internal.Nullable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;

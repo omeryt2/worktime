@@ -20,21 +20,23 @@ import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
+import com.google.inject.Inject;
 import eu.vranckaert.worktime.activities.projects.SelectProjectActivity;
 import eu.vranckaert.worktime.activities.tasks.SelectTaskActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.service.ui.impl.WidgetServiceImpl;
+import roboguice.activity.RoboActivity;
 
-public class Configuration2x1Activity extends Activity {
+public class Configuration2x1Activity extends RoboActivity {
     private Integer widgetId;
-    private WidgetService widgetService;
+
+    @Inject private WidgetService widgetService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        widgetService = new WidgetServiceImpl(Configuration2x1Activity.this);
         widgetId = getIntent().getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
         setResult(RESULT_CANCELED);

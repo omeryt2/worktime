@@ -21,14 +21,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.RoboActivity;
 
 /**
  * User: DIRK VRANCKAERT
  * Date: 13/04/12
  * Time: 9:01
  */
-public class ActionBarGuiceActivity extends GuiceActivity {
+public class ActionBarGuiceActivity extends RoboActivity {
     final ActionBarHelper mActionBarHelper = ActionBarHelper.createInstance(this);
 
     /**

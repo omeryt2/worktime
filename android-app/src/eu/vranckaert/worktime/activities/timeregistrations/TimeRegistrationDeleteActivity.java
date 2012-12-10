@@ -34,7 +34,7 @@ import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 
 import java.util.Date;
@@ -49,7 +49,7 @@ import java.util.Date;
  * is null all registrations starting from the min-boundary will be removed.<br/>
  * All widgets will be updated when removing one or more {@link TimeRegistration}s.
  */
-public class TimeRegistrationDeleteActivity extends GuiceActivity {
+public class TimeRegistrationDeleteActivity extends RoboActivity {
     /**
      * LOG_TAG for logging
      */

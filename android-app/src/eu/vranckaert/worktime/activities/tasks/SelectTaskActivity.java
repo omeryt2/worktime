@@ -22,7 +22,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.inject.Inject;
-import com.google.inject.internal.Nullable;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.task.TaskByNameComparator;
 import eu.vranckaert.worktime.constants.Constants;
@@ -33,9 +32,10 @@ import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 
+import com.google.inject.internal.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +45,7 @@ import java.util.List;
  * Date: 02/03/11
  * Time: 20:56
  */
-public class SelectTaskActivity extends GuiceActivity {
+public class SelectTaskActivity extends RoboActivity {
     @Inject
     private ProjectService projectService;
 

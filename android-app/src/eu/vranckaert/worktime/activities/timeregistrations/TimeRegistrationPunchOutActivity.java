@@ -40,7 +40,7 @@ import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 
 import java.util.Date;
@@ -56,7 +56,7 @@ import java.util.Date;
  * parameter is used together with the first extra-bundle parameter
  * {@link Constants.Extras#TIME_REGISTRATION_CONTINUE_WITH_NEW} to start the {@link TimeRegistrationPunchInActivity}.
  */
-public class TimeRegistrationPunchOutActivity extends GuiceActivity {
+public class TimeRegistrationPunchOutActivity extends RoboActivity {
     /**
      * LOG_TAG for logging
      */

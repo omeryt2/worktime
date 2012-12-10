@@ -30,7 +30,7 @@ import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ import java.util.List;
  * Date: 02/03/11
  * Time: 20:56
  */
-public class SelectProjectActivity extends GuiceActivity {
+public class SelectProjectActivity extends RoboActivity {
     @Inject
     private ProjectService projectService;
 

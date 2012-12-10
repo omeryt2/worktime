@@ -23,14 +23,14 @@ import android.os.Bundle;
 import android.text.Html;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.RoboActivity;
 
 /**
  * User: DIRK VRANCKAERT
  * Date: 1/02/12
  * Time: 8:34
  */
-public class BackupRestoreInfoActivity extends GuiceActivity {
+public class BackupRestoreInfoActivity extends RoboActivity {
     private static final String LOG_TAG = BackupRestoreInfoActivity.class.getSimpleName();
 
     @Override

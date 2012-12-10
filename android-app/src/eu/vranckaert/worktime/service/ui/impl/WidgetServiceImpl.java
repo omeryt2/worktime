@@ -51,6 +51,7 @@ import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.widget.WidgetUtil;
+import roboguice.inject.ContextSingleton;
 
 import java.util.List;
 
@@ -63,6 +64,7 @@ public class WidgetServiceImpl implements WidgetService {
     private static final String LOG_TAG = WidgetServiceImpl.class.getName();
 
     @Inject
+    @ContextSingleton
     private Context ctx;
 
     @Inject

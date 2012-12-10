@@ -34,7 +34,7 @@ import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.RoboActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ import java.util.List;
  * Date: 11/09/11
  * Time: 11:49
  */
-public class RestoreFromSDActivity extends GuiceActivity {
+public class RestoreFromSDActivity extends RoboActivity {
     private static final String LOG_TAG = RestoreFromSDActivity.class.getSimpleName();
     @Inject
     private BackupService backupService;

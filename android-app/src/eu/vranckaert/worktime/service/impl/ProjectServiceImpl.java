@@ -35,6 +35,7 @@ import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.model.WidgetConfiguration;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.utils.context.Log;
+import roboguice.inject.ContextSingleton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,7 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectDao dao;
 
     @Inject
+    @ContextSingleton
     private Context ctx;
 
     @Inject

@@ -28,14 +28,14 @@ import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.Log;
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 
 /**
  * Resets the end date of a {@link TimeRegistration} so that the
  * {@link eu.vranckaert.worktime.model.TimeRegistration#isOngoingTimeRegistration()} is {@link Boolean#TRUE} again.
  */
-public class TimeRegistrationRestartActivity extends GuiceActivity {
+public class TimeRegistrationRestartActivity extends RoboActivity {
     /**
      * LOG_TAG for logging
      */

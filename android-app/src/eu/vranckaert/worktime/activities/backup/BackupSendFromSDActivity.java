@@ -29,7 +29,7 @@ import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.RoboActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ import java.util.List;
  * Date: 7/02/12
  * Time: 13:48
  */
-public class BackupSendFromSDActivity extends GuiceActivity {
+public class BackupSendFromSDActivity extends RoboActivity {
     private static final String LOG_TAG = BackupSendFromSDActivity.class.getSimpleName();
 
     @Inject

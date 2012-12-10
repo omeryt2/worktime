@@ -35,6 +35,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TableLayout;
+import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.timeregistrations.listadapter.TimeRegistrationActionListAdapter;
 import eu.vranckaert.worktime.constants.Constants;
@@ -60,6 +61,7 @@ import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
+import roboguice.activity.RoboActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,7 +74,7 @@ import java.util.List;
  * Date: 09/02/11
  * Time: 23:25
  */
-public class TimeRegistrationActionActivity extends Activity {
+public class TimeRegistrationActionActivity extends RoboActivity {
     /**
      * LOG_TAG for logging
      */
@@ -81,12 +83,12 @@ public class TimeRegistrationActionActivity extends Activity {
     /**
      * Services
      */
-    private WidgetService widgetService;
-    private StatusBarNotificationService statusBarNotificationService;
-    private TimeRegistrationService timeRegistrationService;
-    private CommentHistoryService commentHistoryService;
-    private TaskService taskService;
-    private BackupService backupService;
+    @Inject private WidgetService widgetService;
+    @Inject private StatusBarNotificationService statusBarNotificationService;
+    @Inject private TimeRegistrationService timeRegistrationService;
+    @Inject private CommentHistoryService commentHistoryService;
+    @Inject private TaskService taskService;
+    @Inject private BackupService backupService;
 
     /**
      * Extras
@@ -110,13 +112,13 @@ public class TimeRegistrationActionActivity extends Activity {
     private Button deleteRangeFromButton = null;
     private Button deleteRangeToButton = null;
     private RadioGroup deleteRadioContainer = null;
+    private EditText commentEditText = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         loadExtras();
-        loadServices();
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         Log.d(getApplicationContext(), LOG_TAG, "Started the TimeRegistration Action activity");
@@ -157,18 +159,6 @@ public class TimeRegistrationActionActivity extends Activity {
         }
     }
 
-    /**
-     * Load all the services...
-     */
-    private void loadServices() {
-        widgetService = new WidgetServiceImpl(TimeRegistrationActionActivity.this);
-        statusBarNotificationService = new StatusBarNotificationServiceImpl(TimeRegistrationActionActivity.this);
-        timeRegistrationService = new TimeRegistrationServiceImpl(TimeRegistrationActionActivity.this);
-        commentHistoryService = new CommentHistoryServiceImpl(TimeRegistrationActionActivity.this);
-        taskService = new TaskServiceImpl(TimeRegistrationActionActivity.this);
-        backupService = new DatabaseFileBackupServiceImpl();
-    }
-
     @Override
     protected Dialog onCreateDialog(int dialogId) {
         Dialog dialog = null;
@@ -178,10 +168,11 @@ public class TimeRegistrationActionActivity extends Activity {
                 AlertDialog.Builder actionsDialog = new AlertDialog.Builder(this);
 
                 LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+
                 final View layout = inflater.inflate(R.layout.dialog_time_registration_actions,
                         (ViewGroup) findViewById(R.id.dialog_layout_root));
+                commentEditText = (EditText) layout.findViewById(R.id.tr_comment);
 
-                final EditText commentEditText = (EditText) layout.findViewById(R.id.tr_comment);
                 if (timeRegistration.getComment() != null) {
                     commentEditText.setText(timeRegistration.getComment());
                 }
@@ -495,9 +486,12 @@ public class TimeRegistrationActionActivity extends Activity {
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
         final View layout = inflater.inflate(R.layout.dialog_time_registration_actions,
                 (ViewGroup) findViewById(R.id.dialog_layout_root));
-        final EditText commentEditText = (EditText) layout.findViewById(R.id.tr_comment);
         final RadioButton deleteCurrentRadio = (RadioButton) layout.findViewById(R.id.tr_delete_current);
         final RadioButton deleteRangeRadio = (RadioButton) layout.findViewById(R.id.tr_delete_range);
+
+        if (commentEditText == null) {
+            commentEditText = (EditText) layout.findViewById(R.id.tr_comment);
+        }
 
         switch (action) {
             case PUNCH_OUT:

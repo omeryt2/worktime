@@ -21,9 +21,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
-import roboguice.activity.GuiceListActivity;
+import roboguice.activity.RoboListActivity;
 
-public class ActionBarGuiceListActivity extends GuiceListActivity {
+public class ActionBarGuiceListActivity extends RoboListActivity {
     final ActionBarHelper mActionBarHelper = ActionBarHelper.createInstance(this);
 
     /**

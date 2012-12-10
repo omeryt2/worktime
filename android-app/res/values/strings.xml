@@ -357,6 +357,7 @@
     <string name="lbl_reporting_result_loading_dialog">Loading results&#8230;</string>
     <string name="lbl_reporting_result_includes_ongoing_time_registrations">Warning: the result contains data from ongoing time registrations. The calculations are based on the current date and time.</string>
     <string name="lbl_reporting_results_table_total">Total</string>
+    <string name="lbl_reporting_result_no_landscape_support_toast">Your device does not support landscape view mode. This is required to correctly display the report.</string>
     <!-- EXPORT -->
     <string name="lbl_reporting_export_title">Export Result</string>
     <string name="reporting_export_ab_menu_save">Save</string>

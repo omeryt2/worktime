@@ -16,6 +16,9 @@
 
 package eu.vranckaert.worktime.guice;
 
+import android.content.Context;
+import com.google.inject.AbstractModule;
+import com.google.inject.Scope;
 import eu.vranckaert.worktime.dao.CommentHistoryDao;
 import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.TaskDao;
@@ -42,10 +45,12 @@ import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.service.ui.impl.StatusBarNotificationServiceImpl;
 import eu.vranckaert.worktime.service.ui.impl.WidgetServiceImpl;
-import roboguice.config.AbstractAndroidModule;
 
-public class Module extends AbstractAndroidModule {
+public class Module extends AbstractModule {
     private static final String LOG_TAG = Module.class.getSimpleName();
+
+    public Module(Context ctx) {
+    }
 
     @Override
     protected void configure() {
@@ -54,22 +59,22 @@ public class Module extends AbstractAndroidModule {
     }
 
     private void bindDaos() {
-        bind(TimeRegistrationDao.class).to(TimeRegistrationDaoImpl.class);
-        bind(ProjectDao.class).to(ProjectDaoImpl.class);
-        bind(TaskDao.class).to(TaskDaoImpl.class);
-        bind(CommentHistoryDao.class).to(CommentHistoryDaoImpl.class);
-        bind(WidgetConfigurationDao.class).to(WidgetConfigurationDaoImpl.class);
+        bind(TimeRegistrationDao.class).to(TimeRegistrationDaoImpl.class).asEagerSingleton();
+        bind(ProjectDao.class).to(ProjectDaoImpl.class).asEagerSingleton();
+        bind(TaskDao.class).to(TaskDaoImpl.class).asEagerSingleton();
+        bind(CommentHistoryDao.class).to(CommentHistoryDaoImpl.class).asEagerSingleton();
+        bind(WidgetConfigurationDao.class).to(WidgetConfigurationDaoImpl.class).asEagerSingleton();
     }
 
     private void bindServices() {
-        bind(ProjectService.class).to(ProjectServiceImpl.class);
-        bind(TimeRegistrationService.class).to(TimeRegistrationServiceImpl.class);
-        bind(TaskService.class).to(TaskServiceImpl.class);
-        bind(CommentHistoryService.class).to(CommentHistoryServiceImpl.class);
-        bind(BackupService.class).to(DatabaseFileBackupServiceImpl.class);
-        bind(ExportService.class).to(ExportServiceImpl.class);
+        bind(ProjectService.class).to(ProjectServiceImpl.class).asEagerSingleton();
+        bind(TimeRegistrationService.class).to(TimeRegistrationServiceImpl.class).asEagerSingleton();
+        bind(TaskService.class).to(TaskServiceImpl.class).asEagerSingleton();
+        bind(CommentHistoryService.class).to(CommentHistoryServiceImpl.class).asEagerSingleton();
+        bind(BackupService.class).to(DatabaseFileBackupServiceImpl.class).asEagerSingleton();
+        bind(ExportService.class).to(ExportServiceImpl.class).asEagerSingleton();
         //UI services
-        bind(WidgetService.class).to(WidgetServiceImpl.class);
-        bind(StatusBarNotificationService.class).to(StatusBarNotificationServiceImpl.class);
+        bind(WidgetService.class).to(WidgetServiceImpl.class).asEagerSingleton();
+        bind(StatusBarNotificationService.class).to(StatusBarNotificationServiceImpl.class).asEagerSingleton();
     }
 }

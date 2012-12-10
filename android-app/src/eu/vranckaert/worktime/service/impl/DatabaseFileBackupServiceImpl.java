@@ -28,6 +28,7 @@ import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.file.FileUtil;
+import roboguice.inject.ContextSingleton;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -48,6 +49,7 @@ public class DatabaseFileBackupServiceImpl implements BackupService {
     private static final String LOG_TAG = DatabaseFileBackupServiceImpl.class.getSimpleName();
 
     @Inject
+    @ContextSingleton
     private Context ctx;
 
     public String backup(Context ctx) throws SDCardUnavailableException, BackupFileCouldNotBeCreated, BackupFileCouldNotBeWritten {

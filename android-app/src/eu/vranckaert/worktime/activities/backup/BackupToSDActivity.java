@@ -31,14 +31,14 @@ import eu.vranckaert.worktime.exceptions.backup.BackupFileCouldNotBeWritten;
 import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.RoboActivity;
 
 /**
  * User: DIRK VRANCKAERT
  * Date: 11/09/11
  * Time: 11:49
  */
-public class BackupToSDActivity extends GuiceActivity {
+public class BackupToSDActivity extends RoboActivity {
     private static final String LOG_TAG = BackupToSDActivity.class.getSimpleName();
 
     @Inject

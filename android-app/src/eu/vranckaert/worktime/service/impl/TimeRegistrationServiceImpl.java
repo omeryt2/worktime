@@ -29,6 +29,7 @@ import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.utils.context.Log;
+import roboguice.inject.ContextSingleton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,6 +45,7 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
     private static final String LOG_TAG = TimeRegistrationServiceImpl.class.getSimpleName();
 
     @Inject
+    @ContextSingleton
     private Context ctx;
 
     @Inject

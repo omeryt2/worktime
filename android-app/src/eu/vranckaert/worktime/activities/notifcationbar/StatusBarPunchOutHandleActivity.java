@@ -28,14 +28,14 @@ import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.RoboActivity;
 
 /**
  * User: DIRK VRANCKAERT
  * Date: 27/04/11
  * Time: 21:46
  */
-public class StatusBarPunchOutHandleActivity extends GuiceActivity {
+public class StatusBarPunchOutHandleActivity extends RoboActivity {
     @Inject
     private TimeRegistrationService timeRegistrationService;
 

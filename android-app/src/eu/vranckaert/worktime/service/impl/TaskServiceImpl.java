@@ -34,6 +34,7 @@ import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.model.WidgetConfiguration;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.utils.context.Log;
+import roboguice.inject.ContextSingleton;
 
 import java.util.List;
 
@@ -46,6 +47,7 @@ public class TaskServiceImpl implements TaskService {
     private static final String LOG_TAG = TaskServiceImpl.class.getSimpleName();
 
     @Inject
+    @ContextSingleton
     private Context ctx;
 
     @Inject

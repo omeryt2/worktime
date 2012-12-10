@@ -33,13 +33,13 @@ import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 
 /**
  * Updates the comment of a {@link TimeRegistration}.
  */
-public class TimeRegistrationSetCommentActivity extends GuiceActivity {
+public class TimeRegistrationSetCommentActivity extends RoboActivity {
     /**
      * LOG_TAG for logging
      */
