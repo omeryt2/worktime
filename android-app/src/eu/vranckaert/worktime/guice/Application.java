@@ -18,6 +18,8 @@ package eu.vranckaert.worktime.guice;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import org.acra.ACRA;
 import org.acra.annotation.ReportsCrashes;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.util.List;
 
@@ -30,5 +32,9 @@ public class Application extends android.app.Application {
             ACRA.init(this);
         }
         super.onCreate();
+    }
+
+    public HttpClient getHttpClient() {
+        return new DefaultHttpClient();
     }
 }

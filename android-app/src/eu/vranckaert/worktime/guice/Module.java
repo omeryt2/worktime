@@ -19,28 +19,12 @@ package eu.vranckaert.worktime.guice;
 import android.content.Context;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scope;
-import eu.vranckaert.worktime.dao.CommentHistoryDao;
-import eu.vranckaert.worktime.dao.ProjectDao;
-import eu.vranckaert.worktime.dao.TaskDao;
-import eu.vranckaert.worktime.dao.TimeRegistrationDao;
-import eu.vranckaert.worktime.dao.WidgetConfigurationDao;
-import eu.vranckaert.worktime.dao.impl.CommentHistoryDaoImpl;
-import eu.vranckaert.worktime.dao.impl.ProjectDaoImpl;
-import eu.vranckaert.worktime.dao.impl.TaskDaoImpl;
-import eu.vranckaert.worktime.dao.impl.TimeRegistrationDaoImpl;
-import eu.vranckaert.worktime.dao.impl.WidgetConfigurationDaoImpl;
-import eu.vranckaert.worktime.service.BackupService;
-import eu.vranckaert.worktime.service.CommentHistoryService;
-import eu.vranckaert.worktime.service.ExportService;
-import eu.vranckaert.worktime.service.ProjectService;
-import eu.vranckaert.worktime.service.TaskService;
-import eu.vranckaert.worktime.service.TimeRegistrationService;
-import eu.vranckaert.worktime.service.impl.CommentHistoryServiceImpl;
-import eu.vranckaert.worktime.service.impl.DatabaseFileBackupServiceImpl;
-import eu.vranckaert.worktime.service.impl.ExportServiceImpl;
-import eu.vranckaert.worktime.service.impl.ProjectServiceImpl;
-import eu.vranckaert.worktime.service.impl.TaskServiceImpl;
-import eu.vranckaert.worktime.service.impl.TimeRegistrationServiceImpl;
+import eu.vranckaert.worktime.dao.*;
+import eu.vranckaert.worktime.dao.impl.*;
+import eu.vranckaert.worktime.dao.web.AccountWebDao;
+import eu.vranckaert.worktime.dao.web.impl.AccountWebDaoImpl;
+import eu.vranckaert.worktime.service.*;
+import eu.vranckaert.worktime.service.impl.*;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.service.ui.impl.StatusBarNotificationServiceImpl;
@@ -55,6 +39,7 @@ public class Module extends AbstractModule {
     @Override
     protected void configure() {
         bindDaos();
+        bindWebDaos();
         bindServices();
     }
 
@@ -64,6 +49,11 @@ public class Module extends AbstractModule {
         bind(TaskDao.class).to(TaskDaoImpl.class).asEagerSingleton();
         bind(CommentHistoryDao.class).to(CommentHistoryDaoImpl.class).asEagerSingleton();
         bind(WidgetConfigurationDao.class).to(WidgetConfigurationDaoImpl.class).asEagerSingleton();
+        bind(AccountDao.class).to(AccountDaoImpl.class).asEagerSingleton();
+    }
+
+    private void bindWebDaos() {
+        bind(AccountWebDao.class).to(AccountWebDaoImpl.class).asEagerSingleton();
     }
 
     private void bindServices() {
@@ -73,6 +63,7 @@ public class Module extends AbstractModule {
         bind(CommentHistoryService.class).to(CommentHistoryServiceImpl.class).asEagerSingleton();
         bind(BackupService.class).to(DatabaseFileBackupServiceImpl.class).asEagerSingleton();
         bind(ExportService.class).to(ExportServiceImpl.class).asEagerSingleton();
+        bind(AccountService.class).to(AccountServiceImpl.class).asEagerSingleton();
         //UI services
         bind(WidgetService.class).to(WidgetServiceImpl.class).asEagerSingleton();
         bind(StatusBarNotificationService.class).to(StatusBarNotificationServiceImpl.class).asEagerSingleton();

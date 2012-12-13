@@ -39,6 +39,14 @@ public enum DatabaseUpgrade {
     }),
     UPGRADE3(24, new String[] {
             "ALTER TABLE WidgetConfiguration add column taskId " + DataTypes.INTEGER + ";"
+    }),
+    UPGRADE4(25, new String[] {
+            "CREATE TABLE User " +
+            "(" +
+                "email " + DataTypes.TEXT + " PRIMARY KEY, " +
+                "password " + DataTypes.TEXT + ", " +
+                "sessionKey " + DataTypes.TEXT +
+            ");"
     })
     ;
 

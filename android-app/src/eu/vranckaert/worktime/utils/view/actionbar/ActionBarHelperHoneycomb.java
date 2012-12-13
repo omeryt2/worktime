@@ -32,6 +32,7 @@ import eu.vranckaert.worktime.R;
 public class ActionBarHelperHoneycomb extends ActionBarHelper {
     private Menu mOptionsMenu;
     private View mRefreshIndeterminateProgressView = null;
+    private MenuItem loadingMenuItem = null;
 
     protected ActionBarHelperHoneycomb(Activity activity) {
         super(activity);
@@ -68,6 +69,26 @@ public class ActionBarHelperHoneycomb extends ActionBarHelper {
             } else {
                 refreshItem.setActionView(null);
             }
+        }
+    }
+
+    @Override
+     public void setLoadingIndicator(boolean loading) {
+        if (loading) {
+            if (mRefreshIndeterminateProgressView == null) {
+                LayoutInflater inflater = (LayoutInflater)
+                        getActionBarThemedContext().getSystemService(
+                                Context.LAYOUT_INFLATER_SERVICE);
+                mRefreshIndeterminateProgressView = inflater.inflate(
+                        R.layout.actionbar_indeterminate_progress, null);
+            }
+            loadingMenuItem = mOptionsMenu.add("");
+            loadingMenuItem.setVisible(true);
+            loadingMenuItem.setActionView(mRefreshIndeterminateProgressView);
+            loadingMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        } else {
+            if (loadingMenuItem != null)
+                mOptionsMenu.removeItem(loadingMenuItem.getItemId());
         }
     }
 

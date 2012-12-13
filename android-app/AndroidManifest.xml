@@ -161,6 +161,17 @@
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden"/>
 
+        <!-- Account activities -->
+        <activity android:name=".activities.account.AccountDetailsActivity"
+                  android:theme="@style/AppTheme"
+                  android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".activities.account.AccountLoginActivity"
+                  android:theme="@style/AppTheme"
+                  android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".activities.account.AccountRegisterActivity"
+                  android:theme="@style/AppTheme"
+                  android:configChanges="orientation|keyboardHidden"/>
+
         <!-- Widget activities -->
         <!-- Configuration -->
         <activity android:name=".activities.widget.Configuration2x1Activity"

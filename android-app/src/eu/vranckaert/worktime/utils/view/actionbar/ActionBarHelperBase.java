@@ -133,6 +133,13 @@ public class ActionBarHelperBase extends ActionBarHelper {
         }
     }
 
+    @Override
+    public void setLoadingIndicator(boolean loading) {
+        View loadingIndicator = mActivity.findViewById(R.id.actionbar_compat_item_refresh_progress);
+        if (loadingIndicator != null)
+            loadingIndicator.setVisibility(loading ? View.VISIBLE : View.GONE);
+    }
+
     /**
      * Action bar helper code to be run in {@link android.app.Activity#onCreateOptionsMenu(android.view.Menu)}.
      * <p/>

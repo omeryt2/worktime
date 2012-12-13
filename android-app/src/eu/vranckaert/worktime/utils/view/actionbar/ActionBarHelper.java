@@ -83,6 +83,12 @@ public abstract class ActionBarHelper {
     public abstract void setRefreshActionItemState(boolean refreshing, int menuItemResId);
 
     /**
+     * Sets/removes the loading indicator without replacing another menu item.
+     * @param loading If the loading indicator should be enabled or disabled.
+     */
+    public abstract void setLoadingIndicator(boolean loading);
+
+    /**
      * Enables or disables the home button.
      */
     public abstract void setHomeButtonEnabled(boolean enabled);

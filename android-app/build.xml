@@ -329,4 +329,24 @@
     <!-- version-tag: 1 -->
     <import file="${sdk.dir}/tools/ant/build.xml" />
 
+    <!-- Copy EnvironmentConstants.java to our source tree, replacing
+    custom tokens with values in build.properties. The configuration
+    depends on "clean" because otherwise the build system will not detect
+    changes in the configuration. -->
+    <target name="config">
+        <fail message="Cannot create/generate the configuration classes as the config.endpoint_url property is not set." unless="config.endpoint_url"/>
+        <fail message="Cannot create/generate the configuration classes as the config.service_key property is not set." unless="config.service_key"/>
+
+        <property name="config-target-path" value="${source.dir}/eu/vranckaert/worktime/constants"/>
+
+        <!-- Copy the configuration file, replacing tokens in the file. -->
+        <copy file="config/EnvironmentConstants.java" todir="${config-target-path}"
+              overwrite="true" encoding="utf-8">
+            <filterset>
+                <filter token="CONFIG.WORKTIME_ENDPOINT" value="${config.endpoint_url}"/>
+                <filter token="CONFIG.WORKTIME_ANDROID_SERVICE_KEY" value="${config.service_key}"/>
+            </filterset>
+        </copy>
+    </target>
+
 </project>

@@ -34,6 +34,9 @@ public class TrackerConstants {
         public static final String ADD_EDIT_TASK_ACTIVITY = "addEditTaskActivity";
         public static final String REPORTING_CRITERIA_ACTIVITY = "reportingCriteriaActivity";
         public static final String REPORTING_RESULT_ACTIVITY = "reportingResultActivity";
+        public static final String ACCOUNT_LOGIN_ACTIVITY = "accountLoginActivity";
+        public static final String ACCOUNT_REGISTER_ACTIVITY = "accountRegisterActivity";
+        public static final String ACCOUNT_DETAILS_ACTIVITY = "accountDetailsActivity";
 
         public class Preferences {
             public static final String BACKUP_PREFERENCES = "backupPreferences";

@@ -51,6 +51,9 @@
     <string name="warning_msg_sd_car_unavailable">Make sure the SD-card is in the device and the SD-card is mounted.</string>
     <string name="warning_msg_sd_car_unavailable_short">No SD-card found</string>
     <string name="acra_crash_report_send">The application has crashed and a crash-report has been sent to the developers</string>
+    <!-- GENERAL ERRORS -->
+    <string name="error_general_web_exception">Something went wrong while connecting to the web. Please try again. If you keep seeing this error please report a bug.</string>
+    <string name="error_no_network_connection">Your device seems to be offline. Please make sure an internet connection is active and try again.</string>
 
     <!-- DEFUALT VALUES DB -->
     <string name="default_project_name">Default Project</string>
@@ -474,6 +477,8 @@
     <string name="pref_projects_tasks_select_project_hide_finished_title">Hide finished projects in selection</string>
     <string name="pref_projects_tasks_select_project_hide_finished_summary_on">Finished projects are hidden when selecting projects from a list</string>
     <string name="pref_projects_tasks_select_project_hide_finished_summary_off">Finished projects are shown when selecting projects from a list</string>
+    <string name="pref_account_title">Account</string>
+    <string name="pref_account_summary">Show your WorkTime account info</string>
     <string name="pref_backup_category_title">Backup and Restore</string>
     <string name="pref_backup_title">Backup</string>
     <string name="pref_backup_summary">Backup all WorkTime data on this device</string>
@@ -552,6 +557,23 @@
     <string name="msg_restore_failed_notification_message">The backup could not be restored</string>
     <string name="msg_restore_failed_notification_big_text_message">The backup could not be restored. This can have various reasons. You can try again, however if you keep having this problem you should look for some help online.</string>
 
+    <!-- ACCOUNTS -->
+    <!-- LOGIN -->
+    <string name="lbl_account_login_title">Login</string>
+    <string name="lbl_account_login_email_hint">Email</string>
+    <string name="lbl_account_login_password_hint">Password</string>
+    <string name="lbl_account_login_button_login">Login</string>
+    <string name="lbl_account_login_or">OR</string>
+    <string name="lbl_account_login_button_register">Create New Account</string>
+    <!-- REGISTER -->
+    <string name="lbl_account_register_title">Create Account</string>
+    <string name="lbl_account_register_email_hint">Email</string>
+    <string name="lbl_account_register_firstname_hint">First Name</string>
+    <string name="lbl_account_register_lastname_hint">Last Name</string>
+    <string name="lbl_account_register_password_hint">Password</string>
+    <string name="lbl_account_register_password_confirmation_hint">Repeat Passsword</string>
+    <string name="lbl_account_register_password_button">Create Account</string>
+
     <!-- ABOUT -->
     <string name="lbl_about_title">About</string>
     <string name="lbl_about_project">Project</string>
@@ -619,5 +641,14 @@
     <string name="directorypicker_exc_create_already_exists">Directory already exists.</string>
     <string name="directorypicker_exc_create_unknown_error">Could not create the new directory. Please try again.</string>
     <string name="directorypicker_exc_cannot_read_dir">Could not read folder contents.</string>
+    <string name="lbl_account_login_error_all_required">Both the email and password need to be provided before you can
+        login!
+    </string>
+    <string name="lbl_account_login_error_credential_mismatch">The provided email and/or password are not correct. Make
+        sure you are registered and try again.
+    </string>
+    <string name="lbl_account_login_error_invalid_email">The provided email address is not a valid address. Please
+        correct and try again.
+    </string>
 
 </resources>

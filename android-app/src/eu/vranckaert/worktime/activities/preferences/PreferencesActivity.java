@@ -25,10 +25,14 @@ import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import android.view.MenuItem;
 import android.view.Window;
+import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.activities.account.AccountDetailsActivity;
+import eu.vranckaert.worktime.activities.account.AccountLoginActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.OSContants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
+import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.file.FileUtil;
@@ -47,6 +51,9 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
     private static final String LOG_TAG = PreferencesActivity.class.getSimpleName();
 
     private AnalyticsTracker tracker;
+
+    @Inject
+    private AccountService accountService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +103,27 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
 
         //Category NOTIFICATIONS
         createCategoryButton(ctx, preferences, R.string.pref_stat_bar_notifs_category_title, NotificationsPreferencesActivity.class);
+
+        //Category ACCOUNT
+        if (!ContextUtils.isStableBuild(PreferencesActivity.this)) {
+            Preference accountItem = new Preference(ctx);
+            accountItem.setTitle(R.string.pref_account_title);
+            accountItem.setSummary(R.string.pref_account_summary);
+            preferences.addPreference(accountItem);
+            accountItem.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = null;
+                    if (accountService.isUserLoggedIn()){
+                        intent = new Intent(PreferencesActivity.this, AccountDetailsActivity.class);
+                    } else {
+                        intent = new Intent(PreferencesActivity.this, AccountLoginActivity.class);
+                    }
+                    startActivity(intent);
+                    return true;
+                }
+            });
+        }
 
         //Category BACKUP AND RESTORE
         createCategoryButton(ctx, preferences, R.string.pref_backup_category_title, BackupPreferencesActivity.class);
