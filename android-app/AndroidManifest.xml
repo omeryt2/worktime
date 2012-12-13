@@ -24,7 +24,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="14"/>
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="17"/>
 
     <application android:label="WorkTime" android:icon="@drawable/logo"
                  android:name=".guice.Application" android:backupAgent=".utils.context.BackupAgent">

@@ -21,5 +21,7 @@
     android:minHeight="140dp"
     android:updatePeriodMillis="86400000"
     android:initialLayout="@layout/worktime_appwidget_2x2_project"
-    android:previewImage="@drawable/widget_preview_2x2_project">
+    android:initialKeyguardLayout="@layout/worktime_appwidget_2x2_project"
+    android:previewImage="@drawable/widget_preview_2x2_project"
+    android:widgetCategory="home_screen|keyguard">
 </appwidget-provider>
