@@ -23,6 +23,7 @@ import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
+import org.apache.commons.validator.routines.EmailValidator;
 import roboguice.inject.InjectView;
 
 /**
@@ -63,7 +64,7 @@ public class AccountLoginActivity extends ActionBarGuiceActivity {
                     errorTextView.setText(R.string.lbl_account_login_error_all_required);
                     errorTextView.setVisibility(View.VISIBLE);
                     return;
-                } else if (!org.apache.commons.validator.routines.EmailValidator.getInstance().isValid(email)) {
+                } else if (!EmailValidator.getInstance().isValid(email)) {
                     errorTextView.setText(R.string.lbl_account_login_error_invalid_email);
                     errorTextView.setVisibility(View.VISIBLE);
                     return;
