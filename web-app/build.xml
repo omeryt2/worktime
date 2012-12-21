@@ -69,13 +69,11 @@
 			<arg value="war" />
 		</java>
 		
-		<xmlproperty file="./war/WEB-INF/appengine-web.xml" prefix="appengineweb" collapseAttributes="true"/>
-		<property name="releasedVersion" value="${appengineweb.appengine-web-app.version}"/>
 		<!-- Commit the changes made -->
     	<echo>Committing production changes</echo>
 		<antcall target="svn-commit">
             <param name="file" value="./war/WEB-INF/appengine-web.xml"/>
-            <param name="message" value="Auto commit for appengine-web while releasing in production for version ${releaseVersion}"/>
+            <param name="message" value="Auto commit for appengine-web while releasing in production for version ${newVersionCode}"/>
         </antcall>
 		<!-- Create a branch for the trunk directory -->
         <echo>Creating branches</echo>
@@ -83,8 +81,8 @@
         <antcall target="svn-branch-trunk">
             <param name="trunk.url" value="https://worktime.googlecode.com/svn/trunk/web-app"/>
             <param name="branch.dir" value="https://worktime.googlecode.com/svn/branches/"/>
-            <param name="branch.name" value="web-app-${releasedVersion}"/>
-            <param name="message" value="Creating branch for production release {releasedVersion}"/>
+            <param name="branch.name" value="web-app-${newVersionCode}"/>
+            <param name="message" value="Creating branch for production release {newVersionCode}"/>
         </antcall>
 	</target>
 	
