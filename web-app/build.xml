@@ -105,10 +105,10 @@
 	-->
 	
 	<target name="clean" description="Cleans all generated class files">
-		<delete includeemptydirs="true">
+		<delete includeemptydirs="true" failonerror="false">
 	    	<fileset dir="./war/WEB-INF/classes/" includes="**/*"/>
 	  	</delete>
-		<delete dir="./war/WEB-INF/classes"/>
+		<delete dir="./war/WEB-INF/classes" failonerror="false"/>
 	</target>
 
 	<target name="update_indexes" depends="datanucleusenhance"
