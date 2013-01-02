@@ -78,7 +78,7 @@ public class AccountLoginActivity extends ActionBarGuiceActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AccountLoginActivity.this, AccountRegisterActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, Constants.IntentRequestCodes.ACCOUNT_REGISTER);
             }
         });
     }
@@ -164,9 +164,15 @@ public class AccountLoginActivity extends ActionBarGuiceActivity {
                 errorTextView.setText(error);
                 errorTextView.setVisibility(View.VISIBLE);
             } else {
-                Intent intent = new Intent(AccountLoginActivity.this, AccountDetailsActivity.class);
+                Intent intent = new Intent(AccountLoginActivity.this, AccountProfileActivity.class);
                 startActivityForResult(intent, Constants.IntentRequestCodes.ACCOUNT_DETAILS);
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        errorTextView.setVisibility(View.GONE);
+        super.onResume();
     }
 }

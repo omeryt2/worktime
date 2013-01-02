@@ -47,6 +47,13 @@ public enum DatabaseUpgrade {
                 "password " + DataTypes.TEXT + ", " +
                 "sessionKey " + DataTypes.TEXT +
             ");"
+    }),
+    UPGRADE5(26, new String[] {
+            "ALTER TABLE User add column firstName " + DataTypes.VARCHAR + ";",
+            "ALTER TABLE User add column lastName " + DataTypes.VARCHAR + ";",
+            "ALTER TABLE User add column loggedInSince " + DataTypes.VARCHAR + ";",
+            "ALTER TABLE User add column registeredSince " + DataTypes.VARCHAR + ";",
+            "ALTER TABLE User add column role " + DataTypes.VARCHAR + ";"
     })
     ;
 

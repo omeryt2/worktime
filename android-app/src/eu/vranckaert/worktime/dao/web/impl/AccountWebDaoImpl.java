@@ -6,8 +6,12 @@ import com.google.inject.Inject;
 import eu.vranckaert.worktime.constants.EnvironmentConstants;
 import eu.vranckaert.worktime.dao.web.AccountWebDao;
 import eu.vranckaert.worktime.dao.web.model.request.user.UserLoginRequest;
+import eu.vranckaert.worktime.dao.web.model.request.user.UserRegistrationRequest;
 import eu.vranckaert.worktime.dao.web.model.response.user.AuthenticationResponse;
 import eu.vranckaert.worktime.exceptions.account.LoginCredentialsMismatchException;
+import eu.vranckaert.worktime.exceptions.account.PasswordLengthValidationException;
+import eu.vranckaert.worktime.exceptions.account.RegisterEmailAlreadyInUseException;
+import eu.vranckaert.worktime.exceptions.account.RegisterFieldRequiredException;
 import eu.vranckaert.worktime.exceptions.network.NoNetworkConnectionException;
 import eu.vranckaert.worktime.guice.Application;
 import eu.vranckaert.worktime.utils.network.NetworkUtil;
@@ -40,20 +44,24 @@ public class AccountWebDaoImpl extends JsonWebServiceImpl implements AccountWebD
         this.context = context;
     }
 
-    @Override
-    public String login(String email, String password) throws NoNetworkConnectionException, GeneralWebException, LoginCredentialsMismatchException {
+    private void checkNetworkConnection() throws NoNetworkConnectionException {
         if (!NetworkUtil.canSurf(context, ENDPOINT_BASE_URL + ENDPOINT_TEST)) {
             Log.w(LOG_TAG, "Cannot reach endpoint (" + ENDPOINT_BASE_URL + ENDPOINT_TEST + "), device seems to be offline!");
             throw new NoNetworkConnectionException();
         }
+    }
 
-        UserLoginRequest userLoginRequest = new UserLoginRequest();
-        userLoginRequest.setEmail(email);
-        userLoginRequest.setPassword(password);
+    @Override
+    public String login(String email, String password) throws NoNetworkConnectionException, GeneralWebException, LoginCredentialsMismatchException {
+        checkNetworkConnection();
+
+        UserLoginRequest request = new UserLoginRequest();
+        request.setEmail(email);
+        request.setPassword(password);
 
         JsonResult result = null;
         try {
-            result = webInvokePost(ENDPOINT_BASE_URL + ENDPOINT_REST, ENDPOINT_METHOD_LOGIN, null, null, userLoginRequest, null);
+            result = webInvokePost(ENDPOINT_BASE_URL + ENDPOINT_REST, ENDPOINT_METHOD_LOGIN, null, null, request, null);
         } catch (WebException e) {
             String msg = "Cannot login due to a web exception... Exception is: " + e.getMessage();
             Log.e(LOG_TAG, msg, e);
@@ -72,6 +80,51 @@ public class AccountWebDaoImpl extends JsonWebServiceImpl implements AccountWebD
         if (!response.isResultOk()) {
             if (response.getEmailOrPasswordIncorrectJSONException() != null) {
                 throw new LoginCredentialsMismatchException();
+            } else if (response.getServiceNotAllowedException() != null) {
+                throw new RuntimeException("Your service is not allowed to access the application-server");
+            } else {
+                throw  new RuntimeException("Something went wrong...");
+            }
+        }
+
+        return response.getSessionKey();
+    }
+
+    @Override
+    public String register(String email, String firstName, String lastName, String password) throws NoNetworkConnectionException, GeneralWebException, RegisterEmailAlreadyInUseException, PasswordLengthValidationException, RegisterFieldRequiredException {
+        checkNetworkConnection();
+
+        UserRegistrationRequest request = new UserRegistrationRequest();
+        request.setEmail(email);
+        request.setFirstName(firstName);
+        request.setLastName(lastName);
+        request.setPassword(password);
+
+        JsonResult result = null;
+        try {
+            result = webInvokePost(ENDPOINT_BASE_URL + ENDPOINT_REST, ENDPOINT_METHOD_REGISTER, null, null, request, null);
+        } catch (WebException e) {
+            String msg = "Cannot login due to a web exception... Exception is: " + e.getMessage();
+            Log.e(LOG_TAG, msg, e);
+            throw new GeneralWebException(msg);
+        } catch (CommunicationException e) {
+            String msg = "Cannot login due to a communication exception... Exception is: " + e.getMessage();
+            Log.e(LOG_TAG, msg, e);
+            throw new GeneralWebException(msg);
+        }
+
+        if (result == null) {
+            return null;
+        }
+
+        AuthenticationResponse response = result.getSingleResult(AuthenticationResponse.class);
+        if (!response.isResultOk()) {
+            if (response.getFieldRequiredJSONException() != null) {
+                throw new RegisterFieldRequiredException(response.getFieldRequiredJSONException().getFieldName());
+            } else if (response.getRegisterEmailAlreadyInUseJSONException() != null) {
+                throw new RegisterEmailAlreadyInUseException();
+            } else if (response.getPasswordLengthInvalidJSONException() != null) {
+                throw new PasswordLengthValidationException();
             } else if (response.getServiceNotAllowedException() != null) {
                 throw new RuntimeException("Your service is not allowed to access the application-server");
             } else {

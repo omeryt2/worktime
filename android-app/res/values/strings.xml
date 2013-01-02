@@ -565,6 +565,9 @@
     <string name="lbl_account_login_button_login">Login</string>
     <string name="lbl_account_login_or">OR</string>
     <string name="lbl_account_login_button_register">Create New Account</string>
+    <string name="lbl_account_login_error_all_required">Both the email and password need to be provided before you can login!</string>
+    <string name="lbl_account_login_error_credential_mismatch">The provided email and/or password are not correct. Make sure you are registered and try again.</string>
+    <string name="lbl_account_login_error_invalid_email">The provided email address is not a valid address. Please correct and try again.</string>
     <!-- REGISTER -->
     <string name="lbl_account_register_title">Create Account</string>
     <string name="lbl_account_register_email_hint">Email</string>
@@ -572,7 +575,16 @@
     <string name="lbl_account_register_lastname_hint">Last Name</string>
     <string name="lbl_account_register_password_hint">Password</string>
     <string name="lbl_account_register_password_confirmation_hint">Repeat Passsword</string>
+    <string name="lbl_account_register_password_show">Show password?</string>
     <string name="lbl_account_register_password_button">Create Account</string>
+    <string name="lbl_account_register_error_all_fields_required">All fields are required. Please fill in the blank fields and try again.</string>
+    <string name="lbl_account_register_error_invalid_email">The provided email address is not a valid address. Please correct and try again.</string>
+    <string name="lbl_account_register_error_password_characters">The password should only contain letters (uppercased or lowercased), numbers, dashes or underscores.</string>
+    <string name="lbl_account_register_error_password_invalid_length">The password should be at least 6 characters long and maximum 30.</string>
+    <string name="lbl_account_register_error_password_confirmation">The provided password and confirmation do not match.</string>
+    <string name="lbl_account_register_error_email_account_exists">An account already exists for this email address.</string>
+    <!-- PROFILE -->
+    <string name="lbl_account_profile_title">Profile</string>
 
     <!-- ABOUT -->
     <string name="lbl_about_title">About</string>
@@ -641,14 +653,5 @@
     <string name="directorypicker_exc_create_already_exists">Directory already exists.</string>
     <string name="directorypicker_exc_create_unknown_error">Could not create the new directory. Please try again.</string>
     <string name="directorypicker_exc_cannot_read_dir">Could not read folder contents.</string>
-    <string name="lbl_account_login_error_all_required">Both the email and password need to be provided before you can
-        login!
-    </string>
-    <string name="lbl_account_login_error_credential_mismatch">The provided email and/or password are not correct. Make
-        sure you are registered and try again.
-    </string>
-    <string name="lbl_account_login_error_invalid_email">The provided email address is not a valid address. Please
-        correct and try again.
-    </string>
 
 </resources>

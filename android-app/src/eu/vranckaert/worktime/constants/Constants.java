@@ -103,6 +103,7 @@ public class Constants {
         public static final int COPY_PROJECT = 12;
         public static final int SELECT_TASK = 13;
         public static final int ACCOUNT_DETAILS = 14;
+        public static final int ACCOUNT_REGISTER = 15;
     }
     public class IntentResultCodes {
         public static final int RESULT_OK_SPLIT = 100;

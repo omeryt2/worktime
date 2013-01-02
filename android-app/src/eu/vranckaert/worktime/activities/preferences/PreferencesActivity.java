@@ -27,7 +27,7 @@ import android.view.MenuItem;
 import android.view.Window;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
-import eu.vranckaert.worktime.activities.account.AccountDetailsActivity;
+import eu.vranckaert.worktime.activities.account.AccountProfileActivity;
 import eu.vranckaert.worktime.activities.account.AccountLoginActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.OSContants;
@@ -115,7 +115,7 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     Intent intent = null;
                     if (accountService.isUserLoggedIn()){
-                        intent = new Intent(PreferencesActivity.this, AccountDetailsActivity.class);
+                        intent = new Intent(PreferencesActivity.this, AccountProfileActivity.class);
                     } else {
                         intent = new Intent(PreferencesActivity.this, AccountLoginActivity.class);
                     }

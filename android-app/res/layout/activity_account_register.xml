@@ -5,6 +5,12 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent">
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/account_register_error"
+        style="@style/WorkTimeValidationError"/>
+
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -41,6 +47,13 @@
         android:id="@+id/account_register_password_confirmation"
         android:password="true"
         android:inputType="textPassword"/>
+
+    <CheckBox
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/lbl_account_register_password_show"
+        android:id="@+id/account_register_password_show"
+        android:checked="false"/>
 
     <Button
         android:layout_width="wrap_content"

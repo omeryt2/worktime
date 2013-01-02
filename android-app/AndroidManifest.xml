@@ -162,7 +162,7 @@
                   android:configChanges="orientation|keyboardHidden"/>
 
         <!-- Account activities -->
-        <activity android:name=".activities.account.AccountDetailsActivity"
+        <activity android:name=".activities.account.AccountProfileActivity"
                   android:theme="@style/AppTheme"
                   android:configChanges="orientation|keyboardHidden"/>
         <activity android:name=".activities.account.AccountLoginActivity"
