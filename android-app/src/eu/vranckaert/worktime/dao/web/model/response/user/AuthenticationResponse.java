@@ -4,6 +4,7 @@ import eu.vranckaert.worktime.dao.web.model.base.response.WorkTimeResponse;
 import eu.vranckaert.worktime.dao.web.model.exception.FieldRequiredJSONException;
 import eu.vranckaert.worktime.dao.web.model.exception.user.EmailOrPasswordIncorrectJSONException;
 import eu.vranckaert.worktime.dao.web.model.exception.user.InvalidEmailJSONException;
+import eu.vranckaert.worktime.dao.web.model.exception.user.PasswordLengthInvalidJSONException;
 import eu.vranckaert.worktime.dao.web.model.exception.user.RegisterEmailAlreadyInUseJSONException;
 
 public class AuthenticationResponse extends WorkTimeResponse {
@@ -12,6 +13,7 @@ public class AuthenticationResponse extends WorkTimeResponse {
     private FieldRequiredJSONException fieldRequiredJSONException;
     private EmailOrPasswordIncorrectJSONException emailOrPasswordIncorrectJSONException;
     private RegisterEmailAlreadyInUseJSONException registerEmailAlreadyInUseJSONException;
+    private PasswordLengthInvalidJSONException passwordLengthInvalidJSONException;
     private InvalidEmailJSONException invalidEmailJSONException;
 
     public String getSessionKey() {
@@ -32,5 +34,13 @@ public class AuthenticationResponse extends WorkTimeResponse {
 
     public InvalidEmailJSONException getInvalidEmailJSONException() {
         return invalidEmailJSONException;
+    }
+
+    public PasswordLengthInvalidJSONException getPasswordLengthInvalidJSONException() {
+        return passwordLengthInvalidJSONException;
+    }
+
+    public void setPasswordLengthInvalidJSONException(PasswordLengthInvalidJSONException passwordLengthInvalidJSONException) {
+        this.passwordLengthInvalidJSONException = passwordLengthInvalidJSONException;
     }
 }

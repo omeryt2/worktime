@@ -15,11 +15,7 @@
  */
 package eu.vranckaert.worktime.dao.utils;
 
-import eu.vranckaert.worktime.model.CommentHistory;
-import eu.vranckaert.worktime.model.Project;
-import eu.vranckaert.worktime.model.Task;
-import eu.vranckaert.worktime.model.TimeRegistration;
-import eu.vranckaert.worktime.model.WidgetConfiguration;
+import eu.vranckaert.worktime.model.*;
 
 /**
  * User: DIRK VRANCKAERT
@@ -31,7 +27,8 @@ public enum Tables {
     PROJECT(Project.class),
     TASK(Task.class),
     COMMENT_HISTORY(CommentHistory.class),
-    WIDGET_CONFIGURATION(WidgetConfiguration.class);
+    WIDGET_CONFIGURATION(WidgetConfiguration.class),
+    USER(User.class);
     ;
 
     Tables(Class tableClass) {

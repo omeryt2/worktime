@@ -74,6 +74,8 @@ public class AccountWebDaoImpl extends JsonWebServiceImpl implements AccountWebD
                 throw new LoginCredentialsMismatchException();
             } else if (response.getServiceNotAllowedException() != null) {
                 throw new RuntimeException("Your service is not allowed to access the application-server");
+            } else {
+                throw  new RuntimeException("Something went wrong...");
             }
         }
 

@@ -24,7 +24,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean isUserLoggedIn() {
         User user = accountDao.getLoggedInUser();
-        return user == null ? false : true;
+        return user!=null;
     }
 
     @Override
