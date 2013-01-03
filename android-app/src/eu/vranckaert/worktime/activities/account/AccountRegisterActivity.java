@@ -219,6 +219,11 @@ public class AccountRegisterActivity extends ActionBarGuiceActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Constants.IntentResultCodes.RESULT_LOGOUT) {
+            setResult(resultCode);
+        } else {
+            setResult(RESULT_OK);
+        }
         finish();
     }
 

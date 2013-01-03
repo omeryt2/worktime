@@ -2,8 +2,8 @@ package eu.vranckaert.worktime.exceptions.account;
 
 /**
  * User: Dirk Vranckaert
- * Date: 2/01/13
- * Time: 12:50
+ * Date: 3/01/13
+ * Time: 08:51
  */
 public class RegisterFieldRequiredException extends Exception {
     private String fieldName;

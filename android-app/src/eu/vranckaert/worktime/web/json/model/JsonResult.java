@@ -25,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,6 +45,7 @@ public class JsonResult {
 
     public <Y extends JsonEntity> Y getSingleResult(Class<Y> entityClass) {
         GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Date.class, new DateTimeDeserializer());
         Gson gson = builder.create();
 
         JSONObject j;

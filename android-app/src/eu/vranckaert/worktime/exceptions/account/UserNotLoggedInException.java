@@ -3,7 +3,7 @@ package eu.vranckaert.worktime.exceptions.account;
 /**
  * User: Dirk Vranckaert
  * Date: 3/01/13
- * Time: 08:52
+ * Time: 08:50
  */
-public class RegisterEmailAlreadyInUseException extends Exception {
+public class UserNotLoggedInException extends Exception {
 }

@@ -3,10 +3,7 @@ package eu.vranckaert.worktime.service.impl;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.dao.AccountDao;
 import eu.vranckaert.worktime.dao.web.AccountWebDao;
-import eu.vranckaert.worktime.exceptions.account.LoginCredentialsMismatchException;
-import eu.vranckaert.worktime.exceptions.account.PasswordLengthValidationException;
-import eu.vranckaert.worktime.exceptions.account.RegisterEmailAlreadyInUseException;
-import eu.vranckaert.worktime.exceptions.account.RegisterFieldRequiredException;
+import eu.vranckaert.worktime.exceptions.account.*;
 import eu.vranckaert.worktime.exceptions.network.NoNetworkConnectionException;
 import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.service.AccountService;
@@ -19,10 +16,10 @@ import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
  */
 public class AccountServiceImpl implements AccountService {
     @Inject
-    AccountWebDao accountWebDao;
+    private AccountWebDao accountWebDao;
 
     @Inject
-    AccountDao accountDao;
+    private AccountDao accountDao;
 
     @Override
     public boolean isUserLoggedIn() {
@@ -52,5 +49,27 @@ public class AccountServiceImpl implements AccountService {
         user.setSessionKey(sessionKey);
 
         accountDao.storeLoggedInUser(user);
+    }
+
+    @Override
+    public User loadUserData() throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException {
+        User user = accountDao.getLoggedInUser();
+
+        User updatedUser = null;
+        try {
+            updatedUser = accountWebDao.loadProfile(user);
+        } catch (UserNotLoggedInException e) {
+            accountDao.delete(user);
+            throw e;
+        }
+
+        return updatedUser;
+    }
+
+    @Override
+    public void logout() {
+        User user = accountDao.getLoggedInUser();
+        accountDao.delete(user);
+        accountWebDao.logout(user);
     }
 }

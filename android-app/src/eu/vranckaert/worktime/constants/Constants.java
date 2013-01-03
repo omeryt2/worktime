@@ -108,6 +108,7 @@ public class Constants {
     public class IntentResultCodes {
         public static final int RESULT_OK_SPLIT = 100;
         public static final int RESULT_DELETED = 200;
+        public static final int RESULT_LOGOUT = 300;
     }
     public class Preferences {
         public static final String PREFERENCES_NAME = "WorkTime_0001";

@@ -25,6 +25,7 @@ import android.view.View;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.about.AboutActivity;
+import eu.vranckaert.worktime.activities.account.AccountLoginActivity;
 import eu.vranckaert.worktime.activities.preferences.PreferencesActivity;
 import eu.vranckaert.worktime.activities.projects.ManageProjectsActivity;
 import eu.vranckaert.worktime.activities.reporting.ReportingCriteriaActivity;
@@ -137,6 +138,9 @@ public class HomeActivity extends ActionBarGuiceActivity {
                 break;
             case R.id.menu_home_activity_about:
                 launchActivity(AboutActivity.class);
+                break;
+            case R.id.menu_home_activity_account:
+                launchActivity(AccountLoginActivity.class);
                 break;
         }
         return super.onOptionsItemSelected(item);

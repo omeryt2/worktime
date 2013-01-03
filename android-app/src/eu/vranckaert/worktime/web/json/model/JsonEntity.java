@@ -19,6 +19,8 @@ package eu.vranckaert.worktime.web.json.model;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.Date;
+
 /**
  * Date: 16/10/12
  * Time: 19:00
@@ -28,6 +30,7 @@ import com.google.gson.GsonBuilder;
 public class JsonEntity {
     public String toJSON() {
         GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Date.class, new DateTimeSerializer());
         builder.excludeFieldsWithoutExposeAnnotation();
         Gson gson = builder.create();
 

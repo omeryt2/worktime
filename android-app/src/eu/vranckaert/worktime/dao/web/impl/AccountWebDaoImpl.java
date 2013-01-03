@@ -8,18 +8,20 @@ import eu.vranckaert.worktime.dao.web.AccountWebDao;
 import eu.vranckaert.worktime.dao.web.model.request.user.UserLoginRequest;
 import eu.vranckaert.worktime.dao.web.model.request.user.UserRegistrationRequest;
 import eu.vranckaert.worktime.dao.web.model.response.user.AuthenticationResponse;
-import eu.vranckaert.worktime.exceptions.account.LoginCredentialsMismatchException;
-import eu.vranckaert.worktime.exceptions.account.PasswordLengthValidationException;
-import eu.vranckaert.worktime.exceptions.account.RegisterEmailAlreadyInUseException;
-import eu.vranckaert.worktime.exceptions.account.RegisterFieldRequiredException;
+import eu.vranckaert.worktime.dao.web.model.response.user.UserProfileResponse;
+import eu.vranckaert.worktime.exceptions.account.*;
 import eu.vranckaert.worktime.exceptions.network.NoNetworkConnectionException;
 import eu.vranckaert.worktime.guice.Application;
+import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.utils.network.NetworkUtil;
 import eu.vranckaert.worktime.web.json.JsonWebServiceImpl;
 import eu.vranckaert.worktime.web.json.exception.CommunicationException;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
 import eu.vranckaert.worktime.web.json.exception.WebException;
 import eu.vranckaert.worktime.web.json.model.JsonResult;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: Dirk Vranckaert
@@ -35,6 +37,8 @@ public class AccountWebDaoImpl extends JsonWebServiceImpl implements AccountWebD
     private static final String ENDPOINT_REST = "rest/";
     private static final String ENDPOINT_METHOD_LOGIN = "user/login";
     private static final String ENDPOINT_METHOD_REGISTER = "user/register";
+    private static final String ENDPOINT_METHOD_PROFILE = "user/profile";
+    private static final String ENDPOINT_METHOD_LOGOUT = "user/logout";
 
     private Context context;
 
@@ -133,5 +137,67 @@ public class AccountWebDaoImpl extends JsonWebServiceImpl implements AccountWebD
         }
 
         return response.getSessionKey();
+    }
+
+    @Override
+    public User loadProfile(User user) throws NoNetworkConnectionException, GeneralWebException, UserNotLoggedInException {
+        checkNetworkConnection();
+
+        JsonResult result = null;
+
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("serviceKey", EnvironmentConstants.WorkTimeWeb.SERVICE_KEY);
+        parameters.put("email", user.getEmail());
+        parameters.put("sessionKey", user.getSessionKey());
+        try {
+            result = webInvokeGet(ENDPOINT_BASE_URL + ENDPOINT_REST, ENDPOINT_METHOD_PROFILE, null, parameters, null);
+        } catch (WebException e) {
+            String msg = "Cannot login due to a web exception... Exception is: " + e.getMessage();
+            Log.e(LOG_TAG, msg, e);
+            throw new GeneralWebException(msg);
+        } catch (CommunicationException e) {
+            String msg = "Cannot login due to a communication exception... Exception is: " + e.getMessage();
+            Log.e(LOG_TAG, msg, e);
+            throw new GeneralWebException(msg);
+        }
+
+        if (result == null) {
+            return user;
+        }
+
+        UserProfileResponse response = result.getSingleResult(UserProfileResponse.class);
+        if (!response.isResultOk()) {
+            if (response.getUserNotLoggedInException() != null) {
+                throw new UserNotLoggedInException();
+            } else {
+                throw  new RuntimeException("Something went wrong...");
+            }
+        } else {
+            user.setFirstName(response.getFirstName());
+            user.setLastName(response.getLastName());
+            user.setLoggedInSince(response.getLoggedInSince());
+            user.setRegisteredSince(response.getRegisteredSince());
+            user.setRole(response.getRole());
+        }
+
+        return user;
+    }
+
+    @Override
+    public void logout(User user) {
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("serviceKey", EnvironmentConstants.WorkTimeWeb.SERVICE_KEY);
+        parameters.put("email", user.getEmail());
+        parameters.put("sessionKey", user.getSessionKey());
+
+        try {
+            webInvokeGet(ENDPOINT_BASE_URL + ENDPOINT_REST, ENDPOINT_METHOD_LOGOUT, null, parameters, null);
+        } catch (WebException e) {
+            String msg = "Cannot login due to a web exception... Exception is: " + e.getMessage();
+            Log.e(LOG_TAG, msg, e);
+        } catch (CommunicationException e) {
+            String msg = "Cannot login due to a communication exception... Exception is: " + e.getMessage();
+            Log.e(LOG_TAG, msg, e);
+        }
     }
 }

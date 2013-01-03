@@ -113,12 +113,7 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
             accountItem.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Intent intent = null;
-                    if (accountService.isUserLoggedIn()){
-                        intent = new Intent(PreferencesActivity.this, AccountProfileActivity.class);
-                    } else {
-                        intent = new Intent(PreferencesActivity.this, AccountLoginActivity.class);
-                    }
+                    Intent intent = new Intent(PreferencesActivity.this, AccountLoginActivity.class);
                     startActivity(intent);
                     return true;
                 }

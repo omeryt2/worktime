@@ -45,6 +45,11 @@ public class AccountLoginActivity extends ActionBarGuiceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (accountService.isUserLoggedIn()){
+            Intent intent = new Intent(AccountLoginActivity.this, AccountProfileActivity.class);
+            startActivityForResult(intent, Constants.IntentRequestCodes.ACCOUNT_DETAILS);
+        }
+
         setContentView(R.layout.activity_account_login);
 
         setTitle(R.string.lbl_account_login_title);
@@ -85,7 +90,17 @@ public class AccountLoginActivity extends ActionBarGuiceActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        finish();
+        if (requestCode == Constants.IntentRequestCodes.ACCOUNT_REGISTER && resultCode == RESULT_CANCELED) {
+            // DO NOTHING
+        } else if (requestCode == Constants.IntentRequestCodes.ACCOUNT_REGISTER && resultCode == Constants.IntentResultCodes.RESULT_LOGOUT) {
+            // DO NOTHING
+        } else if (requestCode == Constants.IntentRequestCodes.ACCOUNT_REGISTER) {
+            finish();
+        } else if (requestCode == Constants.IntentRequestCodes.ACCOUNT_DETAILS && resultCode == Constants.IntentResultCodes.RESULT_LOGOUT) {
+            // DO NOTHING
+        } else if (requestCode == Constants.IntentRequestCodes.ACCOUNT_DETAILS) {
+            finish();
+        }
     }
 
     @Override
@@ -155,11 +170,6 @@ public class AccountLoginActivity extends ActionBarGuiceActivity {
         protected void onPostExecute(Void o) {
             getActionBarHelper().setLoadingIndicator(false);
 
-            loginButton.setEnabled(true);
-            registerButton.setEnabled(true);
-            emailInput.setEnabled(true);
-            passwordInput.setEnabled(true);
-
             if (error != null) {
                 errorTextView.setText(error);
                 errorTextView.setVisibility(View.VISIBLE);
@@ -167,12 +177,20 @@ public class AccountLoginActivity extends ActionBarGuiceActivity {
                 Intent intent = new Intent(AccountLoginActivity.this, AccountProfileActivity.class);
                 startActivityForResult(intent, Constants.IntentRequestCodes.ACCOUNT_DETAILS);
             }
+
+            loginButton.setEnabled(true);
+            registerButton.setEnabled(true);
+            emailInput.setEnabled(true);
+            passwordInput.setEnabled(true);
         }
     }
 
     @Override
     protected void onResume() {
         errorTextView.setVisibility(View.GONE);
+        emailInput.requestFocus();
+        emailInput.setText("");
+        passwordInput.setText("");
         super.onResume();
     }
 }

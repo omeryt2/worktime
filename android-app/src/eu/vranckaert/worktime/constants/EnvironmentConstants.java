@@ -9,6 +9,6 @@ public class EnvironmentConstants {
         public static final String ENDPOINT_URL = "http://10.0.2.2:8888/";
         //public static final String ENDPOINT_URL = "http://192.168.0.206/";
         //public static final String ENDPOINT_URL = "https://worktime-web.appspot.com/";
-        public static final String SERVICE_KEY = "68d997a9-1e73-4e8f-863b-f75a1fbd819b";
+        public static final String SERVICE_KEY = "f85d644e-7b58-4e72-9490-52f2fae2b63a";
     }
 }
