@@ -17,11 +17,13 @@ public class SessionDaoImpl extends BaseDaoImpl<Session> implements SessionDao {
 
 	@Override
 	public void removeAllSessions(User user) {
-		for (Session session : user.getSessions()) {
-			List<Session> sessionKeys = Lists.newArrayList(getDataStore().find().type(Session.class).addFilter("sessionKey", FilterOperator.EQUAL, session.getSessionKey()).returnResultsNow());
-			for (Session sessionKey : sessionKeys) {
-				if (sessionKey.equals(session)) {
-					remove(sessionKey);
+		if (user.getSessions() != null) {
+			for (Session session : user.getSessions()) {
+				List<Session> sessionKeys = Lists.newArrayList(getDataStore().find().type(Session.class).addFilter("sessionKey", FilterOperator.EQUAL, session.getSessionKey()).returnResultsNow());
+				for (Session sessionKey : sessionKeys) {
+					if (sessionKey.equals(session)) {
+						remove(sessionKey);
+					}
 				}
 			}
 		}

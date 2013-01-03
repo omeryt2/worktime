@@ -164,9 +164,6 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User findUser(String email) {
 		User user = userDao.findById(email);
-		if (user != null) {
-			user.setPasswordHash(null);
-		}
 		return user;
 	}
 
