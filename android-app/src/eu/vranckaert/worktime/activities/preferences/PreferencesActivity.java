@@ -104,20 +104,10 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
         //Category NOTIFICATIONS
         createCategoryButton(ctx, preferences, R.string.pref_stat_bar_notifs_category_title, NotificationsPreferencesActivity.class);
 
-        //Category ACCOUNT
-        if (!ContextUtils.isStableBuild(PreferencesActivity.this)) {
-            Preference accountItem = new Preference(ctx);
-            accountItem.setTitle(R.string.pref_account_title);
-            accountItem.setSummary(R.string.pref_account_summary);
-            preferences.addPreference(accountItem);
-            accountItem.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    Intent intent = new Intent(PreferencesActivity.this, AccountLoginActivity.class);
-                    startActivity(intent);
-                    return true;
-                }
-            });
+        //Category ACCOUNT SYNC
+        Preference accountSyncPref = createCategoryButton(ctx, preferences, R.string.pref_account_sync_category_title, AccountSyncPreferencesActivity.class);
+        if (!accountService.isUserLoggedIn()){
+            accountSyncPref.setEnabled(false);
         }
 
         //Category BACKUP AND RESTORE
@@ -152,7 +142,7 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
         });
     }
 
-    private void createCategoryButton(final Context ctx, final PreferenceScreen preferences,
+    private Preference createCategoryButton(final Context ctx, final PreferenceScreen preferences,
                                       final int textResId, final Class preferenceActivity) {
         Preference preferencesItem = new Preference(ctx);
         preferencesItem.setTitle(textResId);
@@ -165,6 +155,7 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
                 return true;
             }
         });
+        return preferencesItem;
     }
 
     @Override

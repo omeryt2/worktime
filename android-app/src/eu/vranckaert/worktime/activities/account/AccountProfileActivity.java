@@ -1,6 +1,7 @@
 package eu.vranckaert.worktime.activities.account;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.activities.preferences.AccountSyncPreferencesActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.exceptions.account.UserNotLoggedInException;
@@ -75,6 +77,10 @@ public class AccountProfileActivity extends ActionBarGuiceActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 IntentUtil.goBack(this);
+                break;
+            case R.id.menu_account_profile_activity_settings:
+                Intent intent = new Intent(AccountProfileActivity.this, AccountSyncPreferencesActivity.class);
+                startActivity(intent);
                 break;
             case R.id.menu_account_profile_activity_logout:
                 new LogoutTask().execute();

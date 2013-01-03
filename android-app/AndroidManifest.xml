@@ -154,6 +154,9 @@
         <activity android:name=".activities.preferences.TimeRegistrationsPreferencesActivity"
                   android:theme="@style/AppTheme"
                   android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".activities.preferences.AccountSyncPreferencesActivity"
+                  android:theme="@style/AppTheme"
+                  android:configChanges="orientation|keyboardHidden"/>
         <activity android:name=".activities.preferences.ResetApplicationPreferencesActivity"
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden"/>

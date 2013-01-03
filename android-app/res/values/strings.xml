@@ -557,6 +557,42 @@
     <string name="msg_restore_failed_notification_title">WorkTime Restore Failed</string>
     <string name="msg_restore_failed_notification_message">The backup could not be restored</string>
     <string name="msg_restore_failed_notification_big_text_message">The backup could not be restored. This can have various reasons. You can try again, however if you keep having this problem you should look for some help online.</string>
+    <!-- Account Sync -->
+    <string name="pref_account_sync_category_title">Sync Settings</string>
+    <string name="pref_account_sync_interval_title">Synchronisation Interval</string>
+    <string name="pref_account_sync_interval_summary">Select after how many hours the device should try to synchronize your data.</string>
+    <string name="pref_account_sync_interval_dialog_title">Select Interval</string>
+    <string-array name="pref_account_sync_interval_options">
+        <item>Every Hour</item>
+        <item>Every Two Hours</item>
+        <item>Every Three Hours</item>
+        <item>Every Four Hours</item>
+        <item>Every Five Hours</item>
+        <item>Every Six Hours</item>
+        <item>Every 12 Hours</item>
+        <item>Once a day</item>
+    </string-array>
+    <string-array name="pref_account_sync_interval_option_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>12</item>
+        <item>24</item>
+    </string-array>
+    <string name="pref_account_sync_conflict_handling_title">Synchronisation Conflicts</string>
+    <string name="pref_account_sync_conflict_handling_summary">Set up what to do in case of a conflict during synchronisation.</string>
+    <string name="pref_account_sync_conflict_handling_dialog_title">Select a Solution</string>
+    <string-array name="pref_account_sync_conflict_handling_options">
+        <item>Server always wins</item>
+        <item>Device always wins</item>
+    </string-array>
+    <string-array name="pref_account_sync_conflict_handling_option_values">
+        <item>SERVER</item>
+        <item>DEVICE</item>
+    </string-array>
 
     <!-- ACCOUNTS -->
     <!-- LOGIN -->
@@ -586,6 +622,8 @@
     <string name="lbl_account_register_error_email_account_exists">An account already exists for this email address.</string>
     <!-- PROFILE -->
     <string name="lbl_account_profile_title">Profile</string>
+    <string name="account_profile_ab_menu_sync_now">Sync Now</string>
+    <string name="account_profile_ab_menu_settings">Sync Settings</string>
     <string name="account_profile_ab_menu_logout">Logout</string>
     <string name="lbl_account_profile_email">Email:</string>
     <string name="lbl_account_profile_name">Name:</string>

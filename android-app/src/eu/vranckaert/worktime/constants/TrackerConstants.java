@@ -45,6 +45,7 @@ public class TrackerConstants {
             public static final String TASK_PREFERENCES = "taskPreferences";
             public static final String WIDGET_PREFERENCES = "widgetPreferences";
             public static final String NOTIFICATIONS_PREFERENCES = "notificationsPreferences";
+            public static final String ACCOUNT_SYNC_PREFERENCES = "accountSynchronisationPreferences";
         }
     }
 

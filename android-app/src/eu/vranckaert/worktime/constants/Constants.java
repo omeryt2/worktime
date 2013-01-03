@@ -154,6 +154,8 @@ public class Constants {
             public static final String TIME_REGISTRATION_DEFAULT_ACTION_ONGOING_TR = "timeRegistrationDefaultActionOngoingTr";
             public static final String TIME_REGISTRATION_DEFAULT_ACTION_FINISHED_TR = "timeRegistrationDefaultActionFinishedTr";
             public static final String IMMEDIATE_PUNCH_OUT = "immediatePunchOut";
+            public static final String ACCOUNT_SYNC_INTERVAL = "accountSyncInterval";
+            public static final String ACCOUNT_SYNC_CONFLICT_HANDLING = "accountSyncConflictHandling";
         }
     }
     public class Disk {
