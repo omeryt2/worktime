@@ -18,9 +18,10 @@ import javax.mail.internet.MimeMultipart;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.appengine.api.datastore.Transaction;
+import com.google.code.twig.ObjectDatastore;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
-import eu.vranckaert.worktime.dao.StaticDataStore;
 import eu.vranckaert.worktime.model.PasswordResetRequest;
 import eu.vranckaert.worktime.model.Role;
 import eu.vranckaert.worktime.model.Session;
@@ -45,6 +46,8 @@ public class UserServiceImpl implements UserService {
 	private SessionDao sessionDao;
 	@Inject
 	private PasswordResetRequestDao passwordResetRequestDao;
+	@Inject
+	private Provider<ObjectDatastore> datastores;
 
 	@Override
 	public String register(User user, String password) throws EmailAlreadyInUseException, PasswordLenghtInvalidException {		
@@ -160,6 +163,26 @@ public class UserServiceImpl implements UserService {
 		
 		return false;
 	}
+	
+	@Override
+	public void markSessionUsed(String email, String sessionKey) {
+		User user = userDao.findById(email);
+		if (user == null)
+			return;
+		Session session = null;
+		if (user.getSessions() != null) {
+			for (Session userSession : user.getSessions()) {
+				if (userSession.getSessionKey().equals(sessionKey)) {
+					session = userSession;
+					break;
+				}
+			}
+		}
+		if (session != null) {
+			session.setTimesUsed(session.getTimesUsed() + 1);
+			sessionDao.update(session);
+		}
+	}
 
 	@Override
 	public User findUser(String email) {
@@ -183,7 +206,7 @@ public class UserServiceImpl implements UserService {
 	public void startResetPassword(String email) {
 		User user = userDao.findById(email);
 		if (user != null) {
-			Transaction tx = StaticDataStore.getTransaction();
+			Transaction tx = datastores.get().getTransaction();
 			try {
 				PasswordResetRequest resetRequest = new PasswordResetRequest(user);
 				passwordResetRequestDao.persist(resetRequest);

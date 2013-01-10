@@ -2,14 +2,14 @@ package eu.vranckaert.worktime.model;
 
 import java.util.Date;
 
-import com.vercer.engine.persist.annotation.Activate;
-import com.vercer.engine.persist.annotation.Child;
-import com.vercer.engine.persist.annotation.Key;
+import com.google.code.twig.annotation.Entity;
+import com.google.code.twig.annotation.Id;
 
 import eu.vranckaert.worktime.security.utils.KeyGenerator;
 
+@Entity(kind="passwordResetRequest")
 public class PasswordResetRequest {
-	@Key private String key;
+	@Id private String key;
 	private Date requestDate;
 	private String email;
 	private boolean used;

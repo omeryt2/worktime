@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.vercer.engine.persist.annotation.Activate;
-import com.vercer.engine.persist.annotation.Child;
-import com.vercer.engine.persist.annotation.Key;
+import com.google.code.twig.annotation.Activate;
+import com.google.code.twig.annotation.Child;
+import com.google.code.twig.annotation.Entity;
+import com.google.code.twig.annotation.Id;
 
+@Entity(kind="user")
 public class User {
-	@Key private String email;
+	@Id private String email;
 	private String passwordHash;
 	private String lastName;
 	private String firstName;

@@ -34,6 +34,8 @@ public class SecurityCheckerImpl implements SecurityChecker {
 		
 		if (!userService.isLoggedIn(request.getEmail(), request.getSessionKey())) {
 			throw new UserNotLoggedInException();
+		} else {
+			userService.markSessionUsed(request.getEmail(), request.getSessionKey());
 		}
 	}
 	

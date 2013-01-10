@@ -4,6 +4,8 @@ import eu.vranckaert.worktime.json.base.exception.WorkTimeJSONException;
 
 public class RegisterEmailAlreadyInUseJSONException extends WorkTimeJSONException {
 	private String email;
+	
+	public RegisterEmailAlreadyInUseJSONException() {}
 
 	public RegisterEmailAlreadyInUseJSONException(String requestUrl, String email) {
 		super(requestUrl);

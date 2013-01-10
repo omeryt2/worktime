@@ -19,7 +19,7 @@ public class SessionDaoImpl extends BaseDaoImpl<Session> implements SessionDao {
 	public void removeAllSessions(User user) {
 		if (user.getSessions() != null) {
 			for (Session session : user.getSessions()) {
-				List<Session> sessionKeys = Lists.newArrayList(getDataStore().find().type(Session.class).addFilter("sessionKey", FilterOperator.EQUAL, session.getSessionKey()).returnResultsNow());
+				List<Session> sessionKeys = getDataStore().find().type(Session.class).addFilter("sessionKey", FilterOperator.EQUAL, session.getSessionKey()).returnAll().now();
 				for (Session sessionKey : sessionKeys) {
 					if (sessionKey.equals(session)) {
 						remove(sessionKey);
@@ -42,7 +42,7 @@ public class SessionDaoImpl extends BaseDaoImpl<Session> implements SessionDao {
 		}
 		
 		if (userSession != null) {
-			List<Session> sessionKeys = Lists.newArrayList(getDataStore().find().type(Session.class).addFilter("sessionKey", FilterOperator.EQUAL, userSession.getSessionKey()).returnResultsNow());
+			List<Session> sessionKeys = Lists.newArrayList(getDataStore().find().type(Session.class).addFilter("sessionKey", FilterOperator.EQUAL, userSession.getSessionKey()).returnAll().now());
 			for (Session s : sessionKeys) {
 				if (s.equals(userSession)) {
 					remove(s);

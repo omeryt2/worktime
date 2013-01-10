@@ -44,7 +44,6 @@ import eu.vranckaert.worktime.security.exception.UserNotFoundException;
 import eu.vranckaert.worktime.security.exception.UserNotLoggedInException;
 import eu.vranckaert.worktime.security.service.SecurityChecker;
 import eu.vranckaert.worktime.security.service.UserService;
-import eu.vranckaert.worktime.security.service.impl.SecurityCheckerImpl;
 
 @Path("user")
 public class UserEndpoint implements UserEndPointInterface {

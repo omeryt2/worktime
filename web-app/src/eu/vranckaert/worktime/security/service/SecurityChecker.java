@@ -17,7 +17,8 @@ public interface SecurityChecker {
 	
 	/**
 	 * Checks if the provided user is logged in. This method also checks for the
-	 * service to be allowed.
+	 * service to be allowed. If the user is logged in the session-usage count
+	 * is increased with one.
 	 * @param request The request containing the email and the session key of
 	 * the user. It also contains the the service-key of the service that wants
 	 * access.

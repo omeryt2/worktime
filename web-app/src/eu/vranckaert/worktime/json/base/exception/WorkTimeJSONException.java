@@ -10,6 +10,8 @@ public abstract class WorkTimeJSONException {
 	private String requestUrl;
 	private String message;
 	
+	public WorkTimeJSONException() {}
+	
 	public WorkTimeJSONException(String requestUrl, String message) {
 		this.requestUrl = requestUrl;
 		this.message = message;

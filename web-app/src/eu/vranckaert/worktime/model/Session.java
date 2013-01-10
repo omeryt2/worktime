@@ -2,10 +2,14 @@ package eu.vranckaert.worktime.model;
 
 import java.util.Date;
 
-import com.vercer.engine.persist.annotation.Key;
-import com.vercer.engine.persist.annotation.Parent;
+import com.google.appengine.api.datastore.Key;
+import com.google.code.twig.annotation.Entity;
+import com.google.code.twig.annotation.GaeKey;
+import com.google.code.twig.annotation.Parent;
 
+@Entity(kind="session")
 public class Session {
+	@GaeKey private Key key;
 	@Parent private User user;
 	private String sessionKey;
 	private Date creationDate;
@@ -18,6 +22,14 @@ public class Session {
 		this.sessionKey = sessionKey;
 		this.user = user;
 		this.timesUsed = 1;
+	}
+
+	public Key getKey() {
+		return key;
+	}
+
+	public void setKey(Key key) {
+		this.key = key;
 	}
 
 	public String getSessionKey() {

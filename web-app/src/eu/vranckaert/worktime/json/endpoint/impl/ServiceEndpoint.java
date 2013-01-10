@@ -23,7 +23,6 @@ import eu.vranckaert.worktime.security.exception.UserNotAdminException;
 import eu.vranckaert.worktime.security.exception.UserNotLoggedInException;
 import eu.vranckaert.worktime.security.service.SecurityChecker;
 import eu.vranckaert.worktime.security.service.ServiceService;
-import eu.vranckaert.worktime.security.service.impl.SecurityCheckerImpl;
 
 @Path("service")
 public class ServiceEndpoint implements ServiceEndpointInterface {

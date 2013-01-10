@@ -4,6 +4,8 @@ import eu.vranckaert.worktime.json.base.exception.WorkTimeJSONException;
 
 public class UserNotFoundJSONException extends WorkTimeJSONException {
 	private String userMail;
+	
+	public UserNotFoundJSONException() {}
 
 	public UserNotFoundJSONException(String requestUrl, String email) {
 		super(requestUrl);

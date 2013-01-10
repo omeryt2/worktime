@@ -9,6 +9,8 @@ import eu.vranckaert.worktime.json.base.request.WorkTimeJSONRequest;
 public class FieldRequiredJSONException extends WorkTimeJSONException {
 	private String fieldName;
 	
+	public FieldRequiredJSONException() {}
+	
 	public FieldRequiredJSONException(String requestUrl, WorkTimeJSONRequest requestObject, String fieldName) {
 		super(requestUrl);
 		this.fieldName = fieldName;

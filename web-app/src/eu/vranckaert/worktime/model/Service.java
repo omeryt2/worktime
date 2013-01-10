@@ -1,11 +1,13 @@
 package eu.vranckaert.worktime.model;
 
 import com.google.appengine.api.datastore.Text;
-import com.vercer.engine.persist.annotation.Key;
-import com.vercer.engine.persist.annotation.Type;
+import com.google.code.twig.annotation.Entity;
+import com.google.code.twig.annotation.Id;
+import com.google.code.twig.annotation.Type;
 
+@Entity(kind="service")
 public class Service {
-	@Key private String serviceKey;
+	@Id private String serviceKey;
 	private String appName;
 	private ServicePlatform platform;
 	@Type(Text.class) private String contact;

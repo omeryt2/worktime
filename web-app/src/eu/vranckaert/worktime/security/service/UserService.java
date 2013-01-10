@@ -3,12 +3,12 @@ package eu.vranckaert.worktime.security.service;
 import java.util.Date;
 
 import eu.vranckaert.worktime.model.Role;
+import eu.vranckaert.worktime.model.Session;
 import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.security.exception.EmailAlreadyInUseException;
 import eu.vranckaert.worktime.security.exception.PasswordIncorrectException;
 import eu.vranckaert.worktime.security.exception.PasswordLenghtInvalidException;
 import eu.vranckaert.worktime.security.exception.UserNotFoundException;
-import eu.vranckaert.worktime.security.exception.UserNotLoggedInException;
 
 /**
  * 
@@ -60,6 +60,13 @@ public interface UserService {
 	 * @return True if the user is logged in, false if not.
 	 */
 	boolean isLoggedIn(String email, String sessionKey);
+	
+	/**
+	 * Increase the {@link Session#getTimesUsed()} with one.
+	 * @param email The email of the user.
+	 * @param sessionKey The session key.
+	 */
+	void markSessionUsed(String email, String sessionKey);
 
 	/**
 	 * Find a specific user.
