@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -129,6 +128,10 @@ public class Constants {
         public static final boolean TIME_REGISTRATION_PUNCH_BAR_ENABLED_ON_ALL_SCREENS_DEFAULT_VALUE = false;
         public static final int TIME_REGISTRATION_SPLIT_DEFAULT_GAP_DEFAULT_VALUE = 30;
         public static final boolean IMMEDIATE_PUNCH_OUT_DEFAULT_VALUE = false;
+        public static final String ACCOUNT_SYNC_INTERVAL_DEFAULT_VALUE = "12";
+        public static final boolean ACCOUNT_BACKUP_BEFORE_SYNC_DEFAULT_VALUE = true;
+        public static final boolean ACCOUNT_SYNC_ON_WIFI_ONLY_DEFAULT_VALIE = true;
+        public static final String ACCOUNT_SYNC_CONFLICT_HANDLING_DEFAULT_VALUE = "SERVER";
 
         public class Keys {
             public static final String WIDGET_ASK_FOR_TASK_SELECTION_IF_ONLY_ONE = "askForTaskSelectionIfOnlyOne";
@@ -156,6 +159,8 @@ public class Constants {
             public static final String IMMEDIATE_PUNCH_OUT = "immediatePunchOut";
             public static final String ACCOUNT_SYNC_INTERVAL = "accountSyncInterval";
             public static final String ACCOUNT_SYNC_CONFLICT_HANDLING = "accountSyncConflictHandling";
+            public static final String ACCOUNT_SYNC_ON_WIFI_ONLY = "accountSyncOnWifiOnly";
+            public static final String ACCOUNT_BACKUP_BEFORE_SYNC = "accountBackupBeforeSync";
         }
     }
     public class Disk {
