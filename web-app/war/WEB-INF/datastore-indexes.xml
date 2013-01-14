@@ -1,24 +1,24 @@
 <datastore-indexes>
 
     <!-- SyncHistoryDao - getOngoingSyncHistory(..) -->
-    <datastore-index kind="syncHistory" ancestor="false" source="auto">
+    <datastore-index kind="syncHistory" ancestor="false" source="auto" autoGenerate="true">
         <property name="syncResult" direction="asc"/>
         <property name="userEmail" direction="asc"/>
         <property name="startTime" direction="desc"/>
     </datastore-index>
 
     <!-- ProjectDao - findAllModifiedAfter(..) -->
-    <datastore-index kind="project" ancestor="true" source="auto">
+    <datastore-index kind="project" ancestor="true" source="auto" autoGenerate="true">
         <property name="lastUpdated" direction="asc"/>
     </datastore-index>
 
     <!-- TaskDao - findAllModifiedAfter(..) -->
-    <datastore-index kind="task" ancestor="true" source="auto">
+    <datastore-index kind="task" ancestor="true" source="auto" autoGenerate="true">
         <property name="lastUpdated" direction="asc"/>
     </datastore-index>
 
     <!-- TimeRegistrationDao - findAllModifiedAfter(..) -->
-    <datastore-index kind="timeRegistration" ancestor="true" source="auto">
+    <datastore-index kind="timeRegistration" ancestor="true" source="auto" autoGenerate="true">
         <property name="lastUpdated" direction="asc"/>
     </datastore-index>
 
