@@ -8,18 +8,19 @@ import com.google.appengine.api.datastore.Key;
 import com.google.code.twig.annotation.Activate;
 import com.google.code.twig.annotation.Entity;
 import com.google.code.twig.annotation.GaeKey;
+import com.google.code.twig.annotation.Index;
 import com.google.code.twig.annotation.Parent;
 
 @Entity(kind="timeRegistration")
 public class TimeRegistration {
 	@GaeKey private Key key;
-	private Date startTime;
-	private Date endTime;
+	@Index private Date startTime;
+	@Index private Date endTime;
 	private String comment;
 	private String flags;
 	@Activate @Parent private Task task;
-	private Date lastUpdated;
-	private String syncKey;
+	@Index private Date lastUpdated;
+	@Index private String syncKey;
 
 	public Key getKey() {
 		return key;

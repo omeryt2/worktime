@@ -6,19 +6,20 @@ import com.google.appengine.api.datastore.Key;
 import com.google.code.twig.annotation.Activate;
 import com.google.code.twig.annotation.Entity;
 import com.google.code.twig.annotation.GaeKey;
+import com.google.code.twig.annotation.Index;
 import com.google.code.twig.annotation.Parent;
 
 @Entity(kind="task")
 public class Task implements Cloneable {
 	@GaeKey private Key key;
-	private String name;
+	@Index private String name;
 	private String comment;
 	private Integer order;
 	private String flags;
 	private boolean finished;
 	@Activate @Parent private Project project;
-	private Date lastUpdated;
-	private String syncKey;
+	@Index private Date lastUpdated;
+	@Index private String syncKey;
 
 	public Key getKey() {
 		return key;

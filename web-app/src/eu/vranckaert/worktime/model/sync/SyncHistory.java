@@ -5,12 +5,13 @@ import java.util.Date;
 import com.google.appengine.api.datastore.Key;
 import com.google.code.twig.annotation.Entity;
 import com.google.code.twig.annotation.GaeKey;
+import com.google.code.twig.annotation.Index;
 
 @Entity(kind="syncHistory")
 public class SyncHistory {
 	@GaeKey private Key key;
-	private String userEmail;
-	private Date startTime;
+	@Index private String userEmail;
+	@Index private Date startTime;
 	private Date endTime;
 	
 	private int incomingTimeRegistrations;
@@ -18,7 +19,7 @@ public class SyncHistory {
 	private int syncedProjects;
 	private int syncedTasks;
 	
-	private SyncResult syncResult;
+	@Index private SyncResult syncResult;
 
 	public Key getKey() {
 		return key;
