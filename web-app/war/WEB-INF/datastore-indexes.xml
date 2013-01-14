@@ -1,4 +1,4 @@
-<datastore-indexes autoGenerate="true">
+<datastore-indexes autoGenerate="false">
 
     <!-- SyncHistoryDao - getOngoingSyncHistory(..) -->
     <datastore-index kind="syncHistory" ancestor="false" source="auto">
