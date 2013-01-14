@@ -10,11 +10,7 @@ public class TaskSyncResult {
 	public TaskSyncResult() {}
 	
 	public TaskSyncResult(Task origianlTask) {
-		try {
-			this.task = (Task) origianlTask.clone();
-		} catch (CloneNotSupportedException e) {
-			this.task = null;
-		}
+		this.task = (Task) origianlTask.clone();
 	}
 
 	public Task getTask() {
@@ -22,11 +18,7 @@ public class TaskSyncResult {
 	}
 	
 	public void setTask(Task task) {
-		try {
-			this.task = (Task) task.clone();
-		} catch (CloneNotSupportedException e) {
-			this.task = null;
-		}
+		this.task = (Task) task.clone();
 	}
 
 	public Task getSyncedTask() {

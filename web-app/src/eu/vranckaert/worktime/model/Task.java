@@ -150,7 +150,7 @@ public class Task implements Cloneable {
 	}
 
 	@Override
-	public Object clone() throws CloneNotSupportedException {
+	public Object clone() {
 		Task task = new Task();
 		task.setName(name);
 		task.setComment(comment);

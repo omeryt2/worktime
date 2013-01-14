@@ -118,20 +118,21 @@ public class TimeRegistrationDaoImpl extends BaseDaoImpl<TimeRegistration> imple
 	
 	@Override
 	public List<TimeRegistration> findInterferingTimeRegistrations(TimeRegistration timeRegistration, User user) {
-		if (timeRegistration.getEndTime() == null)
-			timeRegistration.setEndTime(new Date());
+		TimeRegistration timeRegistrationCopy = timeRegistration.clone();
+		if (timeRegistrationCopy.getEndTime() == null)
+			timeRegistrationCopy.setEndTime(new Date());
 		
 		List<TimeRegistration> allTimeRegistrations = findAll(user);
 		List<TimeRegistration> interferingTimeRegistrations = new ArrayList<TimeRegistration>();
 		
 		for (TimeRegistration tr : allTimeRegistrations) {
 			if (tr.isOngoingTimeRegistration()) {
-				if (timeRegistration.getStartTime().getTime() >= tr.getStartTime().getTime()) {
+				if (timeRegistrationCopy.getStartTime().getTime() >= tr.getStartTime().getTime()) {
 					interferingTimeRegistrations.add(tr);
 				}
 			} else {
-				if ( (tr.getStartTime().getTime() >= timeRegistration.getStartTime().getTime() && tr.getStartTime().getTime() < timeRegistration.getEndTime().getTime()) 
-						|| (tr.getEndTime().getTime() > timeRegistration.getStartTime().getTime() && tr.getEndTime().getTime() <= timeRegistration.getEndTime().getTime()) ) {
+				if ( (tr.getStartTime().getTime() >= timeRegistrationCopy.getStartTime().getTime() && tr.getStartTime().getTime() < timeRegistrationCopy.getEndTime().getTime()) 
+						|| (tr.getEndTime().getTime() > timeRegistrationCopy.getStartTime().getTime() && tr.getEndTime().getTime() <= timeRegistrationCopy.getEndTime().getTime()) ) {
 					interferingTimeRegistrations.add(tr);
 				}
 			}

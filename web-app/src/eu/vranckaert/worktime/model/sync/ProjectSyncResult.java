@@ -10,11 +10,7 @@ public class ProjectSyncResult {
 	public ProjectSyncResult() {}
 	
 	public ProjectSyncResult(Project originalProject) {
-		try {
-			this.project = (Project) originalProject.clone();
-		} catch (CloneNotSupportedException e) {
-			this.project = null;
-		}
+		this.project = (Project) originalProject.clone();
 	}
 	
 	public Project getProject() {
@@ -22,11 +18,7 @@ public class ProjectSyncResult {
 	}
 	
 	public void setProject(Project project) {
-		try {
-			this.project = (Project) project.clone();
-		} catch (CloneNotSupportedException e) {
-			this.project = null;
-		}
+		this.project = (Project) project.clone();
 	}
 	
 	public Project getSyncedProject() {

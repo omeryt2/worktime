@@ -159,7 +159,7 @@ public class Project implements Cloneable {
 	}
 
 	@Override
-	public Object clone() throws CloneNotSupportedException {
+	public Object clone() {
 		Project project = new Project();
 		project.setComment(comment);
 		project.setDefaultValue(defaultValue);

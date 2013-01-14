@@ -14,11 +14,7 @@ public class TimeRegistrationSyncResult {
 	public TimeRegistrationSyncResult() {}
 	
 	public TimeRegistrationSyncResult(TimeRegistration originalTimeRegistration) {
-		try {
-			this.timeRegistration = (TimeRegistration) originalTimeRegistration.clone();
-		} catch (CloneNotSupportedException e) {
-			this.timeRegistration = null;
-		}
+		this.timeRegistration = (TimeRegistration) originalTimeRegistration.clone();
 	}
 
 	public TimeRegistration getTimeRegistration() {
@@ -26,11 +22,7 @@ public class TimeRegistrationSyncResult {
 	}
 
 	public void setTimeRegistration(TimeRegistration timeRegistration) {
-		try {
-			this.timeRegistration = (TimeRegistration) timeRegistration.clone();
-		} catch (CloneNotSupportedException e) {
-			this.timeRegistration = null;
-		}
+		this.timeRegistration = (TimeRegistration) timeRegistration.clone();
 	}
 
 	public TimeRegistration getSyncedTimeRegistration() {

@@ -149,7 +149,7 @@ public class TimeRegistration {
 	}
 
 	@Override
-	public TimeRegistration clone() throws CloneNotSupportedException {
+	public TimeRegistration clone() {
 		TimeRegistration timeRegistration = new TimeRegistration();
 		timeRegistration.setStartTime(startTime);
 		timeRegistration.setEndTime(endTime);
