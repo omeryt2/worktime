@@ -139,6 +139,7 @@ public class AccountServiceImpl implements AccountService {
         syncHistoryDao.save(syncHistory);
 
         try {
+            // TODO wifi-check does not work!
             if (Preferences.Account.syncOnWifiOnly(context) && !NetworkUtil.isConnectedToWifi(context)) {
                 WifiConnectionRequiredException e = new WifiConnectionRequiredException();
                 markSyncAsFailed(e);
@@ -195,11 +196,6 @@ public class AccountServiceImpl implements AccountService {
                 projectDao.refresh(timeRegistration.getTask().getProject());
             }
 
-            // For a correct synchronization set all dates to the GMT-0 timezone
-            setProjectsToGmtZero(projects);
-            setTasksToGmtZero(tasks);
-            setTimeRegistrationsToGmtZero(timeRegistrations);
-
             // Retrieve removed sync-keys
             Map<String, String> syncRemovalMap = syncRemovalCacheDao.findAllSyncKeys();
 
@@ -234,29 +230,6 @@ public class AccountServiceImpl implements AccountService {
             EntitySyncResult entitySyncResult = (EntitySyncResult) result.get(3);
             Map<String, String> serverSyncRemovalMap = (Map<String, String>) result.get(4);
 
-            // For a correct synchronization set all dates to the GMT-0 timezone, that how they are coming back from
-            // the server!
-            setProjectsToGmtZero(projectsSinceLastSync);
-            setTasksToGmtZero(tasksSinceLastSync);
-            setTimeRegistrationsToGmtZero(timeRegistrationsSinceLastSync);
-            for (ProjectSyncResult projectSyncResult : entitySyncResult.getProjectSyncResults()) {
-                setProjectToGmtZero(projectSyncResult.getProject());
-                if (projectSyncResult.getSyncedProject() != null)
-                    setProjectToGmtZero(projectSyncResult.getSyncedProject());
-            }
-            for (TaskSyncResult taskSyncResult : entitySyncResult.getTaskSyncResults()) {
-                setTaskToGmtZero(taskSyncResult.getTask());
-                if (taskSyncResult.getSyncedTask() != null)
-                    setTaskToGmtZero(taskSyncResult.getSyncedTask());
-            }
-            for (TimeRegistrationSyncResult timeRegistrationSyncResult : entitySyncResult.getTimeRegistrationSyncResults()) {
-                setTimeRegistrationToGmtZero(timeRegistrationSyncResult.getTimeRegistration());
-                if (timeRegistrationSyncResult.getSyncedTimeRegistration() != null)
-                    setTimeRegistrationToGmtZero(timeRegistrationSyncResult.getSyncedTimeRegistration());
-                if (timeRegistrationSyncResult.getSyncedTimeRegistrations() != null)
-                    setTimeRegistrationsToGmtZero(timeRegistrationSyncResult.getSyncedTimeRegistrations());
-            }
-
             applySyncResult(entitySyncResult);
             checkServerEntities(projectsSinceLastSync, tasksSinceLastSync, timeRegistrationsSinceLastSync);
             removeEntities(serverSyncRemovalMap);
@@ -272,53 +245,6 @@ public class AccountServiceImpl implements AccountService {
             markSyncAsFailed(e);
             throw e;
         }
-    }
-
-    /**
-     * Converts a {@link Date} instance to the GMT-0 timezone.
-     * @param time The time to convert.
-     * @return The converted time.
-     */
-    private Date getGmtZeroDate(Date time) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(time);
-        calendar.setTimeZone(TimeZone.getTimeZone("GMT-0"));
-        return calendar.getTime();
-    }
-
-    private void setProjectsToGmtZero(List<Project> projects) {
-        for (Project project : projects) {
-            setProjectToGmtZero(project);
-        }
-    }
-
-    private void setTasksToGmtZero(List<Task> tasks) {
-        for (Task task : tasks) {
-            setTaskToGmtZero(task);
-        }
-    }
-
-    private void setTimeRegistrationsToGmtZero(List<TimeRegistration> timeRegistrations) {
-        for (TimeRegistration timeRegistration : timeRegistrations) {
-            setTimeRegistrationToGmtZero(timeRegistration);
-        }
-    }
-
-    private void setProjectToGmtZero(Project project) {
-        project.setLastUpdated(getGmtZeroDate(project.getLastUpdated()));
-    }
-
-    private void setTaskToGmtZero(Task task) {
-        task.setLastUpdated(getGmtZeroDate(task.getLastUpdated()));
-        task.getProject().setLastUpdated(getGmtZeroDate(task.getProject().getLastUpdated()));
-    }
-
-    private void setTimeRegistrationToGmtZero(TimeRegistration timeRegistration) {
-        timeRegistration.setStartTime(getGmtZeroDate(timeRegistration.getStartTime()));
-        if (!timeRegistration.isOngoingTimeRegistration())
-            timeRegistration.setLastUpdated(getGmtZeroDate(timeRegistration.getLastUpdated()));
-        timeRegistration.getTask().setLastUpdated(getGmtZeroDate(timeRegistration.getTask().getLastUpdated()));
-        timeRegistration.getTask().getProject().setLastUpdated(getGmtZeroDate(timeRegistration.getTask().getProject().getLastUpdated()));
     }
 
     private void removeEntities(Map<String, String> syncRemovalMap) {
