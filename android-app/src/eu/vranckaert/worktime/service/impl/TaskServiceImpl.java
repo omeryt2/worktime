@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,10 +21,7 @@ import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
 import eu.vranckaert.worktime.dao.WidgetConfigurationDao;
-import eu.vranckaert.worktime.dao.impl.ProjectDaoImpl;
-import eu.vranckaert.worktime.dao.impl.TaskDaoImpl;
-import eu.vranckaert.worktime.dao.impl.TimeRegistrationDaoImpl;
-import eu.vranckaert.worktime.dao.impl.WidgetConfigurationDaoImpl;
+import eu.vranckaert.worktime.dao.impl.*;
 import eu.vranckaert.worktime.exceptions.AtLeastOneTaskRequiredException;
 import eu.vranckaert.worktime.exceptions.TaskStillInUseException;
 import eu.vranckaert.worktime.model.Project;
@@ -64,9 +60,9 @@ public class TaskServiceImpl implements TaskService {
 
     public TaskServiceImpl(Context ctx) {
         this.ctx = ctx;
-        dao = new TaskDaoImpl(ctx);
-        projectDao = new ProjectDaoImpl(ctx);
-        timeRegistrationDao = new TimeRegistrationDaoImpl(ctx);
+        dao = new TaskDaoImpl(ctx, new SyncRemovalCacheDaoImpl(ctx));
+        projectDao = new ProjectDaoImpl(ctx, new SyncRemovalCacheDaoImpl(ctx));
+        timeRegistrationDao = new TimeRegistrationDaoImpl(ctx, new SyncRemovalCacheDaoImpl(ctx));
         widgetConfigurationDao = new WidgetConfigurationDaoImpl(ctx);
     }
 

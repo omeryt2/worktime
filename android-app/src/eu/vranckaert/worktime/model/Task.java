@@ -1,26 +1,28 @@
 /*
- *  Copyright 2011 Dirk Vranckaert
+ * Copyright 2013 Dirk Vranckaert
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package eu.vranckaert.worktime.model;
 
+import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import eu.vranckaert.worktime.enums.ExternalSystems;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * User: DIRK VRANCKAERT
@@ -32,21 +34,33 @@ public class Task implements Serializable, Cloneable {
     @DatabaseField(generatedId = true)
     private Integer id;
     @DatabaseField
+    @Expose
     private String name;
     @DatabaseField
+    @Expose
     private String comment;
     @DatabaseField(foreign = true, columnName = "projectId")
+    @Expose
     private Project project;
     @DatabaseField(defaultValue = "0")
+    @Expose
     private Integer order;
     @DatabaseField
     private Long externalId;
     @DatabaseField(dataType = DataType.ENUM_STRING)
     private ExternalSystems externalSystem;
     @DatabaseField
+    @Expose
     private String flags;
     @DatabaseField(dataType = DataType.BOOLEAN, defaultValue = "false")
+    @Expose
     private boolean finished;
+    @DatabaseField(columnName = "lastUpdated", dataType = DataType.DATE_STRING)
+    @Expose
+    private Date lastUpdated;
+    @DatabaseField
+    @Expose
+    private String syncKey;
 
     public Integer getId() {
         return id;
@@ -118,6 +132,22 @@ public class Task implements Serializable, Cloneable {
 
     public void setFinished(boolean finished) {
         this.finished = finished;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public String getSyncKey() {
+        return syncKey;
+    }
+
+    public void setSyncKey(String syncKey) {
+        this.syncKey = syncKey;
     }
 
     @Override

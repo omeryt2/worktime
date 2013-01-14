@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,25 +17,20 @@ package eu.vranckaert.worktime.dao.impl;
 
 import android.content.Context;
 import com.google.inject.Inject;
-import com.j256.ormlite.stmt.DeleteBuilder;
-import com.j256.ormlite.stmt.PreparedDelete;
-import com.j256.ormlite.stmt.PreparedQuery;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.Where;
+import com.j256.ormlite.stmt.*;
 import eu.vranckaert.worktime.comparators.timeregistration.TimeRegistrationDescendingByStartdate;
+import eu.vranckaert.worktime.dao.SyncRemovalCacheDao;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
 import eu.vranckaert.worktime.dao.generic.GenericDaoImpl;
 import eu.vranckaert.worktime.dao.utils.DatabaseHelper;
+import eu.vranckaert.worktime.exceptions.CorruptTimeRegistrationDataException;
+import eu.vranckaert.worktime.model.SyncRemovalCache;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.utils.context.Log;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * User: DIRK VRANCKAERT
@@ -46,9 +40,45 @@ import java.util.List;
 public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, Integer> implements TimeRegistrationDao{
     private static final String LOG_TAG = TimeRegistrationDaoImpl.class.getSimpleName();
 
+    private SyncRemovalCacheDao syncRemovalCache;
+
     @Inject
-    public TimeRegistrationDaoImpl(final Context context) {
+    public TimeRegistrationDaoImpl(final Context context, final SyncRemovalCacheDao syncRemovalCache) {
         super(TimeRegistration.class, context);
+        this.syncRemovalCache = syncRemovalCache;
+    }
+
+    @Override
+    public TimeRegistration save(TimeRegistration entity) {
+        entity.setLastUpdated(new Date());
+        return super.save(entity);
+    }
+
+    @Override
+    public TimeRegistration update(TimeRegistration entity) {
+        entity.setLastUpdated(new Date());
+        return super.update(entity);
+    }
+
+    @Override
+    public void delete(TimeRegistration entity) {
+        if (entity.getSyncKey() != null) {
+            SyncRemovalCache cache = new SyncRemovalCache(entity.getSyncKey(), entity.getClass().getSimpleName());
+            syncRemovalCache.save(cache);
+        }
+        super.delete(entity);
+    }
+
+    @Override
+    public void deleteAll() {
+        List<TimeRegistration> entities = findAll();
+        for (TimeRegistration entity : entities) {
+            if (entity.getSyncKey() != null) {
+                SyncRemovalCache cache = new SyncRemovalCache(entity.getSyncKey(), entity.getClass().getSimpleName());
+                syncRemovalCache.save(cache);
+            }
+        }
+        super.deleteAll();
     }
 
     /**
@@ -122,7 +152,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
         boolean includeOngoingTimeRegistration = false;
         Date now = new Date();
         if (endDate.after(now)) {
-            Log.e(getContext(), LOG_TAG, "Ongoing time registration should be included in reporting result...");
+            Log.e(getContext(), LOG_TAG, "Ongoing time registration should be included in result...");
             includeOngoingTimeRegistration = true;
         }
 
@@ -292,5 +322,86 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
         }
 
         return false;
+    }
+
+    @Override
+    public TimeRegistration findByDates(Date startDate, Date endDate) {
+        List<TimeRegistration> timeRegistrations = null;
+        QueryBuilder<TimeRegistration,Integer> qb = dao.queryBuilder();
+
+        Where where = qb.where();
+        try {
+            where.eq("startTime", startDate);
+            if (endDate != null) {
+                where.and().eq("endTime", endDate);
+            } else {
+                where.and().isNull("endTime");
+            }
+        } catch (SQLException e) {
+            Log.e(getContext(), LOG_TAG, "Could not build the dates- and tasks-where-clause in the query...");
+            throwFatalException(e);
+        }
+        qb.setWhere(where);
+
+        try {
+            PreparedQuery<TimeRegistration> pq = qb.prepare();
+            Log.d(getContext(), LOG_TAG, "Prepared query: " + pq.toString());
+            timeRegistrations = dao.query(pq);
+        } catch (SQLException e) {
+            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
+            throwFatalException(e);
+        }
+
+        if(timeRegistrations == null || timeRegistrations.size() == 0 || timeRegistrations.size() > 1) {
+            if (timeRegistrations == null || timeRegistrations.size() == 0) {
+                return null;
+            } else {
+                String message = "The time registration data is corrupt. More than one time registration with the same start and end date is found in the database!";
+                Log.e(getContext(), LOG_TAG, message);
+                throw new CorruptTimeRegistrationDataException(message);
+            }
+        } else {
+            return timeRegistrations.get(0);
+        }
+    }
+
+    @Override
+    public TimeRegistration findBySyncKey(String syncKey) {
+        List<TimeRegistration> timeRegistrations = null;
+
+        QueryBuilder<TimeRegistration, Integer> qb = dao.queryBuilder();
+        try {
+            qb.where().eq("syncKey", syncKey);
+            PreparedQuery<TimeRegistration> pq = qb.prepare();
+            timeRegistrations = dao.query(pq);
+        } catch (SQLException e) {
+            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            return null;
+        }
+
+        if(timeRegistrations == null || timeRegistrations.size() == 0 || timeRegistrations.size() > 1) {
+            if (timeRegistrations == null || timeRegistrations.size() == 0) {
+                return null;
+            } else {
+                String message = "The time registration data is corrupt. More than one time registration with the same syncKey (" + syncKey + ") is found in the database!";
+                Log.e(getContext(), LOG_TAG, message);
+                throw new CorruptTimeRegistrationDataException(message);
+            }
+        } else {
+            return timeRegistrations.get(0);
+        }
+    }
+
+    @Override
+    public List<TimeRegistration> findAllModifiedAfter(Date lastModified) {
+        QueryBuilder<TimeRegistration, Integer> qb = dao.queryBuilder();
+        try {
+            qb.where().gt("lastUpdated", lastModified);
+            PreparedQuery<TimeRegistration> pq = qb.prepare();
+            return dao.query(pq);
+        } catch (SQLException e) {
+            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            return null;
+        }
     }
 }

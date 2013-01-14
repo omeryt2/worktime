@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,11 +17,10 @@ package eu.vranckaert.worktime.guice;
 
 import android.content.Context;
 import com.google.inject.AbstractModule;
-import com.google.inject.Scope;
 import eu.vranckaert.worktime.dao.*;
 import eu.vranckaert.worktime.dao.impl.*;
-import eu.vranckaert.worktime.dao.web.AccountWebDao;
-import eu.vranckaert.worktime.dao.web.impl.AccountWebDaoImpl;
+import eu.vranckaert.worktime.dao.web.WorkTimeWebDao;
+import eu.vranckaert.worktime.dao.web.impl.WorkTimeWebDaoImpl;
 import eu.vranckaert.worktime.service.*;
 import eu.vranckaert.worktime.service.impl.*;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
@@ -50,10 +48,12 @@ public class Module extends AbstractModule {
         bind(CommentHistoryDao.class).to(CommentHistoryDaoImpl.class).asEagerSingleton();
         bind(WidgetConfigurationDao.class).to(WidgetConfigurationDaoImpl.class).asEagerSingleton();
         bind(AccountDao.class).to(AccountDaoImpl.class).asEagerSingleton();
+        bind(SyncHistoryDao.class).to(SyncHistoryDaoImpl.class).asEagerSingleton();
+        bind(SyncRemovalCacheDao.class).to(SyncRemovalCacheDaoImpl.class).asEagerSingleton();
     }
 
     private void bindWebDaos() {
-        bind(AccountWebDao.class).to(AccountWebDaoImpl.class).asEagerSingleton();
+        bind(WorkTimeWebDao.class).to(WorkTimeWebDaoImpl.class).asEagerSingleton();
     }
 
     private void bindServices() {

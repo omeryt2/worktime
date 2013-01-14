@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,12 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.dao;
 
 import eu.vranckaert.worktime.dao.generic.GenericDao;
 import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -49,4 +50,25 @@ public interface TaskDao extends GenericDao<Task, Integer> {
      * set to {@link Boolean#FALSE}.
      */
     List<Task> findNotFinishedTasksForProject(Project project);
+
+    /**
+     * Find a specific task by name.
+     * @param name The name of the task to search.
+     * @return The task with this specific name or null.
+     */
+    Task findByName(String name);
+
+    /**
+     * Find a task based on the sync-key.
+     * @param syncKey The sync-key.
+     * @return The task that has the provided sync-key or null.
+     */
+    Task findBySyncKey(String syncKey);
+
+    /**
+     * Find all {@link Task}s that have been modified after a certain date.
+     * @param lastModified The date to be checked against.
+     * @return A list of {@link Task}s that have modified after the specific date.
+     */
+    List<Task> findAllModifiedAfter(Date lastModified);
 }

@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.dao.utils;
 
 import eu.vranckaert.worktime.model.*;
@@ -28,8 +28,9 @@ public enum Tables {
     TASK(Task.class),
     COMMENT_HISTORY(CommentHistory.class),
     WIDGET_CONFIGURATION(WidgetConfiguration.class),
-    USER(User.class);
-    ;
+    USER(User.class),
+    SYNC_HISTORY(SyncHistory.class),
+    SYNC_REMOVAL_CACHE(SyncRemovalCache.class);
 
     Tables(Class tableClass) {
         this.tableClass = tableClass;

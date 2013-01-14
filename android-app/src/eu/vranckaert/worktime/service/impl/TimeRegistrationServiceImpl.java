@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,9 +18,11 @@ package eu.vranckaert.worktime.service.impl;
 import android.content.Context;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.dao.ProjectDao;
+import eu.vranckaert.worktime.dao.SyncRemovalCacheDao;
 import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
 import eu.vranckaert.worktime.dao.impl.ProjectDaoImpl;
+import eu.vranckaert.worktime.dao.impl.SyncRemovalCacheDaoImpl;
 import eu.vranckaert.worktime.dao.impl.TaskDaoImpl;
 import eu.vranckaert.worktime.dao.impl.TimeRegistrationDaoImpl;
 import eu.vranckaert.worktime.model.Project;
@@ -49,13 +50,13 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
     private Context ctx;
 
     @Inject
-    TimeRegistrationDao dao;
+    private TimeRegistrationDao dao;
 
     @Inject
-    ProjectDao projectDao;
+    private ProjectDao projectDao;
 
     @Inject
-    TaskDao taskDao;
+    private TaskDao taskDao;
 
     /**
      * Enables the use of this service outside of RoboGuice!
@@ -63,9 +64,9 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
      */
     public TimeRegistrationServiceImpl(Context ctx) {
         this.ctx = ctx;
-        dao = new TimeRegistrationDaoImpl(ctx);
-        projectDao = new ProjectDaoImpl(ctx);
-        taskDao = new TaskDaoImpl(ctx);
+        dao = new TimeRegistrationDaoImpl(ctx, new SyncRemovalCacheDaoImpl(ctx));
+        projectDao = new ProjectDaoImpl(ctx, new SyncRemovalCacheDaoImpl(ctx));
+        taskDao = new TaskDaoImpl(ctx, new SyncRemovalCacheDaoImpl(ctx));
     }
 
     /**

@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +14,10 @@
  */
 
 package eu.vranckaert.worktime.dao.utils;
+
+import eu.vranckaert.worktime.utils.date.DateUtils;
+
+import java.util.Date;
 
 /**
  * User: DIRK VRANCKAERT
@@ -54,6 +57,32 @@ public enum DatabaseUpgrade {
             "ALTER TABLE User add column loggedInSince " + DataTypes.VARCHAR + ";",
             "ALTER TABLE User add column registeredSince " + DataTypes.VARCHAR + ";",
             "ALTER TABLE User add column role " + DataTypes.VARCHAR + ";"
+    }),
+    UPGRADE6(27, new String[]{
+            "CREATE TABLE SyncHistory " +
+            "(" +
+                "id " + DataTypes.INTEGER + " PRIMARY KEY, " +
+                "started " + DataTypes.VARCHAR + ", " +
+                "ended " + DataTypes.VARCHAR + ", " +
+                "status " + DataTypes.VARCHAR + ", " +
+                "failureReason " + DataTypes.TEXT +
+            ");"
+    }),
+    UPGRADE7(28, new String[]{
+            "ALTER TABLE project add column lastUpdated " + DataTypes.VARCHAR + ";",
+            "ALTER TABLE task add column lastUpdated " + DataTypes.VARCHAR + ";",
+            "ALTER TABLE timeregistration add column lastUpdated " + DataTypes.VARCHAR + ";",
+            "ALTER TABLE project add column syncKey " + DataTypes.VARCHAR + ";",
+            "ALTER TABLE task add column syncKey " + DataTypes.VARCHAR + ";",
+            "ALTER TABLE timeregistration add column syncKey " + DataTypes.VARCHAR + ";",
+            "UPDATE project SET lastUpdated = '" + DateUtils.DateTimeConverter.convertToDatabaseFormat(new Date()) + "'",
+            "UPDATE task SET lastUpdated = '" + DateUtils.DateTimeConverter.convertToDatabaseFormat(new Date()) + "'",
+            "UPDATE timeregistration SET lastUpdated = '" + DateUtils.DateTimeConverter.convertToDatabaseFormat(new Date()) + "'",
+            "CREATE TABLE SyncRemovalCache " +
+            "(" +
+                "syncKey " + DataTypes.VARCHAR + " PRIMARY KEY, " +
+                "entityName " + DataTypes.VARCHAR +
+            ");"
     })
     ;
 

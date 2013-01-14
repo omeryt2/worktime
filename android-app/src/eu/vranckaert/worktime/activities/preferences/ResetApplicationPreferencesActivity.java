@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,6 +24,7 @@ import android.os.Bundle;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
+import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
@@ -47,6 +47,9 @@ public class ResetApplicationPreferencesActivity extends RoboActivity {
 
     @Inject
     private TaskService taskService;
+
+    @Inject
+    private AccountService accountService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +116,7 @@ public class ResetApplicationPreferencesActivity extends RoboActivity {
             timeRegistrationService.removeAll();
             taskService.removeAll();
             projectService.removeAll();
+            accountService.removeAll();
 
             projectService.insertDefaultProjectAndTaskData();
 

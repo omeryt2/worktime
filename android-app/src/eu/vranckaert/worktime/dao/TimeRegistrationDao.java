@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,13 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.dao;
 
 import eu.vranckaert.worktime.dao.generic.GenericDao;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -104,4 +103,27 @@ public interface TimeRegistrationDao extends GenericDao<TimeRegistration, Intege
      * @return True if the time is part of another time registration, false if not.
      */
     boolean doesInterfereWithTimeRegistration(Date time);
+
+    /**
+     * Find a time registration that starts and ends on a specific time.
+     * @param startDate The starting time of the time registration to look for.
+     * @param endDate The ending time of the time registration to look for. Can be null if looking for an ongoing time
+     *                registration.
+     * @return The time registration that matches these dates. Null if nothing found.
+     */
+    TimeRegistration findByDates(Date startDate, Date endDate);
+
+    /**
+     * Find a time registration based on the sync-key.
+     * @param syncKey The sync-key.
+     * @return The time registration that has the provided sync-key or null.
+     */
+    TimeRegistration findBySyncKey(String syncKey);
+
+    /**
+     * Find all {@link TimeRegistration}s that have been modified after a certain date.
+     * @param lastModified The date to be checked against.
+     * @return A list of {@link TimeRegistration}s that have modified after the specific date.
+     */
+    List<TimeRegistration> findAllModifiedAfter(Date lastModified);
 }

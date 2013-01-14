@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,22 +20,64 @@ import com.google.inject.Inject;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import eu.vranckaert.worktime.dao.ProjectDao;
+import eu.vranckaert.worktime.dao.SyncRemovalCacheDao;
 import eu.vranckaert.worktime.dao.generic.GenericDaoImpl;
 import eu.vranckaert.worktime.exceptions.CorruptProjectDataException;
 import eu.vranckaert.worktime.model.Project;
+import eu.vranckaert.worktime.model.SyncRemovalCache;
 import eu.vranckaert.worktime.utils.context.Log;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 
 public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements ProjectDao {
     private static final String LOG_TAG = ProjectDaoImpl.class.getSimpleName();
 
+    private SyncRemovalCacheDao syncRemovalCache;
+
     @Inject
-    public ProjectDaoImpl(final Context context) {
+    public ProjectDaoImpl(final Context context, final SyncRemovalCacheDao syncRemovalCache) {
         super(Project.class, context);
+        this.syncRemovalCache = syncRemovalCache;
     }
+
+    @Override
+    public Project save(Project entity) {
+        entity.setLastUpdated(new Date());
+        return super.save(entity);
+    }
+
+    @Override
+    public Project update(Project entity) {
+        entity.setLastUpdated(new Date());
+        return super.update(entity);
+    }
+
+    @Override
+    public void delete(Project entity) {
+        if (entity.getSyncKey() != null) {
+            SyncRemovalCache cache = new SyncRemovalCache(entity.getSyncKey(), entity.getClass().getSimpleName());
+            syncRemovalCache.save(cache);
+        }
+        super.delete(entity);
+    }
+
+    @Override
+    public void deleteAll() {
+        List<Project> entities = findAll();
+        for (Project entity : entities) {
+            if (entity.getSyncKey() != null) {
+                SyncRemovalCache cache = new SyncRemovalCache(entity.getSyncKey(), entity.getClass().getSimpleName());
+                syncRemovalCache.save(cache);
+            }
+        }
+        super.deleteAll();
+    }
+
+    @Override
+
 
     /**
      * {@inheritDoc}
@@ -93,6 +134,73 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
         QueryBuilder<Project, Integer> qb = dao.queryBuilder();
         try {
             qb.where().eq("finished", finished);
+            PreparedQuery<Project> pq = qb.prepare();
+            return dao.query(pq);
+        } catch (SQLException e) {
+            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            return null;
+        }
+    }
+
+    @Override
+    public Project findByName(String name) {
+        List<Project> projects = null;
+
+        QueryBuilder<Project, Integer> qb = dao.queryBuilder();
+        try {
+            qb.where().eq("name", name);
+            PreparedQuery<Project> pq = qb.prepare();
+            projects = dao.query(pq);
+        } catch (SQLException e) {
+            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            return null;
+        }
+
+        if(projects == null || projects.size() == 0 || projects.size() > 1) {
+            if (projects == null || projects.size() == 0) {
+                return null;
+            } else {
+                String message = "The task data is corrupt. More than one task with the same name (" + name + ") is found in the database!";
+                Log.e(getContext(), LOG_TAG, message);
+                throw new CorruptProjectDataException(message);
+            }
+        } else {
+            return projects.get(0);
+        }
+    }
+
+    @Override
+    public Project findBySyncKey(String syncKey) {
+        List<Project> projects = null;
+
+        QueryBuilder<Project, Integer> qb = dao.queryBuilder();
+        try {
+            qb.where().eq("syncKey", syncKey);
+            PreparedQuery<Project> pq = qb.prepare();
+            projects = dao.query(pq);
+        } catch (SQLException e) {
+            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            return null;
+        }
+
+        if(projects == null || projects.size() == 0 || projects.size() > 1) {
+            if (projects == null || projects.size() == 0) {
+                return null;
+            } else {
+                String message = "The task data is corrupt. More than one task with the same syncKey (" + syncKey + ") is found in the database!";
+                Log.e(getContext(), LOG_TAG, message);
+                throw new CorruptProjectDataException(message);
+            }
+        } else {
+            return projects.get(0);
+        }
+    }
+
+    @Override
+    public List<Project> findAllModifiedAfter(Date lastModified) {
+        QueryBuilder<Project, Integer> qb = dao.queryBuilder();
+        try {
+            qb.where().gt("lastUpdated", lastModified);
             PreparedQuery<Project> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {

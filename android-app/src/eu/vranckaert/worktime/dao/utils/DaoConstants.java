@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,5 +22,5 @@ package eu.vranckaert.worktime.dao.utils;
  */
 public interface DaoConstants {
     public static final String DATABASE = "worktime.db";
-    public static final int VERSION = 26;
+    public static final int VERSION = 28;
 }

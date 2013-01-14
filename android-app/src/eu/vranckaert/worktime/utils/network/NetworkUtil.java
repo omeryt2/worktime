@@ -1,8 +1,25 @@
+/*
+ * Copyright 2013 Dirk Vranckaert
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package eu.vranckaert.worktime.utils.network;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.util.Log;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -64,5 +81,19 @@ public class NetworkUtil {
      */
     public static boolean canSurf(Context ctx, String endpoint) {
         return (isOnline(ctx) && canReachEndpoint(endpoint));
+    }
+
+    /**
+     * Checks if the device is connected to a WiFi network or not.
+     * @param ctx The app-context.
+     * @return {@link Boolean#TRUE} if the device is connected to a WiFi network, {@link Boolean#FALSE} otherwise.
+     */
+    public static boolean isConnectedToWifi(Context ctx) {
+        WifiManager wifiManager = (WifiManager) ctx.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        if (wifiInfo != null) {
+            return true;
+        }
+        return false;
     }
 }

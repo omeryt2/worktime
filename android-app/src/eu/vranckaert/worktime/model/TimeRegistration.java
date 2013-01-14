@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +15,7 @@
 
 package eu.vranckaert.worktime.model;
 
+import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -34,19 +34,30 @@ public class TimeRegistration implements Serializable {
     @DatabaseField(generatedId = true, columnName = "id")
     private Integer id;
     @DatabaseField(columnName = "startTime", dataType = DataType.DATE_STRING)
+    @Expose
     private Date startTime;
     @DatabaseField(columnName = "endTime", dataType = DataType.DATE_STRING)
+    @Expose
     private Date endTime;
     @DatabaseField(columnName = "comment")
+    @Expose
     private String comment;
     @DatabaseField(foreign = true, columnName = "taskId")
+    @Expose
     private Task task;
     @DatabaseField
     private Long externalId;
     @DatabaseField(dataType = DataType.ENUM_STRING)
     private ExternalSystems externalSystem;
     @DatabaseField
+    @Expose
     private String flags;
+    @DatabaseField(columnName = "lastUpdated", dataType = DataType.DATE_STRING)
+    @Expose
+    private Date lastUpdated;
+    @DatabaseField
+    @Expose
+    private String syncKey;
 
     public Integer getId() {
         return id;
@@ -129,6 +140,22 @@ public class TimeRegistration implements Serializable {
         timeRegistration.setComment(this.getComment());
         timeRegistration.setFlags(this.getFlags());
         return timeRegistration;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public String getSyncKey() {
+        return syncKey;
+    }
+
+    public void setSyncKey(String syncKey) {
+        this.syncKey = syncKey;
     }
 
     public String toString() {

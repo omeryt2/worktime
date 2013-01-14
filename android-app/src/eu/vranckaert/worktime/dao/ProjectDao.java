@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,11 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.vranckaert.worktime.dao;
 
 import eu.vranckaert.worktime.dao.generic.GenericDao;
 import eu.vranckaert.worktime.model.Project;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,4 +47,25 @@ public interface ProjectDao extends GenericDao<Project, Integer> {
      * @return A list of projects filtered on the finished-flag.
      */
     List<Project> findProjectsOnFinishedFlag(boolean finished);
+
+    /**
+     * Find a specific project by name.
+     * @param name The name of the project to search.
+     * @return The project with this specific name or null.
+     */
+    Project findByName(String name);
+
+    /**
+     * Find a project based on the sync-key.
+     * @param syncKey The sync-key.
+     * @return The project that has the provided sync-key or null.
+     */
+    Project findBySyncKey(String syncKey);
+
+    /**
+     * Find all {@link Project}s that have been modified after a certain date.
+     * @param lastModified The date to be checked against.
+     * @return A list of {@link Project}s that have modified after the specific date.
+     */
+    List<Project> findAllModifiedAfter(Date lastModified);
 }

@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -234,6 +233,13 @@ public class DateUtils {
             return getYearMonthDayAsString(date)
                     + getHourMinuteSecondAsString(date)
                     + "-" + cal.get(Calendar.AM_PM);
+        }
+
+        public static String convertToDatabaseFormat(Date date) {
+            //2013-01-11 13:23:19.000280
+            java.text.DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
+            String result = df.format(date);
+            return result;
         }
     }
 

@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -698,5 +697,28 @@ public class Preferences {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
         editor.putBoolean(Constants.Preferences.Keys.IMMEDIATE_PUNCH_OUT, immediatePunchOut);
         editor.commit();
+    }
+
+    public static class Account {
+        public static boolean syncOnWifiOnly(Context ctx) {
+            return getSharedPreferences(ctx).getBoolean(
+                    Constants.Preferences.Keys.ACCOUNT_SYNC_ON_WIFI_ONLY,
+                    Constants.Preferences.ACCOUNT_SYNC_ON_WIFI_ONLY_DEFAULT_VALUE
+            );
+        }
+
+        public static boolean backupBeforeSync(Context ctx) {
+            return getSharedPreferences(ctx).getBoolean(
+                    Constants.Preferences.Keys.ACCOUNT_BACKUP_BEFORE_SYNC,
+                    Constants.Preferences.ACCOUNT_BACKUP_BEFORE_SYNC_DEFAULT_VALUE
+            );
+        }
+
+        public static String conflictConfiguration(Context ctx) {
+            return getSharedPreferences(ctx).getString(
+                    Constants.Preferences.Keys.ACCOUNT_SYNC_CONFLICT_HANDLING,
+                    Constants.Preferences.ACCOUNT_SYNC_CONFLICT_HANDLING_DEFAULT_VALUE
+            );
+        }
     }
 }
