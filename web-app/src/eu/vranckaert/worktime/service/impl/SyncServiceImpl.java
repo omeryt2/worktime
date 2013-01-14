@@ -3,6 +3,7 @@ package eu.vranckaert.worktime.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
@@ -50,31 +51,62 @@ public class SyncServiceImpl implements SyncService {
 	
 	@Inject private Provider<ObjectDatastore> dataStore;
 	
-	@Override
-	public EntitySyncResult sync(String userEmail, SyncConflictConfiguration conflictConfiguration, List<TimeRegistration> timeRegistrations) throws SyncronisationFailedException, SynchronisationLockedException, CorruptDataException {
-		User user = userService.findUser(userEmail);
-		if (timeRegistrations == null) {
-			timeRegistrations = new ArrayList<TimeRegistration>();
-		}
-		log.info("Starting synchronisation for user " + userEmail + " which conflict configuration set to : " + conflictConfiguration + " (this one will always win!)");
+	private boolean isProjectCorrupt(Project project) {
+		if (project == null)
+			return true;
+		if (StringUtils.isBlank(project.getName()))
+			return true;
+			
+		return false;
+	}
+	
+	private boolean isTaskCorrupt(Task task) {
+		if (task == null)
+			return true;
+		if (StringUtils.isBlank(task.getName()))
+			return true;
 		
+		return isProjectCorrupt(task.getProject());
+	}
+	
+	private boolean isTimeRegistrationCorrupt(TimeRegistration timeRegistration) {
 		int ongoingTrs = 0;
-		for (TimeRegistration timeRegistration : timeRegistrations) {
-			if (timeRegistration.getStartTime() == null)
+		
+		if (timeRegistration == null)
+			return true;
+		if (timeRegistration.getStartTime() == null)
+			return true;
+		if (timeRegistration.getEndTime() == null)
+			ongoingTrs++;
+		if (ongoingTrs > 1)
+			return true;
+		
+		return isTaskCorrupt(timeRegistration.getTask());
+	}
+	
+	@Override
+	public EntitySyncResult sync(String userEmail, SyncConflictConfiguration conflictConfiguration, List<Project> incomingProjects, List<Task> incomingTasks, List<TimeRegistration> incomingTimeRegistrations, Map<String, String> syncRemovalMap, Date lastSuccessfulSyncDate) throws SyncronisationFailedException, SynchronisationLockedException, CorruptDataException {
+		User user = userService.findUser(userEmail);
+		if (incomingTimeRegistrations == null) {
+			incomingTimeRegistrations = new ArrayList<TimeRegistration>();
+		}
+		log.info("Starting synchronisation for user " + userEmail + " with conflict configuration set to : " + conflictConfiguration + " (this one will always win!)");
+		
+		for (Project project : incomingProjects) {
+			if (isProjectCorrupt(project))  {
+				log.warning("A project seems to be corrupt!");
 				throw new CorruptDataException();
-			if (timeRegistration.getEndTime() == null)
-				ongoingTrs++;
-			if (ongoingTrs > 1)
+			}
+		}
+		for (Task task : incomingTasks) {
+			if (isTaskCorrupt(task)) {
+				log.warning("A task seems to be corrupt!");
 				throw new CorruptDataException();
-			if (timeRegistration.getTask() == null)
-				throw new CorruptDataException();
-			if (StringUtils.isBlank(timeRegistration.getTask().getName()))
-				throw new CorruptDataException();
-			if (timeRegistration.isOngoingTimeRegistration() && timeRegistration.getTask().isFinished())
-				throw new CorruptDataException();
-			if (timeRegistration.getTask().getProject() == null)
-				throw new CorruptDataException();
-			if (StringUtils.isBlank(timeRegistration.getTask().getProject().getName())) {
+			}
+		}
+		for (TimeRegistration timeRegistration : incomingTimeRegistrations) {
+			if (isTimeRegistrationCorrupt(timeRegistration)) {
+				log.warning("A time registration seems to be corrupt!");
 				throw new CorruptDataException();
 			}
 		}
@@ -103,16 +135,14 @@ public class SyncServiceImpl implements SyncService {
 		syncHistory.setStartTime(new Date());
 		syncHistory.setSyncResult(SyncResult.BUSY);
 		syncHistory.setUserEmail(user.getEmail());
-		syncHistory.setIncomingTimeRegistrations(timeRegistrations.size());
+		syncHistory.setIncomingTimeRegistrations(incomingTimeRegistrations.size());
 		syncHistoryDao.persist(syncHistory);
 		
 		// Prepare lists of projects and tasks before syncing...
 		List<Project> projects = new ArrayList<Project>();
 		List<Task> tasks = new ArrayList<Task>();
 		
-		log.info("test 123 456");
-		
-		for (TimeRegistration timeRegistration : timeRegistrations) {
+		for (TimeRegistration timeRegistration : incomingTimeRegistrations) {
 			Task task = timeRegistration.getTask();
 			Project project = task.getProject();
 			
@@ -120,6 +150,44 @@ public class SyncServiceImpl implements SyncService {
 
 			tasks.add(task);
 			projects.add(project);
+		}
+		
+		// Check the projects if they are already appearing in a time 
+		// registration or not. If not add them to the list of projects to be 
+		// synced, otherwise they are already in there.
+		for (Project incomingProject : incomingProjects) {
+			String projectName = incomingProject.getName();
+			boolean projectFound = false;
+			for (Project project : projects) {
+				if (project.getName().equals(projectName)) {
+					projectFound = true;
+					break;
+				}
+			}
+			
+			if (!projectFound) {
+				incomingProject.setUser(user);
+				projects.add(incomingProject);
+			}
+		}
+		
+		// Check the tasks if they are already appearing in a time registration 
+		// or not. If not add them to the list of tasks to be synced, otherwise 
+		// they are already in there.
+		for (Task incomingTask : incomingTasks) {
+			String taskName = incomingTask.getName();
+			String projectName = incomingTask.getProject().getName();
+			boolean taskFound = false;
+			for (Task task : tasks) {
+				if (task.getName().equals(taskName) && task.getProject().getName().equals(projectName)) {
+					taskFound = true;
+					break;
+				}
+			}
+			
+			if (!taskFound) {
+				tasks.add(incomingTask);
+			}
 		}
 		
 		List<ProjectSyncResult> projectResults = new ArrayList<ProjectSyncResult>();
@@ -132,6 +200,9 @@ public class SyncServiceImpl implements SyncService {
 		
 		Transaction tx = dataStore.get().beginTransaction();
 		try {
+			// Check to remove projects, tasks and time registrations in the from the syncRemovalMap
+			removeEntities(user, syncRemovalMap, lastSuccessfulSyncDate, conflictConfiguration);
+			
 			// Sync all projects
 			log.info("Starting to synchronize projects for user " + user.getEmail());
 			for (Project project : projects) {
@@ -155,7 +226,7 @@ public class SyncServiceImpl implements SyncService {
 			
 			// Sync all time registrations
 			log.info("Starting to synchronize time registrations for user " + user.getEmail());
-			for (TimeRegistration timeRegistration : timeRegistrations) {
+			for (TimeRegistration timeRegistration : incomingTimeRegistrations) {
 				Task taskForTr = taskDao.find(timeRegistration.getTask().getName(), user);
 				TimeRegistrationSyncResult result = syncTimeRegistration(timeRegistration, taskForTr, user, conflictConfiguration);
 				if (result.getResolution() != EntitySyncResolution.NO_ACTION)
@@ -199,6 +270,88 @@ public class SyncServiceImpl implements SyncService {
 		return syncResult;
 	}
 
+	private void removeEntities(User user, Map<String, String> syncRemovalMap, Date lastSuccessfulSyncDate, SyncConflictConfiguration conflictConfiguration) {
+		if (syncRemovalMap == null || syncRemovalMap.size() == 0)
+			return;
+		
+		List<String> projectSyncKeys = new ArrayList<String>();
+		List<String> taskSyncKeys = new ArrayList<String>();
+		List<String> timeRegistrationSyncKeys = new ArrayList<String>();
+		
+		for (Map.Entry<String, String> entry : syncRemovalMap.entrySet()) {
+			String syncKey = entry.getKey();
+			String entityName = entry.getValue();
+			
+			if (entityName.equals("Project")) {
+				projectSyncKeys.add(syncKey);
+			} else if (entityName.equals("Task")) {
+				taskSyncKeys.add(syncKey);
+			} else if (entityName.equals("TimeRegistration")) {
+				timeRegistrationSyncKeys.add(syncKey);
+			}
+		}
+		
+		for (String syncKey : timeRegistrationSyncKeys) {
+			TimeRegistration entity = timeRegistrationDao.findBySyncKey(syncKey, user);
+			if (entity != null) {
+				if (entity.isModifiedAfter(lastSuccessfulSyncDate)) {
+					switch (conflictConfiguration) {
+						case CLIENT: {
+							timeRegistrationDao.remove(entity);
+							break;
+						}
+						case SERVER: {
+							// Server wins so entity will not be removed
+							break;
+						}
+					}
+				} else {
+					timeRegistrationDao.remove(entity);
+				}
+			}
+		}
+		
+		for (String syncKey : taskSyncKeys) {
+			Task entity = taskDao.findBySyncKey(syncKey, user);
+			if (entity != null) {
+				if (entity.isModifiedAfter(lastSuccessfulSyncDate)) {
+					switch (conflictConfiguration) {
+						case CLIENT: {
+							taskDao.remove(entity);
+							break;
+						}
+						case SERVER: {
+							// Server wins so entity will not be removed
+							break;
+						}
+					}
+				} else {
+					taskDao.remove(entity);
+				}
+			}
+		}
+		
+		for (String syncKey : projectSyncKeys) {
+			Project entity = projectDao.findBySyncKey(syncKey, user);
+			if (entity != null) {
+				if (entity.isModifiedAfter(lastSuccessfulSyncDate)) {
+					switch (conflictConfiguration) {
+						case CLIENT: {
+							projectDao.remove(entity);
+							break;
+						}
+						case SERVER: {
+							// Server wins so entity will not be removed
+							break;
+						}
+					}
+				} else {
+					projectDao.remove(entity);
+				}
+			}
+		}
+	}
+
 	private ProjectSyncResult syncProject(Project project, User user, SyncConflictConfiguration conflictConfiguration) {
 		ProjectSyncResult result = new ProjectSyncResult(project);
 		
@@ -209,8 +362,9 @@ public class SyncServiceImpl implements SyncService {
 		} else {
 			localProject = projectDao.findBySyncKey(project.getSyncKey(), user);
 			if (localProject == null) {
-				project.setSyncKey(null);
-				localProject = projectDao.find(project.getName(), user);
+				result.setResolution(EntitySyncResolution.NOT_ACCEPTED);
+				result.setSyncedProject(null);
+				return result;
 			}
 		}
 		
@@ -233,10 +387,10 @@ public class SyncServiceImpl implements SyncService {
 			
 			if (!project.equalsContent(localProject)) {
 				log.info("Project contents are not equal, will start to merge now for user " + user.getEmail());
-				if (localProject.isModifiedAfter(project)) {
+				if (localProject.isModifiedAfter(project.getLastUpdated())) {
 					copyProjectContents(localProject, project);
 					log.info("The server project is more recent than the incoming one, using the server project for user " + user.getEmail());
-				} else if (project.isModifiedAfter(localProject)) {
+				} else if (project.isModifiedAfter(localProject.getLastUpdated())) {
 					copyProjectContents(project, localProject);
 					log.info("The incoming project is more recent than the server one, using the incoming project for user " + user.getEmail());
 				} else { // Last modification date-time is the same but contents are different so resolve conflict...
@@ -293,8 +447,9 @@ public class SyncServiceImpl implements SyncService {
 		} else {
 			localTask = taskDao.findBySyncKey(task.getSyncKey(), user);
 			if (localTask == null) {
-				task.setSyncKey(null);
-				localTask = taskDao.find(task.getName(), user);
+				result.setResolution(EntitySyncResolution.NOT_ACCEPTED);
+				result.setSyncedTask(null);
+				return result;
 			}
 		}
 		
@@ -318,10 +473,10 @@ public class SyncServiceImpl implements SyncService {
 			
 			if (!task.equalsContent(localTask)) {
 				log.info("Task contents are not equal, will start to merge now for user " + user.getEmail());
-				if (localTask.isModifiedAfter(task)) {
+				if (localTask.isModifiedAfter(task.getLastUpdated())) {
 					copyTaskContents(localTask, task, project);
 					log.info("The server task is more recent than the incoming one, using the server task for user " + user.getEmail());
-				} else if (task.isModifiedAfter(localTask)) {
+				} else if (task.isModifiedAfter(localTask.getLastUpdated())) {
 					copyTaskContents(task, localTask, project);
 					log.info("The incoming task is more recent than the server one, using the incoming task for user " + user.getEmail());
 				} else { // Last modification date-time is the same but contents are different so resolve conflict...
@@ -379,8 +534,10 @@ public class SyncServiceImpl implements SyncService {
 		} else {
 			localTimeRegistration = timeRegistrationDao.findBySyncKey(timeRegistration.getSyncKey(), user);
 			if (localTimeRegistration == null) {
-				timeRegistration.setSyncKey(null);
-				localTimeRegistration = timeRegistrationDao.find(timeRegistration.getStartTime(), timeRegistration.getEndTime(), user);
+				result.setResolution(EntitySyncResolution.NOT_ACCEPTED);
+				result.setSyncedTimeRegistration(null);
+				result.setSyncedTimeRegistrations(null);
+				return result;
 			}
 		}
 		
@@ -433,7 +590,7 @@ public class SyncServiceImpl implements SyncService {
 				}
 			}
 		} else { // A matching time registration is found so compare the contents
-			log.info("A mathcing time registration is found for user " + user.getEmail());
+			log.info("A matching time registration is found for user " + user.getEmail());
 			if (localTimeRegistration.getSyncKey() == null) {
 				localTimeRegistration.setSyncKey(generateSyncKeyForTimeRegistration(user));
 			}
@@ -444,10 +601,10 @@ public class SyncServiceImpl implements SyncService {
 			
 			if (!timeRegistration.equalsContent(localTimeRegistration)) {
 				log.info("Time registration contents are not equal, will start to merge now for user " + user.getEmail());
-				if (localTimeRegistration.isModifiedAfter(timeRegistration)) {
+				if (localTimeRegistration.isModifiedAfter(timeRegistration.getLastUpdated())) {
 					copyTimeRegistrationContents(localTimeRegistration, timeRegistration, task);
 					log.info("The server time registration is more recent than the incoming one, using the server time registration for user " + user.getEmail());
-				} else if (timeRegistration.isModifiedAfter(localTimeRegistration)) {
+				} else if (timeRegistration.isModifiedAfter(localTimeRegistration.getLastUpdated())) {
 					copyTimeRegistrationContents(timeRegistration, localTimeRegistration, task);
 					log.info("The incoming time registration is more recent than the server one, using the incoming time registration for user " + user.getEmail());
 				} else { // Last modification date-time is the same but contents are different so resolve conflict...
@@ -502,6 +659,13 @@ public class SyncServiceImpl implements SyncService {
 			projects = projectDao.findAllModifiedAfter(user, lastSuccessfulSyncDate);
 		}
 		
+		for (Project project : projects) {
+			if (project.getSyncKey() == null) {
+				project.setSyncKey(generateSyncKeyForProject(user));
+				projectDao.update(project);
+			}
+		}
+		
 		obscureData(projects);
 			
 		return projects;
@@ -516,6 +680,13 @@ public class SyncServiceImpl implements SyncService {
 			tasks = taskDao.findAll(user);
 		} else {
 			tasks = taskDao.findAllModifiedAfter(user, lastSuccessfulSyncDate);
+		}
+		
+		for (Task task : tasks) {
+			if (task.getSyncKey() == null) {
+				task.setSyncKey(generateSyncKeyForTask(user));
+				taskDao.update(task);
+			}
 		}
 		
 		obscureData(tasks);
@@ -534,6 +705,13 @@ public class SyncServiceImpl implements SyncService {
 			timeRegistrations = timeRegistrationDao.findAllModifiedAfter(user, lastSuccessfulSyncDate);
 		}
 		
+		for (TimeRegistration timeRegistration : timeRegistrations) {
+			if (timeRegistration.getSyncKey() == null) {
+				timeRegistration.setSyncKey(generateSyncKeyForTimeRegistration(user));
+				timeRegistrationDao.update(timeRegistration);
+			}
+		}
+		
 		obscureData(timeRegistrations);
 			
 		return timeRegistrations;
@@ -544,16 +722,20 @@ public class SyncServiceImpl implements SyncService {
 		for (ProjectSyncResult projectSyncResult : syncResult.getProjectSyncResults()) {
 			projectSyncResult.getProject().setUser(null);
 			projectSyncResult.getProject().setKey(null);
-			projectSyncResult.getSyncedProject().setUser(null);
-			projectSyncResult.getSyncedProject().setKey(null);
+			if (projectSyncResult.getSyncedProject() != null) {
+				projectSyncResult.getSyncedProject().setUser(null);
+				projectSyncResult.getSyncedProject().setKey(null);
+			}
 		}
 		for (TaskSyncResult taskSyncResult : syncResult.getTaskSyncResults()) {
 			taskSyncResult.getTask().getProject().setUser(null);
 			taskSyncResult.getTask().getProject().setKey(null);
 			taskSyncResult.getTask().setKey(null);
-			taskSyncResult.getSyncedTask().getProject().setUser(null);
-			taskSyncResult.getSyncedTask().getProject().setKey(null);
-			taskSyncResult.getSyncedTask().setKey(null);
+			if (taskSyncResult.getSyncedTask() != null) {
+				taskSyncResult.getSyncedTask().getProject().setUser(null);
+				taskSyncResult.getSyncedTask().getProject().setKey(null);
+				taskSyncResult.getSyncedTask().setKey(null);
+			}
 		}
 		for (TimeRegistrationSyncResult timeRegistrationResult : syncResult.getTimeRegistrationSyncResults()) {
 			timeRegistrationResult.getTimeRegistration().getTask().getProject().setUser(null);

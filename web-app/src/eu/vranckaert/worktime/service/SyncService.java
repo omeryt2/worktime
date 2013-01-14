@@ -2,6 +2,7 @@ package eu.vranckaert.worktime.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import eu.vranckaert.worktime.exception.CorruptDataException;
 import eu.vranckaert.worktime.exception.SynchronisationLockedException;
@@ -19,8 +20,25 @@ public interface SyncService {
 	 * sync.
 	 * @param conflictConfiguration The conflict configuration which defines who
 	 * (server or client) should win in case of a conflict.
-	 * @param timeRegistrations The list of {@link TimeRegistration}s that must
-	 * be synced with the server.
+	 * @param incomingProjects A list of {@link Project}s to be synced. The 
+	 * projects in this list are checked one-by-one to see if they already 
+	 * appear somewhere in once of the incoming time registrations. If so that
+	 * project is ignored.
+	 * @param incomingTasks A list of {@link Task}s to be synced. The tasks in 
+	 * this list are checked one-by-one to see if they already appear somewhere 
+	 * in once of the incoming time registrations. If so that task is ignored.
+	 * @param incomingTimeRegstrations The list of {@link TimeRegistration}s 
+	 * that must be synced with the server.
+	 * @param syncRemovalMap A map of String and String where the key is a
+	 * syncKey and the value is the name of an entity class (being Project, Task 
+	 * or TimeRegistration). All syncKeys found in this map will be searched for
+	 * and will be removed if the entity is not modified after the the last
+	 * successful sync date that is also provided as input to this method. If 
+	 * the entity has been updated afterwards the conflict configuration will be
+	 * used to determine who wins, if the entity should be removed (client wins)
+	 * or if the entity should remain (server wins). If the entity it needs to 
+	 * be synced back to the client.
+	 * @param lastSuccessfulSyncDate The last successful synchronization date.
 	 * @return An instance of {@link EntitySyncResult} containing three lists:
 	 * <br/>
 	 * 1. List of incoming projects, what happend with it and the result how it
@@ -41,7 +59,7 @@ public interface SyncService {
 	 * multiple ongoing time registrations are passed in or a time registration 
 	 * without a start time is passed in. 
 	 */
-	EntitySyncResult sync(String userEmail, SyncConflictConfiguration conflictConfiguration, List<TimeRegistration> timeRegistrations) throws SyncronisationFailedException, SynchronisationLockedException, CorruptDataException;
+	EntitySyncResult sync(String userEmail, SyncConflictConfiguration conflictConfiguration, List<Project> incomingProjects, List<Task> incomingTasks, List<TimeRegistration> incomingTimeRegstrations, Map<String, String> syncRemovalMap, Date lastSuccessfulSyncDate) throws SyncronisationFailedException, SynchronisationLockedException, CorruptDataException;
 	
 	/**
 	 * Searches for all projects of a user that have been last modified date 

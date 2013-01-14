@@ -24,18 +24,18 @@ public class SetupEndpoint {
 		return "Hello World";
 	}
 	
-	@GET
-	@Path("setupService")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String setupService() {
-		// Create a setup service...
-		Service serviceTest = new Service();
-		serviceTest.setAppName("WorkTime for Android");
-		serviceTest.setContact("dirkvranckaert@gmail.com");
-		serviceTest.setPlatform(ServicePlatform.ANDROID);
-		serviceTest.setServiceKey(KeyGenerator.getNewKey());
-		serviceDao.persist(serviceTest);
-		
-		return "Service created!";
-	}
+//	@GET
+//	@Path("setupService")
+//	@Produces(MediaType.TEXT_PLAIN)
+//	public String setupService() {
+//		// Create a setup service...
+//		Service serviceTest = new Service();
+//		serviceTest.setAppName("WorkTime for Android");
+//		serviceTest.setContact("dirkvranckaert@gmail.com");
+//		serviceTest.setPlatform(ServicePlatform.ANDROID);
+//		serviceTest.setServiceKey(KeyGenerator.getNewKey());
+//		serviceDao.persist(serviceTest);
+//		
+//		return "Service created!";
+//	}
 }

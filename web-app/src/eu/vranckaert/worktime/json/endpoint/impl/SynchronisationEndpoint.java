@@ -52,11 +52,19 @@ public class SynchronisationEndpoint {
 		}
 		
 		try {
-			EntitySyncResult result = syncService.sync(request.getEmail(), request.getConflictConfiguration(), request.getTimeRegistrations());
+			EntitySyncResult result = syncService.sync(
+					request.getEmail(), 
+					request.getConflictConfiguration(), 
+					request.getProjects(), 
+					request.getTasks(), 
+					request.getTimeRegistrations(),
+					request.getSyncRemovalMap(),
+					request.getLastSuccessfulSyncDate()
+			);
 			response.setSyncResult(result);
-			response.setTimeRegistrationsSinceLastSync(syncService.getSyncedTimeRegistrations(request.getEmail(), request.getLastSuccessfulSyncDate()));
 			response.setProjectsSinceLastSync(syncService.getSyncedProjects(request.getEmail(), request.getLastSuccessfulSyncDate()));
 			response.setTasksSinceLastSync(syncService.getSyncedTasks(request.getEmail(), request.getLastSuccessfulSyncDate()));
+			response.setTimeRegistrationsSinceLastSync(syncService.getSyncedTimeRegistrations(request.getEmail(), request.getLastSuccessfulSyncDate()));
 		} catch (SyncronisationFailedException e) {
 			SyncronisationFailedJSONException jsonException = new SyncronisationFailedJSONException("sync/all");
 			response.setSyncronisationFailedJSONException(jsonException);

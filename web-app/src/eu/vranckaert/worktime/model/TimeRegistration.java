@@ -135,15 +135,15 @@ public class TimeRegistration {
 		return true;
 	}
 	
-	public boolean isModifiedAfter(TimeRegistration timeRegistration) {
-		if (lastUpdated == null && timeRegistration.getLastUpdated() == null) {
+	public boolean isModifiedAfter(Date lastModifiedDate) {
+		if (lastUpdated == null && lastModifiedDate == null) {
 			return false;
-		} else if (lastUpdated != null && timeRegistration.getLastUpdated() == null) {
+		} else if (lastUpdated != null && lastModifiedDate == null) {
 			return true;
-		} else if (lastUpdated == null && timeRegistration.getLastUpdated() != null) {
+		} else if (lastUpdated == null && lastModifiedDate != null) {
 			return false;
 		} else {
-			return lastUpdated.after(timeRegistration.getLastUpdated());
+			return lastUpdated.after(lastModifiedDate);
 		}
 	}
 

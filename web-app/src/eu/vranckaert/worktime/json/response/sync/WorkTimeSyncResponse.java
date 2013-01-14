@@ -1,6 +1,7 @@
 package eu.vranckaert.worktime.json.response.sync;
 
 import java.util.List;
+import java.util.Map;
 
 import eu.vranckaert.worktime.json.base.response.WorkTimeResponse;
 import eu.vranckaert.worktime.json.exception.sync.CorruptDataJSONException;
@@ -19,6 +20,7 @@ public class WorkTimeSyncResponse extends WorkTimeResponse {
 	private List<Project> projectsSinceLastSync;
 	private List<Task> tasksSinceLastSync;
 	private List<TimeRegistration> timeRegistrationsSinceLastSync;
+	private Map<String, String> syncRemovalMap;
 
 	public SyncronisationFailedJSONException getSyncronisationFailedJSONException() {
 		return syncronisationFailedJSONException;
@@ -81,5 +83,13 @@ public class WorkTimeSyncResponse extends WorkTimeResponse {
 	public void setTimeRegistrationsSinceLastSync(
 			List<TimeRegistration> timeRegistrationsSinceLastSync) {
 		this.timeRegistrationsSinceLastSync = timeRegistrationsSinceLastSync;
+	}
+
+	public Map<String, String> getSyncRemovalMap() {
+		return syncRemovalMap;
+	}
+
+	public void setSyncRemovalMap(Map<String, String> syncRemovalMap) {
+		this.syncRemovalMap = syncRemovalMap;
 	}
 }

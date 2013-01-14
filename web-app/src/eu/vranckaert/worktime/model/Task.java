@@ -136,15 +136,15 @@ public class Task implements Cloneable {
 		return true;
 	}
 	
-	public boolean isModifiedAfter(Task task) {
-		if (lastUpdated == null && task.getLastUpdated() == null) {
+	public boolean isModifiedAfter(Date lastModifiedDate) {
+		if (lastUpdated == null && lastModifiedDate == null) {
 			return false;
-		} else if (lastUpdated != null && task.getLastUpdated() == null) {
+		} else if (lastUpdated != null && lastModifiedDate == null) {
 			return true;
-		} else if (lastUpdated == null && task.getLastUpdated() != null) {
+		} else if (lastUpdated == null && lastModifiedDate != null) {
 			return false;
 		} else {
-			return lastUpdated.after(task.getLastUpdated());
+			return lastUpdated.after(lastModifiedDate);
 		}
 	}
 
