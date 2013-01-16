@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -50,4 +49,12 @@ public interface StatusBarNotificationService {
      * @param bigText           The big-text to be shown in this notification. If null default values will be used.
      */
     void addStatusBarNotificationForBackup(String backupLocation, boolean success, String text, String bigText);
+
+    /**
+     * Add a new notification in the status bar to notify that a synchronization was failed or successful.
+     * @param titleResId    The string-resource-id for the title.
+     * @param smallMsgResId The string-resrouce-id for the small message.
+     * @param msgResId      The string-resrouce-id for the big message.
+     */
+    void addStatusBarNotificationForSync(int titleResId, int smallMsgResId, int msgResId);
 }

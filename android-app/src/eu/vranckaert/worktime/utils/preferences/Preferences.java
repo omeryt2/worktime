@@ -720,5 +720,29 @@ public class Preferences {
                     Constants.Preferences.ACCOUNT_SYNC_CONFLICT_HANDLING_DEFAULT_VALUE
             );
         }
+
+        public static boolean syncShowNotificationsOnError(Context ctx) {
+            return getSharedPreferences(ctx).getBoolean(
+                    Constants.Preferences.Keys.ACCOUNT_SYNC_ERROR_NOTIFICATIONS,
+                    Constants.Preferences.ACCOUNT_SYNC_ERROR_NOTIFICATIONS_DEFAULT_VALUE
+            );
+        }
+
+        public static boolean syncShowNotificationsOnSuccess(Context ctx) {
+            return getSharedPreferences(ctx).getBoolean(
+                    Constants.Preferences.Keys.ACCOUNT_SYNC_SUCCESS_NOTIFICATIONS,
+                    Constants.Preferences.ACCOUNT_SYNC_SUCCESS_NOTIFICATIONS_DEFAULT_VALUE
+            );
+        }
+
+        public static long syncInterval(Context ctx) {
+            String hourInterval = getSharedPreferences(ctx).getString(
+                    Constants.Preferences.Keys.ACCOUNT_SYNC_INTERVAL,
+                    Constants.Preferences.ACCOUNT_SYNC_INTERVAL_DEFAULT_VALUE
+            );
+
+            long interval = Integer.parseInt(hourInterval) * 3600000L;
+            return interval;
+        }
     }
 }

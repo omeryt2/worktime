@@ -38,4 +38,10 @@ public interface SyncHistoryDao extends GenericDao<SyncHistory, Integer> {
      * @return The {@link Date} of the last successful sync or null if none.
      */
     Date getLastSuccessfulSyncDate();
+
+    /**
+     * Get the latest sync history object.
+     * @return The latest {@link SyncHistory} object or null if none.
+     */
+    SyncHistory getLastSyncHistory();
 }

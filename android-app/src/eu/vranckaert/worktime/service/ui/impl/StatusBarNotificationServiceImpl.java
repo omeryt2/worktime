@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -227,6 +226,21 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
             bigTextMessage = bigText;
 
         setStatusBarNotification(title, message, ticker, new Intent(), bigTextMessage, null, Constants.StatusBarNotificationIds.RESTORE, NotificationCompat2.PRIORITY_HIGH, drawable, false);
+    }
+
+    @Override
+    public void addStatusBarNotificationForSync(int titleResId, int smallMsgResId, int msgResId) {
+        String ticker = null;
+        String title = null;
+        String message = null;
+        String bigTextMessage = null;
+
+        ticker = context.getString(titleResId);
+        title = context.getString(titleResId);
+        message = context.getString(smallMsgResId);
+        bigTextMessage = context.getString(msgResId);
+
+        setStatusBarNotification(title, message, ticker, new Intent(), bigTextMessage, title, Constants.StatusBarNotificationIds.SYNC, NotificationCompat2.PRIORITY_HIGH, null, false);
     }
 
     /**

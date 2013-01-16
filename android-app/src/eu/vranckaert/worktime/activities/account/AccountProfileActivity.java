@@ -29,25 +29,23 @@ import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.preferences.AccountSyncPreferencesActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
-import eu.vranckaert.worktime.exceptions.backup.BackupException;
-import eu.vranckaert.worktime.exceptions.network.WifiConnectionRequiredException;
-import eu.vranckaert.worktime.exceptions.worktime.account.UserNotLoggedInException;
 import eu.vranckaert.worktime.exceptions.network.NoNetworkConnectionException;
-import eu.vranckaert.worktime.exceptions.worktime.sync.SyncAlreadyBusyException;
-import eu.vranckaert.worktime.exceptions.worktime.sync.SynchronizationFailedException;
+import eu.vranckaert.worktime.exceptions.worktime.account.UserNotLoggedInException;
+import eu.vranckaert.worktime.model.SyncHistory;
+import eu.vranckaert.worktime.model.SyncHistoryStatus;
 import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.service.AccountService;
-import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
-import eu.vranckaert.worktime.service.ui.WidgetService;
+import eu.vranckaert.worktime.utils.alarm.AlarmUtil;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
-import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
 import roboguice.inject.InjectView;
+
+import java.util.Date;
 
 /**
  * User: Dirk Vranckaert
@@ -58,12 +56,9 @@ public class AccountProfileActivity extends ActionBarGuiceActivity {
     private static final String LOG_TAG = AccountProfileActivity.class.getSimpleName();
 
     private AnalyticsTracker tracker;
+    private SyncCheckerTask syncCheckerTask;
 
     @Inject private AccountService accountService;
-
-    @Inject private WidgetService widgetService;
-
-    @Inject private StatusBarNotificationService notificationService;
 
     @InjectView(R.id.account_profile_container) private View container;
     @InjectView(R.id.account_profile_email) private TextView email;
@@ -82,7 +77,12 @@ public class AccountProfileActivity extends ActionBarGuiceActivity {
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.ACCOUNT_DETAILS_ACTIVITY);
 
-        new LoadProfileTask().execute();
+        User user = accountService.getOfflineUserDate();
+        if (user != null)
+            updateUI(user);
+        if (!accountService.isSyncBusy()) {
+            new LoadProfileTask().execute();
+        }
     }
 
     @Override
@@ -105,13 +105,22 @@ public class AccountProfileActivity extends ActionBarGuiceActivity {
             case android.R.id.home:
                 IntentUtil.goBack(this);
                 break;
-            case R.id.menu_account_profile_activity_sync:
-                new SyncTask().execute();
+            case R.id.menu_account_profile_activity_sync: {
+                getActionBarHelper().setRefreshActionItemState(true, R.id.menu_account_profile_activity_sync);
+
+                Date syncStartTime = new Date();
+                Intent intent = new Intent(AccountProfileActivity.this, AccountSyncService.class);
+                startService(intent);
+
+                syncCheckerTask = new SyncCheckerTask();
+                syncCheckerTask.execute(syncStartTime);
                 break;
-            case R.id.menu_account_profile_activity_settings:
+            }
+            case R.id.menu_account_profile_activity_settings: {
                 Intent intent = new Intent(AccountProfileActivity.this, AccountSyncPreferencesActivity.class);
                 startActivity(intent);
                 break;
+            }
             case R.id.menu_account_profile_activity_logout:
                 new LogoutTask().execute();
                 break;
@@ -139,6 +148,7 @@ public class AccountProfileActivity extends ActionBarGuiceActivity {
 
         @Override
         protected void onPostExecute(Void o) {
+            AlarmUtil.removeAllSyncAlarms(AccountProfileActivity.this);
             getActionBarHelper().setLoadingIndicator(false);
             setResult(Constants.IntentResultCodes.RESULT_LOGOUT);
             finish();
@@ -190,52 +200,65 @@ public class AccountProfileActivity extends ActionBarGuiceActivity {
         loggedInSince.setText(DateUtils.DateTimeConverter.convertDateTimeToString(user.getLoggedInSince(), DateFormat.MEDIUM, TimeFormat.MEDIUM, AccountProfileActivity.this));
     }
 
-    private class SyncTask extends AsyncTask<Void, Void, Void> {
-        private String errorMsg = null;
-        private boolean logout = false;
-
+    private class SyncCheckerTask extends AsyncTask<Date, Void, Void> {
         @Override
         protected void onPreExecute() {
             getActionBarHelper().setRefreshActionItemState(true, R.id.menu_account_profile_activity_sync);
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Void doInBackground(Date... params) {
+            Date startDate = null;
+            if (params.length == 1)
+                startDate = params[0];
+
             try {
-                accountService.sync();
-            } catch (UserNotLoggedInException e) {
-                errorMsg = AccountProfileActivity.this.getString(R.string.lbl_account_profile_sync_error_user_not_logged_in);
-                logout = true;
-            } catch (GeneralWebException e) {
-                errorMsg = AccountProfileActivity.this.getString(R.string.error_general_web_exception);
-            } catch (NoNetworkConnectionException e) {
-                errorMsg = AccountProfileActivity.this.getString(R.string.error_no_network_connection);
-            } catch (WifiConnectionRequiredException e) {
-                errorMsg = AccountProfileActivity.this.getString(R.string.lbl_account_profile_sync_error_wifi_required);
-            } catch (SynchronizationFailedException e) {
-                errorMsg = AccountProfileActivity.this.getString(R.string.lbl_account_profile_sync_error_sync_failed);
-            } catch (BackupException e) {
-                errorMsg = AccountProfileActivity.this.getString(R.string.lbl_account_profile_sync_error_backup);
-            } catch (SyncAlreadyBusyException e) {
-                errorMsg = AccountProfileActivity.this.getString(R.string.lbl_account_profile_sync_error_already_busy);
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {}
+
+            SyncHistory syncHistory = accountService.getLastSyncHistory();
+            while (syncHistory == null || syncHistory.getStatus().equals(SyncHistoryStatus.BUSY) || (startDate != null && syncHistory.getEnded().before(startDate)) ) {
+                if (isCancelled())
+                    break;
+
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {}
+
+                // Update the syncHistory object to contain the latest info before checking again...
+                syncHistory = accountService.getLastSyncHistory();
             }
+
             return null;
         }
 
         @Override
-        protected void onPostExecute(Void result) {
+        protected void onCancelled(Void aVoid) {
             getActionBarHelper().setRefreshActionItemState(false, R.id.menu_account_profile_activity_sync);
+        }
 
-            if (StringUtils.isNotBlank(errorMsg)) {
-                Toast.makeText(AccountProfileActivity.this, errorMsg, Toast.LENGTH_LONG).show();
-                if (logout) {
-                    setResult(Constants.IntentResultCodes.RESULT_LOGOUT);
-                    finish();
-                }
-            }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            getActionBarHelper().setRefreshActionItemState(false, R.id.menu_account_profile_activity_sync);
+        }
+    }
 
-            widgetService.updateAllWidgets();
-            notificationService.addOrUpdateNotification(null);
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (syncCheckerTask != null) {
+            syncCheckerTask.cancel(true);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (accountService.isSyncBusy()) {
+            syncCheckerTask = new SyncCheckerTask();
+            syncCheckerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 }

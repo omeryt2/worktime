@@ -103,6 +103,9 @@ public class Constants {
         public static final int SELECT_TASK = 13;
         public static final int ACCOUNT_DETAILS = 14;
         public static final int ACCOUNT_REGISTER = 15;
+
+
+        public static final int ALARM_SYNC_REPEAT = 9000;
     }
     public class IntentResultCodes {
         public static final int RESULT_OK_SPLIT = 100;
@@ -128,10 +131,12 @@ public class Constants {
         public static final boolean TIME_REGISTRATION_PUNCH_BAR_ENABLED_ON_ALL_SCREENS_DEFAULT_VALUE = false;
         public static final int TIME_REGISTRATION_SPLIT_DEFAULT_GAP_DEFAULT_VALUE = 30;
         public static final boolean IMMEDIATE_PUNCH_OUT_DEFAULT_VALUE = false;
-        public static final String ACCOUNT_SYNC_INTERVAL_DEFAULT_VALUE = "12";
+        public static final String ACCOUNT_SYNC_INTERVAL_DEFAULT_VALUE = "2";
         public static final String ACCOUNT_SYNC_CONFLICT_HANDLING_DEFAULT_VALUE = "SERVER";
         public static final boolean ACCOUNT_SYNC_ON_WIFI_ONLY_DEFAULT_VALUE = true;
         public static final boolean ACCOUNT_BACKUP_BEFORE_SYNC_DEFAULT_VALUE = true;
+        public static final boolean ACCOUNT_SYNC_SUCCESS_NOTIFICATIONS_DEFAULT_VALUE = false;
+        public static final boolean ACCOUNT_SYNC_ERROR_NOTIFICATIONS_DEFAULT_VALUE = false;
 
         public class Keys {
             public static final String WIDGET_ASK_FOR_TASK_SELECTION_IF_ONLY_ONE = "askForTaskSelectionIfOnlyOne";
@@ -161,6 +166,8 @@ public class Constants {
             public static final String ACCOUNT_SYNC_CONFLICT_HANDLING = "accountSyncConflictHandling";
             public static final String ACCOUNT_SYNC_ON_WIFI_ONLY = "accountSyncOnWifiOnly";
             public static final String ACCOUNT_BACKUP_BEFORE_SYNC = "accountBackupBeforeSync";
+            public static final String ACCOUNT_SYNC_SUCCESS_NOTIFICATIONS = "accountSyncSuccessShowNotifications";
+            public static final String ACCOUNT_SYNC_ERROR_NOTIFICATIONS = "accountSyncErrorShowNotifications";
         }
     }
     public class Disk {
@@ -212,6 +219,7 @@ public class Constants {
         public static final int ONGOING_TIME_REGISTRATION_MESSAGE = 1;
         public static final int RESTORE = 2;
         public static final int BACKUP = 3;
+        public static final int SYNC = 4;
     }
 
     public class Others {

@@ -28,13 +28,15 @@ import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
+import eu.vranckaert.worktime.exceptions.network.NoNetworkConnectionException;
 import eu.vranckaert.worktime.exceptions.worktime.account.PasswordLengthValidationException;
 import eu.vranckaert.worktime.exceptions.worktime.account.RegisterEmailAlreadyInUseException;
 import eu.vranckaert.worktime.exceptions.worktime.account.RegisterFieldRequiredException;
-import eu.vranckaert.worktime.exceptions.network.NoNetworkConnectionException;
 import eu.vranckaert.worktime.service.AccountService;
+import eu.vranckaert.worktime.utils.alarm.AlarmUtil;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
+import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
@@ -226,6 +228,7 @@ public class AccountRegisterActivity extends ActionBarGuiceActivity {
                 registrationError.setText(error);
                 registrationError.setVisibility(View.VISIBLE);
             } else {
+                AlarmUtil.setAlarmSyncCycle(AccountRegisterActivity.this, null, Preferences.Account.syncInterval(AccountRegisterActivity.this));
                 Intent intent = new Intent(AccountRegisterActivity.this, AccountProfileActivity.class);
                 startActivityForResult(intent, Constants.IntentRequestCodes.ACCOUNT_DETAILS);
             }

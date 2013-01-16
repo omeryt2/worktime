@@ -16,9 +16,12 @@
 package eu.vranckaert.worktime.service.impl;
 
 import android.content.Context;
+import android.util.Log;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.dao.*;
+import eu.vranckaert.worktime.dao.impl.*;
 import eu.vranckaert.worktime.dao.web.WorkTimeWebDao;
+import eu.vranckaert.worktime.dao.web.impl.WorkTimeWebDaoImpl;
 import eu.vranckaert.worktime.dao.web.model.response.sync.EntitySyncResult;
 import eu.vranckaert.worktime.dao.web.model.response.sync.ProjectSyncResult;
 import eu.vranckaert.worktime.dao.web.model.response.sync.TaskSyncResult;
@@ -33,6 +36,7 @@ import eu.vranckaert.worktime.exceptions.worktime.account.*;
 import eu.vranckaert.worktime.exceptions.worktime.sync.CorruptSyncDataException;
 import eu.vranckaert.worktime.exceptions.worktime.sync.SyncAlreadyBusyException;
 import eu.vranckaert.worktime.exceptions.worktime.sync.SynchronizationFailedException;
+import eu.vranckaert.worktime.guice.Application;
 import eu.vranckaert.worktime.model.*;
 import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.service.BackupService;
@@ -48,6 +52,8 @@ import java.util.*;
  * Time: 20:04
  */
 public class AccountServiceImpl implements AccountService {
+    public static final String LOG_TAG = AccountServiceImpl.class.getSimpleName();
+
     @Inject
     private WorkTimeWebDao workTimeWebDao;
 
@@ -75,6 +81,21 @@ public class AccountServiceImpl implements AccountService {
     @Inject
     private Context context;
 
+    public AccountServiceImpl() {}
+
+    public AccountServiceImpl(Application application, Context context) {
+        this.context = context;
+
+        workTimeWebDao = new WorkTimeWebDaoImpl(application, context);
+        accountDao = new AccountDaoImpl(context);
+        syncHistoryDao = new SyncHistoryDaoImpl(context);
+        projectDao = new ProjectDaoImpl(context, new SyncRemovalCacheDaoImpl(context));
+        taskDao = new TaskDaoImpl(context, new SyncRemovalCacheDaoImpl(context));
+        timeRegistrationDao = new TimeRegistrationDaoImpl(context, new SyncRemovalCacheDaoImpl(context));
+        syncRemovalCacheDao = new SyncRemovalCacheDaoImpl(context);
+        backupService = new DatabaseFileBackupServiceImpl();
+    }
+
     @Override
     public boolean isUserLoggedIn() {
         User user = accountDao.getLoggedInUser();
@@ -94,6 +115,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public void reLogin() throws GeneralWebException, NoNetworkConnectionException, LoginCredentialsMismatchException {
+        User user = accountDao.getLoggedInUser();
+        if (user != null) {
+            login(user.getEmail(), user.getPassword());
+        }
+    }
+
+    @Override
     public void register(String email, String firstName, String lastName, String password) throws GeneralWebException, NoNetworkConnectionException, RegisterEmailAlreadyInUseException, PasswordLengthValidationException, RegisterFieldRequiredException {
         String sessionKey = workTimeWebDao.register(email, firstName, lastName, password);
 
@@ -103,6 +132,16 @@ public class AccountServiceImpl implements AccountService {
         user.setSessionKey(sessionKey);
 
         accountDao.storeLoggedInUser(user);
+    }
+
+    @Override
+    public User getOfflineUserDate() {
+        User user = accountDao.getLoggedInUser();
+        if (user.isProfileComplete()) {
+            return user;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -117,21 +156,24 @@ public class AccountServiceImpl implements AccountService {
             throw e;
         }
 
+        if (updatedUser != null) {
+            user.setFirstName(updatedUser.getFirstName());
+            user.setLastName(updatedUser.getLastName());
+            user.setEmail(updatedUser.getEmail());
+            user.setLoggedInSince(updatedUser.getLoggedInSince());
+            user.setRegisteredSince(updatedUser.getRegisteredSince());
+            user.setRole(updatedUser.getRole());
+            accountDao.update(user);
+        }
+
         return updatedUser;
     }
 
     @Override
     public void sync() throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException, WifiConnectionRequiredException, BackupException, SyncAlreadyBusyException, SynchronizationFailedException {
-        SyncHistory ongoingSyncHistory = syncHistoryDao.getOngoingSyncHistory();
-        if (ongoingSyncHistory != null) {
-            long startTime = ongoingSyncHistory.getStarted().getTime();
-            if (new Date().getTime() - startTime  > 600000) { // Checks for a 10 minute timeout.
-                ongoingSyncHistory.setStatus(SyncHistoryStatus.TIMED_OUT);
-                ongoingSyncHistory.setEnded(new Date());
-                syncHistoryDao.update(ongoingSyncHistory);
-            } else {
-                throw new SyncAlreadyBusyException();
-            }
+        Log.i(LOG_TAG, "Starting synchronization...");
+        if (isSyncBusy()) {
+            throw new SyncAlreadyBusyException();
         }
 
         // Save an instance of SyncHistory so we always know that a sync is going on...
@@ -139,7 +181,6 @@ public class AccountServiceImpl implements AccountService {
         syncHistoryDao.save(syncHistory);
 
         try {
-            // TODO wifi-check does not work!
             if (Preferences.Account.syncOnWifiOnly(context) && !NetworkUtil.isConnectedToWifi(context)) {
                 WifiConnectionRequiredException e = new WifiConnectionRequiredException();
                 markSyncAsFailed(e);
@@ -542,6 +583,28 @@ public class AccountServiceImpl implements AccountService {
             }
             syncHistoryDao.update(syncHistory);
         }
+    }
+
+    @Override
+    public boolean isSyncBusy() {
+        SyncHistory ongoingSyncHistory = syncHistoryDao.getOngoingSyncHistory();
+        if (ongoingSyncHistory != null) {
+            long startTime = ongoingSyncHistory.getStarted().getTime();
+            if (new Date().getTime() - startTime  > 600000) { // Checks for a 10 minute timeout.
+                ongoingSyncHistory.setStatus(SyncHistoryStatus.TIMED_OUT);
+                ongoingSyncHistory.setEnded(new Date());
+                syncHistoryDao.update(ongoingSyncHistory);
+            } else {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public SyncHistory getLastSyncHistory() {
+        return syncHistoryDao.getLastSyncHistory();
     }
 
     @Override

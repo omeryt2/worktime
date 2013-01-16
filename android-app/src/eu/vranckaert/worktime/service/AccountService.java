@@ -21,8 +21,11 @@ import eu.vranckaert.worktime.exceptions.network.WifiConnectionRequiredException
 import eu.vranckaert.worktime.exceptions.worktime.account.*;
 import eu.vranckaert.worktime.exceptions.worktime.sync.SyncAlreadyBusyException;
 import eu.vranckaert.worktime.exceptions.worktime.sync.SynchronizationFailedException;
+import eu.vranckaert.worktime.model.SyncHistory;
 import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
+
+import java.util.Date;
 
 /**
  * User: DIRK VRANCKAERT
@@ -47,6 +50,8 @@ public interface AccountService {
      */
     void login(String email, String password) throws GeneralWebException, NoNetworkConnectionException, LoginCredentialsMismatchException;
 
+    void reLogin() throws GeneralWebException, NoNetworkConnectionException, LoginCredentialsMismatchException;
+
     /**
      * Register a new user-account with the provided details.
      * @param email The email of the user.
@@ -60,6 +65,13 @@ public interface AccountService {
      * @throws eu.vranckaert.worktime.exceptions.worktime.account.RegisterFieldRequiredException If one of the required fields is missing.
      */
     void register(String email, String firstName, String lastName, String password) throws GeneralWebException, NoNetworkConnectionException, RegisterEmailAlreadyInUseException, PasswordLengthValidationException, RegisterFieldRequiredException;
+
+    /**
+     * Retrieve the user data that is stored offline. If the user data is incomplete (no firstname, lastname, registered
+     * since date, logged in since date or role) this method will return null.
+     * @return The {@link User} object or null.
+     */
+    User getOfflineUserDate();
 
     /**
      * Loads the user data (full profile) from the database and updates it with information from the webservice.
@@ -92,6 +104,18 @@ public interface AccountService {
      * the remote server.
      */
     void sync() throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException, WifiConnectionRequiredException, BackupException, SyncAlreadyBusyException, SynchronizationFailedException;
+
+    /**
+     * Checks if a synchronisation is going on or not. It also checks for the timeout to be reached or not.
+     * @return {@link Boolean#TRUE} if the synchronization is going on, {@link Boolean#FALSE} if not.
+     */
+    boolean isSyncBusy();
+
+    /**
+     * Get the latest sync history object.
+     * @return The latest {@link SyncHistory} object or null if none.
+     */
+    SyncHistory getLastSyncHistory();
 
     /**
      * Log the current logged in user out, remove all the account-data stored locally and remove all the sync-keys from

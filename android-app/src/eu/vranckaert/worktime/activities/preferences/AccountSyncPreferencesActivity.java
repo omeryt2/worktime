@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,13 +17,16 @@ package eu.vranckaert.worktime.activities.preferences;
 
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
+import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.activity.GenericPreferencesActivity;
+import eu.vranckaert.worktime.utils.alarm.AlarmUtil;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 
@@ -36,11 +38,24 @@ import eu.vranckaert.worktime.utils.preferences.Preferences;
 public class AccountSyncPreferencesActivity extends GenericPreferencesActivity {
     private static final String LOG_TAG = AccountSyncPreferencesActivity.class.getSimpleName();
 
+    @Inject
+    private AccountService accountService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setTitle(R.string.pref_account_sync_category_title);
+
+        final ListPreference syncIntervalPreference = (ListPreference) getPreferenceScreen().findPreference(Constants.Preferences.Keys.ACCOUNT_SYNC_INTERVAL);
+        syncIntervalPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                long interval = Integer.parseInt(newValue.toString()) * 3600000L;
+                AlarmUtil.setAlarmSyncCycle(AccountSyncPreferencesActivity.this, accountService.getLastSyncHistory(), interval);
+                return true;
+            }
+        });
     }
 
     @Override

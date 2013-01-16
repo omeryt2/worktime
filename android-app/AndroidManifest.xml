@@ -24,6 +24,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission."/>
+
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="17"/>
 
     <application android:label="WorkTime" android:icon="@drawable/logo"
@@ -40,6 +43,13 @@
 			<meta-data android:name="android.appwidget.provider"
 					   android:resource="@xml/appwidget_2x2_project"/>
 		</receiver>
+
+        <receiver android:name=".broadcastreceiver.AlarmSyncInitBroadcastReceiver" android:enabled="true" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+            </intent-filter>
+        </receiver>
 
         <receiver android:name=".providers.WorkTimeWidgetProvider_2x1_ProjectTask" android:label="@string/lbl_widget_2x1_name">
             <intent-filter>
@@ -174,6 +184,8 @@
         <activity android:name=".activities.account.AccountRegisterActivity"
                   android:theme="@style/AppTheme"
                   android:configChanges="orientation|keyboardHidden"/>
+        <service android:name=".activities.account.AccountSyncService"
+                 android:exported="false"/>
 
         <!-- Widget activities -->
         <!-- Configuration -->

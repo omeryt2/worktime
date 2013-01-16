@@ -43,4 +43,16 @@
         android:title="@string/pref_account_backup_before_sync_title"
         android:summaryOn="@string/pref_account_backup_before_sync_summary_on"
         android:summaryOff="@string/pref_account_backup_before_sync_summary_off"/>
+    <CheckBoxPreference
+        android:key="accountSyncSuccessShowNotifications"
+        android:defaultValue="false"
+        android:title="@string/pref_account_sync_success_show_notifications_title"
+        android:summaryOn="@string/pref_account_sync_success_show_notifications_summary_on"
+        android:summaryOff="@string/pref_account_sync_success_show_notifications_summary_off"/>
+    <CheckBoxPreference
+        android:key="accountSyncErrorShowNotifications"
+        android:defaultValue="true"
+        android:title="@string/pref_account_sync_error_show_notifications_title"
+        android:summaryOn="@string/pref_account_sync_error_show_notifications_summary_on"
+        android:summaryOff="@string/pref_account_sync_error_show_notifications_summary_off"/>
 </PreferenceScreen>

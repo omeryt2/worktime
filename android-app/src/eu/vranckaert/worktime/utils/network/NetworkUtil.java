@@ -18,6 +18,7 @@ package eu.vranckaert.worktime.utils.network;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -90,9 +91,16 @@ public class NetworkUtil {
      */
     public static boolean isConnectedToWifi(Context ctx) {
         WifiManager wifiManager = (WifiManager) ctx.getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        if (wifiInfo != null) {
-            return true;
+        if (wifiManager != null) {
+            SupplicantState state = wifiManager.getConnectionInfo().getSupplicantState();
+            if (state != null) {
+                NetworkInfo.DetailedState detailedState = WifiInfo.getDetailedStateOf(state);
+                if (detailedState != null) {
+                    if (detailedState == NetworkInfo.DetailedState.CONNECTED) {
+                        return true;
+                    }
+                }
+            }
         }
         return false;
     }
