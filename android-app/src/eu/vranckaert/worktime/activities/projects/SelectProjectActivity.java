@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,6 +29,7 @@ import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
+import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 
@@ -42,7 +42,7 @@ import java.util.List;
  * Date: 02/03/11
  * Time: 20:56
  */
-public class SelectProjectActivity extends RoboActivity {
+public class SelectProjectActivity extends SyncLockedGuiceActivity {
     @Inject
     private ProjectService projectService;
 

@@ -188,6 +188,7 @@ public class AccountServiceImpl implements AccountService {
             }
 
             if (Preferences.Account.backupBeforeSync(context)) {
+                updateCurrentSyncAction(SyncHistoryAction.BACKUP);
                 try {
                     backupService.backup(context);
                 } catch (SDCardUnavailableException e) {
@@ -202,6 +203,8 @@ public class AccountServiceImpl implements AccountService {
                     throw backupFileCouldNotBeWritten;
                 }
             }
+
+            updateCurrentSyncAction(SyncHistoryAction.PREPARE_DATA);
 
             // Retrieve the logged in user
             User user = accountDao.getLoggedInUser();
@@ -240,6 +243,8 @@ public class AccountServiceImpl implements AccountService {
             // Retrieve removed sync-keys
             Map<String, String> syncRemovalMap = syncRemovalCacheDao.findAllSyncKeys();
 
+            updateCurrentSyncAction(SyncHistoryAction.SYNC_SERVER);
+
             List<Object> result;
             try {
                 // Execute the sync on the server
@@ -265,6 +270,8 @@ public class AccountServiceImpl implements AccountService {
                 throw e;
             }
 
+            updateCurrentSyncAction(SyncHistoryAction.SYNC_LOCAL);
+
             List<Project> projectsSinceLastSync = (List<Project>) result.get(0);
             List<Task> tasksSinceLastSync = (List<Task>) result.get(1);
             List<TimeRegistration> timeRegistrationsSinceLastSync = (List<TimeRegistration>) result.get(2);
@@ -281,6 +288,7 @@ public class AccountServiceImpl implements AccountService {
             syncHistory = syncHistoryDao.getOngoingSyncHistory();
             syncHistory.setEnded(new Date());
             syncHistory.setStatus(SyncHistoryStatus.SUCCESSFUL);
+            syncHistory.setAction(SyncHistoryAction.DONE);
             syncHistoryDao.update(syncHistory);
         } catch (RuntimeException e) {
             markSyncAsFailed(e);
@@ -344,13 +352,17 @@ public class AccountServiceImpl implements AccountService {
      *                         server.
      */
     private void applySyncResult(EntitySyncResult entitySyncResult) {
+        Log.d(LOG_TAG, "Applying synchronization result...");
+
         for (ProjectSyncResult syncResult : entitySyncResult.getProjectSyncResults()) {
+            Log.d(LOG_TAG, "Checking for project with local name " + syncResult.getProject().getName());
             Project localProject = syncResult.getProject();
             Project syncedProject = syncResult.getSyncedProject();
             switch (syncResult.getResolution()) {
                 case MERGED: {
                     // The entity has been merged with an entity on the server, so we will have copy all of the
                     // synced data into the local entity.
+                    Log.d(LOG_TAG, "The project has been merged...");
                     Project project = projectDao.findByName(localProject.getName());
                     updateProject(syncedProject, project);
                     break;
@@ -358,6 +370,7 @@ public class AccountServiceImpl implements AccountService {
                 case NOT_ACCEPTED: {
                     // The entity has been synced before but is no longer found remotely based on the sync key so we
                     // can safely remove the entity from the database.
+                    Log.d(LOG_TAG, "The project has not been accepted...");
                     Project project = projectDao.findByName(localProject.getName());
                     projectDao.delete(project);
                     break;
@@ -365,6 +378,7 @@ public class AccountServiceImpl implements AccountService {
                 default: {
                     // The entity has been either accepted remotely or it already exists on the server and the
                     // contents did not have to be merged. We will only update it's syncKey!
+                    Log.d(LOG_TAG, "The project has been accepted or no action was necessary...");
                     Project project = projectDao.findByName(localProject.getName());
                     if (project.getSyncKey() == null) {
                         project.setSyncKey(syncedProject.getSyncKey());
@@ -375,12 +389,14 @@ public class AccountServiceImpl implements AccountService {
             }
         }
         for (TaskSyncResult syncResult : entitySyncResult.getTaskSyncResults()) {
+            Log.d(LOG_TAG, "Checking for task with local name " + syncResult.getTask().getName());
             Task localTask = syncResult.getTask();
             Task syncedTask = syncResult.getSyncedTask();
             switch (syncResult.getResolution()) {
                 case MERGED: {
                     // The entity has been merged with an entity on the server, so we will have copy all of the
                     // synced data into the local entity.
+                    Log.d(LOG_TAG, "The task has been merged...");
                     Task task = taskDao.findByName(localTask.getName());
                     updateTask(syncedTask, task);
                     break;
@@ -388,6 +404,7 @@ public class AccountServiceImpl implements AccountService {
                 case NOT_ACCEPTED: {
                     // The entity has been synced before but is no longer found remotely based on the sync key so we
                     // can safely remove the entity from the database.
+                    Log.d(LOG_TAG, "The task has not been accepted...");
                     Task task = taskDao.findByName(localTask.getName());
                     taskDao.delete(task);
                     break;
@@ -395,6 +412,7 @@ public class AccountServiceImpl implements AccountService {
                 default: {
                     // The entity has been either accepted remotely or it already exists on the server and the
                     // contents did not have to be merged. We will only update it's syncKey!
+                    Log.d(LOG_TAG, "The task has been accepted or no action was necessary...");
                     Task task = taskDao.findByName(localTask.getName());
                     if (task.getSyncKey() == null) {
                         task.setSyncKey(syncedTask.getSyncKey());
@@ -405,6 +423,7 @@ public class AccountServiceImpl implements AccountService {
             }
         }
         for (TimeRegistrationSyncResult syncResult : entitySyncResult.getTimeRegistrationSyncResults()) {
+            Log.d(LOG_TAG, "Checking for time registration with local start and end time (" + syncResult.getTimeRegistration().getStartTime() + ", END: " + (syncResult.getTimeRegistration().getEndTime() == null ? "NULL" : syncResult.getTimeRegistration().getEndTime()) + ")");
             TimeRegistration localTimeRegistration = syncResult.getTimeRegistration();
             TimeRegistration syncedTimeRegistration = syncResult.getSyncedTimeRegistration();
             List<TimeRegistration> syncedTimeRegistrations = syncResult.getSyncedTimeRegistrations();
@@ -412,6 +431,7 @@ public class AccountServiceImpl implements AccountService {
                 case MERGED: {
                     // The entity has been merged with an entity on the server, so we will have copy all of the
                     // synced data into the local entity.
+                    Log.d(LOG_TAG, "The time registration has been merged...");
                     TimeRegistration timeRegistration = timeRegistrationDao.findByDates(
                             localTimeRegistration.getStartTime(), localTimeRegistration.getEndTime()
                     );
@@ -424,12 +444,14 @@ public class AccountServiceImpl implements AccountService {
                     // persisted. Or the time registration was not accepted because there was not match found with
                     // the sync-key (so it must have been removed on the server) before this sync. We can then
                     // safely remove it here also.
+                    Log.d(LOG_TAG, "The time registration has not been accepted...");
                     TimeRegistration timeRegistration = timeRegistrationDao.findByDates(
                             localTimeRegistration.getStartTime(), localTimeRegistration.getEndTime()
                     );
                     timeRegistrationDao.delete(timeRegistration);
                     if (syncedTimeRegistrations != null && !syncedTimeRegistrations.isEmpty()) {
                         for (TimeRegistration incomingTimeRegistration : syncedTimeRegistrations) {
+                            Log.d(LOG_TAG, "Persisting incoming time registration with sync key " + incomingTimeRegistration.getSyncKey() + " and start and end time (" + incomingTimeRegistration.getStartTime() + ", END: " + (incomingTimeRegistration.getEndTime() == null ? "NULL" : incomingTimeRegistration.getEndTime()) + ")");
                             Task task = taskDao.findByName(incomingTimeRegistration.getTask().getName());
                             incomingTimeRegistration.setTask(task);
                             timeRegistrationDao.save(incomingTimeRegistration);
@@ -439,6 +461,7 @@ public class AccountServiceImpl implements AccountService {
                 default: {
                     // The entity has been either accepted remotely or it already exists on the server and the
                     // contents did not have to be merged. We will only update it's syncKey!
+                    Log.d(LOG_TAG, "The time registration has been accepted or no action was necessary...");
                     TimeRegistration timeRegistration = timeRegistrationDao.findByDates(
                             localTimeRegistration.getStartTime(), localTimeRegistration.getEndTime()
                     );
@@ -460,44 +483,66 @@ public class AccountServiceImpl implements AccountService {
      * @param timeRegistrations Time registrations coming from the server.
      */
     private void checkServerEntities(List<Project> projects, List<Task> tasks, List<TimeRegistration> timeRegistrations) {
+        Log.d(LOG_TAG, "Check for the entities on the server that have changed since the last update to be persisted locally or use to update local information...");
+
+        Log.d(LOG_TAG, "Checking the server-projects...");
         for (Project project : projects) {
+            Log.d(LOG_TAG, "Checking project with sync key " + project.getSyncKey() + " and name " + project.getName());
             Project localProject = projectDao.findBySyncKey(project.getSyncKey());
             if (localProject == null) {
+                Log.d(LOG_TAG, "No local project found based on the sync key (" + project.getSyncKey() + ")");
                 localProject = projectDao.findByName(project.getName());
                 if (localProject != null) {
+                    Log.d(LOG_TAG, "Local project found based on the name (" + localProject.getName() + "), update the local project with the server content");
                     updateProject(project, localProject);
                 } else {
+                    Log.d(LOG_TAG, "No local project found based on the name, save incoming project with name " + project.getName());
                     projectDao.save(project);
                 }
             } else {
+                Log.d(LOG_TAG, "Local project found based on the sync key (" + localProject.getSyncKey() + "), update the local project with the server content");
                 updateProject(project, localProject);
             }
         }
+
+        Log.d(LOG_TAG, "Checking the server-tasks...");
         for (Task task : tasks) {
+            Log.d(LOG_TAG, "Checking task with sync key " + task.getSyncKey() + " and name " + task.getName());
             Task localTask = taskDao.findBySyncKey(task.getSyncKey());
             if (localTask == null) {
+                Log.d(LOG_TAG, "No local task found based on the sync key (" + task.getSyncKey() + ")");
                 localTask = taskDao.findByName(task.getName());
                 if (localTask != null) {
+                    Log.d(LOG_TAG, "Local task found based on the name (" + localTask.getName() + "), update the local task with the server content");
                     updateTask(task, localTask);
                 } else {
+                    Log.d(LOG_TAG, "No local task found based on the name, save incoming task with name " + task.getName());
                     updateTask(task, task);
                     taskDao.save(task);
                 }
             } else {
+                Log.d(LOG_TAG, "Local task found based on the sync key (" + localTask.getSyncKey() + "), update the local task with the server content");
                 updateTask(task, localTask);
             }
         }
+
+        Log.d(LOG_TAG, "Checking the server-time registrations...");
         for (TimeRegistration timeRegistration : timeRegistrations) {
+            Log.d(LOG_TAG, "Checking time registrations with sync key " + timeRegistration.getSyncKey() + " and start and end time (START: " + timeRegistration.getStartTime() + ", END: " + (timeRegistration.getEndTime() == null ? "NULL" : timeRegistration.getEndTime()) + "), update the local time registration with the server content");
             TimeRegistration localTimeRegistration = timeRegistrationDao.findBySyncKey(timeRegistration.getSyncKey());
             if (localTimeRegistration == null) {
+                Log.d(LOG_TAG, "No local time registration found based on the sync key (" + timeRegistration.getSyncKey() + ")");
                 localTimeRegistration = timeRegistrationDao.findByDates(timeRegistration.getStartTime(), timeRegistration.getEndTime());
                 if (localTimeRegistration != null) {
+                    Log.d(LOG_TAG, "Local time registration found based on the start and end time (START: " + timeRegistration.getStartTime() + ", END: " + (timeRegistration.getEndTime() == null ? "NULL" : timeRegistration.getEndTime()) + "), update the local time registration with the server content");
                     updateTimeRegistration(timeRegistration, localTimeRegistration);
                 } else {
+                    Log.d(LOG_TAG, "No local time registration found based on the start and end time, save incoming time registration with start and end time (START: " + timeRegistration.getStartTime() + ", END: " + (timeRegistration.getEndTime() == null ? "NULL" : timeRegistration.getEndTime()) + ")");
                     updateTimeRegistration(timeRegistration, timeRegistration);
                     timeRegistrationDao.save(timeRegistration);
                 }
             } else {
+                Log.d(LOG_TAG, "Local time registration found based on the sync key (" + localTimeRegistration.getSyncKey() + "), update the local task with the server content");
                 updateTimeRegistration(timeRegistration, localTimeRegistration);
             }
         }
@@ -581,6 +626,18 @@ public class AccountServiceImpl implements AccountService {
             if (e != null) {
                 syncHistory.setFailureReason(e.getClass().getSimpleName());
             }
+            syncHistoryDao.update(syncHistory);
+        }
+    }
+
+    /**
+     * Updates the current action of the synchronization process.
+     * @param action The action that is now going on.
+     */
+    private void updateCurrentSyncAction(SyncHistoryAction action) {
+        SyncHistory syncHistory = syncHistoryDao.getOngoingSyncHistory();
+        if (syncHistory.getStatus().equals(SyncHistoryStatus.BUSY)) {
+            syncHistory.setAction(action);
             syncHistoryDao.update(syncHistory);
         }
     }

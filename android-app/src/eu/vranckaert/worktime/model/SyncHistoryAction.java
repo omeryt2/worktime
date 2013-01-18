@@ -13,18 +13,18 @@
  * limitations under the License.
  */
 
-package eu.vranckaert.worktime.dao;
-
-import eu.vranckaert.worktime.dao.generic.GenericDao;
-import eu.vranckaert.worktime.model.SyncRemovalCache;
-
-import java.util.Map;
+package eu.vranckaert.worktime.model;
 
 /**
  * User: Dirk Vranckaert
- * Date: 11/01/13
- * Time: 16:08
+ * Date: 17/01/13
+ * Time: 16:38
  */
-public interface SyncRemovalCacheDao extends GenericDao<SyncRemovalCache, String> {
-    Map<String, String> findAllSyncKeys();
+public enum SyncHistoryAction {
+    CHECK_DEVICE,
+    BACKUP,
+    PREPARE_DATA,
+    SYNC_SERVER,
+    SYNC_LOCAL,
+    DONE;
 }

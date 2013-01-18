@@ -30,9 +30,10 @@ import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
+import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
 import roboguice.activity.RoboActivity;
 
-public class ResetApplicationPreferencesActivity extends RoboActivity {
+public class ResetApplicationPreferencesActivity extends SyncLockedGuiceActivity {
     @Inject
     private StatusBarNotificationService notificationService;
 

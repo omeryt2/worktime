@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,6 +30,7 @@ import eu.vranckaert.worktime.exceptions.backup.BackupFileCouldNotBeWritten;
 import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.utils.string.StringUtils;
+import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
 import roboguice.activity.RoboActivity;
 
 /**
@@ -38,7 +38,7 @@ import roboguice.activity.RoboActivity;
  * Date: 11/09/11
  * Time: 11:49
  */
-public class BackupToSDActivity extends RoboActivity {
+public class BackupToSDActivity extends SyncLockedGuiceActivity {
     private static final String LOG_TAG = BackupToSDActivity.class.getSimpleName();
 
     @Inject

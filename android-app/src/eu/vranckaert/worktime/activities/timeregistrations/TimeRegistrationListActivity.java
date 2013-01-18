@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,11 +18,7 @@ package eu.vranckaert.worktime.activities.timeregistrations;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import com.google.inject.Inject;
@@ -42,7 +37,7 @@ import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceListActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +47,7 @@ import java.util.List;
  * Date: 05/02/11
  * Time: 18:58
  */
-public class TimeRegistrationListActivity extends ActionBarGuiceListActivity {
+public class TimeRegistrationListActivity extends SyncLockedListActivity {
     private static final String LOG_TAG = TimeRegistrationListActivity.class.getSimpleName();
 
     @Inject

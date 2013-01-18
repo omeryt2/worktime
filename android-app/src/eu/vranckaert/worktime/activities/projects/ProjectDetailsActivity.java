@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -62,6 +61,7 @@ import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceListActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedListActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
@@ -74,7 +74,7 @@ import java.util.List;
  * Date: 28/03/11
  * Time: 18:26
  */
-public class ProjectDetailsActivity extends ActionBarGuiceListActivity {
+public class ProjectDetailsActivity extends SyncLockedListActivity {
     private static final String LOG_TAG = ProjectDetailsActivity.class.getSimpleName();
 
     @InjectView(R.id.projectComment)

@@ -59,8 +59,10 @@ public class TaskDaoImpl extends GenericDaoImpl<Task, Integer> implements TaskDa
     @Override
     public void delete(Task entity) {
         if (entity.getSyncKey() != null) {
-            SyncRemovalCache cache = new SyncRemovalCache(entity.getSyncKey(), entity.getClass().getSimpleName());
-            syncRemovalCache.save(cache);
+            if (syncRemovalCache.findById(entity.getSyncKey()) == null) {
+                SyncRemovalCache cache = new SyncRemovalCache(entity.getSyncKey(), entity.getClass().getSimpleName());
+                syncRemovalCache.save(cache);
+            }
         }
         super.delete(entity);
     }
@@ -70,8 +72,10 @@ public class TaskDaoImpl extends GenericDaoImpl<Task, Integer> implements TaskDa
         List<Task> entities = findAll();
         for (Task entity : entities) {
             if (entity.getSyncKey() != null) {
-                SyncRemovalCache cache = new SyncRemovalCache(entity.getSyncKey(), entity.getClass().getSimpleName());
-                syncRemovalCache.save(cache);
+                if (syncRemovalCache.findById(entity.getSyncKey()) == null) {
+                    SyncRemovalCache cache = new SyncRemovalCache(entity.getSyncKey(), entity.getClass().getSimpleName());
+                    syncRemovalCache.save(cache);
+                }
             }
         }
         super.deleteAll();

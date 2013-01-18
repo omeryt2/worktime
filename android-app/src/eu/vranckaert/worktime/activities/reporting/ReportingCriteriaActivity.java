@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -61,6 +60,7 @@ import eu.vranckaert.worktime.utils.file.XlsFilenameFilter;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
@@ -79,7 +79,7 @@ import java.util.List;
  * Date: 15/09/11
  * Time: 20:28
  */
-public class ReportingCriteriaActivity extends ActionBarGuiceActivity {
+public class ReportingCriteriaActivity extends SyncLockedActivity {
     private static final String LOG_TAG = ReportingCriteriaActivity.class.getSimpleName();
 
     private List<ReportingDateRange> dateRanges;

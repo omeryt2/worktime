@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -37,6 +36,7 @@ import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.HourPreference12Or24;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
+import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedWizardActivity;
 import eu.vranckaert.worktime.utils.wizard.WizardActivity;
 import org.joda.time.Duration;
 
@@ -48,7 +48,7 @@ import java.util.Date;
  * Date: 07/12/11
  * Time: 07:17
  */
-public class TimeRegistrationSplitActivity extends WizardActivity {
+public class TimeRegistrationSplitActivity extends SyncLockedWizardActivity {
     private static final String LOG_TAG = TimeRegistrationSplitActivity.class.getSimpleName();
 
     @Inject

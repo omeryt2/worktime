@@ -63,8 +63,10 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
     @Override
     public void delete(TimeRegistration entity) {
         if (entity.getSyncKey() != null) {
-            SyncRemovalCache cache = new SyncRemovalCache(entity.getSyncKey(), entity.getClass().getSimpleName());
-            syncRemovalCache.save(cache);
+            if (syncRemovalCache.findById(entity.getSyncKey()) == null) {
+                SyncRemovalCache cache = new SyncRemovalCache(entity.getSyncKey(), entity.getClass().getSimpleName());
+                syncRemovalCache.save(cache);
+            }
         }
         super.delete(entity);
     }
@@ -74,8 +76,10 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
         List<TimeRegistration> entities = findAll();
         for (TimeRegistration entity : entities) {
             if (entity.getSyncKey() != null) {
-                SyncRemovalCache cache = new SyncRemovalCache(entity.getSyncKey(), entity.getClass().getSimpleName());
-                syncRemovalCache.save(cache);
+                if (syncRemovalCache.findById(entity.getSyncKey()) == null) {
+                    SyncRemovalCache cache = new SyncRemovalCache(entity.getSyncKey(), entity.getClass().getSimpleName());
+                    syncRemovalCache.save(cache);
+                }
             }
         }
         super.deleteAll();

@@ -103,6 +103,7 @@ public class Constants {
         public static final int SELECT_TASK = 13;
         public static final int ACCOUNT_DETAILS = 14;
         public static final int ACCOUNT_REGISTER = 15;
+        public static final int SYNC_BLOCKING_ACTIVITY = 16;
 
 
         public static final int ALARM_SYNC_REPEAT = 9000;
@@ -111,6 +112,8 @@ public class Constants {
         public static final int RESULT_OK_SPLIT = 100;
         public static final int RESULT_DELETED = 200;
         public static final int RESULT_LOGOUT = 300;
+        public static final int SYNC_COMPLETED_ERROR = 400;
+        public static final int SYNC_COMPLETED_SUCCESS = 500;
     }
     public class Preferences {
         public static final String PREFERENCES_NAME = "WorkTime_0001";

@@ -186,6 +186,9 @@
                   android:configChanges="orientation|keyboardHidden"/>
         <service android:name=".activities.account.AccountSyncService"
                  android:exported="false"/>
+        <activity android:name=".utils.view.actionbar.synclock.SyncLockingActivity"
+                  android:theme="@style/AppTheme"
+                  android:configChanges="orientation|keyboardHidden"/>
 
         <!-- Widget activities -->
         <!-- Configuration -->

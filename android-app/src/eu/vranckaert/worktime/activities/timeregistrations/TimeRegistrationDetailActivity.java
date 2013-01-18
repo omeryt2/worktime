@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import com.google.inject.Inject;
+import com.google.inject.internal.Nullable;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TextConstants;
@@ -42,18 +42,16 @@ import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
-
-import com.google.inject.internal.Nullable;
 
 /**
  * User: DIRK VRANCKAERT
  * Date: 27/04/11
  * Time: 15:59
  */
-public class TimeRegistrationDetailActivity extends ActionBarGuiceActivity {
+public class TimeRegistrationDetailActivity extends SyncLockedActivity {
     private static final String LOG_TAG = TimeRegistrationDetailActivity.class.getSimpleName();
 
     @InjectView(R.id.start)

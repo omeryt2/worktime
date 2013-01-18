@@ -650,6 +650,8 @@
     <string name="lbl_sync_service_error_backup">Synchronization is aborted because making a backup file failed!</string>
     <string name="lbl_sync_service_error_already_busy">Synchronization is not started because another synchronization is already in progress. Try again in a few minutes.</string>
     <string name="lbl_sync_service_error_sync_failed">Synchronization failed due to a server error. Try again in a few minutes or register a bug!</string>
+    <!-- SYNC BLOCKING ACTIVITY -->
+    <string name="lbl_sync_blocking_title">Synchronizing</string>
 
     <!-- ABOUT -->
     <string name="lbl_about_title">About</string>

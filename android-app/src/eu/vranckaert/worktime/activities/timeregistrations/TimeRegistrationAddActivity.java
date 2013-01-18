@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -45,6 +44,7 @@ import eu.vranckaert.worktime.utils.date.HourPreference12Or24;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
+import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedWizardActivity;
 import eu.vranckaert.worktime.utils.wizard.WizardActivity;
 
 import java.util.*;
@@ -54,7 +54,7 @@ import java.util.*;
  * Date: 03/12/12
  * Time: 19:22
  */
-public class TimeRegistrationAddActivity extends WizardActivity {
+public class TimeRegistrationAddActivity extends SyncLockedWizardActivity {
     private static final String LOG_TAG = TimeRegistrationAddActivity.class.getSimpleName();
 
     private static final int PAGE_INFO = 0;

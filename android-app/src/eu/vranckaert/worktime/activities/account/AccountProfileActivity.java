@@ -42,6 +42,7 @@ import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedActivity;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
 import roboguice.inject.InjectView;
 
@@ -52,11 +53,10 @@ import java.util.Date;
  * Date: 12/12/12
  * Time: 10:04
  */
-public class AccountProfileActivity extends ActionBarGuiceActivity {
+public class AccountProfileActivity extends SyncLockedActivity {
     private static final String LOG_TAG = AccountProfileActivity.class.getSimpleName();
 
     private AnalyticsTracker tracker;
-    private SyncCheckerTask syncCheckerTask;
 
     @Inject private AccountService accountService;
 
@@ -108,12 +108,8 @@ public class AccountProfileActivity extends ActionBarGuiceActivity {
             case R.id.menu_account_profile_activity_sync: {
                 getActionBarHelper().setRefreshActionItemState(true, R.id.menu_account_profile_activity_sync);
 
-                Date syncStartTime = new Date();
                 Intent intent = new Intent(AccountProfileActivity.this, AccountSyncService.class);
                 startService(intent);
-
-                syncCheckerTask = new SyncCheckerTask();
-                syncCheckerTask.execute(syncStartTime);
                 break;
             }
             case R.id.menu_account_profile_activity_settings: {
@@ -200,65 +196,14 @@ public class AccountProfileActivity extends ActionBarGuiceActivity {
         loggedInSince.setText(DateUtils.DateTimeConverter.convertDateTimeToString(user.getLoggedInSince(), DateFormat.MEDIUM, TimeFormat.MEDIUM, AccountProfileActivity.this));
     }
 
-    private class SyncCheckerTask extends AsyncTask<Date, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            getActionBarHelper().setRefreshActionItemState(true, R.id.menu_account_profile_activity_sync);
-        }
-
-        @Override
-        protected Void doInBackground(Date... params) {
-            Date startDate = null;
-            if (params.length == 1)
-                startDate = params[0];
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {}
-
-            SyncHistory syncHistory = accountService.getLastSyncHistory();
-            while (syncHistory == null || syncHistory.getStatus().equals(SyncHistoryStatus.BUSY) || (startDate != null && syncHistory.getEnded().before(startDate)) ) {
-                if (isCancelled())
-                    break;
-
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {}
-
-                // Update the syncHistory object to contain the latest info before checking again...
-                syncHistory = accountService.getLastSyncHistory();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onCancelled(Void aVoid) {
-            getActionBarHelper().setRefreshActionItemState(false, R.id.menu_account_profile_activity_sync);
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            getActionBarHelper().setRefreshActionItemState(false, R.id.menu_account_profile_activity_sync);
-        }
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
-
-        if (syncCheckerTask != null) {
-            syncCheckerTask.cancel(true);
-        }
+        getActionBarHelper().setRefreshActionItemState(false, R.id.menu_account_profile_activity_sync);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (accountService.isSyncBusy()) {
-            syncCheckerTask = new SyncCheckerTask();
-            syncCheckerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
     }
 }

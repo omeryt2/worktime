@@ -22,5 +22,5 @@ package eu.vranckaert.worktime.dao.utils;
  */
 public interface DaoConstants {
     public static final String DATABASE = "worktime.db";
-    public static final int VERSION = 28;
+    public static final int VERSION = 29;
 }

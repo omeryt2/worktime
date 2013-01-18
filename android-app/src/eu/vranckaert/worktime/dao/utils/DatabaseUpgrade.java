@@ -83,6 +83,10 @@ public enum DatabaseUpgrade {
                 "syncKey " + DataTypes.VARCHAR + " PRIMARY KEY, " +
                 "entityName " + DataTypes.VARCHAR +
             ");"
+    }),
+    UPGRADE8(29, new String[] {
+            "ALTER TABLE SyncHistory add column action " + DataTypes.VARCHAR + ";",
+            "UPDATE SyncHistory SET action = 'DONE';"
     })
     ;
 

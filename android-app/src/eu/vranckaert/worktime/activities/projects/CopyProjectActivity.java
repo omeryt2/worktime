@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,6 +30,7 @@ import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.impl.ProjectServiceImpl;
 import eu.vranckaert.worktime.service.impl.TaskServiceImpl;
 import eu.vranckaert.worktime.utils.context.Log;
+import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedWizardActivity;
 import eu.vranckaert.worktime.utils.wizard.WizardActivity;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ import java.util.List;
  * Date: 7/03/12
  * Time: 7:47
  */
-public class CopyProjectActivity extends WizardActivity {
+public class CopyProjectActivity extends SyncLockedWizardActivity {
     private static final String LOG_TAG = CopyProjectActivity.class.getSimpleName();
     
     private TaskService taskService;

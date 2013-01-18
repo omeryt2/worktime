@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -53,6 +52,7 @@ import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceListActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedListActivity;
 import eu.vranckaert.worktime.utils.widget.WidgetUtil;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ import java.util.List;
  * Date: 05/02/11
  * Time: 18:19
  */
-public class ManageProjectsActivity extends ActionBarGuiceListActivity {
+public class ManageProjectsActivity extends SyncLockedListActivity {
     private static final String LOG_TAG = ManageProjectsActivity.class.getSimpleName();
 
     private List<Project> projects;

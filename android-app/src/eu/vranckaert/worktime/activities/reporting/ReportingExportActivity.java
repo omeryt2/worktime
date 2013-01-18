@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -56,6 +55,7 @@ import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedActivity;
 import jxl.biff.DisplayFormat;
 import org.joda.time.Period;
 import roboguice.inject.InjectExtra;
@@ -76,7 +76,7 @@ import java.util.TimeZone;
  * Date: 15/02/11
  * Time: 00:15
  */
-public class ReportingExportActivity extends ActionBarGuiceActivity {
+public class ReportingExportActivity extends SyncLockedActivity {
     private static final String LOG_TAG = ReportingExportActivity.class.getSimpleName();
 
     @InjectView(R.id.reporting_export_type)

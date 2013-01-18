@@ -58,8 +58,10 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
     @Override
     public void delete(Project entity) {
         if (entity.getSyncKey() != null) {
-            SyncRemovalCache cache = new SyncRemovalCache(entity.getSyncKey(), entity.getClass().getSimpleName());
-            syncRemovalCache.save(cache);
+            if (syncRemovalCache.findById(entity.getSyncKey()) == null) {
+                SyncRemovalCache cache = new SyncRemovalCache(entity.getSyncKey(), entity.getClass().getSimpleName());
+                syncRemovalCache.save(cache);
+            }
         }
         super.delete(entity);
     }
@@ -69,8 +71,10 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
         List<Project> entities = findAll();
         for (Project entity : entities) {
             if (entity.getSyncKey() != null) {
-                SyncRemovalCache cache = new SyncRemovalCache(entity.getSyncKey(), entity.getClass().getSimpleName());
-                syncRemovalCache.save(cache);
+                if (syncRemovalCache.findById(entity.getSyncKey()) == null) {
+                    SyncRemovalCache cache = new SyncRemovalCache(entity.getSyncKey(), entity.getClass().getSimpleName());
+                    syncRemovalCache.save(cache);
+                }
             }
         }
         super.deleteAll();

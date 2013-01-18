@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,6 +39,7 @@ import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
+import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 
@@ -56,7 +56,7 @@ import java.util.Date;
  * parameter is used together with the first extra-bundle parameter
  * {@link Constants.Extras#TIME_REGISTRATION_CONTINUE_WITH_NEW} to start the {@link TimeRegistrationPunchInActivity}.
  */
-public class TimeRegistrationPunchOutActivity extends RoboActivity {
+public class TimeRegistrationPunchOutActivity extends SyncLockedGuiceActivity {
     /**
      * LOG_TAG for logging
      */

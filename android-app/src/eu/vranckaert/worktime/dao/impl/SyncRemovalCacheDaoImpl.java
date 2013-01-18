@@ -30,7 +30,7 @@ import java.util.Map;
  * Date: 11/01/13
  * Time: 16:08
  */
-public class SyncRemovalCacheDaoImpl extends GenericDaoImpl<SyncRemovalCache, Integer> implements SyncRemovalCacheDao {
+public class SyncRemovalCacheDaoImpl extends GenericDaoImpl<SyncRemovalCache, String> implements SyncRemovalCacheDao {
     @Inject
     public SyncRemovalCacheDaoImpl(Context context) {
         super(SyncRemovalCache.class, context);

@@ -36,12 +36,15 @@ public class SyncHistory {
     private Date ended;
     @DatabaseField(dataType = DataType.ENUM_STRING)
     private SyncHistoryStatus status;
+    @DatabaseField(dataType = DataType.ENUM_STRING)
+    private SyncHistoryAction action;
     @DatabaseField
     private String failureReason;
 
     public SyncHistory() {
         this.started = new Date();
         this.status = SyncHistoryStatus.BUSY;
+        this.action = SyncHistoryAction.CHECK_DEVICE;
     }
 
     public Integer getId() {
@@ -74,6 +77,14 @@ public class SyncHistory {
 
     public void setStatus(SyncHistoryStatus status) {
         this.status = status;
+    }
+
+    public SyncHistoryAction getAction() {
+        return action;
+    }
+
+    public void setAction(SyncHistoryAction action) {
+        this.action = action;
     }
 
     public String getFailureReason() {
