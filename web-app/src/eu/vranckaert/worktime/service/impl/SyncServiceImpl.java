@@ -357,7 +357,7 @@ public class SyncServiceImpl implements SyncService {
 		
 		log.info("Starting to synchronize incoming project with name " + project.getName() + " for user " + user.getEmail());
 		Project localProject = null;
-		if (project.getSyncKey() == null) {
+		if (StringUtils.isBlank(project.getSyncKey())) {
 			localProject = projectDao.find(project.getName(), user);
 		} else {
 			localProject = projectDao.findBySyncKey(project.getSyncKey(), user);
@@ -442,7 +442,7 @@ public class SyncServiceImpl implements SyncService {
 		
 		log.info("Starting to synchronize incoming task with name " + task.getName() + " for user " + user.getEmail());
 		Task localTask = null;
-		if (task.getSyncKey() == null) {
+		if (StringUtils.isBlank(task.getSyncKey())) {
 			localTask = taskDao.find(task.getName(), user);
 		} else {
 			localTask = taskDao.findBySyncKey(task.getSyncKey(), user);
@@ -529,7 +529,7 @@ public class SyncServiceImpl implements SyncService {
 		
 		log.info("Starting to synchronize incoming time registration for user " + user.getEmail());
 		TimeRegistration localTimeRegistration = null;
-		if (timeRegistration.getSyncKey() == null) {
+		if (StringUtils.isBlank(timeRegistration.getSyncKey())) {
 			localTimeRegistration = timeRegistrationDao.find(timeRegistration.getStartTime(), timeRegistration.getEndTime(), user);
 		} else {
 			localTimeRegistration = timeRegistrationDao.findBySyncKey(timeRegistration.getSyncKey(), user);
@@ -541,7 +541,7 @@ public class SyncServiceImpl implements SyncService {
 			}
 		}
 		
-		if (localTimeRegistration == null) { // No matching time registration is found so persist project
+		if (localTimeRegistration == null) { // No matching time registration is found so persist time registration after interference check
 			log.info("No matching time registration is found for user " + user.getEmail());
 			List<TimeRegistration> interferingTimeRegistrations = timeRegistrationDao.findInterferingTimeRegistrations(timeRegistration, user);
 			if (interferingTimeRegistrations.isEmpty()) {
@@ -594,7 +594,7 @@ public class SyncServiceImpl implements SyncService {
 			if (localTimeRegistration.getSyncKey() == null) {
 				localTimeRegistration.setSyncKey(generateSyncKeyForTimeRegistration(user));
 			}
-			if (timeRegistration.getSyncKey() == null || timeRegistration.getSyncKey().equals(localTimeRegistration.getSyncKey())) {
+			if (timeRegistration.getSyncKey() == null || !timeRegistration.getSyncKey().equals(localTimeRegistration.getSyncKey())) {
 				timeRegistration.setSyncKey(localTimeRegistration.getSyncKey());
 			}
 			log.info("Synchronisation key set to " + timeRegistration.getSyncKey() + " for user " + user.getEmail());
