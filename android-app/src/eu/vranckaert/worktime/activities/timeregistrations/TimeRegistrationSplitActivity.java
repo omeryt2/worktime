@@ -544,8 +544,13 @@ public class TimeRegistrationSplitActivity extends SyncLockedWizardActivity {
     protected boolean onFinish(View view, View button) {
         TimeRegistration part1 = createTimeRegistrationForPart(originalTimeRegistration, originalTimeRegistration.getStartTime(), endPart1.getTime());
         TimeRegistration part2 = createTimeRegistrationForPart(originalTimeRegistration, startPart2.getTime(), originalTimeRegistration.getEndTime());
-        //The original time registration will be kept, and updated with the values from part1.
-        part1.setId(originalTimeRegistration.getId());
+
+        // Make sure the id's are removed
+        part1.clearSensitiveData();
+        part2.clearSensitiveData();
+
+        // Make sure part 1 still has the reference to the sync key...
+        part1.setSyncKey(originalTimeRegistration.getSyncKey());
 
         trService.remove(originalTimeRegistration);
         trService.create(part1);
@@ -561,6 +566,7 @@ public class TimeRegistrationSplitActivity extends SyncLockedWizardActivity {
         TimeRegistration timeRegistration = timeRegistrationBase.duplicate();
         timeRegistration.setStartTime(startTime);
         timeRegistration.setEndTime(endTime);
+        timeRegistration.clearSensitiveData();
         return timeRegistration;
     }
 

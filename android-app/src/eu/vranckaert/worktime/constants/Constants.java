@@ -136,7 +136,7 @@ public class Constants {
         public static final boolean IMMEDIATE_PUNCH_OUT_DEFAULT_VALUE = false;
         public static final String ACCOUNT_SYNC_INTERVAL_DEFAULT_VALUE = "2";
         public static final String ACCOUNT_SYNC_CONFLICT_HANDLING_DEFAULT_VALUE = "SERVER";
-        public static final boolean ACCOUNT_SYNC_ON_WIFI_ONLY_DEFAULT_VALUE = true;
+        public static final boolean ACCOUNT_SYNC_ON_WIFI_ONLY_DEFAULT_VALUE = false;
         public static final boolean ACCOUNT_BACKUP_BEFORE_SYNC_DEFAULT_VALUE = true;
         public static final boolean ACCOUNT_SYNC_SUCCESS_NOTIFICATIONS_DEFAULT_VALUE = false;
         public static final boolean ACCOUNT_SYNC_ERROR_NOTIFICATIONS_DEFAULT_VALUE = false;

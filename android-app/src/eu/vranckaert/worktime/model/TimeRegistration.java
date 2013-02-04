@@ -132,6 +132,7 @@ public class TimeRegistration implements Serializable {
 
     public TimeRegistration duplicate() {
         TimeRegistration timeRegistration = new TimeRegistration();
+        timeRegistration.setId(timeRegistration.getId());
         timeRegistration.setStartTime(this.getStartTime());
         timeRegistration.setEndTime(this.getEndTime());
         timeRegistration.setExternalId(this.getExternalId());
@@ -139,7 +140,13 @@ public class TimeRegistration implements Serializable {
         timeRegistration.setTask(this.getTask());
         timeRegistration.setComment(this.getComment());
         timeRegistration.setFlags(this.getFlags());
+        timeRegistration.setSyncKey(this.getSyncKey());
         return timeRegistration;
+    }
+
+    public void clearSensitiveData() {
+        this.id = null;
+        this.syncKey = null;
     }
 
     public Date getLastUpdated() {

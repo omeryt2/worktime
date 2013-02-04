@@ -286,10 +286,12 @@ public class AccountServiceImpl implements AccountService {
             syncRemovalCacheDao.deleteAll();
 
             syncHistory = syncHistoryDao.getOngoingSyncHistory();
-            syncHistory.setEnded(new Date());
-            syncHistory.setStatus(SyncHistoryStatus.SUCCESSFUL);
-            syncHistory.setAction(SyncHistoryAction.DONE);
-            syncHistoryDao.update(syncHistory);
+            if (syncHistory != null) {
+                syncHistory.setEnded(new Date());
+                syncHistory.setStatus(SyncHistoryStatus.SUCCESSFUL);
+                syncHistory.setAction(SyncHistoryAction.DONE);
+                syncHistoryDao.update(syncHistory);
+            }
         } catch (RuntimeException e) {
             markSyncAsFailed(e);
             throw e;
@@ -449,14 +451,21 @@ public class AccountServiceImpl implements AccountService {
                             localTimeRegistration.getStartTime(), localTimeRegistration.getEndTime()
                     );
                     timeRegistrationDao.delete(timeRegistration);
+
                     if (syncedTimeRegistrations != null && !syncedTimeRegistrations.isEmpty()) {
                         for (TimeRegistration incomingTimeRegistration : syncedTimeRegistrations) {
+                            Log.d(LOG_TAG, "Checking for other time registrations in DB with same sync key " + incomingTimeRegistration.getSyncKey());
+                            TimeRegistration timeRegistrationWithSyncKey = timeRegistrationDao.findBySyncKey(incomingTimeRegistration.getSyncKey());
+                            if (timeRegistrationWithSyncKey != null) {
+                                timeRegistrationDao.delete(timeRegistrationWithSyncKey);
+                            }
                             Log.d(LOG_TAG, "Persisting incoming time registration with sync key " + incomingTimeRegistration.getSyncKey() + " and start and end time (" + incomingTimeRegistration.getStartTime() + ", END: " + (incomingTimeRegistration.getEndTime() == null ? "NULL" : incomingTimeRegistration.getEndTime()) + ")");
                             Task task = taskDao.findByName(incomingTimeRegistration.getTask().getName());
                             incomingTimeRegistration.setTask(task);
                             timeRegistrationDao.save(incomingTimeRegistration);
                         }
                     }
+                    break;
                 }
                 default: {
                     // The entity has been either accepted remotely or it already exists on the server and the
