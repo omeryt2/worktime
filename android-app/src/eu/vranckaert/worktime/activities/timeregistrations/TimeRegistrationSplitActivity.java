@@ -547,7 +547,8 @@ public class TimeRegistrationSplitActivity extends SyncLockedWizardActivity {
         //The original time registration will be kept, and updated with the values from part1.
         part1.setId(originalTimeRegistration.getId());
 
-        trService.update(part1);
+        trService.remove(originalTimeRegistration);
+        trService.create(part1);
         trService.create(part2);
 
         widgetService.updateAllWidgets();
