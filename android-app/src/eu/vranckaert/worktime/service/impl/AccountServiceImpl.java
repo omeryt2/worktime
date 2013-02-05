@@ -520,9 +520,9 @@ public class AccountServiceImpl implements AccountService {
         for (Task task : tasks) {
             Log.d(LOG_TAG, "Checking task with sync key " + task.getSyncKey() + " and name " + task.getName());
             Task localTask = taskDao.findBySyncKey(task.getSyncKey());
-            Project localProject = projectDao.findByName(localTask.getProject().getName());
             if (localTask == null) {
                 Log.d(LOG_TAG, "No local task found based on the sync key (" + task.getSyncKey() + ")");
+                Project localProject = projectDao.findByName(task.getProject().getName());
                 localTask = taskDao.findByName(task.getName(), localProject);
                 if (localTask != null) {
                     Log.d(LOG_TAG, "Local task found based on the name (" + localTask.getName() + "), update the local task with the server content");

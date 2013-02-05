@@ -140,8 +140,7 @@ public class TaskDaoImpl extends GenericDaoImpl<Task, Integer> implements TaskDa
 
         QueryBuilder<Task, Integer> qb = dao.queryBuilder();
         try {
-            qb.where().eq("name", name);
-            qb.where().eq("projectId", project.getId());
+            qb.where().eq("name", name).and().eq("projectId", project.getId());
             PreparedQuery<Task> pq = qb.prepare();
             tasks = dao.query(pq);
         } catch (SQLException e) {
@@ -153,7 +152,7 @@ public class TaskDaoImpl extends GenericDaoImpl<Task, Integer> implements TaskDa
             if (tasks == null || tasks.size() == 0) {
                 return null;
             } else {
-                String message = "The task data is corrupt. More than one task with the same name (" + name + ") is found in the database!";
+                String message = "The task data is corrupt. More than one task with the same name (" + name + ") is found in the database for project '" + project.getName() + "'!";
                 Log.e(getContext(), LOG_TAG, message);
                 throw new CorruptTaskDataException(message);
             }
