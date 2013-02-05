@@ -17,6 +17,7 @@ package eu.vranckaert.worktime.utils.view.actionbar.synclock;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
@@ -26,6 +27,7 @@ import eu.vranckaert.worktime.model.SyncHistoryAction;
 import eu.vranckaert.worktime.model.SyncHistoryStatus;
 import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
+import roboguice.inject.InjectView;
 
 /**
  * User: Dirk Vranckaert
@@ -35,8 +37,9 @@ import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 public class SyncLockingActivity extends ActionBarGuiceActivity {
     private AsyncTask<Void, SyncHistoryAction, Void> syncCheck;
 
-    @Inject
-    private AccountService accountService;
+    @Inject private AccountService accountService;
+
+    @InjectView(R.id.locking_activity_progress) private TextView progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +78,29 @@ public class SyncLockingActivity extends ActionBarGuiceActivity {
         @Override
         protected void onProgressUpdate(SyncHistoryAction... values) {
             SyncHistoryAction action = values[0];
-            // TODO show update the TextView!!!!
-            Toast.makeText(SyncLockingActivity.this, action.toString(), Toast.LENGTH_SHORT).show();
+
+            switch (action) {
+                case CHECK_DEVICE:
+                    progress.setText(R.string.lbl_activity_locking_progress_device_check);
+                    break;
+                case BACKUP:
+                    progress.setText(R.string.lbl_activity_locking_progress_backup);
+                    break;
+                case PREPARE_DATA:
+                    progress.setText(R.string.lbl_activity_locking_progress_prepare_data);
+                    break;
+                case SYNC_SERVER:
+                    progress.setText(R.string.lbl_activity_locking_progress_sync_on_server);
+                    break;
+                case SYNC_LOCAL:
+                    progress.setText(R.string.lbl_activity_locking_progress_sync_local);
+                    break;
+                case DONE:
+                    progress.setText(R.string.lbl_activity_locking_progress_done);
+                    break;
+                default:
+                    progress.setText("");
+            }
         }
 
         @Override

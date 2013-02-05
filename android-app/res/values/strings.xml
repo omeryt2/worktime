@@ -720,4 +720,13 @@
     <string name="directorypicker_exc_create_already_exists">Directory already exists.</string>
     <string name="directorypicker_exc_create_unknown_error">Could not create the new directory. Please try again.</string>
     <string name="directorypicker_exc_cannot_read_dir">Could not read folder contents.</string>
+
+    <!-- Activity Locking for Sync -->
+    <string name="lbl_activity_locking_progress_bar">Synchronizing data now... Please wait.</string>
+    <string name="lbl_activity_locking_progress_device_check">Checking device settings...</string>
+    <string name="lbl_activity_locking_progress_backup">Creating a backup...</string>
+    <string name="lbl_activity_locking_progress_prepare_data">Preparing data for synchronization...</string>
+    <string name="lbl_activity_locking_progress_sync_on_server">Synchronizing on server...</string>
+    <string name="lbl_activity_locking_progress_sync_local">Checking incoming data...</string>
+    <string name="lbl_activity_locking_progress_done">Synchronization is done.</string>
 </resources>
