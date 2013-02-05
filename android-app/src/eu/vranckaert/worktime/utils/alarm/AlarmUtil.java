@@ -87,8 +87,10 @@ public class AlarmUtil {
             }
         }
 
-        getAlarmManager(context).setRepeating(AlarmManager.RTC_WAKEUP, nextSync, syncInterval, getSyncOperation(context));
-
         Log.i(LOG_TAG, "Alarm scheduled to go off in " + nextSync + " milliseconds and to be repeated in " + syncInterval + " milliseconds.");
+
+        nextSync = (new Date().getTime()) + nextSync;
+
+        getAlarmManager(context).setRepeating(AlarmManager.RTC_WAKEUP, nextSync, syncInterval, getSyncOperation(context));
     }
 }
