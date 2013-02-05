@@ -22,6 +22,7 @@ import com.google.inject.Inject;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.utils.activity.GenericPreferencesActivity;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 
 /**
  * User: Dirk Vranckaert
@@ -29,7 +30,7 @@ import eu.vranckaert.worktime.utils.activity.GenericPreferencesActivity;
  * Time: 15:19
  */
 public abstract class SyncLockedGenericPreferenceActivity extends GenericPreferencesActivity {
-    private AsyncTask<Void, Void, Void> syncCheck;
+    private AsyncTask syncCheck;
     private boolean isLocking = false;
 
     @Inject
@@ -72,7 +73,7 @@ public abstract class SyncLockedGenericPreferenceActivity extends GenericPrefere
 
         if (accountService.isUserLoggedIn()) {
             syncCheck = new SyncCheck();
-            syncCheck.execute();
+            AsyncHelper.start(syncCheck);
         }
     }
 

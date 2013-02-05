@@ -21,6 +21,7 @@ import android.os.Bundle;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.service.AccountService;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import roboguice.activity.RoboActivity;
 
 /**
@@ -29,7 +30,7 @@ import roboguice.activity.RoboActivity;
  * Time: 15:33
  */
 public abstract class SyncLockedGuiceActivity extends RoboActivity {
-    private AsyncTask<Void, Void, Void> syncCheck;
+    private AsyncTask syncCheck;
     private boolean isLocking = false;
 
     @Inject
@@ -72,7 +73,7 @@ public abstract class SyncLockedGuiceActivity extends RoboActivity {
 
         if (accountService.isUserLoggedIn()) {
             syncCheck = new SyncCheck();
-            syncCheck.execute();
+            AsyncHelper.start(syncCheck);
         }
     }
 

@@ -29,9 +29,9 @@ import eu.vranckaert.worktime.exceptions.backup.BackupFileCouldNotBeCreated;
 import eu.vranckaert.worktime.exceptions.backup.BackupFileCouldNotBeWritten;
 import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
-import roboguice.activity.RoboActivity;
 
 /**
  * User: DIRK VRANCKAERT
@@ -94,7 +94,7 @@ public class BackupToSDActivity extends SyncLockedGuiceActivity {
                 }
             }
         };
-        backupTask.execute();
+        AsyncHelper.start(backupTask);
     }
 
     @Override

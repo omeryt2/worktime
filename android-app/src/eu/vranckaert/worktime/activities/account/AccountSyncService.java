@@ -76,7 +76,7 @@ public class AccountSyncService extends RoboIntentService {
         try {
             accountService.sync();
         } catch (UserNotLoggedInException e) {
-            if (syncTries < 2) { // Only tries to execute the sync twice...
+            if (syncTries < 2) { // Only tries to start the sync twice...
                 try {
                     accountService.reLogin();
                     return sync();

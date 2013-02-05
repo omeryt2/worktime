@@ -18,7 +18,6 @@ package eu.vranckaert.worktime.utils.view.actionbar.synclock;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
@@ -26,6 +25,7 @@ import eu.vranckaert.worktime.model.SyncHistory;
 import eu.vranckaert.worktime.model.SyncHistoryAction;
 import eu.vranckaert.worktime.model.SyncHistoryStatus;
 import eu.vranckaert.worktime.service.AccountService;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 import roboguice.inject.InjectView;
 
@@ -35,7 +35,7 @@ import roboguice.inject.InjectView;
  * Time: 15:20
  */
 public class SyncLockingActivity extends ActionBarGuiceActivity {
-    private AsyncTask<Void, SyncHistoryAction, Void> syncCheck;
+    private AsyncTask syncCheck;
 
     @Inject private AccountService accountService;
 
@@ -123,7 +123,7 @@ public class SyncLockingActivity extends ActionBarGuiceActivity {
     protected void onResume() {
         super.onResume();
         syncCheck = new SyncCheck();
-        syncCheck.execute();
+        AsyncHelper.start(syncCheck);
     }
 
     @Override

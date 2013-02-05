@@ -36,11 +36,11 @@ import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
@@ -176,7 +176,7 @@ public class AddEditProjectActivity extends SyncLockedActivity {
                         finish();
                     }
                 };
-                task.execute(name, comment);
+                AsyncHelper.startWithParams(task, new String[]{name, comment});
             }
         } else {
             Log.d(getApplicationContext(), LOG_TAG, "Validation error!");

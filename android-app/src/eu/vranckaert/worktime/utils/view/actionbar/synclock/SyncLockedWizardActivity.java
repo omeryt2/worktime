@@ -21,6 +21,7 @@ import android.os.Bundle;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.service.AccountService;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.wizard.WizardActivity;
 
 /**
@@ -29,7 +30,7 @@ import eu.vranckaert.worktime.utils.wizard.WizardActivity;
  * Time: 15:33
  */
 public abstract class SyncLockedWizardActivity extends WizardActivity {
-    private AsyncTask<Void, Void, Void> syncCheck;
+    private AsyncTask syncCheck;
     private boolean isLocking = false;
 
     @Inject
@@ -72,7 +73,7 @@ public abstract class SyncLockedWizardActivity extends WizardActivity {
 
         if (accountService.isUserLoggedIn()) {
             syncCheck = new SyncCheck();
-            syncCheck.execute();
+            AsyncHelper.start(syncCheck);
         }
     }
 

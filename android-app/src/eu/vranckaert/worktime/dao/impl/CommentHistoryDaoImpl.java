@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -68,7 +67,7 @@ public class CommentHistoryDaoImpl extends GenericDaoImpl<CommentHistory, Intege
                 dao.deleteIds(ids);
             }
         } catch (SQLException e) {
-            Log.d(getContext(), LOG_TAG, "Could not execute the query... Returning false");
+            Log.d(getContext(), LOG_TAG, "Could not start the query... Returning false");
             return;
         }
         Log.d(getContext(), LOG_TAG, "All comments are deleted!");

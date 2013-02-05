@@ -32,18 +32,19 @@ import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.exceptions.network.NoNetworkConnectionException;
 import eu.vranckaert.worktime.exceptions.worktime.account.UserNotLoggedInException;
 import eu.vranckaert.worktime.model.SyncHistory;
-import eu.vranckaert.worktime.model.SyncHistoryStatus;
 import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.utils.alarm.AlarmUtil;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
+import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedActivity;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
+import org.joda.time.PeriodType;
 import roboguice.inject.InjectView;
 
 import java.util.Date;
@@ -60,11 +61,18 @@ public class AccountProfileActivity extends SyncLockedActivity {
 
     @Inject private AccountService accountService;
 
-    @InjectView(R.id.account_profile_container) private View container;
+    @InjectView(R.id.account_profile_profile_container) private View profileContainer;
     @InjectView(R.id.account_profile_email) private TextView email;
     @InjectView(R.id.account_profile_name) private TextView name;
     @InjectView(R.id.account_profile_registered_since) private TextView registeredSince;
     @InjectView(R.id.account_profile_logged_in_since) private TextView loggedInSince;
+
+    @InjectView(R.id.account_profile_sync_history_container) private View syncHistoryContainer;
+    @InjectView(R.id.account_profile_last_start_time) private TextView syncHistoryStartTime;
+    @InjectView(R.id.account_profile_last_end_time) private TextView syncHistoryEndTime;
+    @InjectView(R.id.account_profile_last_resolution) private TextView syncHistoryResolution;
+    @InjectView(R.id.account_profile_last_failure_reason_label) private TextView syncHistoryFailureReasonLabel;
+    @InjectView(R.id.account_profile_last_failure_reason) private TextView syncHistoryFailureReason;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,9 +88,6 @@ public class AccountProfileActivity extends SyncLockedActivity {
         User user = accountService.getOfflineUserDate();
         if (user != null)
             updateUI(user);
-        if (!accountService.isSyncBusy()) {
-            new LoadProfileTask().execute();
-        }
     }
 
     @Override
@@ -118,7 +123,7 @@ public class AccountProfileActivity extends SyncLockedActivity {
                 break;
             }
             case R.id.menu_account_profile_activity_logout:
-                new LogoutTask().execute();
+                AsyncHelper.start(new LogoutTask());
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -188,12 +193,55 @@ public class AccountProfileActivity extends SyncLockedActivity {
     }
 
     private void updateUI(User user) {
-        container.setVisibility(View.VISIBLE);
+        profileContainer.setVisibility(View.VISIBLE);
 
         email.setText(user.getEmail());
         name.setText(user.getFirstName() + " " + user.getLastName());
         registeredSince.setText(DateUtils.DateTimeConverter.convertDateTimeToString(user.getRegisteredSince(), DateFormat.MEDIUM, TimeFormat.MEDIUM, AccountProfileActivity.this));
-        loggedInSince.setText(DateUtils.DateTimeConverter.convertDateTimeToString(user.getLoggedInSince(), DateFormat.MEDIUM, TimeFormat.MEDIUM, AccountProfileActivity.this));
+
+        String loggedInSinceText = DateUtils.DateTimeConverter.convertDateTimeToString(user.getLoggedInSince(), DateFormat.MEDIUM, TimeFormat.MEDIUM, AccountProfileActivity.this);
+        String loggedInDurationText = DateUtils.TimeCalculator.calculateDuration(AccountProfileActivity.this, user.getLoggedInSince(), new Date(), PeriodType.dayTime());
+
+        loggedInSince.setText(loggedInSinceText + " (" + loggedInDurationText + ")");
+    }
+
+    private void updateUI(SyncHistory syncHistory) {
+        if (syncHistory == null) {
+            syncHistoryContainer.setVisibility(View.GONE);
+            return;
+        }
+
+        syncHistoryContainer.setVisibility(View.VISIBLE);
+
+        String startTimeText = DateUtils.DateTimeConverter.convertDateTimeToString(syncHistory.getStarted(), DateFormat.MEDIUM, TimeFormat.MEDIUM, AccountProfileActivity.this);
+        String durationText = DateUtils.TimeCalculator.calculateDuration(AccountProfileActivity.this, syncHistory.getStarted(), new Date(), PeriodType.dayTime());
+        syncHistoryStartTime.setText(startTimeText + " (" + durationText + ")");
+
+        if (syncHistory.getEnded() != null)
+            syncHistoryEndTime.setText(DateUtils.DateTimeConverter.convertDateTimeToString(syncHistory.getEnded(), DateFormat.MEDIUM, TimeFormat.MEDIUM, AccountProfileActivity.this));
+
+        syncHistoryFailureReasonLabel.setVisibility(View.GONE);
+        syncHistoryFailureReason.setVisibility(View.GONE);
+
+        switch (syncHistory.getStatus()) {
+            case SUCCESSFUL:
+                syncHistoryResolution.setText(R.string.lbl_account_profile_sync_history_last_resolution_successful);
+                break;
+            case FAILED:
+                syncHistoryResolution.setText(R.string.lbl_account_profile_sync_history_last_resolution_failed);
+                if (StringUtils.isNotBlank(syncHistory.getFailureReason())) {
+                    syncHistoryFailureReasonLabel.setVisibility(View.VISIBLE);
+                    syncHistoryFailureReason.setText(syncHistory.getFailureReason());
+                    syncHistoryFailureReason.setVisibility(View.VISIBLE);
+                }
+                break;
+            case TIMED_OUT:
+                syncHistoryResolution.setText(R.string.lbl_account_profile_sync_history_last_resolution_timed_out);
+                break;
+            case BUSY:
+                syncHistoryResolution.setText(R.string.lbl_account_profile_sync_history_last_resolution_busy);
+                break;
+        }
     }
 
     @Override
@@ -205,5 +253,12 @@ public class AccountProfileActivity extends SyncLockedActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (!accountService.isSyncBusy()) {
+            AsyncHelper.start(new LoadProfileTask());
+        }
+
+        SyncHistory syncHistory = accountService.getLastSyncHistory();
+        updateUI(syncHistory);
     }
 }

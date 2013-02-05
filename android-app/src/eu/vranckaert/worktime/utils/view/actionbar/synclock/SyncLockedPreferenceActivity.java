@@ -21,6 +21,7 @@ import android.os.Bundle;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.service.AccountService;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuicePreferenceActivity;
 
 /**
@@ -29,7 +30,7 @@ import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuicePreferenceActiv
  * Time: 15:19
  */
 public abstract class SyncLockedPreferenceActivity extends ActionBarGuicePreferenceActivity {
-    private AsyncTask<Void, Void, Void> syncCheck;
+    private AsyncTask syncCheck;
     private boolean isLocking = false;
 
     @Inject
@@ -72,7 +73,7 @@ public abstract class SyncLockedPreferenceActivity extends ActionBarGuicePrefere
 
         if (accountService.isUserLoggedIn()) {
             syncCheck = new SyncCheck();
-            syncCheck.execute();
+            AsyncHelper.start(syncCheck);
         }
     }
 

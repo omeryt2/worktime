@@ -393,13 +393,14 @@ public class AccountServiceImpl implements AccountService {
         for (TaskSyncResult syncResult : entitySyncResult.getTaskSyncResults()) {
             Log.d(LOG_TAG, "Checking for task with local name " + syncResult.getTask().getName());
             Task localTask = syncResult.getTask();
+            Project localProject = projectDao.findByName(localTask.getProject().getName());
             Task syncedTask = syncResult.getSyncedTask();
             switch (syncResult.getResolution()) {
                 case MERGED: {
                     // The entity has been merged with an entity on the server, so we will have copy all of the
                     // synced data into the local entity.
                     Log.d(LOG_TAG, "The task has been merged...");
-                    Task task = taskDao.findByName(localTask.getName());
+                    Task task = taskDao.findByName(localTask.getName(), localProject);
                     updateTask(syncedTask, task);
                     break;
                 }
@@ -407,7 +408,7 @@ public class AccountServiceImpl implements AccountService {
                     // The entity has been synced before but is no longer found remotely based on the sync key so we
                     // can safely remove the entity from the database.
                     Log.d(LOG_TAG, "The task has not been accepted...");
-                    Task task = taskDao.findByName(localTask.getName());
+                    Task task = taskDao.findByName(localTask.getName(), localProject);
                     taskDao.delete(task);
                     break;
                 }
@@ -415,7 +416,7 @@ public class AccountServiceImpl implements AccountService {
                     // The entity has been either accepted remotely or it already exists on the server and the
                     // contents did not have to be merged. We will only update it's syncKey!
                     Log.d(LOG_TAG, "The task has been accepted or no action was necessary...");
-                    Task task = taskDao.findByName(localTask.getName());
+                    Task task = taskDao.findByName(localTask.getName(), localProject);
                     if (task.getSyncKey() == null) {
                         task.setSyncKey(syncedTask.getSyncKey());
                         taskDao.update(task);
@@ -460,7 +461,8 @@ public class AccountServiceImpl implements AccountService {
                                 timeRegistrationDao.delete(timeRegistrationWithSyncKey);
                             }
                             Log.d(LOG_TAG, "Persisting incoming time registration with sync key " + incomingTimeRegistration.getSyncKey() + " and start and end time (" + incomingTimeRegistration.getStartTime() + ", END: " + (incomingTimeRegistration.getEndTime() == null ? "NULL" : incomingTimeRegistration.getEndTime()) + ")");
-                            Task task = taskDao.findByName(incomingTimeRegistration.getTask().getName());
+                            Project localProject = projectDao.findByName(incomingTimeRegistration.getTask().getProject().getName());
+                            Task task = taskDao.findByName(incomingTimeRegistration.getTask().getName(), localProject);
                             incomingTimeRegistration.setTask(task);
                             timeRegistrationDao.save(incomingTimeRegistration);
                         }
@@ -518,9 +520,10 @@ public class AccountServiceImpl implements AccountService {
         for (Task task : tasks) {
             Log.d(LOG_TAG, "Checking task with sync key " + task.getSyncKey() + " and name " + task.getName());
             Task localTask = taskDao.findBySyncKey(task.getSyncKey());
+            Project localProject = projectDao.findByName(localTask.getProject().getName());
             if (localTask == null) {
                 Log.d(LOG_TAG, "No local task found based on the sync key (" + task.getSyncKey() + ")");
-                localTask = taskDao.findByName(task.getName());
+                localTask = taskDao.findByName(task.getName(), localProject);
                 if (localTask != null) {
                     Log.d(LOG_TAG, "Local task found based on the name (" + localTask.getName() + "), update the local task with the server content");
                     updateTask(task, localTask);
@@ -615,7 +618,8 @@ public class AccountServiceImpl implements AccountService {
         destination.setSyncKey(source.getSyncKey());
         Task task = taskDao.findBySyncKey(source.getTask().getSyncKey());
         if (task == null) {
-            task = taskDao.findByName(source.getTask().getName());
+            Project localProject = projectDao.findByName(source.getTask().getProject().getName());
+            task = taskDao.findByName(source.getTask().getName(), localProject);
         }
         destination.setTask(task);
         if (source.getId() != null)

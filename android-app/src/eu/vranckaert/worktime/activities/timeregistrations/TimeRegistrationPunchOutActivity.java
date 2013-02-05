@@ -35,12 +35,12 @@ import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
-import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 
 import java.util.Date;
@@ -160,7 +160,7 @@ public class TimeRegistrationPunchOutActivity extends SyncLockedGuiceActivity {
                 }
             }
         };
-        threading.execute();
+        AsyncHelper.start(threading);
     }
 
     /**

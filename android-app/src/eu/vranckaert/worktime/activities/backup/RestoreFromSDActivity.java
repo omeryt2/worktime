@@ -31,10 +31,10 @@ import eu.vranckaert.worktime.exceptions.backup.BackupFileCouldNotBeWritten;
 import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
-import roboguice.activity.RoboActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -249,6 +249,8 @@ public class RestoreFromSDActivity extends SyncLockedGuiceActivity {
                     showDialog(Constants.Dialog.RESTORE_ERROR);
                 }
             }
-        }.execute();
+        };
+
+        AsyncHelper.start(restoreTask);
     }
 }

@@ -34,6 +34,7 @@ import eu.vranckaert.worktime.exceptions.worktime.account.RegisterEmailAlreadyIn
 import eu.vranckaert.worktime.exceptions.worktime.account.RegisterFieldRequiredException;
 import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.utils.alarm.AlarmUtil;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
@@ -102,11 +103,14 @@ public class AccountRegisterActivity extends ActionBarGuiceActivity {
             @Override
             public void onClick(View v) {
                 if (validateInput()) {
-                    new RegisterTask().execute(
-                            email.getText().toString(),
-                            firstName.getText().toString(),
-                            lastName.getText().toString(),
-                            password.getText().toString()
+                    AsyncHelper.startWithParams(
+                            new RegisterTask(),
+                            new String[]{
+                                    email.getText().toString(),
+                                    firstName.getText().toString(),
+                                    lastName.getText().toString(),
+                                    password.getText().toString()
+                            }
                     );
                 }
             }

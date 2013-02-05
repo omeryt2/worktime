@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -45,7 +44,7 @@ public class WidgetConfigurationDaoImpl extends GenericDaoImpl<WidgetConfigurati
             PreparedQuery<WidgetConfiguration> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning empty list.", e);
+            Log.e(getContext(), LOG_TAG, "Could not start the query... Returning empty list.", e);
             return new ArrayList<WidgetConfiguration>();
         }
     }
@@ -58,7 +57,7 @@ public class WidgetConfigurationDaoImpl extends GenericDaoImpl<WidgetConfigurati
             PreparedQuery<WidgetConfiguration> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning empty list.", e);
+            Log.e(getContext(), LOG_TAG, "Could not start the query... Returning empty list.", e);
             return new ArrayList<WidgetConfiguration>();
         }
     }

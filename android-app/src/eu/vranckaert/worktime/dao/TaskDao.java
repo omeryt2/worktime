@@ -54,9 +54,10 @@ public interface TaskDao extends GenericDao<Task, Integer> {
     /**
      * Find a specific task by name.
      * @param name The name of the task to search.
+     * @param project The project of task.
      * @return The task with this specific name or null.
      */
-    Task findByName(String name);
+    Task findByName(String name, Project project);
 
     /**
      * Find a task based on the sync-key.

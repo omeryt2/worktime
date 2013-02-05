@@ -91,7 +91,7 @@ public class TaskDaoImpl extends GenericDaoImpl<Task, Integer> implements TaskDa
             PreparedQuery<Task> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(getContext(), LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
         }
     }
@@ -129,22 +129,23 @@ public class TaskDaoImpl extends GenericDaoImpl<Task, Integer> implements TaskDa
             PreparedQuery<Task> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(getContext(), LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
         }
     }
 
     @Override
-    public Task findByName(String name) {
+    public Task findByName(String name, Project project) {
         List<Task> tasks = null;
 
         QueryBuilder<Task, Integer> qb = dao.queryBuilder();
         try {
             qb.where().eq("name", name);
+            qb.where().eq("projectId", project.getId());
             PreparedQuery<Task> pq = qb.prepare();
             tasks = dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(getContext(), LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
         }
 
@@ -171,7 +172,7 @@ public class TaskDaoImpl extends GenericDaoImpl<Task, Integer> implements TaskDa
             PreparedQuery<Task> pq = qb.prepare();
             tasks = dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(getContext(), LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
         }
 
@@ -196,7 +197,7 @@ public class TaskDaoImpl extends GenericDaoImpl<Task, Integer> implements TaskDa
             PreparedQuery<Task> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(getContext(), LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
         }
     }

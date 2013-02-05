@@ -33,6 +33,7 @@ import eu.vranckaert.worktime.exceptions.worktime.account.LoginCredentialsMismat
 import eu.vranckaert.worktime.exceptions.network.NoNetworkConnectionException;
 import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.utils.alarm.AlarmUtil;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
@@ -92,7 +93,7 @@ public class AccountLoginActivity extends ActionBarGuiceActivity {
                     return;
                 }
 
-                new LoginTask().execute(email, password);
+                AsyncHelper.startWithParams(new LoginTask(), new String[]{email, password});
             }
         });
 

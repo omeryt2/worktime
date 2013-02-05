@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -68,7 +67,7 @@ import java.util.List;
  * <li>{@link WizardActivity#setFinishButtonText(int)}</li>
  * <br/>
  * If cancel is enabled you can use the {@link WizardActivity#setCancelDialog(String, String)} method to enable a dialog
- * that will be popped up when canceling. The dialog always has a YES-NO option. 'YES' will execute a cancel and so
+ * that will be popped up when canceling. The dialog always has a YES-NO option. 'YES' will start a cancel and so
  * leave the wizard, 'NO' will remove the dialog and stay in the wizard. There are also two variants of this method,
  * with the resource id and/or without title.<br/>
  * <br/>

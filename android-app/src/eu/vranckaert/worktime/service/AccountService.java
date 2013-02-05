@@ -92,7 +92,7 @@ public interface AccountService {
      * @throws NoNetworkConnectionException This exception is thrown if no network connection is available when
      * executing the call(s) to the remote server.
      * @throws WifiConnectionRequiredException This exception is only thrown if a WiFi connection is excepted in order
-     * to execute the call(s) to the remote server.
+     * to start the call(s) to the remote server.
      * @throws BackupException This exception is only thrown if a backup should be created before starting to sync and
      * if creating the backup failed for whatever reason.
      * @throws SyncAlreadyBusyException This exception is thrown when a local

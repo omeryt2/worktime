@@ -30,11 +30,11 @@ import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
-import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 
 import java.util.Date;
@@ -186,7 +186,7 @@ public class TimeRegistrationDeleteActivity extends SyncLockedGuiceActivity {
                 endActivity(Constants.IntentResultCodes.RESULT_DELETED);
             }
         };
-        threading.execute();
+        AsyncHelper.start(threading);
     }
 
     private void deleteTimeRegistrations() {
@@ -246,7 +246,7 @@ public class TimeRegistrationDeleteActivity extends SyncLockedGuiceActivity {
                 endActivity(Constants.IntentResultCodes.RESULT_DELETED);
             }
         };
-        threading.execute(minBoundary, maxBoundary);
+        AsyncHelper.startWithParams(threading, new Date[]{minBoundary, maxBoundary});
     }
 
     /**

@@ -509,6 +509,71 @@ public class DateUtils {
         }
 
         /**
+         * Calculate the duration between two times and return it in a well represented text format.
+         * @param ctx The context.
+         * @param startDate The start date for the interval.
+         * @param endDate The end date for the interval.
+         * @param periodType The type of period (year-month-days-time or just time etc).
+         * @return A well formatted text containing the duration between the two times.
+         */
+        public static final String calculateDuration(Context ctx, Date startDate, Date endDate, PeriodType periodType) {
+            Duration duration = calculateDuration(ctx, startDate, endDate);
+            Period period = duration.toPeriod(periodType);
+
+            int years = period.getYears();
+            int months = period.getMonths();
+            int days = period.getDays();
+            int hours = period.getHours();
+            int minutes = period.getMinutes();
+            int seconds = period.getSeconds();
+
+            Log.d(ctx, LOG_TAG, years + "y " + months + "m " + days + "d " + hours + "h " + minutes + "m " + seconds + "s");
+
+            String yearsString = "";
+            String monthsString = "";
+            String daysString = "";
+            String hoursString = "";
+            String minutesString = "";
+            String secondsString = "";
+
+            String periodString = "";
+
+            PeriodType.time();
+            PeriodType.dayTime();
+            PeriodType.yearMonthDay();
+            PeriodType.yearMonthDayTime();
+
+            if (periodType == PeriodType.time()) {
+                hoursString = String.valueOf(hours) + ctx.getString(R.string.hoursShort) + " ";
+                minutesString = StringUtils.leftPad(String.valueOf(minutes), "0", 2) + ctx.getString(R.string.minutesShort) + " ";
+                secondsString = StringUtils.leftPad(String.valueOf(seconds), "0", 2) + ctx.getString(R.string.secondsShort) + " ";
+                periodString = hoursString + " " + minutesString + " " + secondsString;
+            } else if (periodType == PeriodType.dayTime()) {
+                daysString = String.valueOf(days) + ctx.getString(R.string.daysShort) + " ";
+                hoursString = StringUtils.leftPad(String.valueOf(hours), "0", 2) + ctx.getString(R.string.hoursShort) + " ";
+                minutesString = StringUtils.leftPad(String.valueOf(minutes), "0", 2) + ctx.getString(R.string.minutesShort) + " ";
+                periodString = daysString +  " " + hoursString + " " + minutesString;
+            } else if (periodType == PeriodType.yearMonthDay()) {
+                yearsString = String.valueOf(years) + ctx.getString(R.string.yearsShort) + " ";
+                monthsString = StringUtils.leftPad(String.valueOf(months), "0", 2) + ctx.getString(R.string.monthsShort) + " ";
+                daysString = StringUtils.leftPad(String.valueOf(days), "0", 2) + ctx.getString(R.string.daysShort) + " ";
+                periodString = yearsString + " " + monthsString + " " + daysString;
+            } else if (periodType == PeriodType.yearMonthDayTime()) {
+                yearsString = String.valueOf(years) + ctx.getString(R.string.yearsShort) + " ";
+                monthsString = StringUtils.leftPad(String.valueOf(months), "0", 2) + ctx.getString(R.string.monthsShort) + " ";
+                daysString = StringUtils.leftPad(String.valueOf(days), "0", 2) + ctx.getString(R.string.daysShort) + " ";
+                hoursString = StringUtils.leftPad(String.valueOf(hours), "0", 2) + ctx.getString(R.string.hoursShort) + " ";
+                minutesString = StringUtils.leftPad(String.valueOf(minutes), "0", 2) + ctx.getString(R.string.minutesShort) + " ";
+                secondsString = StringUtils.leftPad(String.valueOf(seconds), "0", 2) + ctx.getString(R.string.secondsShort) + " ";
+                periodString = yearsString + " " + monthsString + " " + daysString + " " + hoursString + " " + minutesString + " " + secondsString;
+            }
+
+            periodString = periodString.trim();
+
+            return periodString;
+        }
+
+        /**
          * Calculates the boundaries of a week (the date the week is starting and ending on), based on the week
          * difference that is provided. If zero it will be the current week boundaries. The week difference can be zero,
          * negative or positive. A week difference of -1 for example will calculate the week boundaries for last week.

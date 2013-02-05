@@ -105,7 +105,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             PreparedQuery<TimeRegistration> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
+            Log.e(getContext(), LOG_TAG, "Could not start the query...");
             throwFatalException(e);
         }
 
@@ -124,7 +124,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             PreparedQuery<TimeRegistration> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
+            Log.e(getContext(), LOG_TAG, "Could not start the query...");
             throwFatalException(e);
         }
 
@@ -183,7 +183,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             Log.d(getContext(), LOG_TAG, "Prepared query: " + pq.toString());
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
+            Log.e(getContext(), LOG_TAG, "Could not start the query...");
             throwFatalException(e);
         }
 
@@ -203,7 +203,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             Log.d(getContext(), LOG_TAG, pq.toString());
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
+            Log.e(getContext(), LOG_TAG, "Could not start the query...");
             throwFatalException(e);
         }
         return null;
@@ -224,7 +224,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             Log.d(getContext(), LOG_TAG, pq.toString());
             return dao.queryForFirst(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
+            Log.e(getContext(), LOG_TAG, "Could not start the query...");
             throwFatalException(e);
         }
         return null;
@@ -249,7 +249,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             Log.d(getContext(), LOG_TAG, pq.toString());
             return dao.queryForFirst(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
+            Log.e(getContext(), LOG_TAG, "Could not start the query...");
             throwFatalException(e);
         }
 
@@ -288,7 +288,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
 
             countAfter = dao.countOf();
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
+            Log.e(getContext(), LOG_TAG, "Could not start the query...");
             throwFatalException(e);
         }
 
@@ -321,7 +321,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
                 return true;
             }
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
+            Log.e(getContext(), LOG_TAG, "Could not start the query...");
             throwFatalException(e);
         }
 
@@ -352,7 +352,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             Log.d(getContext(), LOG_TAG, "Prepared query: " + pq.toString());
             timeRegistrations = dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query...");
+            Log.e(getContext(), LOG_TAG, "Could not start the query...");
             throwFatalException(e);
         }
 
@@ -379,7 +379,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             PreparedQuery<TimeRegistration> pq = qb.prepare();
             timeRegistrations = dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(getContext(), LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
         }
 
@@ -404,7 +404,7 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
             PreparedQuery<TimeRegistration> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(getContext(), LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
         }
     }

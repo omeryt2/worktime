@@ -94,7 +94,7 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
             PreparedQuery<Project> pq = qb.prepare();
             projects = dao.query(pq);
         } catch (SQLException e) {
-            Log.d(getContext(), LOG_TAG, "Could not execute the query... Returning false");
+            Log.d(getContext(), LOG_TAG, "Could not start the query... Returning false");
             return false;
         }
 
@@ -115,7 +115,7 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
             PreparedQuery<Project> pq = qb.prepare();
             projects = dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(getContext(), LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
         }
 
@@ -141,7 +141,7 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
             PreparedQuery<Project> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(getContext(), LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
         }
     }
@@ -156,7 +156,7 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
             PreparedQuery<Project> pq = qb.prepare();
             projects = dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(getContext(), LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
         }
 
@@ -183,7 +183,7 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
             PreparedQuery<Project> pq = qb.prepare();
             projects = dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(getContext(), LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
         }
 
@@ -208,7 +208,7 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
             PreparedQuery<Project> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
-            Log.e(getContext(), LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(getContext(), LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
         }
     }

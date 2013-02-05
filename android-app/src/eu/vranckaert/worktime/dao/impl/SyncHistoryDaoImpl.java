@@ -51,7 +51,7 @@ public class SyncHistoryDaoImpl extends GenericDaoImpl<SyncHistory, Integer> imp
             PreparedQuery<SyncHistory> pq = qb.prepare();
             syncHistories = dao.query(pq);
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
         }
 
@@ -72,7 +72,7 @@ public class SyncHistoryDaoImpl extends GenericDaoImpl<SyncHistory, Integer> imp
             PreparedQuery<SyncHistory> pq = qb.prepare();
             syncHistories = dao.query(pq);
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
         }
 
@@ -92,7 +92,7 @@ public class SyncHistoryDaoImpl extends GenericDaoImpl<SyncHistory, Integer> imp
             PreparedQuery<SyncHistory> pq = qb.prepare();
             syncHistories = dao.query(pq);
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Could not execute the query... Returning null.", e);
+            Log.e(LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
         }
 

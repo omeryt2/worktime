@@ -30,8 +30,8 @@ import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
-import roboguice.activity.RoboActivity;
 
 public class ResetApplicationPreferencesActivity extends SyncLockedGuiceActivity {
     @Inject
@@ -71,7 +71,7 @@ public class ResetApplicationPreferencesActivity extends SyncLockedGuiceActivity
                                @Override
                                public void onClick(DialogInterface dialogInterface, int i) {
                                    dismissDialog(Constants.Dialog.RESET_APPLICATION_CONFIRMATION);
-                                   new ResetApplicationTask().execute();
+                                   AsyncHelper.start(new ResetApplicationTask());
                                }
                            })
                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

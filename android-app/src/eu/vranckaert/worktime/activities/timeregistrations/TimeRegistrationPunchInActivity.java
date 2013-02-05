@@ -39,13 +39,13 @@ import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
 import org.joda.time.Duration;
-import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 
 import com.google.inject.internal.Nullable;
@@ -205,7 +205,7 @@ public class TimeRegistrationPunchInActivity extends SyncLockedGuiceActivity {
                 finish();
             }
         };
-        threading.execute();
+        AsyncHelper.start(threading);
     }
 
     @Override

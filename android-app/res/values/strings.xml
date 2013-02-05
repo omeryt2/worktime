@@ -32,6 +32,8 @@
     <string name="hours">hours</string>
     <string name="minutes">minutes</string>
     <string name="seconds">seconds</string>
+    <string name="yearsShort">y</string>
+    <string name="monthsShort">m</string>
     <string name="daysShort">d</string>
     <string name="hoursShort">h</string>
     <string name="minutesShort">m</string>
@@ -631,14 +633,24 @@
     <string name="lbl_account_register_error_password_confirmation">The provided password and confirmation do not match.</string>
     <string name="lbl_account_register_error_email_account_exists">An account already exists for this email address.</string>
     <!-- PROFILE -->
-    <string name="lbl_account_profile_title">Profile</string>
+    <string name="lbl_account_profile_title">Account</string>
     <string name="account_profile_ab_menu_sync_now">Sync Now</string>
     <string name="account_profile_ab_menu_settings">Sync Settings</string>
     <string name="account_profile_ab_menu_logout">Logout</string>
+    <string name="lbl_account_profile_account_title">Profile Details</string>
     <string name="lbl_account_profile_email">Email:</string>
     <string name="lbl_account_profile_name">Name:</string>
     <string name="lbl_account_profile_registered_since">Registered since:</string>
     <string name="lbl_account_profile_logged_in_since">Logged in since:</string>
+    <string name="lbl_account_profile_sync_history_title">Synchronization History</string>
+    <string name="lbl_account_profile_sync_history_last_start_time">Last start time:</string>
+    <string name="lbl_account_profile_sync_history_last_end_time">Last end time:</string>
+    <string name="lbl_account_profile_sync_history_last_resolution">Result:</string>
+    <string name="lbl_account_profile_sync_history_last_resolution_successful">Success</string>
+    <string name="lbl_account_profile_sync_history_last_resolution_failed">Failed</string>
+    <string name="lbl_account_profile_sync_history_last_resolution_timed_out">Timed out</string>
+    <string name="lbl_account_profile_sync_history_last_resolution_busy">Busy</string>
+    <string name="lbl_account_profile_sync_history_last_failure_reason">Error:</string>
     <string name="lbl_account_profile_error_user_not_logged_in">You are currently not logged in anymore. Please login again!</string>
     <!-- SYNC SERVICE -->
     <string name="lbl_sync_service_successful_title">Successful Synchronization</string>

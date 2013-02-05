@@ -53,6 +53,7 @@ import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateUtils;
@@ -60,7 +61,6 @@ import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceListActivity;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedListActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
@@ -155,7 +155,7 @@ public class ProjectDetailsActivity extends SyncLockedListActivity {
                 loadProjectDetails(project);
             }
         };
-        asyncTask.execute(project);
+        AsyncHelper.startWithParams(asyncTask, new Object[]{project});
     }
 
     /**
@@ -193,7 +193,7 @@ public class ProjectDetailsActivity extends SyncLockedListActivity {
                 punchInCount.setText(String.valueOf(registrationsForProject.size()));
             }
         };
-        asyncTask.execute();
+        AsyncHelper.start(asyncTask);
     }
 
     private class ManageTasksListAdapter extends ArrayAdapter<Task> {

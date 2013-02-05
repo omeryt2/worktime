@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,7 +24,6 @@ import android.view.*;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.reporting.TimeRegistrationByProjectNameAscComparator;
@@ -49,6 +47,7 @@ import eu.vranckaert.worktime.model.dto.reporting.datalevels.ReportingDataLvl2;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateFormat;
@@ -177,7 +176,7 @@ public class ReportingResultActivity extends ActionBarGuiceActivity {
                 buildTable(tableRecords);
             }
         };
-        asyncTask.execute();
+        AsyncHelper.start(asyncTask);
     }
 
     private void buildTable(List<ReportingTableRecord> tableRecords) {

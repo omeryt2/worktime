@@ -46,6 +46,7 @@ import eu.vranckaert.worktime.model.dto.reporting.datalevels.ReportingDataLvl0;
 import eu.vranckaert.worktime.model.dto.reporting.datalevels.ReportingDataLvl1;
 import eu.vranckaert.worktime.model.dto.reporting.datalevels.ReportingDataLvl2;
 import eu.vranckaert.worktime.service.ExportService;
+import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.context.Log;
@@ -54,7 +55,6 @@ import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedActivity;
 import jxl.biff.DisplayFormat;
 import org.joda.time.Period;
@@ -401,7 +401,9 @@ public class ReportingExportActivity extends SyncLockedActivity {
                 exportedFile = (File) o;
                 showDialog(Constants.Dialog.REPORTING_EXPORT_DONE);
             }
-        }.execute();
+        };
+
+        AsyncHelper.start(task);
     }
 
     /**
