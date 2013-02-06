@@ -266,7 +266,8 @@ public class SyncServiceImpl implements SyncService {
 			
 			tx.commit();
 		} catch (Exception e) {
-			log.info("Exception occured during sycnhronisation for user " + user.getEmail() + ". Exception " + e.getClass().getName() + " message is: " + e.getMessage() + " stacktrace is: " + e.getStackTrace());
+			log.info("Exception occured during sycnhronisation for user " + user.getEmail() + ". Exception " + e.getClass().getName() + " message is: " + e.getMessage());
+			log.throwing(SyncServiceImpl.class.getSimpleName(), "sync", e);
 		} finally {
 			if (tx.isActive()) {
 				tx.rollback();
