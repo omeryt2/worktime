@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
@@ -227,6 +228,12 @@ public class SyncServiceImpl implements SyncService {
 			// First check if an ongoing time registration can be found on the server and sync the according incoming entity
 			log.info("Starting to synchronize ongoing time registration (if any) for user " + user.getEmail());
 			TimeRegistration ongoingTimeRegistration = timeRegistrationDao.findOngoingTimeRegistration(user);
+			for (Entry<String, String> entry : syncRemovalMap.entrySet()) {
+				if (ongoingTimeRegistration.getSyncKey().equals(entry.getKey())) {
+					ongoingTimeRegistration = null;
+					break;
+				}
+			}
 			if (ongoingTimeRegistration != null && StringUtils.isNotBlank(ongoingTimeRegistration.getSyncKey())) {
 				log.info("An ongoing TR that has been synced before is found...");
 				TimeRegistration ongoingSyncedTimeRegistration = null;
