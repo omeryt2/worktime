@@ -228,7 +228,7 @@ public class SyncServiceImpl implements SyncService {
 			log.info("Starting to synchronize ongoing time registration (if any) for user " + user.getEmail());
 			TimeRegistration ongoingTimeRegistration = timeRegistrationDao.findOngoingTimeRegistration(user);
 			if (ongoingTimeRegistration != null && StringUtils.isNotBlank(ongoingTimeRegistration.getSyncKey())) {
-				log.info("An onging TR that has been synced before is found...");
+				log.info("An ongoing TR that has been synced before is found...");
 				TimeRegistration ongoingSyncedTimeRegistration = null;
 				for (TimeRegistration timeRegistration : incomingTimeRegistrations) {
 					if (timeRegistration.getSyncKey().equals(ongoingTimeRegistration.getSyncKey())) {
@@ -264,7 +264,7 @@ public class SyncServiceImpl implements SyncService {
 			
 			tx.commit();
 		} catch (Exception e) {
-			log.info("Exception occured during sycnhronisation for user " + user.getEmail() + ". Exception " + e.getClass().getName() + " message is: " + e.getMessage());
+			log.info("Exception occured during sycnhronisation for user " + user.getEmail() + ". Exception " + e.getClass().getName() + " message is: " + e.getMessage() + " stacktrace is: " + e.getStackTrace());
 		} finally {
 			if (tx.isActive()) {
 				tx.rollback();
