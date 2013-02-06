@@ -230,17 +230,19 @@ public class SyncServiceImpl implements SyncService {
 			if (ongoingTimeRegistration != null && StringUtils.isNotBlank(ongoingTimeRegistration.getSyncKey())) {
 				log.info("An ongoing TR that has been synced before is found...");
 				TimeRegistration ongoingSyncedTimeRegistration = null;
-				for (TimeRegistration timeRegistration : incomingTimeRegistrations) {
-					if (timeRegistration.getSyncKey().equals(ongoingTimeRegistration.getSyncKey())) {
-						log.info("Found the incoming TR that matches the ongoing TR... Syncing this TR first...");
-						ongoingSyncedTimeRegistration = timeRegistration;
-						
-						Task taskForTr = taskDao.find(timeRegistration.getTask().getName(), user);
-						TimeRegistrationSyncResult result = syncTimeRegistration(timeRegistration, taskForTr, user, conflictConfiguration);
-						if (result.getResolution() != EntitySyncResolution.NO_ACTION)
-							timeRegistrationsSynced++;
-						timeRegistrationResults.add(result);
-						break;
+				if (incomingTimeRegistrations != null && incomingTimeRegistrations.size() > 0) {
+					for (TimeRegistration timeRegistration : incomingTimeRegistrations) {
+						if (timeRegistration.getSyncKey().equals(ongoingTimeRegistration.getSyncKey())) {
+							log.info("Found the incoming TR that matches the ongoing TR... Syncing this TR first...");
+							ongoingSyncedTimeRegistration = timeRegistration;
+							
+							Task taskForTr = taskDao.find(timeRegistration.getTask().getName(), user);
+							TimeRegistrationSyncResult result = syncTimeRegistration(timeRegistration, taskForTr, user, conflictConfiguration);
+							if (result.getResolution() != EntitySyncResolution.NO_ACTION)
+								timeRegistrationsSynced++;
+							timeRegistrationResults.add(result);
+							break;
+						}
 					}
 				}
 				
