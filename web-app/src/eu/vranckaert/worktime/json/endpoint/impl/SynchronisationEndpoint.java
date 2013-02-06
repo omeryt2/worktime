@@ -1,5 +1,10 @@
 package eu.vranckaert.worktime.json.endpoint.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -18,6 +23,9 @@ import eu.vranckaert.worktime.json.exception.sync.SynchronisationLockedJSONExcep
 import eu.vranckaert.worktime.json.exception.sync.SyncronisationFailedJSONException;
 import eu.vranckaert.worktime.json.request.sync.WorkTimeSyncRequest;
 import eu.vranckaert.worktime.json.response.sync.WorkTimeSyncResponse;
+import eu.vranckaert.worktime.model.Project;
+import eu.vranckaert.worktime.model.Task;
+import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.model.sync.EntitySyncResult;
 import eu.vranckaert.worktime.security.exception.ServiceNotAllowedException;
 import eu.vranckaert.worktime.security.exception.UserNotLoggedInException;
@@ -62,9 +70,18 @@ public class SynchronisationEndpoint {
 					request.getLastSuccessfulSyncDate()
 			);
 			response.setSyncResult(result);
-			response.setProjectsSinceLastSync(syncService.getSyncedProjects(request.getEmail(), request.getLastSuccessfulSyncDate()));
-			response.setTasksSinceLastSync(syncService.getSyncedTasks(request.getEmail(), request.getLastSuccessfulSyncDate()));
-			response.setTimeRegistrationsSinceLastSync(syncService.getSyncedTimeRegistrations(request.getEmail(), request.getLastSuccessfulSyncDate()));
+			
+			List<Project> syncedProjects = syncService.getSyncedProjects(request.getEmail(), request.getLastSuccessfulSyncDate());
+			List<Task> syncedTasks = syncService.getSyncedTasks(request.getEmail(), request.getLastSuccessfulSyncDate());
+			List<TimeRegistration> syncedTimeRegistrations = syncService.getSyncedTimeRegistrations(request.getEmail(), request.getLastSuccessfulSyncDate());
+			
+			removeRemovedProjectsFromResult(request.getSyncRemovalMap(), syncedProjects);
+			removeRemovedTasksFromResult(request.getSyncRemovalMap(), syncedTasks);
+			removeRemovedTimeRegistrationsFromResult(request.getSyncRemovalMap(), syncedTimeRegistrations);
+			
+			response.setProjectsSinceLastSync(syncedProjects);
+			response.setTasksSinceLastSync(syncedTasks);
+			response.setTimeRegistrationsSinceLastSync(syncedTimeRegistrations);
 		} catch (SyncronisationFailedException e) {
 			SyncronisationFailedJSONException jsonException = new SyncronisationFailedJSONException("sync/all");
 			response.setSyncronisationFailedJSONException(jsonException);
@@ -77,5 +94,59 @@ public class SynchronisationEndpoint {
 		}
 		
 		return response;
+	}
+
+	private void removeRemovedProjectsFromResult(
+			Map<String, String> syncRemovalMap, List<Project> syncedProjects) {
+		List<Project> forRemoval = new ArrayList<Project>();
+		
+		for (Project project : syncedProjects) {
+			for (Entry<String, String> entry : syncRemovalMap.entrySet()) {
+				if (project.getSyncKey().equals(entry.getKey())) {
+					forRemoval.add(project);
+					break;
+				}
+			}
+		}
+		
+		for (Project project : forRemoval) {
+			syncedProjects.remove(project);
+		}
+	}
+
+	private void removeRemovedTasksFromResult(
+			Map<String, String> syncRemovalMap, List<Task> syncedTasks) {
+		List<Task> forRemoval = new ArrayList<Task>();
+		
+		for (Task task : syncedTasks) {
+			for (Entry<String, String> entry : syncRemovalMap.entrySet()) {
+				if (task.getSyncKey().equals(entry.getKey())) {
+					forRemoval.add(task);
+					break;
+				}
+			}
+		}
+		
+		for (Task task : forRemoval) {
+			syncedTasks.remove(task);
+		}
+	}
+
+	private void removeRemovedTimeRegistrationsFromResult(
+			Map<String, String> syncRemovalMap, List<TimeRegistration> syncedTimeRegistrations) {
+		List<TimeRegistration> forRemoval = new ArrayList<TimeRegistration>();
+		
+		for (TimeRegistration timeRegistration : syncedTimeRegistrations) {
+			for (Entry<String, String> entry : syncRemovalMap.entrySet()) {
+				if (timeRegistration.getSyncKey().equals(entry.getKey())) {
+					forRemoval.add(timeRegistration);
+					break;
+				}
+			}
+		}
+		
+		for (TimeRegistration timeRegistration : forRemoval) {
+			syncedTimeRegistrations.remove(timeRegistration);
+		}
 	}
 }
