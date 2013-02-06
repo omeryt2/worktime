@@ -74,4 +74,12 @@ public interface TimeRegistrationDao extends BaseDao<TimeRegistration> {
 	 * provided date.
 	 */
 	List<TimeRegistration> findAllModifiedAfter(User user, Date lastModifiedDate);
+	
+	/**
+	 * Search for any ongoing time registration.
+	 * @param user The user for which to retrieve the ongoing time registration.
+	 * @return Returns an instance of {@link TimeRegistration} if any ongoing
+	 * time registration is found. Otherwise just returns null.
+	 */
+	TimeRegistration findOngoingTimeRegistration(User user);
 }

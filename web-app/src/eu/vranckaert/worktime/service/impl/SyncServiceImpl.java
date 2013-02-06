@@ -224,6 +224,33 @@ public class SyncServiceImpl implements SyncService {
 			}
 			log.info(tasksSynced + " tasks have been synced for user " + user.getEmail());
 			
+			// First check if an ongoing time registration can be found on the server and sync the according incoming entity
+			log.info("Starting to synchronize ongoing time registration (if any) for user " + user.getEmail());
+			TimeRegistration ongoingTimeRegistration = timeRegistrationDao.findOngoingTimeRegistration(user);
+			if (ongoingTimeRegistration != null && StringUtils.isNotBlank(ongoingTimeRegistration.getSyncKey())) {
+				log.info("An onging TR that has been synced before is found...");
+				TimeRegistration ongoingSyncedTimeRegistration = null;
+				for (TimeRegistration timeRegistration : incomingTimeRegistrations) {
+					if (timeRegistration.getSyncKey().equals(ongoingTimeRegistration.getSyncKey())) {
+						log.info("Found the incoming TR that matches the ongoing TR... Syncing this TR first...");
+						ongoingSyncedTimeRegistration = timeRegistration;
+						
+						Task taskForTr = taskDao.find(timeRegistration.getTask().getName(), user);
+						TimeRegistrationSyncResult result = syncTimeRegistration(timeRegistration, taskForTr, user, conflictConfiguration);
+						if (result.getResolution() != EntitySyncResolution.NO_ACTION)
+							timeRegistrationsSynced++;
+						timeRegistrationResults.add(result);
+						break;
+					}
+				}
+				
+				// Issue 190 - Make sure that if an ongoing TR is already synced, that it's not synced twice!
+				if (ongoingSyncedTimeRegistration != null) {
+					log.info("Preventing the synced TR to be synced twice, remove from list now...");
+					incomingTimeRegistrations.remove(ongoingSyncedTimeRegistration);
+				}
+			}
+			
 			// Sync all time registrations
 			log.info("Starting to synchronize time registrations for user " + user.getEmail());
 			for (TimeRegistration timeRegistration : incomingTimeRegistrations) {
@@ -599,7 +626,8 @@ public class SyncServiceImpl implements SyncService {
 			}
 			log.info("Synchronisation key set to " + timeRegistration.getSyncKey() + " for user " + user.getEmail());
 			
-			if (!timeRegistration.equalsContent(localTimeRegistration)) {
+			if (!timeRegistration.equalsContent(localTimeRegistration) || !timeRegistration.equals(localTimeRegistration)) {
+				// The first check only checks for the non-id content, the second checks for the id-content, in this case being the start and end time...
 				log.info("Time registration contents are not equal, will start to merge now for user " + user.getEmail());
 				if (localTimeRegistration.isModifiedAfter(timeRegistration.getLastUpdated())) {
 					copyTimeRegistrationContents(localTimeRegistration, timeRegistration, task);
@@ -614,7 +642,7 @@ public class SyncServiceImpl implements SyncService {
 						copyTimeRegistrationContents(timeRegistration, localTimeRegistration, task);
 						break;
 					case SERVER:
-						copyTimeRegistrationContents(timeRegistration, localTimeRegistration, task);
+						copyTimeRegistrationContents(localTimeRegistration, timeRegistration, task);
 						break;
 					}
 				}
@@ -642,6 +670,8 @@ public class SyncServiceImpl implements SyncService {
 	}
 	
 	private void copyTimeRegistrationContents(TimeRegistration source, TimeRegistration destination, Task task) {
+		destination.setStartTime(source.getStartTime());
+		destination.setEndTime(source.getEndTime());
 		destination.setComment(source.getComment());
 		destination.setFlags(source.getFlags());
 		destination.setTask(task);

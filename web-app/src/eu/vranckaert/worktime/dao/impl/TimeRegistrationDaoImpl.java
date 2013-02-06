@@ -170,4 +170,15 @@ public class TimeRegistrationDaoImpl extends BaseDaoImpl<TimeRegistration> imple
 				.now();
 		return timeRegistrations;
 	}
+	
+	@Override
+	public TimeRegistration findOngoingTimeRegistration(User user) {		
+		List<TimeRegistration> allTimeRegistrations = findAll(user);
+		for (TimeRegistration timeRegistration : allTimeRegistrations) {
+			if (timeRegistration.isOngoingTimeRegistration()) {
+				return timeRegistration;
+			}
+		}
+		return null;
+	}
 }
