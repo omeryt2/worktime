@@ -24,9 +24,9 @@ import com.google.inject.Inject;
 import com.jakewharton.notificationcompat2.NotificationCompat2;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.HomeActivity;
+import eu.vranckaert.worktime.activities.notifcationbar.StatusBarOthersActionHandleActivity;
 import eu.vranckaert.worktime.activities.notifcationbar.StatusBarPunchOutHandleActivity;
-import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationActionActivity;
-import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationSplitActivity;
+import eu.vranckaert.worktime.activities.notifcationbar.StatusBarSplitActionHandleActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.model.notification.NotificationAction;
@@ -130,15 +130,12 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
             // Prepare the notification action buttons for jelly bean (4.1) and up!
             Intent punchOutActionIntent = new Intent(context, StatusBarPunchOutHandleActivity.class);
             punchOutActionIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            punchOutActionIntent.putExtra(Constants.Extras.TIME_REGISTRATION, registration);
 
-            Intent splitActionIntent = new Intent(context, TimeRegistrationSplitActivity.class);
+            Intent splitActionIntent = new Intent(context, StatusBarSplitActionHandleActivity.class);
             splitActionIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            splitActionIntent.putExtra(Constants.Extras.TIME_REGISTRATION, registration);
 
-            Intent othersActionIntent = new Intent(context, TimeRegistrationActionActivity.class);
+            Intent othersActionIntent = new Intent(context, StatusBarOthersActionHandleActivity.class);
             othersActionIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            othersActionIntent.putExtra(Constants.Extras.TIME_REGISTRATION, registration);
 
             NotificationAction punchOutAction = new NotificationAction(context.getString(R.string.lbl_notif_action_punch_out), punchOutActionIntent);
             NotificationAction splitAction = new NotificationAction(context.getString(R.string.lbl_notif_action_split), splitActionIntent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);

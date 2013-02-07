@@ -229,4 +229,9 @@ public class Constants {
         /* The default id for the punch-bar */
         public static final int PUNCH_BAR_WIDGET_ID = -100;
     }
+
+    public class Broadcast {
+        public static final String TIME_REGISTRATION_ACTION_DIALOG = "eu.vranckaert.worktime.time_registration_action_dialog";
+        public static final String TIME_REGISTRATION_SPLIT = "eu.vranckaert.worktime.time_registration_action_split";
+    }
 }

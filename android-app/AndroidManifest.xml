@@ -51,6 +51,17 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".broadcastreceiver.ActionDialogBroadCastReceiver" android:enabled="true" android:exported="false">
+            <intent-filter>
+                <action android:name="eu.vranckaert.worktime.time_registration_action_dialog" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".broadcastreceiver.SplitBroadCastReceiver" android:enabled="true" android:exported="false">
+            <intent-filter>
+                <action android:name="eu.vranckaert.worktime.time_registration_action_split" />
+            </intent-filter>
+        </receiver>
+
         <receiver android:name=".providers.WorkTimeWidgetProvider_2x1_ProjectTask" android:label="@string/lbl_widget_2x1_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -202,6 +213,12 @@
 
         <!-- Notification Bar activities -->
         <activity android:name=".activities.notifcationbar.StatusBarPunchOutHandleActivity"
+                  android:theme="@style/Theme.Translucent"
+                  android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".activities.notifcationbar.StatusBarOthersActionHandleActivity"
+                  android:theme="@style/Theme.Translucent"
+                  android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".activities.notifcationbar.StatusBarSplitActionHandleActivity"
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden"/>
 

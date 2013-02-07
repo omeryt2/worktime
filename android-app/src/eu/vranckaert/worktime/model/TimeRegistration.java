@@ -132,7 +132,7 @@ public class TimeRegistration implements Serializable {
 
     public TimeRegistration duplicate() {
         TimeRegistration timeRegistration = new TimeRegistration();
-        timeRegistration.setId(timeRegistration.getId());
+        timeRegistration.setId(this.getId());
         timeRegistration.setStartTime(this.getStartTime());
         timeRegistration.setEndTime(this.getEndTime());
         timeRegistration.setExternalId(this.getExternalId());

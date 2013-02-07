@@ -37,7 +37,6 @@ import eu.vranckaert.worktime.utils.date.HourPreference12Or24;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedWizardActivity;
-import eu.vranckaert.worktime.utils.wizard.WizardActivity;
 import org.joda.time.Duration;
 
 import java.util.Calendar;
@@ -545,15 +544,10 @@ public class TimeRegistrationSplitActivity extends SyncLockedWizardActivity {
         TimeRegistration part1 = createTimeRegistrationForPart(originalTimeRegistration, originalTimeRegistration.getStartTime(), endPart1.getTime());
         TimeRegistration part2 = createTimeRegistrationForPart(originalTimeRegistration, startPart2.getTime(), originalTimeRegistration.getEndTime());
 
-        // Make sure the id's are removed
-        part1.clearSensitiveData();
+        // Make sure the id and sync key are removed from part 2 as this will be seen as the new TR.
         part2.clearSensitiveData();
 
-        // Make sure part 1 still has the reference to the sync key...
-        part1.setSyncKey(originalTimeRegistration.getSyncKey());
-
-        trService.remove(originalTimeRegistration);
-        trService.create(part1);
+        trService.update(part1);
         trService.create(part2);
 
         widgetService.updateAllWidgets();
@@ -566,7 +560,6 @@ public class TimeRegistrationSplitActivity extends SyncLockedWizardActivity {
         TimeRegistration timeRegistration = timeRegistrationBase.duplicate();
         timeRegistration.setStartTime(startTime);
         timeRegistration.setEndTime(endTime);
-        timeRegistration.clearSensitiveData();
         return timeRegistration;
     }
 
