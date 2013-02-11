@@ -60,7 +60,7 @@ public class AccountSyncHistoryActivity extends SyncLockedListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                IntentUtil.goBack(this, AccountProfileActivity.class);
+                IntentUtil.goBack(this);
                 break;
         }
         return super.onOptionsItemSelected(item);
