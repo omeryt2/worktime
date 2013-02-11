@@ -19,6 +19,7 @@ import eu.vranckaert.worktime.dao.generic.GenericDao;
 import eu.vranckaert.worktime.model.SyncHistory;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * User: Dirk Vranckaert
@@ -44,4 +45,7 @@ public interface SyncHistoryDao extends GenericDao<SyncHistory, Integer> {
      * @return The latest {@link SyncHistory} object or null if none.
      */
     SyncHistory getLastSyncHistory();
+
+    @Override
+    List<SyncHistory> findAll();
 }

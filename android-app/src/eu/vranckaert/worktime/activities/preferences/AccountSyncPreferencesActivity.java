@@ -15,8 +15,8 @@
 
 package eu.vranckaert.worktime.activities.preferences;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import com.google.inject.Inject;
@@ -24,11 +24,12 @@ import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.service.AccountService;
-import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.activity.GenericPreferencesActivity;
 import eu.vranckaert.worktime.utils.alarm.AlarmUtil;
-import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
+import eu.vranckaert.worktime.utils.preferences.TimePreference;
+
+import java.util.Date;
 
 /**
  * User: DIRK VRANCKAERT
@@ -47,15 +48,52 @@ public class AccountSyncPreferencesActivity extends GenericPreferencesActivity {
 
         setTitle(R.string.pref_account_sync_category_title);
 
+        final TimePreference syncIntervalFixedTimePreference = (TimePreference) getPreferenceScreen().findPreference(Constants.Preferences.Keys.ACCOUNT_SYNC_INTERVAL_FIXED_TIME);
+        if (Preferences.Account.syncInterval(AccountSyncPreferencesActivity.this) / 3600000L != 24) {
+            syncIntervalFixedTimePreference.setEnabled(false);
+        } else {
+            syncIntervalFixedTimePreference.setEnabled(true);
+        }
+        syncIntervalFixedTimePreference.setOnPreferenceChangeListener(new TimePreference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                scheduleAlarm(AccountSyncPreferencesActivity.this, Preferences.Account.syncInterval(AccountSyncPreferencesActivity.this) / 3600000L, new Date((Long)newValue), accountService);
+                return true;
+            }
+        });
+
         final ListPreference syncIntervalPreference = (ListPreference) getPreferenceScreen().findPreference(Constants.Preferences.Keys.ACCOUNT_SYNC_INTERVAL);
         syncIntervalPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                long interval = Integer.parseInt(newValue.toString()) * 3600000L;
-                AlarmUtil.setAlarmSyncCycle(AccountSyncPreferencesActivity.this, accountService.getLastSyncHistory(), interval);
+                Integer newSyncInterval = Integer.parseInt(newValue.toString());
+
+                syncIntervalFixedTimePreference.setEnabled(false);
+                if (newSyncInterval == 24) {
+                    syncIntervalFixedTimePreference.setEnabled(true);
+                }
+
+                scheduleAlarm(AccountSyncPreferencesActivity.this, newSyncInterval, null, accountService);
+
                 return true;
             }
         });
+    }
+
+    private static void scheduleAlarm(Context ctx, long synchronizationInterval, Date fixedSyncTime, AccountService accountService) {
+        if (synchronizationInterval == 24) {
+            if (fixedSyncTime == null) {
+                fixedSyncTime = Preferences.Account.syncIntervalFixedTime(ctx);
+            }
+            AlarmUtil.setAlarmSyncCycleOnceADay(ctx, accountService.getLastSyncHistory(), fixedSyncTime);
+        } else {
+            long interval = synchronizationInterval * 3600000L;
+            AlarmUtil.setAlarmSyncCycle(ctx, accountService.getLastSyncHistory(), interval);
+        }
+    }
+
+    public static void scheduleAlarm(Context ctx, AccountService accountService) {
+        scheduleAlarm(ctx, Preferences.Account.syncInterval(ctx) / 3600000L, null, accountService);
     }
 
     @Override

@@ -18,9 +18,8 @@ package eu.vranckaert.worktime.broadcastreceiver;
 import android.content.Context;
 import android.content.Intent;
 import com.google.inject.Inject;
+import eu.vranckaert.worktime.activities.preferences.AccountSyncPreferencesActivity;
 import eu.vranckaert.worktime.service.AccountService;
-import eu.vranckaert.worktime.utils.alarm.AlarmUtil;
-import eu.vranckaert.worktime.utils.preferences.Preferences;
 import roboguice.receiver.RoboBroadcastReceiver;
 
 /**
@@ -34,7 +33,8 @@ public class AlarmSyncInitBroadcastReceiver extends RoboBroadcastReceiver {
     @Override
     protected void handleReceive(Context context, Intent intent) {
         if (accountService.isUserLoggedIn()) {
-            AlarmUtil.setAlarmSyncCycle(context, accountService.getLastSyncHistory(), Preferences.Account.syncInterval(context));
+            AccountSyncPreferencesActivity.scheduleAlarm(context, accountService);
+            //AlarmUtil.setAlarmSyncCycle(context, accountService.getLastSyncHistory(), Preferences.Account.syncInterval(context));
         }
     }
 }

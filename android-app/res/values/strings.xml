@@ -572,6 +572,7 @@
         <item>Every Six Hours</item>
         <item>Every 12 Hours</item>
         <item>Once a day</item>
+        <item>Never</item>
     </string-array>
     <string-array name="pref_account_sync_interval_option_values">
         <item>1</item>
@@ -582,7 +583,12 @@
         <item>6</item>
         <item>12</item>
         <item>24</item>
+        <item>-1</item>
     </string-array>
+    <string name="pref_account_sync_interval_fixed_time_title">Fixed time for synchronization</string>
+    <string name="pref_account_sync_interval_fixed_time_summary">Select a fixed time when to synchronize the data of this device to your account. This is only available when you have chosen time interval of once a day.</string>
+    <string name="pref_account_sync_interval_fixed_time_dialog_title">Select a time</string>
+
     <string name="pref_account_sync_conflict_handling_title">Synchronisation Conflicts</string>
     <string name="pref_account_sync_conflict_handling_summary">Set up what to do in case of a conflict during synchronisation.</string>
     <string name="pref_account_sync_conflict_handling_dialog_title">Select a Solution</string>
@@ -607,6 +613,10 @@
     <string name="pref_account_sync_error_show_notifications_summary_off">Do not show notifications when an error occurred during synchronization.</string>
 
     <!-- ACCOUNTS -->
+    <string name="lbl_account_sync_resolution_successful">Success</string>
+    <string name="lbl_account_sync_resolution_failed">Failed</string>
+    <string name="lbl_account_sync_resolution_timed_out">Timed out</string>
+    <string name="lbl_account_sync_resolution_busy">Busy</string>
     <!-- LOGIN -->
     <string name="lbl_account_login_title">Login</string>
     <string name="lbl_account_login_email_hint">Email</string>
@@ -646,13 +656,15 @@
     <string name="lbl_account_profile_sync_history_last_start_time">Last start time:</string>
     <string name="lbl_account_profile_sync_history_last_end_time">Last end time:</string>
     <string name="lbl_account_profile_sync_history_last_resolution">Result:</string>
-    <string name="lbl_account_profile_sync_history_last_resolution_successful">Success</string>
-    <string name="lbl_account_profile_sync_history_last_resolution_failed">Failed</string>
-    <string name="lbl_account_profile_sync_history_last_resolution_timed_out">Timed out</string>
-    <string name="lbl_account_profile_sync_history_last_resolution_busy">Busy</string>
     <string name="lbl_account_profile_sync_history_last_failure_reason">Error:</string>
     <string name="lbl_account_profile_sync_history_view_all">View Full History</string>
     <string name="lbl_account_profile_error_user_not_logged_in">You are currently not logged in anymore. Please login again!</string>
+    <!-- SYNC HISTORY -->
+    <string name="lbl_account_sync_history_title">Synchronization History</string>
+    <string name="lbl_account_sync_history_list_item_start_time">Started:</string>
+    <string name="lbl_account_sync_history_list_item_duration">Duration:</string>
+    <string name="lbl_account_sync_history_list_item_result">Result:</string>
+    <string name="lbl_account_sync_history_list_item_error">Error:</string>
     <!-- SYNC SERVICE -->
     <string name="lbl_sync_service_successful_title">Successful Synchronization</string>
     <string name="lbl_sync_service_successful_message">Synchronization of the WorkTime data was successful!</string>

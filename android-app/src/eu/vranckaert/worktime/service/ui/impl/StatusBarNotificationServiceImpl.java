@@ -24,6 +24,7 @@ import com.google.inject.Inject;
 import com.jakewharton.notificationcompat2.NotificationCompat2;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.HomeActivity;
+import eu.vranckaert.worktime.activities.account.AccountSyncHistoryActivity;
 import eu.vranckaert.worktime.activities.notifcationbar.StatusBarOthersActionHandleActivity;
 import eu.vranckaert.worktime.activities.notifcationbar.StatusBarPunchOutHandleActivity;
 import eu.vranckaert.worktime.activities.notifcationbar.StatusBarSplitActionHandleActivity;
@@ -237,7 +238,9 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
         message = context.getString(smallMsgResId);
         bigTextMessage = context.getString(msgResId);
 
-        setStatusBarNotification(title, message, ticker, new Intent(), bigTextMessage, title, Constants.StatusBarNotificationIds.SYNC, NotificationCompat2.PRIORITY_HIGH, null, false);
+        Intent intent = new Intent(context, AccountSyncHistoryActivity.class);
+
+        setStatusBarNotification(title, message, ticker, intent, bigTextMessage, title, Constants.StatusBarNotificationIds.SYNC, NotificationCompat2.PRIORITY_HIGH, null, false);
     }
 
     /**

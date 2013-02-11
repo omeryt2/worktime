@@ -16,7 +16,6 @@
 package eu.vranckaert.worktime.activities.account;
 
 import android.content.Intent;
-import android.widget.Toast;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.exceptions.backup.BackupException;
@@ -149,6 +148,6 @@ public class AccountSyncService extends RoboIntentService {
     }
 
     private void showText(int resId) {
-        Toast.makeText(AccountSyncService.this, resId, Toast.LENGTH_LONG).show();
+        // Toast.makeText(AccountSyncService.this, resId, Toast.LENGTH_LONG).show();
     }
 }

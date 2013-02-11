@@ -147,6 +147,12 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/account_profile_last_failure_reason"
                 android:layout_gravity="left|center_vertical"/>
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/account_profile_view_full_history_button"
+                android:text="@string/lbl_account_profile_sync_history_view_all"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

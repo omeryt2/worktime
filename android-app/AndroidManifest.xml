@@ -189,6 +189,9 @@
         <activity android:name=".activities.account.AccountProfileActivity"
                   android:theme="@style/AppTheme"
                   android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".activities.account.AccountSyncHistoryActivity"
+                  android:theme="@style/AppTheme"
+                  android:configChanges="orientation|keyboardHidden"/>
         <activity android:name=".activities.account.AccountLoginActivity"
                   android:theme="@style/AppTheme"
                   android:configChanges="orientation|keyboardHidden"/>

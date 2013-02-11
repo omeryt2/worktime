@@ -25,12 +25,7 @@ import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.preferences.TimePrecisionPreference;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Duration;
-import org.joda.time.Interval;
-import org.joda.time.LocalDate;
-import org.joda.time.Period;
-import org.joda.time.PeriodType;
+import org.joda.time.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -517,7 +512,20 @@ public class DateUtils {
          * @return A well formatted text containing the duration between the two times.
          */
         public static final String calculateDuration(Context ctx, Date startDate, Date endDate, PeriodType periodType) {
-            Duration duration = calculateDuration(ctx, startDate, endDate);
+            Calendar start = Calendar.getInstance();
+            start.setTime(startDate);
+
+            Calendar end = Calendar.getInstance();
+            end.setTime(endDate);
+
+            if(end.before(start)) {
+                Calendar swap = start;
+                start = end;
+                end = swap;
+            }
+
+            Interval interval = new Interval(start.getTime().getTime(), end.getTime().getTime());
+            Duration duration = interval.toDuration();
             Period period = duration.toPeriod(periodType);
 
             int years = period.getYears();
@@ -543,29 +551,84 @@ public class DateUtils {
             PeriodType.yearMonthDay();
             PeriodType.yearMonthDayTime();
 
+            int startValue = 0;
+
             if (periodType == PeriodType.time()) {
-                hoursString = String.valueOf(hours) + ctx.getString(R.string.hoursShort) + " ";
+                hoursString = StringUtils.leftPad(String.valueOf(hours), "0", 2) + ctx.getString(R.string.hoursShort) + " ";
                 minutesString = StringUtils.leftPad(String.valueOf(minutes), "0", 2) + ctx.getString(R.string.minutesShort) + " ";
                 secondsString = StringUtils.leftPad(String.valueOf(seconds), "0", 2) + ctx.getString(R.string.secondsShort) + " ";
-                periodString = hoursString + " " + minutesString + " " + secondsString;
+
+                if (hours > 0) {
+                    startValue = hours;
+                    periodString = hoursString + " " + minutesString + " " + secondsString;
+                } else if (minutes > 0) {
+                    startValue = minutes;
+                    periodString = minutesString + " " + secondsString;
+                } else {
+                    startValue = seconds;
+                    periodString = secondsString;
+                }
             } else if (periodType == PeriodType.dayTime()) {
-                daysString = String.valueOf(days) + ctx.getString(R.string.daysShort) + " ";
+                daysString = StringUtils.leftPad(String.valueOf(days), "0", 2) + ctx.getString(R.string.daysShort) + " ";
                 hoursString = StringUtils.leftPad(String.valueOf(hours), "0", 2) + ctx.getString(R.string.hoursShort) + " ";
                 minutesString = StringUtils.leftPad(String.valueOf(minutes), "0", 2) + ctx.getString(R.string.minutesShort) + " ";
-                periodString = daysString +  " " + hoursString + " " + minutesString;
+
+                if (days > 0) {
+                    startValue = days;
+                    periodString = daysString +  " " + hoursString + " " + minutesString;
+                } else if (hours > 0) {
+                    startValue = hours;
+                    periodString = hoursString + " " + minutesString;
+                } else {
+                    startValue = minutes;
+                    periodString = minutesString;
+                }
             } else if (periodType == PeriodType.yearMonthDay()) {
-                yearsString = String.valueOf(years) + ctx.getString(R.string.yearsShort) + " ";
+                yearsString = StringUtils.leftPad(String.valueOf(years), "0", 2) + ctx.getString(R.string.yearsShort) + " ";
                 monthsString = StringUtils.leftPad(String.valueOf(months), "0", 2) + ctx.getString(R.string.monthsShort) + " ";
                 daysString = StringUtils.leftPad(String.valueOf(days), "0", 2) + ctx.getString(R.string.daysShort) + " ";
-                periodString = yearsString + " " + monthsString + " " + daysString;
+
+                if (years > 0) {
+                    startValue = years;
+                    periodString = yearsString + " " + monthsString + " " + daysString;
+                } else if (months > 0) {
+                    startValue = months;
+                    periodString = monthsString + " " + daysString;
+                } else {
+                    startValue = days;
+                    periodString = daysString;
+                }
             } else if (periodType == PeriodType.yearMonthDayTime()) {
-                yearsString = String.valueOf(years) + ctx.getString(R.string.yearsShort) + " ";
+                yearsString = StringUtils.leftPad(String.valueOf(years), "0", 2) + ctx.getString(R.string.yearsShort) + " ";
                 monthsString = StringUtils.leftPad(String.valueOf(months), "0", 2) + ctx.getString(R.string.monthsShort) + " ";
                 daysString = StringUtils.leftPad(String.valueOf(days), "0", 2) + ctx.getString(R.string.daysShort) + " ";
                 hoursString = StringUtils.leftPad(String.valueOf(hours), "0", 2) + ctx.getString(R.string.hoursShort) + " ";
                 minutesString = StringUtils.leftPad(String.valueOf(minutes), "0", 2) + ctx.getString(R.string.minutesShort) + " ";
                 secondsString = StringUtils.leftPad(String.valueOf(seconds), "0", 2) + ctx.getString(R.string.secondsShort) + " ";
-                periodString = yearsString + " " + monthsString + " " + daysString + " " + hoursString + " " + minutesString + " " + secondsString;
+
+                if (years > 0) {
+                    startValue = years;
+                    periodString = yearsString + " " + monthsString + " " + daysString + " " + hoursString + " " + minutesString + " " + secondsString;
+                } else if (months > 0) {
+                    startValue = months;
+                    periodString = monthsString + " " + daysString + " " + hoursString + " " + minutesString + " " + secondsString;
+                } else if (days > 0) {
+                    startValue = days;
+                    periodString = daysString + " " + hoursString + " " + minutesString + " " + secondsString;
+                } else if (hours > 0) {
+                    startValue = hours;
+                    periodString = hoursString + " " + minutesString + " " + secondsString;
+                } else if (minutes > 0) {
+                    startValue = minutes;
+                    periodString = minutesString + " " + secondsString;
+                } else {
+                    startValue = seconds;
+                    periodString = secondsString;
+                }
+            }
+
+            if (startValue < 10) {
+                periodString = periodString.substring(1);
             }
 
             periodString = periodString.trim();

@@ -23,9 +23,8 @@ import android.util.Log;
 import eu.vranckaert.worktime.activities.account.AccountSyncService;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.model.SyncHistory;
-import eu.vranckaert.worktime.utils.context.ContextUtils;
-import eu.vranckaert.worktime.utils.preferences.Preferences;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -67,6 +66,9 @@ public class AlarmUtil {
     public static void setAlarmSyncCycle(Context context, SyncHistory lastSyncHistory, long syncInterval) {
         removeAllSyncAlarms(context);
 
+        if (syncInterval == -1)
+            return;
+
         long fiveMinutes = 5 * 60000;
 
         // Only use this for debugging purpose
@@ -88,6 +90,48 @@ public class AlarmUtil {
         }
 
         Log.i(LOG_TAG, "Alarm scheduled to go off in " + nextSync + " milliseconds and to be repeated in " + syncInterval + " milliseconds.");
+
+        nextSync = (new Date().getTime()) + nextSync;
+
+        getAlarmManager(context).setRepeating(AlarmManager.RTC_WAKEUP, nextSync, syncInterval, getSyncOperation(context));
+    }
+
+    public static void setAlarmSyncCycleOnceADay(Context context, SyncHistory lastSyncHistory, Date fixedSyncTime) {
+        removeAllSyncAlarms(context);
+
+        long syncInterval = 24 * 3600000L;
+        long fiveMinutes = 5 * 60000;
+
+        // Only use this for debugging purpose
+//        if (!ContextUtils.isStableBuild(context)) {
+//            syncInterval = 60000; // Every minute...
+//            fiveMinutes = 30000; // 30 seconds...
+//        }
+
+        long nextSync = 1;
+
+        Calendar fixedSyncTimeCal = Calendar.getInstance();
+        fixedSyncTimeCal.setTime(fixedSyncTime);
+
+        Calendar syncTime = Calendar.getInstance();
+        syncTime.set(Calendar.HOUR_OF_DAY, fixedSyncTimeCal.get(Calendar.HOUR_OF_DAY));
+        syncTime.set(Calendar.HOUR, fixedSyncTimeCal.get(Calendar.HOUR));
+        syncTime.set(Calendar.AM_PM, fixedSyncTimeCal.get(Calendar.AM_PM));
+        syncTime.set(Calendar.MINUTE, fixedSyncTimeCal.get(Calendar.MINUTE));
+
+        Calendar now = Calendar.getInstance();
+
+        if (now.after(syncTime) && lastSyncHistory != null && (now.getTimeInMillis() - lastSyncHistory.getStarted().getTime() > syncInterval) ) {
+            nextSync = fiveMinutes;
+        } else {
+            nextSync = syncTime.getTimeInMillis() - now.getTimeInMillis();
+        }
+
+        if (nextSync < fiveMinutes) {
+            nextSync = fiveMinutes;
+        }
+
+        Log.i(LOG_TAG, "Alarm scheduled to go off in " + nextSync + " milliseconds and to be repeated every " + syncInterval + " milliseconds.");
 
         nextSync = (new Date().getTime()) + nextSync;
 

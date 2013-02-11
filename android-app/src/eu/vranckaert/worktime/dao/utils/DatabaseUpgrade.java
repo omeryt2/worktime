@@ -87,6 +87,29 @@ public enum DatabaseUpgrade {
     UPGRADE8(29, new String[] {
             "ALTER TABLE SyncHistory add column action " + DataTypes.VARCHAR + ";",
             "UPDATE SyncHistory SET action = 'DONE';"
+    }),
+    UPGRADE9(30, new String[] {
+            "ALTER TABLE SyncHistory add column numOutgoingAcceptedProjectChanges " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numOutgoingMergedProjectChanges " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numOutgoingNoActionProjectChanges " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numOutgoingNotAcceptedProjectChanges " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numOutgoingAcceptedTaskChanges " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numOutgoingMergedTaskChanges " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numOutgoingNoActionTaskChanges " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numOutgoingNotAcceptedTaskChanges " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numOutgoingAcceptedTimeRegistrationChanges " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numOutgoingMergedTimeRegistrationChanges " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numOutgoingNoActionTimeRegistrationChanges " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numOutgoingNotAcceptedTimeRegistrationChanges " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numOutgoingProjectsRemoved " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numOutgoingTasksRemoved " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numOutgoingTimeRegistrationsRemoved " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numIncomingProjectChanges " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numIncomingTaskChanges " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numIncomingTimeRegistrationChanges " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numIncomingProjectsRemoved " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numIncomingTasksRemoved " + DataTypes.INTEGER + ";",
+            "ALTER TABLE SyncHistory add column numIncomingTimeRegistrationsRemoved " + DataTypes.INTEGER + ";"
     })
     ;
 

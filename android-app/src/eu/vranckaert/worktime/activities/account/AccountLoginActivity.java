@@ -27,16 +27,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.activities.preferences.AccountSyncPreferencesActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
-import eu.vranckaert.worktime.exceptions.worktime.account.LoginCredentialsMismatchException;
 import eu.vranckaert.worktime.exceptions.network.NoNetworkConnectionException;
+import eu.vranckaert.worktime.exceptions.worktime.account.LoginCredentialsMismatchException;
 import eu.vranckaert.worktime.service.AccountService;
-import eu.vranckaert.worktime.utils.alarm.AlarmUtil;
 import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
-import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
@@ -192,7 +191,8 @@ public class AccountLoginActivity extends ActionBarGuiceActivity {
                 errorTextView.setText(error);
                 errorTextView.setVisibility(View.VISIBLE);
             } else {
-                AlarmUtil.setAlarmSyncCycle(AccountLoginActivity.this, null, Preferences.Account.syncInterval(AccountLoginActivity.this));
+                AccountSyncPreferencesActivity.scheduleAlarm(AccountLoginActivity.this, accountService);
+                //AlarmUtil.setAlarmSyncCycle(AccountLoginActivity.this, null, Preferences.Account.syncInterval(AccountLoginActivity.this));
                 Intent intent = new Intent(AccountLoginActivity.this, AccountProfileActivity.class);
                 startActivityForResult(intent, Constants.IntentRequestCodes.ACCOUNT_DETAILS);
             }

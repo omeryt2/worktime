@@ -102,4 +102,20 @@ public class SyncHistoryDaoImpl extends GenericDaoImpl<SyncHistory, Integer> imp
             return syncHistories.get(0);
         }
     }
+
+    @Override
+    public List<SyncHistory> findAll() {
+        List<SyncHistory> syncHistories;
+        QueryBuilder<SyncHistory, Integer> qb = dao.queryBuilder();
+        try {
+            qb.orderBy("started", false);
+            PreparedQuery<SyncHistory> pq = qb.prepare();
+            syncHistories = dao.query(pq);
+        } catch (SQLException e) {
+            Log.e(LOG_TAG, "Could not start the query... Returning null.", e);
+            return null;
+        }
+
+        return syncHistories;
+    }
 }

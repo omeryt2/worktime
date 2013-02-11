@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.inject.Inject;
@@ -73,6 +74,7 @@ public class AccountProfileActivity extends SyncLockedActivity {
     @InjectView(R.id.account_profile_last_resolution) private TextView syncHistoryResolution;
     @InjectView(R.id.account_profile_last_failure_reason_label) private TextView syncHistoryFailureReasonLabel;
     @InjectView(R.id.account_profile_last_failure_reason) private TextView syncHistoryFailureReason;
+    @InjectView(R.id.account_profile_view_full_history_button) private Button fullHistoryButton;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +90,14 @@ public class AccountProfileActivity extends SyncLockedActivity {
         User user = accountService.getOfflineUserDate();
         if (user != null)
             updateUI(user);
+
+        fullHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AccountProfileActivity.this, AccountSyncHistoryActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -181,11 +191,12 @@ public class AccountProfileActivity extends SyncLockedActivity {
         protected void onPostExecute(User user) {
             if (user == null) {
                 Toast.makeText(AccountProfileActivity.this, errorMsg, Toast.LENGTH_LONG).show();
-                if (logout)
+                if (logout) {
                     setResult(Constants.IntentResultCodes.RESULT_LOGOUT);
-                else
-                    setResult(RESULT_OK);
-                finish();
+                    finish();
+                } else {
+                    updateUI(accountService.getLastSyncHistory());
+                }
             } else {
                 updateUI(user);
             }
@@ -225,10 +236,10 @@ public class AccountProfileActivity extends SyncLockedActivity {
 
         switch (syncHistory.getStatus()) {
             case SUCCESSFUL:
-                syncHistoryResolution.setText(R.string.lbl_account_profile_sync_history_last_resolution_successful);
+                syncHistoryResolution.setText(R.string.lbl_account_sync_resolution_successful);
                 break;
             case FAILED:
-                syncHistoryResolution.setText(R.string.lbl_account_profile_sync_history_last_resolution_failed);
+                syncHistoryResolution.setText(R.string.lbl_account_sync_resolution_failed);
                 if (StringUtils.isNotBlank(syncHistory.getFailureReason())) {
                     syncHistoryFailureReasonLabel.setVisibility(View.VISIBLE);
                     syncHistoryFailureReason.setText(syncHistory.getFailureReason());
@@ -236,10 +247,10 @@ public class AccountProfileActivity extends SyncLockedActivity {
                 }
                 break;
             case TIMED_OUT:
-                syncHistoryResolution.setText(R.string.lbl_account_profile_sync_history_last_resolution_timed_out);
+                syncHistoryResolution.setText(R.string.lbl_account_sync_resolution_timed_out);
                 break;
             case BUSY:
-                syncHistoryResolution.setText(R.string.lbl_account_profile_sync_history_last_resolution_busy);
+                syncHistoryResolution.setText(R.string.lbl_account_sync_resolution_busy);
                 break;
         }
     }

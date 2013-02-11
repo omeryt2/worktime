@@ -31,6 +31,7 @@ import eu.vranckaert.worktime.utils.string.StringUtils;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -743,6 +744,25 @@ public class Preferences {
 
             long interval = Integer.parseInt(hourInterval) * 3600000L;
             return interval;
+        }
+
+        public static Date syncIntervalFixedTime(Context ctx) {
+            Long timeInMillis = getSharedPreferences(ctx).getLong(
+                    Constants.Preferences.Keys.ACCOUNT_SYNC_INTERVAL_FIXED_TIME,
+                    -1
+            );
+
+            if (timeInMillis == -1) {
+                Date now = new Date();
+
+                SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+                editor.putLong(Constants.Preferences.Keys.ACCOUNT_SYNC_INTERVAL_FIXED_TIME, now.getTime());
+                editor.commit();
+
+                return now;
+            }
+
+            return new Date(timeInMillis);
         }
     }
 }

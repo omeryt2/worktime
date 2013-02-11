@@ -24,6 +24,12 @@
         android:entries="@array/pref_account_sync_interval_options"
         android:entryValues="@array/pref_account_sync_interval_option_values"
         android:dialogTitle="@string/pref_account_sync_interval_dialog_title" />
+    <eu.vranckaert.worktime.utils.preferences.TimePreference
+        android:key="accountSyncIntervalFixedTime"
+        android:title="@string/pref_account_sync_interval_fixed_time_title"
+        android:summary="@string/pref_account_sync_interval_fixed_time_summary"
+        android:dialogTitle="@string/pref_account_sync_interval_fixed_time_dialog_title"
+        android:defaultValue="1357038000000"/>
     <ListPreference
         android:key="accountSyncConflictHandling"
         android:defaultValue="SERVER"

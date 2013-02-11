@@ -25,7 +25,7 @@ import eu.vranckaert.worktime.model.SyncHistory;
 import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
 
-import java.util.Date;
+import java.util.List;
 
 /**
  * User: DIRK VRANCKAERT
@@ -128,4 +128,10 @@ public interface AccountService {
      * {@link eu.vranckaert.worktime.model.SyncHistory} and the {@link User}.
      */
     void removeAll();
+
+    /**
+     * Find the chronologically ordered synchronization history objects.
+     * @return The list of synchronization history objects in chronological order.
+     */
+    List<SyncHistory> findAllSyncHistories();
 }

@@ -22,10 +22,7 @@ import eu.vranckaert.worktime.dao.*;
 import eu.vranckaert.worktime.dao.impl.*;
 import eu.vranckaert.worktime.dao.web.WorkTimeWebDao;
 import eu.vranckaert.worktime.dao.web.impl.WorkTimeWebDaoImpl;
-import eu.vranckaert.worktime.dao.web.model.response.sync.EntitySyncResult;
-import eu.vranckaert.worktime.dao.web.model.response.sync.ProjectSyncResult;
-import eu.vranckaert.worktime.dao.web.model.response.sync.TaskSyncResult;
-import eu.vranckaert.worktime.dao.web.model.response.sync.TimeRegistrationSyncResult;
+import eu.vranckaert.worktime.dao.web.model.response.sync.*;
 import eu.vranckaert.worktime.exceptions.SDCardUnavailableException;
 import eu.vranckaert.worktime.exceptions.backup.BackupException;
 import eu.vranckaert.worktime.exceptions.backup.BackupFileCouldNotBeCreated;
@@ -290,6 +287,10 @@ public class AccountServiceImpl implements AccountService {
                 syncHistory.setEnded(new Date());
                 syncHistory.setStatus(SyncHistoryStatus.SUCCESSFUL);
                 syncHistory.setAction(SyncHistoryAction.DONE);
+
+                storeStatisticalData(syncHistory, syncRemovalMap, serverSyncRemovalMap, entitySyncResult,
+                        projectsSinceLastSync, tasksSinceLastSync, timeRegistrationsSinceLastSync);
+
                 syncHistoryDao.update(syncHistory);
             }
         } catch (RuntimeException e) {
@@ -655,6 +656,118 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    private void storeStatisticalData(SyncHistory syncHistory, Map<String, String> outgoingSyncRemovalMap,
+                                      Map<String, String> incomingSyncRemovalMap, EntitySyncResult outgoingSyncResult,
+                                      List<Project> incomingProjects, List<Task> incomingTasks,
+                                      List<TimeRegistration> incomingTimeRegistrations) {
+        // outgoing sync removal map
+        Map<String, Integer> outgoingRemovals = countRemovalsPerType(outgoingSyncRemovalMap);
+        syncHistory.setNumOutgoingProjectsRemoved(outgoingRemovals.get(Project.class.getSimpleName()));
+        syncHistory.setNumOutgoingTasksRemoved(outgoingRemovals.get(Task.class.getSimpleName()));
+        syncHistory.setNumOutgoingTimeRegistrationsRemoved(outgoingRemovals.get(TimeRegistration.class.getSimpleName()));
+
+        // incoming sync removal map
+        Map<String, Integer> incomingRemovals = countRemovalsPerType(incomingSyncRemovalMap);
+        syncHistory.setNumIncomingProjectsRemoved(incomingRemovals.get(Project.class.getSimpleName()));
+        syncHistory.setNumIncomingTasksRemoved(incomingRemovals.get(Task.class.getSimpleName()));
+        syncHistory.setNumIncomingTimeRegistrationsRemoved(incomingRemovals.get(TimeRegistration.class.getSimpleName()));
+
+        // incoming project changes
+        syncHistory.setNumIncomingProjectChanges(incomingProjects.size());
+
+        // incoming task changes
+        syncHistory.setNumIncomingTaskChanges(incomingTasks.size());
+
+        // incoming time registration changes
+        syncHistory.setNumIncomingTimeRegistrationChanges(incomingTimeRegistrations.size());
+
+        // outgoing project changes
+        Map<EntitySyncResolution, Integer> outgoingProjectSyncResults = countSyncsPerResolution(outgoingSyncResult.getProjectSyncResults());
+        syncHistory.setNumOutgoingAcceptedProjectChanges(outgoingProjectSyncResults.get(EntitySyncResolution.ACCEPTED));
+        syncHistory.setNumOutgoingMergedProjectChanges(outgoingProjectSyncResults.get(EntitySyncResolution.MERGED));
+        syncHistory.setNumOutgoingNoActionProjectChanges(outgoingProjectSyncResults.get(EntitySyncResolution.NO_ACTION));
+        syncHistory.setNumOutgoingNotAcceptedProjectChanges(outgoingProjectSyncResults.get(EntitySyncResolution.NOT_ACCEPTED));
+
+        // outgoing task changes
+        Map<EntitySyncResolution, Integer> outgoingTaskSyncResults = countSyncsPerResolution(outgoingSyncResult.getProjectSyncResults());
+        syncHistory.setNumOutgoingAcceptedTaskChanges(outgoingTaskSyncResults.get(EntitySyncResolution.ACCEPTED));
+        syncHistory.setNumOutgoingMergedTaskChanges(outgoingTaskSyncResults.get(EntitySyncResolution.MERGED));
+        syncHistory.setNumOutgoingNoActionTaskChanges(outgoingTaskSyncResults.get(EntitySyncResolution.NO_ACTION));
+        syncHistory.setNumOutgoingNotAcceptedTaskChanges(outgoingTaskSyncResults.get(EntitySyncResolution.NOT_ACCEPTED));
+
+        // outgoing time registration changes
+        Map<EntitySyncResolution, Integer> outgoingTimeRegistrationSyncResults = countSyncsPerResolution(outgoingSyncResult.getProjectSyncResults());
+        syncHistory.setNumOutgoingAcceptedTimeRegistrationChanges(outgoingTimeRegistrationSyncResults.get(EntitySyncResolution.ACCEPTED));
+        syncHistory.setNumOutgoingMergedTimeRegistrationChanges(outgoingTimeRegistrationSyncResults.get(EntitySyncResolution.MERGED));
+        syncHistory.setNumOutgoingNoActionTimeRegistrationChanges(outgoingTimeRegistrationSyncResults.get(EntitySyncResolution.NO_ACTION));
+        syncHistory.setNumOutgoingNotAcceptedTimeRegistrationChanges(outgoingTimeRegistrationSyncResults.get(EntitySyncResolution.NOT_ACCEPTED));
+    }
+
+    private Map<String, Integer> countRemovalsPerType(Map<String, String> syncRemovalMap) {
+        int projects = 0;
+        int tasks = 0;
+        int timeRegistrations = 0;
+
+        if (syncRemovalMap != null) {
+            for (Map.Entry<String, String> entry : syncRemovalMap.entrySet()) {
+                String entityName = entry.getKey();
+                if (entityName.equals(Project.class.getSimpleName())) {
+                    projects++;
+                } else if (entityName.equals(Task.class.getSimpleName())) {
+                    tasks++;
+                } else if (entityName.equals(TimeRegistration.class.getSimpleName())) {
+                    timeRegistrations++;
+                }
+            }
+        }
+
+        Map<String, Integer> result = new HashMap<String, Integer>();
+        result.put(Project.class.getSimpleName(), projects);
+        result.put(Task.class.getSimpleName(), tasks);
+        result.put(TimeRegistration.class.getSimpleName(), timeRegistrations);
+        return result;
+    }
+
+    private Map<EntitySyncResolution, Integer> countSyncsPerResolution(List syncResults) {
+        int accepted = 0;
+        int merged = 0;
+        int noAction = 0;
+        int notAccepted = 0;
+
+        for (Object object : syncResults) {
+            EntitySyncResolution syncResolution = null;
+            if (object instanceof ProjectSyncResult) {
+                syncResolution = ((ProjectSyncResult) object).getResolution();
+            } else if (object instanceof TaskSyncResult) {
+                syncResolution = ((TaskSyncResult) object).getResolution();
+            } else if (object instanceof TimeRegistrationSyncResult) {
+                syncResolution = ((TimeRegistrationSyncResult) object).getResolution();
+            }
+
+            switch (syncResolution) {
+                case ACCEPTED:
+                    accepted++;
+                    break;
+                case MERGED:
+                    merged++;
+                    break;
+                case NO_ACTION:
+                    noAction++;
+                    break;
+                case NOT_ACCEPTED:
+                    notAccepted++;
+                    break;
+            }
+        }
+
+        Map<EntitySyncResolution, Integer> result = new HashMap<EntitySyncResolution, Integer>();
+        result.put(EntitySyncResolution.ACCEPTED, accepted);
+        result.put(EntitySyncResolution.MERGED, merged);
+        result.put(EntitySyncResolution.NO_ACTION, noAction);
+        result.put(EntitySyncResolution.NOT_ACCEPTED, notAccepted);
+        return result;
+    }
+
     @Override
     public boolean isSyncBusy() {
         SyncHistory ongoingSyncHistory = syncHistoryDao.getOngoingSyncHistory();
@@ -679,8 +792,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void logout() {
-        clearUserAppData();
-
         // Clear all the sync keys...
         List<TimeRegistration> timeRegistrations = timeRegistrationDao.findAll();
         for (TimeRegistration timeRegistration : timeRegistrations) {
@@ -697,11 +808,18 @@ public class AccountServiceImpl implements AccountService {
             task.setSyncKey(null);
             taskDao.update(task);
         }
+
+        clearUserAppData();
     }
 
     @Override
     public void removeAll() {
         clearUserAppData();
+    }
+
+    @Override
+    public List<SyncHistory> findAllSyncHistories() {
+        return syncHistoryDao.findAll();
     }
 
     private void clearUserAppData() {
