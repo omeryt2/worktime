@@ -689,14 +689,14 @@ public class AccountServiceImpl implements AccountService {
         syncHistory.setNumOutgoingNotAcceptedProjectChanges(outgoingProjectSyncResults.get(EntitySyncResolution.NOT_ACCEPTED));
 
         // outgoing task changes
-        Map<EntitySyncResolution, Integer> outgoingTaskSyncResults = countSyncsPerResolution(outgoingSyncResult.getProjectSyncResults());
+        Map<EntitySyncResolution, Integer> outgoingTaskSyncResults = countSyncsPerResolution(outgoingSyncResult.getTaskSyncResults());
         syncHistory.setNumOutgoingAcceptedTaskChanges(outgoingTaskSyncResults.get(EntitySyncResolution.ACCEPTED));
         syncHistory.setNumOutgoingMergedTaskChanges(outgoingTaskSyncResults.get(EntitySyncResolution.MERGED));
         syncHistory.setNumOutgoingNoActionTaskChanges(outgoingTaskSyncResults.get(EntitySyncResolution.NO_ACTION));
         syncHistory.setNumOutgoingNotAcceptedTaskChanges(outgoingTaskSyncResults.get(EntitySyncResolution.NOT_ACCEPTED));
 
         // outgoing time registration changes
-        Map<EntitySyncResolution, Integer> outgoingTimeRegistrationSyncResults = countSyncsPerResolution(outgoingSyncResult.getProjectSyncResults());
+        Map<EntitySyncResolution, Integer> outgoingTimeRegistrationSyncResults = countSyncsPerResolution(outgoingSyncResult.getTimeRegistrationSyncResults());
         syncHistory.setNumOutgoingAcceptedTimeRegistrationChanges(outgoingTimeRegistrationSyncResults.get(EntitySyncResolution.ACCEPTED));
         syncHistory.setNumOutgoingMergedTimeRegistrationChanges(outgoingTimeRegistrationSyncResults.get(EntitySyncResolution.MERGED));
         syncHistory.setNumOutgoingNoActionTimeRegistrationChanges(outgoingTimeRegistrationSyncResults.get(EntitySyncResolution.NO_ACTION));
