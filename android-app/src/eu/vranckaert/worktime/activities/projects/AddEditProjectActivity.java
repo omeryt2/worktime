@@ -239,4 +239,20 @@ public class AddEditProjectActivity extends SyncLockedActivity {
         super.onDestroy();
         tracker.stopSession();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (inUpdateMode() && requestCode == Constants.IntentRequestCodes.SYNC_BLOCKING_ACTIVITY) {
+            if (projectService.checkProjectExisting(editProject)) {
+                if (projectService.checkReloadProject(editProject)) {
+                    projectService.refresh(editProject);
+                    projectNameInput.setText(editProject.getName());
+                    projectCommentInput.setText(editProject.getComment());
+                }
+            } else {
+                setResult(RESULT_OK);
+                finish();
+            }
+        }
+    }
 }

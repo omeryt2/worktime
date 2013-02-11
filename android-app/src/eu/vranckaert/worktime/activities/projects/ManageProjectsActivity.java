@@ -20,17 +20,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.*;
+import android.widget.*;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.project.ProjectByNameComparator;
@@ -51,7 +42,6 @@ import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceListActivity;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedListActivity;
 import eu.vranckaert.worktime.utils.widget.WidgetUtil;
 
@@ -375,6 +365,10 @@ public class ManageProjectsActivity extends SyncLockedListActivity {
         if (requestCode == Constants.IntentRequestCodes.START_TIME_REGISTRATION
                 || requestCode == Constants.IntentRequestCodes.END_TIME_REGISTRATION) {
             PunchBarUtil.configurePunchBar(ManageProjectsActivity.this, timeRegistrationService, taskService, projectService);
+        }
+        if (requestCode == Constants.IntentRequestCodes.SYNC_BLOCKING_ACTIVITY) {
+            Log.d(getApplicationContext(), LOG_TAG, "Synchronization completed so reloading the list of projects!");
+            loadProjects();
         }
     }
 

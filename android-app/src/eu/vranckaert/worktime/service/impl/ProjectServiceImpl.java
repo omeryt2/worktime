@@ -305,4 +305,27 @@ public class ProjectServiceImpl implements ProjectService {
     public void insertDefaultProjectAndTaskData() {
         dao.insertDefaultData();
     }
+
+    @Override
+    public boolean checkProjectExisting(Project project) {
+        if (project.getId() != null) {
+            Project existingProject = dao.findById(project.getId());
+            if (existingProject != null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean checkReloadProject(Project project) {
+        if (project.getId() != null) {
+            Project existingProject = dao.findById(project.getId());
+            if (existingProject != null && existingProject.isModifiedAfter(project)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

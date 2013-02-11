@@ -177,4 +177,12 @@ public class TimeRegistration implements Serializable {
         }
         return "[TimeRegistration - id: " + id + " startTime: " + startTime + " endTime: " + endTime + " comment: " + comment + "]";
     }
+
+    public boolean isModifiedAfter(TimeRegistration timeRegistration) {
+        if (this.getLastUpdated().after(timeRegistration.getLastUpdated())) {
+            return true;
+        }
+
+        return false;
+    }
 }

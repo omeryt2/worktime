@@ -201,4 +201,28 @@ public class TaskServiceImpl implements TaskService {
     public List<Task> findAll() {
         return dao.findAll();
     }
+
+    @Override
+    public boolean checkTaskExisting(Task task) {
+        if (task.getId() != null) {
+            Task existingTask = dao.findById(task.getId());
+            if (existingTask != null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean checkReloadTask(Task task) {
+        if (task.getId() != null) {
+            Task existingTask = dao.findById(task.getId());
+            if (existingTask != null && existingTask.isModifiedAfter(task)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

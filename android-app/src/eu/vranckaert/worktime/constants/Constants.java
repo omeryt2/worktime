@@ -114,6 +114,7 @@ public class Constants {
         public static final int RESULT_LOGOUT = 300;
         public static final int SYNC_COMPLETED_ERROR = 400;
         public static final int SYNC_COMPLETED_SUCCESS = 500;
+        public static final int GHOST_RECORD = 666;
     }
     public class Preferences {
         public static final String PREFERENCES_NAME = "WorkTime_0001";

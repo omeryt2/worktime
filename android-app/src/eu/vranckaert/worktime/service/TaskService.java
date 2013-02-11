@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -108,4 +107,20 @@ public interface TaskService {
      * @return The list of {@link Task}s available.
      */
     List<Task> findAll();
+
+    /**
+     * Checks if a provided task does exist or not based on a search on it's identifier. This mainly should be used
+     * after a synchronization.
+     * @param task The task to be checked for.
+     * @return True is the task exists, false if not.
+     */
+    boolean checkTaskExisting(Task task);
+
+    /**
+     * Checks if a task should be reloaded (so if the version in the database is modified after the provided tasks'
+     * last updated timestamp).
+     * @param task The task to be checked for.
+     * @return True is the task should be reloaded, false if not.
+     */
+    boolean checkReloadTask(Task task);
 }

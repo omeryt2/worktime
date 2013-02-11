@@ -160,4 +160,12 @@ public class Task implements Serializable, Cloneable {
         clone.setOrder(this.order);
         return clone;
     }
+
+    public boolean isModifiedAfter(Task task) {
+        if (this.getLastUpdated().after(task.getLastUpdated())) {
+            return true;
+        }
+
+        return false;
+    }
 }

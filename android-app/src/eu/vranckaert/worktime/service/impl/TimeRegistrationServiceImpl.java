@@ -18,7 +18,6 @@ package eu.vranckaert.worktime.service.impl;
 import android.content.Context;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.dao.ProjectDao;
-import eu.vranckaert.worktime.dao.SyncRemovalCacheDao;
 import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
 import eu.vranckaert.worktime.dao.impl.ProjectDaoImpl;
@@ -33,7 +32,6 @@ import eu.vranckaert.worktime.utils.context.Log;
 import roboguice.inject.ContextSingleton;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -193,5 +191,34 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
     @Override
     public boolean doesInterfereWithTimeRegistration(Date time) {
         return dao.doesInterfereWithTimeRegistration(time);
+    }
+
+    @Override
+    public void refresh(TimeRegistration timeRegistration) {
+        dao.refresh(timeRegistration);
+    }
+
+    @Override
+    public boolean checkTimeRegistrationExisting(TimeRegistration timeRegistration) {
+        if (timeRegistration.getId() != null) {
+            TimeRegistration existingTimeRegistration = dao.findById(timeRegistration.getId());
+            if (existingTimeRegistration != null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean checkReloadTimeRegistration(TimeRegistration timeRegistration) {
+        if (timeRegistration.getId() != null) {
+            TimeRegistration existingTimeRegistration = dao.findById(timeRegistration.getId());
+            if (existingTimeRegistration != null && existingTimeRegistration.isModifiedAfter(timeRegistration)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

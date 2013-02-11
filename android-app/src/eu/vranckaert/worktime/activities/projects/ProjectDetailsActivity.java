@@ -22,12 +22,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
@@ -41,11 +36,7 @@ import eu.vranckaert.worktime.comparators.task.TaskByNameComparator;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.enums.reporting.ReportingDisplayDuration;
-import eu.vranckaert.worktime.exceptions.AtLeastOneProjectRequiredException;
-import eu.vranckaert.worktime.exceptions.AtLeastOneTaskRequiredException;
-import eu.vranckaert.worktime.exceptions.ProjectHasOngoingTimeRegistration;
-import eu.vranckaert.worktime.exceptions.ProjectStillHasTasks;
-import eu.vranckaert.worktime.exceptions.TaskStillInUseException;
+import eu.vranckaert.worktime.exceptions.*;
 import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
@@ -115,20 +106,23 @@ public class ProjectDetailsActivity extends SyncLockedListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_details);
 
-        setTitle(project.getName());
         setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.PROJECTS_DETAILS_ACTIVITY);
 
+        buildUI();
+
+        registerForContextMenu(getListView());
+    }
+
+    private void buildUI() {
         Log.d(getApplicationContext(), LOG_TAG, "Project found with id " + project.getId() + " and name " + project.getName());
+        setTitle(project.getName());
         if (StringUtils.isNotBlank(project.getComment())) {
             projectComment.setText(project.getComment());
         }
-
         loadProjectTasks(project);
-
-        registerForContextMenu(getListView());
     }
 
     private void loadProjectTasks(final Project project) {
@@ -515,6 +509,17 @@ public class ProjectDetailsActivity extends SyncLockedListActivity {
                 break;
             case Constants.IntentRequestCodes.END_TIME_REGISTRATION:
                 PunchBarUtil.configurePunchBar(ProjectDetailsActivity.this, timeRegistrationService, taskService, projectService);
+                break;
+            case Constants.IntentRequestCodes.SYNC_BLOCKING_ACTIVITY:
+                if (projectService.checkProjectExisting(project)) {
+                    if (projectService.checkReloadProject(project)) {
+                        projectService.refresh(project);
+                        buildUI();
+                    }
+                } else {
+                    setResult(RESULT_OK);
+                    finish();
+                }
                 break;
         }
     }

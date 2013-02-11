@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,7 +19,6 @@ import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -150,4 +148,27 @@ public interface TimeRegistrationService {
      * @return True if the time is part of another time registration, false if not.
      */
     boolean doesInterfereWithTimeRegistration(Date time);
+
+    /**
+     * Refreshes the time registration data. Should only be used when the time registration is expected not be loaded
+     * entirely (only the id).
+     * @param timeRegistration The time Registration to refresh.
+     */
+    void refresh(TimeRegistration timeRegistration);
+
+    /**
+     * Checks if a provided time registration does exist or not based on a search on it's identifier. This mainly should
+     * be used after a synchronization.
+     * @param timeRegistration The time registration to be checked for.
+     * @return True is the time registration exists, false if not.
+     */
+    boolean checkTimeRegistrationExisting(TimeRegistration timeRegistration);
+
+    /**
+     * Checks if a time registration should be reloaded (so if the version in the database is modified after the
+     * provided time registration's last updated timestamp).
+     * @param timeRegistration The time registration to be checked for.
+     * @return True is the time registration should be reloaded, false if not.
+     */
+    boolean checkReloadTimeRegistration(TimeRegistration timeRegistration);
 }

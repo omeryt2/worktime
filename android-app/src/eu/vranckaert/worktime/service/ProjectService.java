@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -135,4 +134,20 @@ public interface ProjectService {
      * Inserts the default data in the database!
      */
     void insertDefaultProjectAndTaskData();
+
+    /**
+     * Checks if a provided project does exist or not based on a search on it's identifier. This mainly should be used
+     * after a synchronization.
+     * @param project The project to be checked for.
+     * @return True is the project exists, false if not.
+     */
+    boolean checkProjectExisting(Project project);
+
+    /**
+     * Checks if a project should be reloaded (so if the version in the database is modified after the provided projects
+     * last updated timestamp).
+     * @param project The project to be checked for.
+     * @return True is the project should be reloaded, false if not.
+     */
+    boolean checkReloadProject(Project project);
 }

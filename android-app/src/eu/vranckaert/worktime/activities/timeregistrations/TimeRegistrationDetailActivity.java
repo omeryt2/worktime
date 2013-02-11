@@ -196,6 +196,18 @@ public class TimeRegistrationDetailActivity extends SyncLockedActivity {
                 PunchBarUtil.configurePunchBar(TimeRegistrationDetailActivity.this, timeRegistrationService, taskService, projectService);
                 break;
             }
+            case Constants.IntentRequestCodes.SYNC_BLOCKING_ACTIVITY: {
+                if (timeRegistrationService.checkTimeRegistrationExisting(registration)) {
+                    if (timeRegistrationService.checkReloadTimeRegistration(registration)) {
+                        timeRegistrationService.refresh(registration);
+                        updateView();
+                    }
+                } else {
+                    setResult(Constants.IntentResultCodes.GHOST_RECORD);
+                    finish();
+                }
+                break;
+            }
         }
 
         if (resultCode == Constants.IntentResultCodes.RESULT_DELETED) {

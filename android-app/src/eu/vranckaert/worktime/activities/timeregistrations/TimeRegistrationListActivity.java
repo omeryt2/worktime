@@ -239,6 +239,12 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Constants.IntentResultCodes.GHOST_RECORD) {
+            Log.d(getApplicationContext(), LOG_TAG, "A ghost record has been detected (typically after a synchronization) so reloading the entire list...");
+            loadTimeRegistrations(true, true);
+            return;
+        }
+
         switch (requestCode) {
             case Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION : {
                 if (resultCode == RESULT_OK) {

@@ -161,4 +161,12 @@ public class Project implements Serializable, Cloneable {
         clone.setOrder(this.order);
         return clone;
     }
+
+    public boolean isModifiedAfter(Project project) {
+        if (this.getLastUpdated().after(project.getLastUpdated())) {
+            return true;
+        }
+
+        return false;
+    }
 }

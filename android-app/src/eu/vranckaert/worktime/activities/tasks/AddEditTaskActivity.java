@@ -15,6 +15,7 @@
 
 package eu.vranckaert.worktime.activities.tasks;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -90,6 +91,10 @@ public class AddEditTaskActivity extends SyncLockedActivity {
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.ADD_EDIT_TASK_ACTIVITY);
 
+        buildUI();
+    }
+
+    private void buildUI() {
         if (!inUpdateMode()) {
             Log.d(getApplicationContext(), LOG_TAG, "Adding task for project " + project.getName());
         } else {
@@ -97,6 +102,7 @@ public class AddEditTaskActivity extends SyncLockedActivity {
             setTitle(R.string.lbl_edit_task_title);
             taskName.setText(editTask.getName());
         }
+
         projectName.setText(TextConstants.SPACE + project.getName());
     }
 
@@ -209,5 +215,20 @@ public class AddEditTaskActivity extends SyncLockedActivity {
     protected void onDestroy() {
         super.onDestroy();
         tracker.stopSession();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (inUpdateMode() && requestCode == Constants.IntentRequestCodes.SYNC_BLOCKING_ACTIVITY) {
+            if (taskService.checkTaskExisting(editTask)) {
+                if (taskService.checkReloadTask(editTask)) {
+                    taskService.refresh(editTask);
+                    buildUI();
+                }
+            } else {
+                setResult(RESULT_OK);
+                finish();
+            }
+        }
     }
 }
