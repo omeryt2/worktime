@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+   	<listener>
+		<listener-class>eu.vranckaert.worktime.guice.GuiceConfig</listener-class>
+	</listener>
+
+	<filter>
+		<filter-name>guiceFilter</filter-name>
+		<filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>guiceFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- All REST-services should go over HTTPS -->
+	<security-constraint>
+        <web-resource-collection>
+            <url-pattern>/rest/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+	
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+	
+	<!-- GAE Specific (auto-gen) stuff -->
+	<servlet>
+	 	<servlet-name>SystemServiceServlet</servlet-name>
+	 	<servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
+	 	<init-param>
+	  		<param-name>services</param-name>
+	  		<param-value/>
+	 	</init-param>
+	</servlet>
+	<servlet-mapping>
+	 	<servlet-name>SystemServiceServlet</servlet-name>
+	 	<url-pattern>/_ah/spi/*</url-pattern>
+	</servlet-mapping>
+</web-app>

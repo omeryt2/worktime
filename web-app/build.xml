@@ -1,0 +1,186 @@
+<project>
+	<property file="local.properties" />
+	<import file="${sdk.dir}/config/user/ant-macros.xml" />
+	
+	<path id="project.classpath">
+	    <pathelement path="war/WEB-INF/classes" />
+	    <fileset dir="war/WEB-INF/lib">
+	    	<include name="**/*.jar" />
+	    </fileset>
+	    <fileset dir="${sdk.dir}/lib">
+	    	<include name="shared/**/*.jar" />
+	    </fileset>
+	  </path>
+	
+	<target name="copyjars" description="Copies the App Engine JARs to the WAR.">
+		<copy todir="war/WEB-INF/lib" flatten="true">
+			<fileset dir="${sdk.dir}/lib/user">
+		<include name="**/*.jar" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="compile" depends="copyjars" description="Compiles Java source and copies other source files to the WAR.">
+		<mkdir dir="war/WEB-INF/classes" />
+		<copy todir="war/WEB-INF/classes">
+			<fileset dir="src">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		<javac srcdir="src" destdir="war/WEB-INF/classes" classpathref="project.classpath" debug="on" />
+	</target>
+	
+	<target name="datanucleusenhance" depends="compile" description="Performs JDO enhancement on compiled data classes.">
+		<enhance_war war="war" />
+	</target>
+	
+	<scriptdef name="script.increase.version" language="javascript">
+		<attribute name="value" />
+		<attribute name="property" />
+	    <![CDATA[
+			var initVal = parseInt(attributes.get("value")) + 1;
+			project.setProperty(attributes.get("property"), initVal);
+		]]>
+	</scriptdef>
+	
+	<target name="update-app-version" description="Update the appengine-web.xml with the current mercurial revision as app version">
+		<xmlproperty file="./war/WEB-INF/appengine-web.xml" prefix="appengineweb" collapseAttributes="true"/>
+		<property name="versionCode" value="${appengineweb.appengine-web-app.version}"/>
+		<script.increase.version value="${versionCode}" property="newVersionCode"/>
+		
+		<echo message="Updating from ${versionCode} to ${newVersionCode}"/>
+		
+		<replaceregexp byline="true">
+		    <regexp pattern="  &lt;version&gt;(.*)&lt;/version&gt;"/>
+		    <substitution expression="  &lt;version&gt;${newVersionCode}&lt;/version&gt;"/>
+		    <fileset file="./war/WEB-INF/appengine-web.xml" />
+		</replaceregexp>
+	</target>
+	
+	<target name="update" depends="datanucleusenhance, update-app-version" description="Uploads the application to App Engine.">
+		<java classname="com.google.appengine.tools.admin.AppCfg" fork="true" inputstring="${deploy.password}" failonerror="true">
+			<classpath>
+				<path location="${appengine.tools.classpath}" />
+				<path refid="project.classpath" />
+			</classpath>
+			<arg value="--email=${deploy.email}" />
+			<arg value="--passin" />
+			<arg value="update" />
+			<arg value="war" />
+		</java>
+		
+		<!-- Commit the changes made -->
+    	<echo>Committing production changes</echo>
+		<antcall target="svn-commit">
+            <param name="file" value="./war/WEB-INF/appengine-web.xml"/>
+            <param name="message" value="Auto commit for appengine-web while releasing in production for version ${newVersionCode}"/>
+        </antcall>
+		<!-- Create a branch for the trunk directory -->
+        <echo>Creating branches</echo>
+		<antcall target="svn-update"/>
+        <antcall target="svn-branch-trunk">
+            <param name="trunk.url" value="https://worktime.googlecode.com/svn/trunk/web-app"/>
+            <param name="branch.dir" value="https://worktime.googlecode.com/svn/branches/"/>
+            <param name="branch.name" value="web-app-${newVersionCode}"/>
+            <param name="message" value="Creating branch for production release ${newVersionCode}"/>
+        </antcall>
+	</target>
+	
+	<target name="runserver" depends="datanucleusenhance" description="Starts the development server.">
+		<dev_appserver war="war" port="8888" >
+			<options>
+				<arg value="--jvm_flag=-Xdebug"/>
+				<arg value="--jvm_flag=-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9999"/>
+			</options>
+		</dev_appserver>
+	</target>
+	
+	<!--
+	<target name="update" depends="datanucleusenhance"
+	      description="Uploads the application to App Engine.">
+		<appcfg action="update" war="war" />
+	</target>
+	-->
+	
+	<target name="clean" description="Cleans all generated class files">
+		<delete includeemptydirs="true" failonerror="false">
+	    	<fileset dir="./war/WEB-INF/classes/" includes="**/*"/>
+	  	</delete>
+		<delete dir="./war/WEB-INF/classes" failonerror="false"/>
+	</target>
+
+	<target name="update_indexes" depends="datanucleusenhance"
+	      description="Uploads just the datastore index configuration to App Engine.">
+		<appcfg action="update_indexes" war="war" />
+	</target>
+
+	<target name="rollback" depends="datanucleusenhance"
+	      description="Rolls back an interrupted application update.">
+		<appcfg action="rollback" war="war" />
+	</target>
+
+	<target name="request_logs"
+	      description="Downloads log data from App Engine for the application.">
+		<appcfg action="request_logs" war="war">
+			<options>
+	        	<arg value="--num_days=5"/>
+	      	</options>
+			<args>
+	        	<arg value="logs.txt"/>
+	      	</args>
+		</appcfg>
+	</target>
+	
+	<!-- SVN -->
+    <!-- SVN ANT library -->
+    <path id="svnant.classpath">
+        <fileset dir="ant-libs/svn/">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+	
+	<!-- SVN ANT taskdef -->
+    <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" />
+    <!-- SVN ANT settings -->
+    <svnSetting javahl="false" svnkit="true" username="${svn.repository.username}" password="${svn.repository.password}" id="svn.settings"/>
+
+    <target name="svn-check-dependencies">
+        <fail message="The property svn.repository.username is missing" unless="svn.repository.username"/>
+        <fail message="The property svn.repository.password is missing" unless="svn.repository.password"/>
+
+        <available resource="org/tigris/subversion/svnant/svnantlib.xml"
+                   classpathref="svnant.classpath"
+                   property="available.svnant"/>
+        <echo message="SVN-ANT is available = ${available.svnant}"/>
+        <fail message="SVN-ANT is not available!" unless="${available.svnant}"/>
+    </target>
+
+    <target name="svn-commit" depends="svn-check-dependencies">
+        <echo>Committing file ${file}</echo>
+        <svn refid="svn.settings">
+            <commit file="${file}" message="${message}"/>
+            <update dir="."/>
+        </svn>
+    </target>
+
+    <target name="svn-update" depends="svn-check-dependencies">
+        <echo>Updating working copy</echo>
+        <svn refid="svn.settings">
+            <update dir="."/>
+        </svn>
+    </target>
+
+    <target name="svn-revert" depends="svn-check-dependencies">
+        <echo>Reverting file ${file}</echo>
+        <svn refid="svn.settings">
+            <revert file="${file}"/>
+        </svn>
+    </target>
+
+    <target name="svn-branch-trunk" depends="svn-check-dependencies">
+        <echo>Creating branch for trunk (${trunk.url}) to url ${branch.dir} with name ${branch.name}</echo>
+        <svn refid="svn.settings">
+            <copy srcUrl="${trunk.url}" desturl="${branch.dir}/${branch.name}" message="${message}" makeparents="true"/>
+        </svn>
+    </target>
+</project>
