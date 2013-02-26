@@ -574,7 +574,7 @@ public class SyncServiceImpl implements SyncService {
 			log.info("Incoming time registration ended at " + timeRegistration.getEndTime());
 		}
 		log.info("Incoming time registration has task: " + timeRegistration.getTask().getName());
-		log.info("Incoming time registration has project: " + timeRegistration.getTask().getProject());
+		log.info("Incoming time registration has project: " + timeRegistration.getTask().getProject().getName());
 		log.info("Incoming time registration has comment: " + timeRegistration.getComment());
 		
 		TimeRegistration localTimeRegistration = null;

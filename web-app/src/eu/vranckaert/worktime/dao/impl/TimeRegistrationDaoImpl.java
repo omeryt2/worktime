@@ -3,15 +3,17 @@ package eu.vranckaert.worktime.dao.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.google.appengine.api.datastore.Query.FilterOperator;
 
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
-import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.model.User;
 
 public class TimeRegistrationDaoImpl extends BaseDaoImpl<TimeRegistration> implements TimeRegistrationDao {
+	private static final Logger log = Logger.getLogger(TimeRegistrationDaoImpl.class.getName());
+	
 	public TimeRegistrationDaoImpl() {
 		super(TimeRegistration.class);
 	}
@@ -45,7 +47,9 @@ public class TimeRegistrationDaoImpl extends BaseDaoImpl<TimeRegistration> imple
 	
 	@Override
 	public TimeRegistration find(Date startTime, Date endTime, User user) {
+		log.info("Lookinf for a time registration that starts on " + startTime + " and ends on " + endTime);
 		if (endTime != null) {
+			log.info("The end time is not null...");
 			try {
 				TimeRegistration timeRegistration = getDataStore().find()
 						.type(TimeRegistration.class)
@@ -55,11 +59,15 @@ public class TimeRegistrationDaoImpl extends BaseDaoImpl<TimeRegistration> imple
 						.returnUnique()
 						.now();
 				
+				log.info("Query for time registration has been executed...");
+				
 				// Check transaction cache
 				if (timeRegistration == null) {
+					log.info("But no time registration has been found. Will check the cached objects now");
 					for (TimeRegistration cache : getCachedObjects(user)) {
 						if (cache.getStartTime().equals(startTime)
 								&& cache.getEndTime().equals(endTime)) {
+							log.info("Time registration foudn in cache!");
 							return cache;
 						}
 					}
@@ -67,9 +75,12 @@ public class TimeRegistrationDaoImpl extends BaseDaoImpl<TimeRegistration> imple
 				
 				return timeRegistration;
 			} catch (IllegalStateException e) {
+				log.info("Illegal State Exception: " + e.getMessage());
+				e.printStackTrace();
 				return null;
 			}
 		} else {
+			log.info("The end time is null...");
 			try {
 				TimeRegistration timeRegistration = getDataStore().find()
 						.type(TimeRegistration.class)
@@ -78,11 +89,15 @@ public class TimeRegistrationDaoImpl extends BaseDaoImpl<TimeRegistration> imple
 						.returnUnique()
 						.now();
 				
+				log.info("Query for time registration has been executed...");
+				
 				// Check transaction cache
 				if (timeRegistration == null) {
+					log.info("But no time registration has been found. Will check the cached objects now");
 					for (TimeRegistration cache : getCachedObjects(user)) {
 						if (cache.getStartTime().equals(startTime)
 								&& cache.getEndTime() == null) {
+							log.info("Time registration foudn in cache!");
 							return cache;
 						}
 					}
@@ -90,6 +105,8 @@ public class TimeRegistrationDaoImpl extends BaseDaoImpl<TimeRegistration> imple
 				
 				return timeRegistration;
 			} catch (IllegalStateException e) {
+				log.info("Illegal State Exception: " + e.getMessage());
+				e.printStackTrace();
 				return null;
 			}
 		}

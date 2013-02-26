@@ -1,9 +1,9 @@
 package eu.vranckaert.worktime.dao.impl;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.code.twig.ObjectDatastore;
@@ -14,6 +14,8 @@ import com.google.inject.Provider;
 import eu.vranckaert.worktime.dao.BaseDao;
 
 public class BaseDaoImpl <T> implements BaseDao <T> {
+	private static final Logger log = Logger.getLogger(BaseDaoImpl.class.getName());
+	
 	@Inject
 	private Provider<ObjectDatastore> dataStores;
 	
@@ -85,13 +87,18 @@ public class BaseDaoImpl <T> implements BaseDao <T> {
 	
 	public List<T> getCachedObjects(Object ancestor) {
 		if (!useTransactionCache()) {
+			log.info("Not using the transaction cache...");
 			return new ArrayList<T>();
 		}
 		
 		List<T> subList = new ArrayList<T>();
 		
+		log.info("Looking in to the transaction cache...");
+		log.info("Transaction cache is null?" + ( transactionCache == null ? "Yes" : "No" ) );
 		for (T cachedObject : transactionCache) {
+			log.info("Checking for ancestor in tree");
 			if (hasAncestorInTree(cachedObject, ancestor)) {
+				log.info("Cached object found...");
 				subList.add(cachedObject);
 			}
 		}
