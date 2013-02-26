@@ -130,7 +130,7 @@ public class BaseDaoImpl <T> implements BaseDao <T> {
 						}
 						log.info("The value is not an instance of the ancestor");
 						return false;
-					} else {
+					} else if (ancestorFieldValue != null) {
 						log.info("The field value is not an instance of the ancestor. Continuing to check the fields of the field...");
 						return hasAncestorInTree(ancestorFieldValue, ancestor);
 					}
