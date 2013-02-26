@@ -122,7 +122,7 @@ public class BaseDaoImpl <T> implements BaseDao <T> {
 					Object ancestorFieldValue = ancestorField.get(object);
 					log.info("Value of field: " + ancestorFieldValue);
 					log.info("Checking if the field-value is an instance of " + ancestor.getClass().getSimpleName());
-					if (ancestorFieldValue.getClass().isInstance(ancestor)) {
+					if (ancestorFieldValue != null && ancestorFieldValue.getClass().isInstance(ancestor)) {
 						log.info("The field value is an instance. Checking the equals of the field-value and the ancestor.");
 						if (ancestorFieldValue.equals(ancestor)) {
 							log.info("The value is an instance of the ancestor");
