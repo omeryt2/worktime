@@ -275,6 +275,7 @@ public class SyncServiceImpl implements SyncService {
 		} catch (Exception e) {
 			log.info("Exception occured during sycnhronisation for user " + user.getEmail() + ". Exception " + e.getClass().getName() + " message is: " + e.getMessage());
 			log.throwing(SyncServiceImpl.class.getSimpleName(), "sync", e);
+			e.printStackTrace();
 		} finally {
 			if (tx.isActive()) {
 				tx.rollback();
@@ -543,7 +544,7 @@ public class SyncServiceImpl implements SyncService {
 	
 	private String generateSyncKeyForTask(User user) {
 		String syncKey = KeyGenerator.getNewKey();
-		log.info("Generated project sync-key '" + syncKey + "' for user " + user.getEmail());
+		log.info("Generated task sync-key '" + syncKey + "' for user " + user.getEmail());
 		while(!taskDao.isUniqueSynKey(syncKey, user)) {
 			syncKey = KeyGenerator.getNewKey();
 			log.info("Generted sync-key was already in use, generated new sync-key '" + syncKey + "' for user " + user.getEmail());
@@ -564,13 +565,28 @@ public class SyncServiceImpl implements SyncService {
 	private TimeRegistrationSyncResult syncTimeRegistration(TimeRegistration timeRegistration, Task task, User user, SyncConflictConfiguration conflictConfiguration) {
 		TimeRegistrationSyncResult result = new TimeRegistrationSyncResult(timeRegistration);
 		
+		// Logging
 		log.info("Starting to synchronize incoming time registration for user " + user.getEmail());
+		log.info("Incoming time registration started at: " + timeRegistration.getStartTime());
+		if (timeRegistration.isOngoingTimeRegistration()) {
+			log.info("Incoming time registration is ongoing...");
+		} else {
+			log.info("Incoming time registration ended at " + timeRegistration.getEndTime());
+		}
+		log.info("Incoming time registration has task: " + timeRegistration.getTask().getName());
+		log.info("Incoming time registration has project: " + timeRegistration.getTask().getProject());
+		log.info("Incoming time registration has comment: " + timeRegistration.getComment());
+		
 		TimeRegistration localTimeRegistration = null;
+		log.info("Checking the time registration sync key...");
 		if (StringUtils.isBlank(timeRegistration.getSyncKey())) {
+			log.info("No sync key found, looking for time registration on start and end time");
 			localTimeRegistration = timeRegistrationDao.find(timeRegistration.getStartTime(), timeRegistration.getEndTime(), user);
 		} else {
+			log.info("Sync key found, looking for time registration based on that sync key");
 			localTimeRegistration = timeRegistrationDao.findBySyncKey(timeRegistration.getSyncKey(), user);
 			if (localTimeRegistration == null) {
+				log.info("Time registration based on sync key not found... Meaning that the time registration is already removed on the server and thus will not be accepted");
 				result.setResolution(EntitySyncResolution.NOT_ACCEPTED);
 				result.setSyncedTimeRegistration(null);
 				result.setSyncedTimeRegistrations(null);
@@ -578,6 +594,7 @@ public class SyncServiceImpl implements SyncService {
 			}
 		}
 		
+		log.info("Checking if a local time registration is found...");
 		if (localTimeRegistration == null) { // No matching time registration is found so persist time registration after interference check
 			log.info("No matching time registration is found for user " + user.getEmail());
 			List<TimeRegistration> interferingTimeRegistrations = timeRegistrationDao.findInterferingTimeRegistrations(timeRegistration, user);
@@ -671,7 +688,7 @@ public class SyncServiceImpl implements SyncService {
 	
 	private String generateSyncKeyForTimeRegistration(User user) {
 		String syncKey = KeyGenerator.getNewKey();
-		log.info("Generated project sync-key '" + syncKey + "' for user " + user.getEmail());
+		log.info("Generated time registration sync-key '" + syncKey + "' for user " + user.getEmail());
 		while(!timeRegistrationDao.isUniqueSynKey(syncKey, user)) {
 			syncKey = KeyGenerator.getNewKey();
 			log.info("Generted sync-key was already in use, generated new sync-key '" + syncKey + "' for user " + user.getEmail());
