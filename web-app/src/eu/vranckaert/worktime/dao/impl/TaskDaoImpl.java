@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 
 import eu.vranckaert.worktime.dao.TaskDao;
+import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.User;
 
@@ -42,18 +43,18 @@ public class TaskDaoImpl extends BaseDaoImpl<Task> implements TaskDao {
 	}
 
 	@Override
-	public Task find(String name, User user) {
+	public Task find(String name, Project project) {
 		try {
 			Task task = getDataStore().find()
 					.type(Task.class)
 					.addFilter("name", FilterOperator.EQUAL, name)
-					.ancestor(user)
+					.ancestor(project)
 					.returnUnique()
 					.now();
 			
 			// Check transaction cache
 			if (task == null) {
-				for (Task cache : getCachedObjects(user)) {
+				for (Task cache : getCachedObjects(project)) {
 					if (cache.getName().equals(name)) {
 						return cache;
 					}

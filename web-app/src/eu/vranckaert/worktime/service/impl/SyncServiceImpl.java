@@ -137,6 +137,9 @@ public class SyncServiceImpl implements SyncService {
 		syncHistory.setSyncResult(SyncResult.BUSY);
 		syncHistory.setUserEmail(user.getEmail());
 		syncHistory.setIncomingTimeRegistrations(incomingTimeRegistrations.size());
+		syncHistory.setIncomingProjects(incomingProjects.size());
+		syncHistory.setIncomingTasks(incomingTasks.size());
+		syncHistory.setConflictConfiguration(conflictConfiguration);
 		syncHistoryDao.persist(syncHistory);
 		
 		// Prepare lists of projects and tasks before syncing...
@@ -243,7 +246,8 @@ public class SyncServiceImpl implements SyncService {
 							log.info("Found the incoming TR that matches the ongoing TR... Syncing this TR first...");
 							ongoingSyncedTimeRegistration = timeRegistration;
 							
-							Task taskForTr = taskDao.find(timeRegistration.getTask().getName(), user);
+							Project projectForTr = projectDao.find(timeRegistration.getTask().getProject().getName(), user);
+							Task taskForTr = taskDao.find(timeRegistration.getTask().getName(), projectForTr);
 							TimeRegistrationSyncResult result = syncTimeRegistration(timeRegistration, taskForTr, user, conflictConfiguration);
 							if (result.getResolution() != EntitySyncResolution.NO_ACTION)
 								timeRegistrationsSynced++;
@@ -263,7 +267,8 @@ public class SyncServiceImpl implements SyncService {
 			// Sync all time registrations
 			log.info("Starting to synchronize time registrations for user " + user.getEmail());
 			for (TimeRegistration timeRegistration : incomingTimeRegistrations) {
-				Task taskForTr = taskDao.find(timeRegistration.getTask().getName(), user);
+				Project projectForTr = projectDao.find(timeRegistration.getTask().getProject().getName(), user);
+				Task taskForTr = taskDao.find(timeRegistration.getTask().getName(), projectForTr);
 				TimeRegistrationSyncResult result = syncTimeRegistration(timeRegistration, taskForTr, user, conflictConfiguration);
 				if (result.getResolution() != EntitySyncResolution.NO_ACTION)
 					timeRegistrationsSynced++;
@@ -481,7 +486,7 @@ public class SyncServiceImpl implements SyncService {
 		log.info("Starting to synchronize incoming task with name " + task.getName() + " for user " + user.getEmail());
 		Task localTask = null;
 		if (StringUtils.isBlank(task.getSyncKey())) {
-			localTask = taskDao.find(task.getName(), user);
+			localTask = taskDao.find(task.getName(), project);
 		} else {
 			localTask = taskDao.findBySyncKey(task.getSyncKey(), user);
 			if (localTask == null) {
@@ -492,7 +497,7 @@ public class SyncServiceImpl implements SyncService {
 		}
 		
 		if (localTask == null) { // No matching task is found so persist project
-			log.info("No matching project is found for task with name " + task.getName() + " for user " + user.getEmail());
+			log.info("No matching task is found for task with name " + task.getName() + " for user " + user.getEmail());
 			task.setProject(project);
 			task.setSyncKey(generateSyncKeyForTask(user));
 			taskDao.persist(task);

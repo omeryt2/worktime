@@ -13,8 +13,11 @@ public class SyncHistory {
 	@Index private String userEmail;
 	@Index private Date startTime;
 	private Date endTime;
-	
+
 	private int incomingTimeRegistrations;
+	private int incomingProjects;
+	private int incomingTasks;
+	private SyncConflictConfiguration conflictConfiguration;
 	private int syncedTimeRegistrations;
 	private int syncedProjects;
 	private int syncedTasks;
@@ -59,6 +62,31 @@ public class SyncHistory {
 
 	public void setIncomingTimeRegistrations(int incomingTimeRegistrations) {
 		this.incomingTimeRegistrations = incomingTimeRegistrations;
+	}
+
+	public int getIncomingProjects() {
+		return incomingProjects;
+	}
+
+	public void setIncomingProjects(int incomingProjects) {
+		this.incomingProjects = incomingProjects;
+	}
+
+	public int getIncomingTasks() {
+		return incomingTasks;
+	}
+
+	public void setIncomingTasks(int incomingTasks) {
+		this.incomingTasks = incomingTasks;
+	}
+
+	public SyncConflictConfiguration getConflictConfiguration() {
+		return conflictConfiguration;
+	}
+
+	public void setConflictConfiguration(
+			SyncConflictConfiguration conflictConfiguration) {
+		this.conflictConfiguration = conflictConfiguration;
 	}
 
 	public int getSyncedTimeRegistrations() {

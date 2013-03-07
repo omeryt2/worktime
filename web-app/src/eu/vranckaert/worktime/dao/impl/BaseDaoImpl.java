@@ -3,7 +3,6 @@ package eu.vranckaert.worktime.dao.impl;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.code.twig.ObjectDatastore;
@@ -13,9 +12,7 @@ import com.google.inject.Provider;
 
 import eu.vranckaert.worktime.dao.BaseDao;
 
-public class BaseDaoImpl <T> implements BaseDao <T> {
-	private static final Logger log = Logger.getLogger(BaseDaoImpl.class.getName());
-	
+public class BaseDaoImpl <T> implements BaseDao <T> {	
 	@Inject
 	private Provider<ObjectDatastore> dataStores;
 	
@@ -87,18 +84,13 @@ public class BaseDaoImpl <T> implements BaseDao <T> {
 	
 	public List<T> getCachedObjects(Object ancestor) {
 		if (!useTransactionCache()) {
-			log.info("Not using the transaction cache...");
 			return new ArrayList<T>();
 		}
 		
 		List<T> subList = new ArrayList<T>();
 		
-		log.info("Looking in to the transaction cache...");
-		log.info("Transaction cache is null?" + ( transactionCache == null ? "Yes" : "No" ) );
 		for (T cachedObject : transactionCache) {
-			log.info("Checking for ancestor in tree");
 			if (hasAncestorInTree(cachedObject, ancestor)) {
-				log.info("Cached object found...");
 				subList.add(cachedObject);
 			}
 		}
@@ -109,29 +101,18 @@ public class BaseDaoImpl <T> implements BaseDao <T> {
 	private boolean hasAncestorInTree(Object object, Object ancestor) {
 		Class<? extends Object> clazz = object.getClass();
 		
-		log.info("Checking for object " + clazz.getSimpleName());
-		
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field ancestorField : fields) {
-			log.info("Field: " + ancestorField.getName());
 			ancestorField.setAccessible(true);
 			if (ancestorField.getAnnotation(Parent.class) != null) {
-				log.info("Field has @Parent annotation");
 				try {
-					log.info("Trying to get the value of the field...");
 					Object ancestorFieldValue = ancestorField.get(object);
-					log.info("Value of field: " + ancestorFieldValue);
-					log.info("Checking if the field-value is an instance of " + ancestor.getClass().getSimpleName());
 					if (ancestorFieldValue != null && ancestorFieldValue.getClass().isInstance(ancestor)) {
-						log.info("The field value is an instance. Checking the equals of the field-value and the ancestor.");
 						if (ancestorFieldValue.equals(ancestor)) {
-							log.info("The value is an instance of the ancestor");
 							return true;
 						}
-						log.info("The value is not an instance of the ancestor");
 						return false;
 					} else if (ancestorFieldValue != null) {
-						log.info("The field value is not an instance of the ancestor. Continuing to check the fields of the field...");
 						return hasAncestorInTree(ancestorFieldValue, ancestor);
 					}
 				} catch (IllegalArgumentException e) {
@@ -139,8 +120,7 @@ public class BaseDaoImpl <T> implements BaseDao <T> {
 				}
 			}
 		}
-		
-		log.info("Ancestor not found in tree...");
+
 		return false;
 	}
 }
