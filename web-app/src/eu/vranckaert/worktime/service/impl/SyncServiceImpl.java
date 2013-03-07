@@ -457,6 +457,7 @@ public class SyncServiceImpl implements SyncService {
 
 	private ProjectSyncResult syncProject(Project project, User user, SyncConflictConfiguration conflictConfiguration) {
 		ProjectSyncResult result = new ProjectSyncResult(project);
+		result.setProject(project);
 		
 		log.info("Starting to synchronize incoming project with name " + project.getName() + " for user " + user.getEmail());
 		Project localProject = null;
@@ -542,6 +543,7 @@ public class SyncServiceImpl implements SyncService {
 	
 	private TaskSyncResult syncTask(Task task, Project project, User user, SyncConflictConfiguration conflictConfiguration) {
 		TaskSyncResult result = new TaskSyncResult(task);
+		result.setTask(task);
 		
 		log.info("Starting to synchronize incoming task with name " + task.getName() + " for user " + user.getEmail());
 		Task localTask = null;
@@ -629,6 +631,7 @@ public class SyncServiceImpl implements SyncService {
 	
 	private TimeRegistrationSyncResult syncTimeRegistration(TimeRegistration timeRegistration, Task task, User user, SyncConflictConfiguration conflictConfiguration) {
 		TimeRegistrationSyncResult result = new TimeRegistrationSyncResult(timeRegistration);
+		result.setTimeRegistration(timeRegistration);
 		
 		// Logging
 		log.info("Starting to synchronize incoming time registration for user " + user.getEmail());
