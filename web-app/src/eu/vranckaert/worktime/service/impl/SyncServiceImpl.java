@@ -358,6 +358,11 @@ public class SyncServiceImpl implements SyncService {
 			syncResult.setNonSyncedProjects(getNonSyncedProjects(incomingProjects, projectResults));
 			syncResult.setNonSyncedTasks(getNonSyncedTasks(incomingTasks, taskResults));
 			syncResult.setNonSyncedTimeRegistrations(getNonSyncedTimeRegistrations(incomingTimeRegistrations, timeRegistrationResults));
+			
+			log.info("The synchronization process has been interrupted.");
+			log.info("Number of projects that are left un-synced: " + syncResult.getNonSyncedProjects().size());
+			log.info("Number of tasks that are left un-synced: " + syncResult.getNonSyncedTasks().size());
+			log.info("Number of time registrations that are left un-synced: " + syncResult.getNonSyncedTimeRegistrations().size());
 		}
 		
 		syncResult.setSyncResult(syncHistory.getSyncResult());
