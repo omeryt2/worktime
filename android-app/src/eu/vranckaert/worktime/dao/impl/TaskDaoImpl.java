@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import eu.vranckaert.worktime.dao.SyncRemovalCacheDao;
 import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.generic.GenericDaoImpl;
@@ -189,10 +190,12 @@ public class TaskDaoImpl extends GenericDaoImpl<Task, Integer> implements TaskDa
     }
 
     @Override
-    public List<Task> findAllModifiedAfter(Date lastModified) {
+    public List<Task> findAllModifiedAfterOrUnSynced(Date lastModified) {
         QueryBuilder<Task, Integer> qb = dao.queryBuilder();
         try {
-            qb.where().gt("lastUpdated", lastModified);
+            Where where = qb.where();
+            where.gt("lastUpdated", lastModified);
+            where.or().isNull("syncKey");
             PreparedQuery<Task> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {

@@ -83,8 +83,8 @@ public class SyncHistoryListAdapter extends ArrayAdapter<SyncHistory> {
 
         TextView result = (TextView) row.findViewById(R.id.account_sync_history_result);
         ImageView resultIcon = (ImageView) row.findViewById(R.id.account_sync_history_result_icon);
-        View failureContainer = row.findViewById(R.id.account_sync_history_failure_container);
-        failureContainer.setVisibility(View.GONE);
+        View reasonContainer = row.findViewById(R.id.account_sync_history_reason_container);
+        reasonContainer.setVisibility(View.GONE);
 
         switch (sh.getStatus()) {
             case BUSY:
@@ -95,13 +95,21 @@ public class SyncHistoryListAdapter extends ArrayAdapter<SyncHistory> {
                 resultIcon.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_navigation_accept));
                 result.setText(ctx.getString(R.string.lbl_account_sync_resolution_successful));
                 break;
+            case INTERRUPTED:
+                resultIcon.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_alerts_and_states_error));
+                result.setText(ctx.getString(R.string.lbl_account_sync_resolution_interrupted));
+
+                TextView interruptedReason = (TextView) row.findViewById(R.id.account_sync_history_reason);
+                interruptedReason.setText(ctx.getString(R.string.lbl_account_sync_history_reason_interruption));
+                reasonContainer.setVisibility(View.VISIBLE);
+                break;
             case FAILED:
                 resultIcon.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_alerts_and_states_error));
                 result.setText(ctx.getString(R.string.lbl_account_sync_resolution_failed));
 
-                TextView failureReason = (TextView) row.findViewById(R.id.account_sync_history_failure_reason);
+                TextView failureReason = (TextView) row.findViewById(R.id.account_sync_history_reason);
                 failureReason.setText(sh.getFailureReason());
-                failureContainer.setVisibility(View.VISIBLE);
+                reasonContainer.setVisibility(View.VISIBLE);
                 break;
             case TIMED_OUT:
                 resultIcon.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_device_access_time));

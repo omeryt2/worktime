@@ -13,17 +13,13 @@
  * limitations under the License.
  */
 
-package eu.vranckaert.worktime.model;
+package eu.vranckaert.worktime.dao.web.model.response.sync;
 
 /**
  * User: Dirk Vranckaert
- * Date: 11/01/13
- * Time: 09:44
+ * Date: 07/03/13
+ * Time: 15:34
  */
-public enum SyncHistoryStatus {
-    BUSY,
-    SUCCESSFUL,
-    INTERRUPTED,
-    FAILED,
-    TIMED_OUT;
+public enum SyncResult {
+    SUCCESS, INTERRUPTED;
 }

@@ -614,6 +614,7 @@
 
     <!-- ACCOUNTS -->
     <string name="lbl_account_sync_resolution_successful">Success</string>
+    <string name="lbl_account_sync_resolution_interrupted">Interrupted by server</string>
     <string name="lbl_account_sync_resolution_failed">Failed</string>
     <string name="lbl_account_sync_resolution_timed_out">Timed out</string>
     <string name="lbl_account_sync_resolution_busy">Busy</string>
@@ -664,7 +665,8 @@
     <string name="lbl_account_sync_history_list_item_start_time">Started:</string>
     <string name="lbl_account_sync_history_list_item_duration">Duration:</string>
     <string name="lbl_account_sync_history_list_item_result">Result:</string>
-    <string name="lbl_account_sync_history_list_item_error">Error:</string>
+    <string name="lbl_account_sync_history_list_item_reason">Reason:</string>
+    <string name="lbl_account_sync_history_reason_interruption">The requested took too long to execute on the server. Part of the data has been synced but not everything. Synchronize again (or wait until the next automatically triggered synchronisation) for the rest of the data to be synced.</string>
     <!-- SYNC SERVICE -->
     <string name="lbl_sync_service_successful_title">Successful Synchronization</string>
     <string name="lbl_sync_service_successful_message">Synchronization of the WorkTime data was successful!</string>

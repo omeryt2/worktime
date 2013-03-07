@@ -71,5 +71,5 @@ public interface TaskDao extends GenericDao<Task, Integer> {
      * @param lastModified The date to be checked against.
      * @return A list of {@link Task}s that have modified after the specific date.
      */
-    List<Task> findAllModifiedAfter(Date lastModified);
+    List<Task> findAllModifiedAfterOrUnSynced(Date lastModified);
 }

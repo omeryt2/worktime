@@ -103,12 +103,12 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:visibility="gone"
-            android:id="@+id/account_sync_history_failure_container">
+            android:id="@+id/account_sync_history_reason_container">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/lbl_account_sync_history_list_item_error"
+                android:text="@string/lbl_account_sync_history_list_item_reason"
                 android:layout_column="0"
                 android:paddingRight="5dp"
                 android:textStyle="bold"/>
@@ -116,7 +116,7 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/account_sync_history_failure_reason"
+                android:id="@+id/account_sync_history_reason"
                 android:layout_column="1"/>
         </TableRow>
 

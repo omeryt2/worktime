@@ -397,10 +397,12 @@ public class TimeRegistrationDaoImpl extends GenericDaoImpl<TimeRegistration, In
     }
 
     @Override
-    public List<TimeRegistration> findAllModifiedAfter(Date lastModified) {
+    public List<TimeRegistration> findAllModifiedAfterOrUnSynced(Date lastModified) {
         QueryBuilder<TimeRegistration, Integer> qb = dao.queryBuilder();
         try {
-            qb.where().gt("lastUpdated", lastModified);
+            Where where = qb.where();
+            where.gt("lastUpdated", lastModified);
+            where.or().isNull("syncKey");
             PreparedQuery<TimeRegistration> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {

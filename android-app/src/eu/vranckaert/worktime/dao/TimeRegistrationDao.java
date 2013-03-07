@@ -125,5 +125,5 @@ public interface TimeRegistrationDao extends GenericDao<TimeRegistration, Intege
      * @param lastModified The date to be checked against.
      * @return A list of {@link TimeRegistration}s that have modified after the specific date.
      */
-    List<TimeRegistration> findAllModifiedAfter(Date lastModified);
+    List<TimeRegistration> findAllModifiedAfterOrUnSynced(Date lastModified);
 }

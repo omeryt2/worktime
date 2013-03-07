@@ -67,5 +67,7 @@ public interface ProjectDao extends GenericDao<Project, Integer> {
      * @param lastModified The date to be checked against.
      * @return A list of {@link Project}s that have modified after the specific date.
      */
-    List<Project> findAllModifiedAfter(Date lastModified);
+    List<Project> findAllModifiedAfterOrUnSynced(Date lastModified);
+
+    void setLastModified(List<String> projectNames, Date date);
 }

@@ -219,9 +219,14 @@ public class AccountServiceImpl implements AccountService {
             List<Task> tasks = null;
             List<TimeRegistration> timeRegistrations = null;
             if (lastSuccessfulSyncDate != null) {
-                projects = projectDao.findAllModifiedAfter(lastSuccessfulSyncDate);
-                tasks = taskDao.findAllModifiedAfter(lastSuccessfulSyncDate);
-                timeRegistrations = timeRegistrationDao.findAllModifiedAfter(lastSuccessfulSyncDate);
+                // Retrieve all projects, tasks and time registrations that have been modified since the last sync or
+                // for which the no syncing has been done before. This last check (if not synced before) must be done
+                // because due to a server interruption it is possible that some entities will not have been synced
+                // during the last sync.
+                projects = projectDao.findAllModifiedAfterOrUnSynced(lastSuccessfulSyncDate);
+                tasks = taskDao.findAllModifiedAfterOrUnSynced(lastSuccessfulSyncDate);
+                timeRegistrations = timeRegistrationDao.findAllModifiedAfterOrUnSynced(lastSuccessfulSyncDate);
+
             } else {
                 projects = projectDao.findAll();
                 tasks = taskDao.findAll();
@@ -285,13 +290,44 @@ public class AccountServiceImpl implements AccountService {
             syncHistory = syncHistoryDao.getOngoingSyncHistory();
             if (syncHistory != null) {
                 syncHistory.setEnded(new Date());
-                syncHistory.setStatus(SyncHistoryStatus.SUCCESSFUL);
+
+                if (entitySyncResult.getSyncResult().equals(SyncResult.INTERRUPTED)) {
+                    syncHistory.setStatus(SyncHistoryStatus.INTERRUPTED);
+                } else {
+                    syncHistory.setStatus(SyncHistoryStatus.SUCCESSFUL);
+                }
                 syncHistory.setAction(SyncHistoryAction.DONE);
 
                 storeStatisticalData(syncHistory, syncRemovalMap, serverSyncRemovalMap, entitySyncResult,
                         projectsSinceLastSync, tasksSinceLastSync, timeRegistrationsSinceLastSync);
 
                 syncHistoryDao.update(syncHistory);
+            }
+
+            // Make sure that all non-synced entities so far (due to a server interruption) will be synced again on next
+            // synchronisation
+            if (entitySyncResult.getSyncResult().equals(SyncResult.INTERRUPTED)) {
+                List<String> projectNames = new ArrayList<String>();
+                for (Project project : entitySyncResult.getNonSyncedProjects()) {
+                    projectNames.add(project.getName());
+                }
+                projectDao.setLastModified(projectNames, new Date());
+
+
+                for (Task task : entitySyncResult.getNonSyncedTasks()) {
+                    Project project = projectDao.findByName(task.getProject().getName());
+                    Task localTask = taskDao.findByName(task.getName(), project);
+                    localTask.setLastUpdated(new Date());
+                    taskDao.update(localTask);
+                }
+
+                for (TimeRegistration timeRegistration : entitySyncResult.getNonSyncedTimeRegistrations()) {
+                    Project project = projectDao.findByName(timeRegistration.getTask().getProject().getName());
+                    Task task = taskDao.findByName(timeRegistration.getTask().getName(), project);
+                    TimeRegistration localTimeRegistration = timeRegistrationDao.findByDates(timeRegistration.getStartTime(), timeRegistration.getEndTime());
+                    localTimeRegistration.setLastUpdated(new Date());
+                    timeRegistrationDao.update(localTimeRegistration);
+                }
             }
         } catch (RuntimeException e) {
             markSyncAsFailed(e);

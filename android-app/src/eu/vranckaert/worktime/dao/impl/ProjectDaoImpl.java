@@ -17,8 +17,7 @@ package eu.vranckaert.worktime.dao.impl;
 
 import android.content.Context;
 import com.google.inject.Inject;
-import com.j256.ormlite.stmt.PreparedQuery;
-import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.*;
 import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.SyncRemovalCacheDao;
 import eu.vranckaert.worktime.dao.generic.GenericDaoImpl;
@@ -201,15 +200,31 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
     }
 
     @Override
-    public List<Project> findAllModifiedAfter(Date lastModified) {
+    public List<Project> findAllModifiedAfterOrUnSynced(Date lastModified) {
         QueryBuilder<Project, Integer> qb = dao.queryBuilder();
         try {
-            qb.where().gt("lastUpdated", lastModified);
+            Where where = qb.where();
+            where.gt("lastUpdated", lastModified);
+            where.or().isNull("syncKey");
             PreparedQuery<Project> pq = qb.prepare();
             return dao.query(pq);
         } catch (SQLException e) {
             Log.e(getContext(), LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
+        }
+    }
+
+    @Override
+    public void setLastModified(List<String> projectNames, Date date) {
+        UpdateBuilder<Project, Integer> qb = dao.updateBuilder();
+
+        try {
+            qb.updateColumnValue("lastUpdated", date);
+            qb.where().in("name", projectNames);
+            PreparedUpdate<Project> pu = qb.prepare();
+            dao.update(pu);
+        } catch (SQLException e) {
+            Log.e(getContext(), LOG_TAG, "Could not start the query... Returning null.", e);
         }
     }
 }
