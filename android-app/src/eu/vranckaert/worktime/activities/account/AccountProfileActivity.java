@@ -238,6 +238,9 @@ public class AccountProfileActivity extends SyncLockedActivity {
             case SUCCESSFUL:
                 syncHistoryResolution.setText(R.string.lbl_account_sync_resolution_successful);
                 break;
+            case INTERRUPTED:
+                syncHistoryResolution.setText(R.string.lbl_account_sync_resolution_interrupted);
+                break;
             case FAILED:
                 syncHistoryResolution.setText(R.string.lbl_account_sync_resolution_failed);
                 if (StringUtils.isNotBlank(syncHistory.getFailureReason())) {
