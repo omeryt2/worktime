@@ -1,6 +1,7 @@
 package eu.vranckaert.worktime.service.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.appengine.api.datastore.Transaction;
+import com.google.apphosting.api.DeadlineExceededException;
 import com.google.code.twig.ObjectDatastore;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -52,6 +54,8 @@ public class SyncServiceImpl implements SyncService {
 	
 	@Inject private Provider<ObjectDatastore> dataStore;
 	
+	private boolean syncInterrupted = false;
+	
 	private boolean isProjectCorrupt(Project project) {
 		if (project == null)
 			return true;
@@ -85,8 +89,32 @@ public class SyncServiceImpl implements SyncService {
 		return isTaskCorrupt(timeRegistration.getTask());
 	}
 	
+	private boolean isSyncingTooLong(long startTime) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(startTime);
+		cal.add(Calendar.SECOND, 20);
+		
+		long timeout = cal.getTimeInMillis();
+		long now = new Date().getTime();
+		
+		if (now >= timeout) {
+			return true;
+		}
+		
+		return false;		
+	}
+	
+	private void checkSyncDuration(long startTime) {
+		if (isSyncingTooLong(startTime)) {
+			syncInterrupted = true;
+			throw new DeadlineExceededException("The custom deadline of 20 seconds has been exceeded!");
+		}
+	}
+	
 	@Override
 	public EntitySyncResult sync(String userEmail, SyncConflictConfiguration conflictConfiguration, List<Project> incomingProjects, List<Task> incomingTasks, List<TimeRegistration> incomingTimeRegistrations, Map<String, String> syncRemovalMap, Date lastSuccessfulSyncDate) throws SyncronisationFailedException, SynchronisationLockedException, CorruptDataException {
+		long syncStartTime = new Date().getTime();
+		
 		User user = userService.findUser(userEmail);
 		if (incomingTimeRegistrations == null) {
 			incomingTimeRegistrations = new ArrayList<TimeRegistration>();
@@ -210,6 +238,8 @@ public class SyncServiceImpl implements SyncService {
 			// Sync all projects
 			log.info("Starting to synchronize projects for user " + user.getEmail());
 			for (Project project : projects) {
+				checkSyncDuration(syncStartTime);
+				
 				ProjectSyncResult result = syncProject(project, user, conflictConfiguration);
 				if (result.getResolution() != EntitySyncResolution.NO_ACTION)
 					projectsSynced++;
@@ -220,6 +250,8 @@ public class SyncServiceImpl implements SyncService {
 			// Sync all tasks
 			log.info("Starting to synchronize tasks for user " + user.getEmail());
 			for (Task task : tasks) {
+				checkSyncDuration(syncStartTime);
+				
 				Project projectForTask = projectDao.find(task.getProject().getName(), user);
 				TaskSyncResult result = syncTask(task, projectForTask, user, conflictConfiguration);
 				if (result.getResolution() != EntitySyncResolution.NO_ACTION)
@@ -227,6 +259,8 @@ public class SyncServiceImpl implements SyncService {
 				taskResults.add(result);
 			}
 			log.info(tasksSynced + " tasks have been synced for user " + user.getEmail());
+			
+			checkSyncDuration(syncStartTime);
 			
 			// First check if an ongoing time registration can be found on the server and sync the according incoming entity
 			log.info("Starting to synchronize ongoing time registration (if any) for user " + user.getEmail());
@@ -263,10 +297,14 @@ public class SyncServiceImpl implements SyncService {
 					incomingTimeRegistrations.remove(ongoingSyncedTimeRegistration);
 				}
 			}
+
+			checkSyncDuration(syncStartTime);
 			
 			// Sync all time registrations
 			log.info("Starting to synchronize time registrations for user " + user.getEmail());
 			for (TimeRegistration timeRegistration : incomingTimeRegistrations) {
+				checkSyncDuration(syncStartTime);
+				
 				Project projectForTr = projectDao.find(timeRegistration.getTask().getProject().getName(), user);
 				Task taskForTr = taskDao.find(timeRegistration.getTask().getName(), projectForTr);
 				TimeRegistrationSyncResult result = syncTimeRegistration(timeRegistration, taskForTr, user, conflictConfiguration);
@@ -277,6 +315,11 @@ public class SyncServiceImpl implements SyncService {
 			log.info(timeRegistrationsSynced + " time registrations have been synced for user " + user.getEmail());
 			
 			tx.commit();
+		} catch (DeadlineExceededException e) {
+			log.info("Timeout occured... Comitting transaction and returning result. Message is: " + e.getMessage());
+			if (tx.isActive()) {
+				tx.commit();
+			}
 		} catch (Exception e) {
 			log.info("Exception occured during sycnhronisation for user " + user.getEmail() + ". Exception " + e.getClass().getName() + " message is: " + e.getMessage());
 			log.throwing(SyncServiceImpl.class.getSimpleName(), "sync", e);
@@ -296,7 +339,11 @@ public class SyncServiceImpl implements SyncService {
 		
 		log.info("Marking the synchronisation history successfull for user " + user.getEmail());
 		syncHistory.setEndTime(new Date());
-		syncHistory.setSyncResult(SyncResult.SUCCESS);
+		if (syncInterrupted) {
+			syncHistory.setSyncResult(SyncResult.INTERRUPTED);
+		} else {
+			syncHistory.setSyncResult(SyncResult.SUCCESS);			
+		}
 		syncHistory.setSyncedProjects(projectsSynced);
 		syncHistory.setSyncedTasks(tasksSynced);
 		syncHistory.setSyncedTimeRegistrations(timeRegistrationsSynced);
@@ -306,6 +353,14 @@ public class SyncServiceImpl implements SyncService {
 		syncResult.setProjectSyncResults(projectResults);
 		syncResult.setTaskSyncResults(taskResults);
 		syncResult.setTimeRegistrationSyncResults(timeRegistrationResults);
+		
+		if (syncInterrupted) {
+			syncResult.setNonSyncedProjects(getNonSyncedProjects(incomingProjects, projectResults));
+			syncResult.setNonSyncedTasks(getNonSyncedTasks(incomingTasks, taskResults));
+			syncResult.setNonSyncedTimeRegistrations(getNonSyncedTimeRegistrations(incomingTimeRegistrations, timeRegistrationResults));
+		}
+		
+		syncResult.setSyncResult(syncHistory.getSyncResult());
 		
 		obscureData(syncResult);
 		
@@ -776,6 +831,73 @@ public class SyncServiceImpl implements SyncService {
 		
 		obscureData(timeRegistrations);
 			
+		return timeRegistrations;
+	}
+
+	private List<Project> getNonSyncedProjects(List<Project> incomingProjects,
+			List<ProjectSyncResult> projectResults) {
+		List<Project> projects = new ArrayList<Project>();
+		
+		for (Project project : incomingProjects) {
+			boolean isSynced = false;
+			
+			for (ProjectSyncResult syncResult : projectResults) {
+				if (syncResult.getProject().equals(project)) {
+					isSynced = true;
+					break;
+				}
+			}
+			
+			if (!isSynced) {
+				projects.add(project);
+			}
+		}
+		
+		return projects;
+	}
+
+	private List<Task> getNonSyncedTasks(List<Task> incomingTasks,
+			List<TaskSyncResult> taskResults) {
+		List<Task> tasks = new ArrayList<Task>();
+		
+		for (Task task : incomingTasks) {
+			boolean isSynced = false;
+			
+			for (TaskSyncResult syncResult : taskResults) {
+				if (syncResult.getTask().equals(task)) {
+					isSynced = true;
+					break;
+				}
+			}
+			
+			if (!isSynced) {
+				tasks.add(task);
+			}
+		}
+		
+		return tasks;
+	}
+
+	private List<TimeRegistration> getNonSyncedTimeRegistrations(
+			List<TimeRegistration> incomingTimeRegistrations,
+			List<TimeRegistrationSyncResult> timeRegistrationResults) {
+		List<TimeRegistration> timeRegistrations = new ArrayList<TimeRegistration>();
+		
+		for (TimeRegistration timeRegistration : incomingTimeRegistrations) {
+			boolean isSynced = false;
+			
+			for (TimeRegistrationSyncResult syncResult : timeRegistrationResults) {
+				if (syncResult.getTimeRegistration().equals(timeRegistration)) {
+					isSynced = true;
+					break;
+				}
+			}
+			
+			if (!isSynced) {
+				timeRegistrations.add(timeRegistration);
+			}
+		}
+		
 		return timeRegistrations;
 	}
 	
