@@ -943,6 +943,16 @@ public class SyncServiceImpl implements SyncService {
 				}
 			}
 		}
+		
+		for (Project project : syncResult.getNonSyncedProjects()) {
+			project.setUser(null);
+		}
+		for (Task task : syncResult.getNonSyncedTasks()) {
+			task.getProject().setUser(null);
+		}
+		for (TimeRegistration timeRegistration : syncResult.getNonSyncedTimeRegistrations()) {
+			timeRegistration.getTask().getProject().setUser(null);
+		}
 	}
 	
 	private void obscureData(List objects) {
