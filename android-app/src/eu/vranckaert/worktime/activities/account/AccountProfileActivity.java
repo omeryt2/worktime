@@ -72,8 +72,8 @@ public class AccountProfileActivity extends SyncLockedActivity {
     @InjectView(R.id.account_profile_last_start_time) private TextView syncHistoryStartTime;
     @InjectView(R.id.account_profile_last_end_time) private TextView syncHistoryEndTime;
     @InjectView(R.id.account_profile_last_resolution) private TextView syncHistoryResolution;
-    @InjectView(R.id.account_profile_last_failure_reason_label) private TextView syncHistoryFailureReasonLabel;
-    @InjectView(R.id.account_profile_last_failure_reason) private TextView syncHistoryFailureReason;
+    @InjectView(R.id.account_profile_last_reason_label) private TextView syncHistoryReasonLabel;
+    @InjectView(R.id.account_profile_last_reason) private TextView syncHistoryReason;
     @InjectView(R.id.account_profile_view_full_history_button) private Button fullHistoryButton;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -231,8 +231,8 @@ public class AccountProfileActivity extends SyncLockedActivity {
         if (syncHistory.getEnded() != null)
             syncHistoryEndTime.setText(DateUtils.DateTimeConverter.convertDateTimeToString(syncHistory.getEnded(), DateFormat.MEDIUM, TimeFormat.MEDIUM, AccountProfileActivity.this));
 
-        syncHistoryFailureReasonLabel.setVisibility(View.GONE);
-        syncHistoryFailureReason.setVisibility(View.GONE);
+        syncHistoryReasonLabel.setVisibility(View.GONE);
+        syncHistoryReason.setVisibility(View.GONE);
 
         switch (syncHistory.getStatus()) {
             case SUCCESSFUL:
@@ -240,13 +240,16 @@ public class AccountProfileActivity extends SyncLockedActivity {
                 break;
             case INTERRUPTED:
                 syncHistoryResolution.setText(R.string.lbl_account_sync_resolution_interrupted);
+                syncHistoryReasonLabel.setVisibility(View.VISIBLE);
+                syncHistoryReason.setText(R.string.lbl_account_sync_history_reason_interruption);
+                syncHistoryReason.setVisibility(View.VISIBLE);
                 break;
             case FAILED:
                 syncHistoryResolution.setText(R.string.lbl_account_sync_resolution_failed);
                 if (StringUtils.isNotBlank(syncHistory.getFailureReason())) {
-                    syncHistoryFailureReasonLabel.setVisibility(View.VISIBLE);
-                    syncHistoryFailureReason.setText(syncHistory.getFailureReason());
-                    syncHistoryFailureReason.setVisibility(View.VISIBLE);
+                    syncHistoryReasonLabel.setVisibility(View.VISIBLE);
+                    syncHistoryReason.setText(syncHistory.getFailureReason());
+                    syncHistoryReason.setVisibility(View.VISIBLE);
                 }
                 break;
             case TIMED_OUT:

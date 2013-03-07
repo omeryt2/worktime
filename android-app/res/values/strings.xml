@@ -657,7 +657,7 @@
     <string name="lbl_account_profile_sync_history_last_start_time">Last start time:</string>
     <string name="lbl_account_profile_sync_history_last_end_time">Last end time:</string>
     <string name="lbl_account_profile_sync_history_last_resolution">Result:</string>
-    <string name="lbl_account_profile_sync_history_last_failure_reason">Error:</string>
+    <string name="lbl_account_profile_sync_history_last_reason">Reason:</string>
     <string name="lbl_account_profile_sync_history_view_all">View Full History</string>
     <string name="lbl_account_profile_error_user_not_logged_in">You are currently not logged in anymore. Please login again!</string>
     <!-- SYNC HISTORY -->
