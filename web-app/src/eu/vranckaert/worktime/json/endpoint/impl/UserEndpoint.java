@@ -89,7 +89,7 @@ public class UserEndpoint implements UserEndPointInterface {
 		}
 		
 		User user = new User();
-		user.setEmail(request.getEmail());
+		user.setEmail(request.getEmail().toLowerCase());
 		user.setFirstName(request.getFirstName());
 		user.setLastName(request.getLastName());
 				
