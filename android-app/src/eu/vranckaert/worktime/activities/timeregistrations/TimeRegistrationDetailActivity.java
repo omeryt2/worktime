@@ -129,7 +129,7 @@ public class TimeRegistrationDetailActivity extends SyncLockedActivity {
         );
         timeRegistrationDuration.setText(
                 TextConstants.SPACE +
-                DateUtils.TimeCalculator.calculatePeriod(getApplicationContext(), registration)
+                DateUtils.TimeCalculator.calculatePeriod(getApplicationContext(), registration, false)
         );
         timeRegistrationProject.setText(TextConstants.SPACE + registration.getTask().getProject().getName());
         timeRegistrationTask.setText(TextConstants.SPACE + registration.getTask().getName());

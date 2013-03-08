@@ -1,6 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
- *
+ * Copyright 2013 Dirk Vranckaert
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,8 +26,9 @@ import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
-import eu.vranckaert.worktime.utils.string.StringUtils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -74,48 +74,63 @@ public class TimeRegistrationsListAdapter extends ArrayAdapter<TimeRegistration>
             Log.d(ctx, LOG_TAG, "Recycling an existing line in the list");
             row = convertView;
 
-            if ((TextView) row.findViewById(R.id.lbl_timereg_startdate) == null) {
+            if ((TextView) row.findViewById(R.id.time_registration_list_day_of_month) == null) {
                 row = ctx.getLayoutInflater().inflate(R.layout.list_item_time_registrations, parent, false);
             }
         }
 
-        Log.d(ctx, LOG_TAG, "Ready to update the startdate, enddate and projectname of the timeregistration...");
-        TextView startDate = (TextView) row.findViewById(R.id.lbl_timereg_startdate);
-        startDate.setText(DateUtils.DateTimeConverter.convertDateTimeToString(tr.getStartTime(), DateFormat.MEDIUM,
-                TimeFormat.MEDIUM, ctx));
-        TextView endDate = (TextView) row.findViewById(R.id.lbl_timereg_enddate);
-        String endDateStr = "";
-        if(tr.getEndTime() == null) {
-            endDateStr = ctx.getString(R.string.now);
-        } else {
-            endDateStr = DateUtils.DateTimeConverter.convertDateTimeToString(tr.getEndTime(), DateFormat.MEDIUM,
-                    TimeFormat.MEDIUM, ctx);
-        }
-        endDate.setText(endDateStr);
-        TextView projectNameTaskName = (TextView) row.findViewById(R.id.lbl_timereg_projectname_taskname);
-        String projectAndTaskText = tr.getTask().getProject().getName() +
-                " " + ctx.getString(R.string.dash) + " " + tr.getTask().getName();
-        projectNameTaskName.setText(projectAndTaskText);
+        Log.d(ctx, LOG_TAG, "Ready to update the TR list itme...");
 
-        Log.d(ctx, LOG_TAG, "Ready to update the duration of the timeregistration...");
-        TextView durationView = (TextView) row.findViewById(R.id.lbl_timereg_duration);
-        String durationText = DateUtils.TimeCalculator.calculatePeriod(ctx.getApplicationContext(), tr);
-        durationView.setText(durationText);
+        TextView dayOfMonth = (TextView) row.findViewById(R.id.time_registration_list_day_of_month);
+        TextView dayOfWeek = (TextView) row.findViewById(R.id.time_registration_list_day_of_week);
+        TextView monthAndYear = (TextView) row.findViewById(R.id.time_registration_list_month_and_year);
+        TextView hours = (TextView) row.findViewById(R.id.time_registration_list_hours);
+        TextView duration = (TextView) row.findViewById(R.id.time_registration_list_duration);
+        TextView projectAndTask = (TextView) row.findViewById(R.id.time_registration_list_project_task);
 
-        Log.d(ctx, LOG_TAG, "Ready to set the comment if available...");
-        View view = row.findViewById(R.id.registrations_comment_view);
-        if (StringUtils.isNotBlank(tr.getComment())) {
-            Log.d(ctx, LOG_TAG, "CommentHistory available...");
-            view.setVisibility(View.VISIBLE);
-            TextView commentTextView = (TextView) row.findViewById(R.id.lbl_registrations_comment);
-            commentTextView.setText(tr.getComment());
-        } else {
-            Log.d(ctx, LOG_TAG, "CommentHistory not available...");
-            view.setVisibility(View.GONE);
-        }
+        dayOfMonth.setText(getDayOfMonth(tr.getStartTime()));
+        dayOfWeek.setText(getDayOfWeek(tr.getStartTime()));
+        monthAndYear.setText(getMonthAndYear(tr.getStartTime()));
+        hours.setText(getHours(tr.getStartTime(), tr.getEndTime()));
+        duration.setText(DateUtils.TimeCalculator.calculatePeriod(ctx.getApplicationContext(), tr, true));
+        projectAndTask.setText(getProjectAndTask(tr));
 
         Log.d(ctx, LOG_TAG, "Done rendering row " + position);
         return row;
+    }
+
+    private String getDayOfMonth(Date day) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+        return sdf.format(day);
+    }
+
+    private String getDayOfWeek(Date day) {
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+        return sdf.format(day);
+    }
+
+    private String getMonthAndYear(Date day) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMMM yyyy");
+        return sdf.format(day);
+    }
+
+    private String getHours(Date startTime, Date endTime) {
+        String start = DateUtils.DateTimeConverter.convertTimeToString(startTime, TimeFormat.MEDIUM, getContext());
+
+        String result = start + " - ";
+
+        if (endTime == null) {
+            result += "...";
+        } else {
+            String end = DateUtils.DateTimeConverter.convertTimeToString(endTime, TimeFormat.MEDIUM, getContext());
+            result += end;
+        }
+
+        return result;
+    }
+
+    private String getProjectAndTask(TimeRegistration timeRegistration) {
+        return timeRegistration.getTask().getProject().getName() + " - " + timeRegistration.getTask().getName();
     }
 
     public void refill(List<TimeRegistration> timeRegistrations) {

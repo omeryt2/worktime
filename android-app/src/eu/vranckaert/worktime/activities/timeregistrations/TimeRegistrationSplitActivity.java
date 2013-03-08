@@ -518,19 +518,19 @@ public class TimeRegistrationSplitActivity extends SyncLockedWizardActivity {
                 tmpTr.setStartTime(originalTimeRegistration.getStartTime());
                 tmpTr.setEndTime(endPart1.getTime());
                 tr1Duration.setText(
-                        DateUtils.TimeCalculator.calculatePeriod(TimeRegistrationSplitActivity.this, tmpTr)
+                        DateUtils.TimeCalculator.calculatePeriod(TimeRegistrationSplitActivity.this, tmpTr, false)
                 );
                 // Duration of TR2
                 tmpTr.setStartTime(startPart2.getTime());
                 tmpTr.setEndTime(originalTimeRegistration.getEndTime());
                 tr2Duration.setText(
-                        DateUtils.TimeCalculator.calculatePeriod(TimeRegistrationSplitActivity.this, tmpTr)
+                        DateUtils.TimeCalculator.calculatePeriod(TimeRegistrationSplitActivity.this, tmpTr, false)
                 );
                 // Duration between TR1 and TR2 (= GAP)
                 tmpTr.setStartTime(endPart1.getTime());
                 tmpTr.setEndTime(startPart2.getTime());
                 gap.setText(
-                        DateUtils.TimeCalculator.calculatePeriod(TimeRegistrationSplitActivity.this, tmpTr)
+                        DateUtils.TimeCalculator.calculatePeriod(TimeRegistrationSplitActivity.this, tmpTr, false)
                 );
                 break;
         }

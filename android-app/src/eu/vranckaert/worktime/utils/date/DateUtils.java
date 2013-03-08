@@ -339,13 +339,15 @@ public class DateUtils {
         }
 
         /**
-         * Calculates the time between the start and end time of a {@link eu.vranckaert.worktime.model.TimeRegistration} in hours, minutes and seconds
-         * (long-text: "5 hours, 36 minutes, 33 seconds")
+         * Calculates the time between the start and end time of a {@link eu.vranckaert.worktime.model.TimeRegistration}
+         * in hours, minutes and seconds (long-text: "5 hours, 36 minutes, 33 seconds")
          * @param ctx The context.
          * @param registration The {@link eu.vranckaert.worktime.model.TimeRegistration} instance.
+         * @param shortNotation If the notation should be short or long. For a short notations minutes will be like 'm',
+         *                      for a long notation it will be like 'minutes'.
          * @return The formatted string that represents the time between start and end time.
          */
-        public static final String calculatePeriod(Context ctx, TimeRegistration registration) {
+        public static final String calculatePeriod(Context ctx, TimeRegistration registration, boolean shortNotation) {
             Period period = null;
             if (registration.isOngoingTimeRegistration()) {
                 period = calculatePeriod(ctx, registration.getStartTime(), new Date(), PeriodType.time());
@@ -361,13 +363,25 @@ public class DateUtils {
             String minutesString = "";
             String secondsString = "";
             String periodString = "";
+
+            String hoursRes = " " + ctx.getString(R.string.hours);
+            String minuteRes = " " + ctx.getString(R.string.minutes);
+            String secondRes = " " + ctx.getString(R.string.seconds);
+            String seperatorRes = ", ";
+
+            if (shortNotation) {
+                hoursRes = ctx.getString(R.string.hoursShort);
+                minuteRes = ctx.getString(R.string.minutesShort);
+                secondRes = ctx.getString(R.string.secondsShort);
+                seperatorRes = " ";
+            }
             
             TimePrecisionPreference preference = Preferences.getTimePrecision(ctx);
             switch (preference) {
                 case SECOND: {
-                    hoursString = hours + " " + ctx.getString(R.string.hours) + ", ";
-                    minutesString = minutes + " " + ctx.getString(R.string.minutes) + ", ";
-                    secondsString = seconds + " " + ctx.getString(R.string.seconds);
+                    hoursString = hours + hoursRes + seperatorRes;
+                    minutesString = minutes + minuteRes + seperatorRes;
+                    secondsString = seconds + secondRes;
                     if (hours > 0) {
                         periodString = hoursString + minutesString + secondsString;
                     } else if (minutes > 0) {
@@ -378,8 +392,8 @@ public class DateUtils {
                     break;
                 }
                 case MINUTE: {
-                    hoursString = hours + " " + ctx.getString(R.string.hours) + ", ";
-                    minutesString = minutes + " " + ctx.getString(R.string.minutes);
+                    hoursString = hours + hoursRes + seperatorRes;
+                    minutesString = minutes + minuteRes;
                     if (hours > 0) {
                         periodString = hoursString + minutesString;
                     } else {

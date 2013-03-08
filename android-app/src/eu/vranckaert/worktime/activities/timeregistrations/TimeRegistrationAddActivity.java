@@ -45,7 +45,6 @@ import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedWizardActivity;
-import eu.vranckaert.worktime.utils.wizard.WizardActivity;
 
 import java.util.*;
 
@@ -192,7 +191,8 @@ public class TimeRegistrationAddActivity extends SyncLockedWizardActivity {
                     durationTextView.setText(
                             TextConstants.SPACE + DateUtils.TimeCalculator.calculatePeriod(
                                     TimeRegistrationAddActivity.this,
-                                    constructTimeRegistration()
+                                    constructTimeRegistration(),
+                                    false
                             )
                     );
                     if (StringUtils.isNotBlank(comment)) {

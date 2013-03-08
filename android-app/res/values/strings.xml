@@ -155,7 +155,6 @@
     <string name="lbl_empty_registration_list">No time registrations available yet</string>
     <string name="now">Until now&#8230;</string>
     <string name="lbl_registrations_load_more">Tap to load more&#8230;</string>
-    <string name="lbl_registrations_comment">Comment:</string>
     <string name="lbl_registrations_edit">Edit</string>
     <!-- REGISTRATION DETAILS -->
     <string name="lbl_registration_details_title">Registration Details</string>
