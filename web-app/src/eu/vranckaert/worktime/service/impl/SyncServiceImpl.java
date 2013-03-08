@@ -847,16 +847,16 @@ public class SyncServiceImpl implements SyncService {
 		List<Project> projects = new ArrayList<Project>();
 		
 		for (Project project : incomingProjects) {
-			boolean isSynced = false;
+			int syncedProjectsCount = 0;
 			
 			for (ProjectSyncResult syncResult : projectResults) {
-				if (syncResult.getProject().equals(project)) {
-					isSynced = true;
+				if (syncResult.getProject().getName().equals(project.getName())) {
+					syncedProjectsCount++;
 					break;
 				}
 			}
 			
-			if (!isSynced) {
+			if (syncedProjectsCount == 0) {
 				projects.add(project);
 			}
 		}
@@ -869,16 +869,16 @@ public class SyncServiceImpl implements SyncService {
 		List<Task> tasks = new ArrayList<Task>();
 		
 		for (Task task : incomingTasks) {
-			boolean isSynced = false;
+			int syncedTasksCount = 0;
 			
 			for (TaskSyncResult syncResult : taskResults) {
-				if (syncResult.getTask().equals(task)) {
-					isSynced = true;
+				if (syncResult.getTask().getName().equals(task.getName()) && syncResult.getTask().getProject().getName().equals(task.getProject().getName())) {
+					syncedTasksCount++;
 					break;
 				}
 			}
 			
-			if (!isSynced) {
+			if (syncedTasksCount == 0) {
 				tasks.add(task);
 			}
 		}
@@ -892,16 +892,16 @@ public class SyncServiceImpl implements SyncService {
 		List<TimeRegistration> timeRegistrations = new ArrayList<TimeRegistration>();
 		
 		for (TimeRegistration timeRegistration : incomingTimeRegistrations) {
-			boolean isSynced = false;
+			int syncedTimeRegistrationsCount = 0;
 			
 			for (TimeRegistrationSyncResult syncResult : timeRegistrationResults) {
 				if (syncResult.getTimeRegistration().equals(timeRegistration)) {
-					isSynced = true;
+					syncedTimeRegistrationsCount++;
 					break;
 				}
 			}
 			
-			if (!isSynced) {
+			if (syncedTimeRegistrationsCount == 0) {
 				timeRegistrations.add(timeRegistration);
 			}
 		}
