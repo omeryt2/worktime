@@ -101,7 +101,7 @@
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:visibility="gone"
             android:id="@+id/account_sync_history_reason_container">
 
@@ -117,6 +117,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/account_sync_history_reason"
+                android:layout_weight="1"
                 android:layout_column="1"/>
         </TableRow>
 
