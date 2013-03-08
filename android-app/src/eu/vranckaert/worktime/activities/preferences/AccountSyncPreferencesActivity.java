@@ -81,7 +81,9 @@ public class AccountSyncPreferencesActivity extends GenericPreferencesActivity {
     }
 
     private static void scheduleAlarm(Context ctx, long synchronizationInterval, Date fixedSyncTime, AccountService accountService) {
-        if (synchronizationInterval == 24) {
+        if (synchronizationInterval == -1) {
+            return;
+        } else if (synchronizationInterval == 24) {
             if (fixedSyncTime == null) {
                 fixedSyncTime = Preferences.Account.syncIntervalFixedTime(ctx);
             }
