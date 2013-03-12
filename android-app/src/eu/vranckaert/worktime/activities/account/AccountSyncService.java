@@ -28,6 +28,7 @@ import eu.vranckaert.worktime.exceptions.worktime.sync.SynchronizationFailedExce
 import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
+import eu.vranckaert.worktime.utils.alarm.AlarmUtil;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
 import roboguice.service.RoboIntentService;
@@ -127,6 +128,12 @@ public class AccountSyncService extends RoboIntentService {
                 showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.lbl_sync_service_error_already_busy);
             } else if (e instanceof SynchronizationFailedException) {
                 showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.lbl_sync_service_error_sync_failed);
+            }
+
+            boolean retry = Preferences.Account.syncRetryOnError(AccountSyncService.this);
+
+            if (retry) {
+                AlarmUtil.addAlarmSyncInFiveMinutes(AccountSyncService.this);
             }
         }
     }

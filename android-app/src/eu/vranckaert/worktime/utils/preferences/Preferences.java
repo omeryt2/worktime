@@ -764,5 +764,12 @@ public class Preferences {
 
             return new Date(timeInMillis);
         }
+
+        public static boolean syncRetryOnError(Context ctx) {
+            return getSharedPreferences(ctx).getBoolean(
+                    Constants.Preferences.Keys.ACCOUNT_SYNC_RETRY_ON_ERROR,
+                    Constants.Preferences.ACCOUNT_SYNC_RETRY_ON_ERROR_DEFAULT_VALUE
+            );
+        }
     }
 }

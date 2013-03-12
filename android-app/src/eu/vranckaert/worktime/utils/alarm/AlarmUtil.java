@@ -137,4 +137,15 @@ public class AlarmUtil {
 
         getAlarmManager(context).setRepeating(AlarmManager.RTC_WAKEUP, nextSync, syncInterval, getSyncOperation(context));
     }
+
+    /**
+     * Add syncrhonization alarm that will be triggered within five minutes
+     * @param context The context.
+     */
+    public static void addAlarmSyncInFiveMinutes(Context context) {
+        Calendar syncTime = Calendar.getInstance();
+        syncTime.add(Calendar.MINUTE, 5);
+
+        getAlarmManager(context).set(AlarmManager.RTC_WAKEUP, syncTime.getTime().getTime(), getSyncOperation(context));
+    }
 }
