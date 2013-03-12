@@ -39,6 +39,11 @@
         android:entryValues="@array/pref_account_sync_conflict_handling_option_values"
         android:dialogTitle="@string/pref_account_sync_conflict_handling_dialog_title" />
     <CheckBoxPreference
+        android:key="accountSyncRetryOnError"
+        android:defaultValue="true"
+        android:title="@string/pref_account_sync_retry_on_error_title"
+        android:summary="@string/pref_account_sync_retry_on_error_summary"/>
+    <CheckBoxPreference
         android:key="accountSyncOnWifiOnly"
         android:defaultValue="false"
         android:title="@string/pref_account_sync_on_wifi_only_title"

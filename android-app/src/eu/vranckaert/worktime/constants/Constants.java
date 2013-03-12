@@ -168,6 +168,7 @@ public class Constants {
             public static final String IMMEDIATE_PUNCH_OUT = "immediatePunchOut";
             public static final String ACCOUNT_SYNC_INTERVAL = "accountSyncInterval";
             public static final String ACCOUNT_SYNC_INTERVAL_FIXED_TIME = "accountSyncIntervalFixedTime";
+            public static final String ACCOUNT_SYNC_RETRY_ON_ERROR = "accountSyncRetryOnError";
             public static final String ACCOUNT_SYNC_CONFLICT_HANDLING = "accountSyncConflictHandling";
             public static final String ACCOUNT_SYNC_ON_WIFI_ONLY = "accountSyncOnWifiOnly";
             public static final String ACCOUNT_BACKUP_BEFORE_SYNC = "accountBackupBeforeSync";

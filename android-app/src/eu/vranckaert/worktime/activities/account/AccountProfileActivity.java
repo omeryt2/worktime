@@ -15,6 +15,8 @@
 
 package eu.vranckaert.worktime.activities.account;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -133,7 +135,30 @@ public class AccountProfileActivity extends SyncLockedActivity {
                 break;
             }
             case R.id.menu_account_profile_activity_logout:
-                AsyncHelper.start(new LogoutTask());
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+                dialogBuilder.setTitle(R.string.lbl_account_profile_logout_confirmation_title)
+                             .setMessage(R.string.lbl_account_profile_logout_confirmation_message)
+                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                 @Override
+                                 public void onClick(DialogInterface dialogInterface, int i) {
+                                     dialogInterface.dismiss();
+                                     logout();
+                                 }
+                             })
+                             .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                 @Override
+                                 public void onClick(DialogInterface dialogInterface, int i) {
+                                     dialogInterface.dismiss();
+                                 }
+                             })
+                             .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                 @Override
+                                 public void onCancel(DialogInterface dialogInterface) {
+                                     dialogInterface.dismiss();
+                                 }
+                             })
+                             .setCancelable(true);
+                dialogBuilder.create().show();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -145,24 +170,18 @@ public class AccountProfileActivity extends SyncLockedActivity {
         tracker.stopSession();
     }
 
-    private class LogoutTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            getActionBarHelper().setLoadingIndicator(true);
-        }
+    private void logout() {
+        AsyncHelper.start(new LogoutTask());
+        AlarmUtil.removeAllSyncAlarms(AccountProfileActivity.this);
+        setResult(Constants.IntentResultCodes.RESULT_LOGOUT);
+        finish();
+    }
 
+    private class LogoutTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             accountService.logout();
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void o) {
-            AlarmUtil.removeAllSyncAlarms(AccountProfileActivity.this);
-            getActionBarHelper().setLoadingIndicator(false);
-            setResult(Constants.IntentResultCodes.RESULT_LOGOUT);
-            finish();
         }
     }
 

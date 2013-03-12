@@ -21,9 +21,10 @@ package eu.vranckaert.worktime.constants;
  */
 public class EnvironmentConstants {
     public class WorkTimeWeb {
-        public static final String ENDPOINT_URL = "http://10.0.2.2:8888/";
+        //public static final String ENDPOINT_URL = "http://10.0.2.2:8888/";
         //public static final String ENDPOINT_URL = "http://192.168.0.206/";
-        //public static final String ENDPOINT_URL = "https://worktime-web.appspot.com/";
-        public static final String SERVICE_KEY = "9939d741-0468-4605-820a-e13cc74886ff";
+        public static final String ENDPOINT_URL = "https://worktime-web.appspot.com/";
+        public static final String SERVICE_KEY = "1e9c3da5-a869-4b9d-9a52-3bd40f3abf23";
+        //public static final String SERVICE_KEY = "9939d741-0468-4605-820a-e13cc74886ff";
     }
 }
