@@ -37,7 +37,7 @@
         android:summary="@string/pref_account_sync_conflict_handling_summary"
         android:entries="@array/pref_account_sync_conflict_handling_options"
         android:entryValues="@array/pref_account_sync_conflict_handling_option_values"
-        android:dialogTitle="@string/pref_account_sync_conflict_handling_dialog_title" />
+        android:dialogTitle="@string/pref_account_sync_conflict_handling_dialog_title"/>
     <CheckBoxPreference
         android:key="accountSyncRetryOnError"
         android:defaultValue="true"
@@ -66,4 +66,13 @@
         android:title="@string/pref_account_sync_error_show_notifications_title"
         android:summaryOn="@string/pref_account_sync_error_show_notifications_summary_on"
         android:summaryOff="@string/pref_account_sync_error_show_notifications_summary_off"/>
+    <eu.vranckaert.worktime.utils.view.MultiSelectListPreference
+        android:key="accountSyncErrorShowNotificationCases"
+        android:defaultValue="LoginCredentialsMismatchException|GeneralWebException|BackupException|SynchronizationFailedException"
+        android:title="@string/pref_account_sync_error_show_notification_cases_title"
+        android:summary="@string/pref_account_sync_error_show_notification_cases_summary"
+        android:entries="@array/pref_account_sync_error_show_notification_cases_options"
+        android:entryValues="@array/pref_account_sync_error_show_notification_cases_option_values"
+        android:dialogTitle="@string/pref_account_sync_error_show_notification_cases_dialog_title"
+        android:dependency="accountSyncErrorShowNotifications"/>
 </PreferenceScreen>

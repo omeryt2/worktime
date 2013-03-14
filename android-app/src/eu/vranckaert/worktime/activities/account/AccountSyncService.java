@@ -112,22 +112,22 @@ public class AccountSyncService extends RoboIntentService {
             notificationService.addOrUpdateNotification(null);
         } else {
             if (e instanceof LoginCredentialsMismatchException) {
-                showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.lbl_sync_service_error_user_not_logged_in);
+                showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.lbl_sync_service_error_user_not_logged_in, e);
                 accountService.logout();
                 Intent intent = new Intent(AccountSyncService.this, AccountLoginActivity.class);
                 startActivity(intent);
             } else if (e instanceof GeneralWebException) {
-                showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.error_general_web_exception);
+                showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.error_general_web_exception, e);
             } else if (e instanceof NoNetworkConnectionException) {
-                showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.error_no_network_connection);
+                showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.error_no_network_connection, e);
             } else if (e instanceof WifiConnectionRequiredException) {
-                showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.lbl_sync_service_error_wifi_required);
+                showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.lbl_sync_service_error_wifi_required, e);
             } else if (e instanceof BackupException) {
-                showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.lbl_sync_service_error_backup);
+                showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.lbl_sync_service_error_backup, e);
             } else if (e instanceof SyncAlreadyBusyException) {
-                showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.lbl_sync_service_error_already_busy);
+                showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.lbl_sync_service_error_already_busy, e);
             } else if (e instanceof SynchronizationFailedException) {
-                showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.lbl_sync_service_error_sync_failed);
+                showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.lbl_sync_service_error_sync_failed, e);
             }
 
             boolean retry = Preferences.Account.syncRetryOnError(AccountSyncService.this);
@@ -144,8 +144,9 @@ public class AccountSyncService extends RoboIntentService {
         }
     }
 
-    private void showMessageError(int titleResId, int smallMsgResId, int msgResId) {
-        if (Preferences.Account.syncShowNotificationsOnError(AccountSyncService.this)) {
+    private void showMessageError(int titleResId, int smallMsgResId, int msgResId, Exception e) {
+        if (Preferences.Account.syncShowNotificationsOnError(AccountSyncService.this)
+                && Preferences.Account.syncShowNotificationsOnErrorCases(AccountSyncService.this).contains(e.getClass().getSimpleName())) {
             notificationService.addStatusBarNotificationForSync(titleResId, smallMsgResId, msgResId);
         }
     }

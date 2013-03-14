@@ -53,7 +53,7 @@
     <string name="warning_msg_sd_car_unavailable_short">No SD-card found</string>
     <string name="acra_crash_report_send">The application has crashed and a crash-report has been sent to the developers</string>
     <!-- GENERAL ERRORS -->
-    <string name="error_general_web_exception">Something went wrong while connecting to the web. Please try again. If you keep seeing this error please report a bug.</string>
+    <string name="error_general_web_exception">Something went wrong while connecting to the web. Please try again. Possibly the server may be down. If you keep seeing this error please report a bug.</string>
     <string name="error_no_network_connection">Your device seems to be offline. Please make sure an internet connection is active and try again.</string>
 
     <!-- DEFUALT VALUES DB -->
@@ -612,6 +612,27 @@
     <string name="pref_account_sync_error_show_notifications_title">Show notifications on error</string>
     <string name="pref_account_sync_error_show_notifications_summary_on">Show notifications when an error occurred during synchronization.</string>
     <string name="pref_account_sync_error_show_notifications_summary_off">Do not show notifications when an error occurred during synchronization.</string>
+    <string name="pref_account_sync_error_show_notification_cases_title">Synchronisation errors to show</string>
+    <string name="pref_account_sync_error_show_notification_cases_summary">Select for which synchronisation errors a notification should be shown.</string>
+    <string-array name="pref_account_sync_error_show_notification_cases_options">
+        <item>Not logged in anymore</item>
+        <item>Server-side error or server down</item>
+        <item>No network connection</item>
+        <item>No WiFi connection</item>
+        <item>Backup creation failed</item>
+        <item>Another synchronization is already busy</item>
+        <item>Synchronisation executed unsuccessfully</item>
+    </string-array>
+    <string-array name="pref_account_sync_error_show_notification_cases_option_values">
+        <item>LoginCredentialsMismatchException</item>
+        <item>GeneralWebException</item>
+        <item>NoNetworkConnectionException</item>
+        <item>WifiConnectionRequiredException</item>
+        <item>BackupException</item>
+        <item>SyncAlreadyBusyException</item>
+        <item>SynchronizationFailedException</item>
+    </string-array>
+    <string name="pref_account_sync_error_show_notification_cases_dialog_title">Synchronisation Errors</string>
 
     <!-- ACCOUNTS -->
     <string name="lbl_account_sync_resolution_successful">Success</string>

@@ -33,6 +33,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Access all the preferences. This class is mainly used to read the preferences but can be used in some rare cases
@@ -701,41 +702,6 @@ public class Preferences {
     }
 
     public static class Account {
-        public static boolean syncOnWifiOnly(Context ctx) {
-            return getSharedPreferences(ctx).getBoolean(
-                    Constants.Preferences.Keys.ACCOUNT_SYNC_ON_WIFI_ONLY,
-                    Constants.Preferences.ACCOUNT_SYNC_ON_WIFI_ONLY_DEFAULT_VALUE
-            );
-        }
-
-        public static boolean backupBeforeSync(Context ctx) {
-            return getSharedPreferences(ctx).getBoolean(
-                    Constants.Preferences.Keys.ACCOUNT_BACKUP_BEFORE_SYNC,
-                    Constants.Preferences.ACCOUNT_BACKUP_BEFORE_SYNC_DEFAULT_VALUE
-            );
-        }
-
-        public static String conflictConfiguration(Context ctx) {
-            return getSharedPreferences(ctx).getString(
-                    Constants.Preferences.Keys.ACCOUNT_SYNC_CONFLICT_HANDLING,
-                    Constants.Preferences.ACCOUNT_SYNC_CONFLICT_HANDLING_DEFAULT_VALUE
-            );
-        }
-
-        public static boolean syncShowNotificationsOnError(Context ctx) {
-            return getSharedPreferences(ctx).getBoolean(
-                    Constants.Preferences.Keys.ACCOUNT_SYNC_ERROR_NOTIFICATIONS,
-                    Constants.Preferences.ACCOUNT_SYNC_ERROR_NOTIFICATIONS_DEFAULT_VALUE
-            );
-        }
-
-        public static boolean syncShowNotificationsOnSuccess(Context ctx) {
-            return getSharedPreferences(ctx).getBoolean(
-                    Constants.Preferences.Keys.ACCOUNT_SYNC_SUCCESS_NOTIFICATIONS,
-                    Constants.Preferences.ACCOUNT_SYNC_SUCCESS_NOTIFICATIONS_DEFAULT_VALUE
-            );
-        }
-
         public static long syncInterval(Context ctx) {
             String hourInterval = getSharedPreferences(ctx).getString(
                     Constants.Preferences.Keys.ACCOUNT_SYNC_INTERVAL,
@@ -765,11 +731,64 @@ public class Preferences {
             return new Date(timeInMillis);
         }
 
+        public static String conflictConfiguration(Context ctx) {
+            return getSharedPreferences(ctx).getString(
+                    Constants.Preferences.Keys.ACCOUNT_SYNC_CONFLICT_HANDLING,
+                    Constants.Preferences.ACCOUNT_SYNC_CONFLICT_HANDLING_DEFAULT_VALUE
+            );
+        }
+
         public static boolean syncRetryOnError(Context ctx) {
             return getSharedPreferences(ctx).getBoolean(
                     Constants.Preferences.Keys.ACCOUNT_SYNC_RETRY_ON_ERROR,
                     Constants.Preferences.ACCOUNT_SYNC_RETRY_ON_ERROR_DEFAULT_VALUE
             );
+        }
+
+        public static boolean syncOnWifiOnly(Context ctx) {
+            return getSharedPreferences(ctx).getBoolean(
+                    Constants.Preferences.Keys.ACCOUNT_SYNC_ON_WIFI_ONLY,
+                    Constants.Preferences.ACCOUNT_SYNC_ON_WIFI_ONLY_DEFAULT_VALUE
+            );
+        }
+
+        public static boolean backupBeforeSync(Context ctx) {
+            return getSharedPreferences(ctx).getBoolean(
+                    Constants.Preferences.Keys.ACCOUNT_BACKUP_BEFORE_SYNC,
+                    Constants.Preferences.ACCOUNT_BACKUP_BEFORE_SYNC_DEFAULT_VALUE
+            );
+        }
+
+        public static boolean syncShowNotificationsOnSuccess(Context ctx) {
+            return getSharedPreferences(ctx).getBoolean(
+                    Constants.Preferences.Keys.ACCOUNT_SYNC_SUCCESS_NOTIFICATIONS,
+                    Constants.Preferences.ACCOUNT_SYNC_SUCCESS_NOTIFICATIONS_DEFAULT_VALUE
+            );
+        }
+
+        public static boolean syncShowNotificationsOnError(Context ctx) {
+            return getSharedPreferences(ctx).getBoolean(
+                    Constants.Preferences.Keys.ACCOUNT_SYNC_ERROR_NOTIFICATIONS,
+                    Constants.Preferences.ACCOUNT_SYNC_ERROR_NOTIFICATIONS_DEFAULT_VALUE
+            );
+        }
+
+        public static List<String> syncShowNotificationsOnErrorCases(Context ctx) {
+            String notificationExceptionCases = getSharedPreferences(ctx).getString(
+                    Constants.Preferences.Keys.ACCOUNT_SYNC_ERROR_NOTIFICATION_CASES,
+                    Constants.Preferences.ACCOUNT_SYNC_ERROR_NOTIFICATION_CASES_DEFAULT_VALUE
+            );
+
+            if (StringUtils.isBlank(notificationExceptionCases)) {
+                return new ArrayList<String>();
+            } else {
+                StringTokenizer st = new StringTokenizer(notificationExceptionCases, "|");
+                List<String> exceptions = new ArrayList<String>();
+                while(st.hasMoreTokens()) {
+                    exceptions.add(st.nextToken());
+                }
+                return exceptions;
+            }
         }
     }
 }
