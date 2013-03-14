@@ -39,9 +39,9 @@ public class AlarmUtil {
         return (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
-    private static PendingIntent getSyncOperation(Context context) {
+    private static PendingIntent getSyncOperation(Context context, int requestCode) {
         Intent intent = new Intent(context, AccountSyncService.class);
-        PendingIntent operation = PendingIntent.getService(context, Constants.IntentRequestCodes.ALARM_SYNC_REPEAT, intent, 0);
+        PendingIntent operation = PendingIntent.getService(context, requestCode, intent, 0);
         return operation;
     }
 
@@ -50,7 +50,8 @@ public class AlarmUtil {
      * @param context The context.
      */
     public static void removeAllSyncAlarms(Context context) {
-        getAlarmManager(context).cancel(getSyncOperation(context));
+        getAlarmManager(context).cancel(getSyncOperation(context, Constants.IntentRequestCodes.ALARM_SYNC_REPEAT));
+        getAlarmManager(context).cancel(getSyncOperation(context, Constants.IntentRequestCodes.ALARM_SYNC_RETRY));
         Log.i(LOG_TAG, "The alarm sync cycle has been removed");
     }
 
@@ -93,7 +94,7 @@ public class AlarmUtil {
 
         nextSync = (new Date().getTime()) + nextSync;
 
-        getAlarmManager(context).setRepeating(AlarmManager.RTC_WAKEUP, nextSync, syncInterval, getSyncOperation(context));
+        getAlarmManager(context).setRepeating(AlarmManager.RTC_WAKEUP, nextSync, syncInterval, getSyncOperation(context, Constants.IntentRequestCodes.ALARM_SYNC_REPEAT));
     }
 
     public static void setAlarmSyncCycleOnceADay(Context context, SyncHistory lastSyncHistory, Date fixedSyncTime) {
@@ -101,12 +102,6 @@ public class AlarmUtil {
 
         long syncInterval = 24 * 3600000L;
         long fiveMinutes = 5 * 60000;
-
-        // Only use this for debugging purpose
-//        if (!ContextUtils.isStableBuild(context)) {
-//            syncInterval = 60000; // Every minute...
-//            fiveMinutes = 30000; // 30 seconds...
-//        }
 
         long nextSync = 1;
 
@@ -135,7 +130,7 @@ public class AlarmUtil {
 
         nextSync = (new Date().getTime()) + nextSync;
 
-        getAlarmManager(context).setRepeating(AlarmManager.RTC_WAKEUP, nextSync, syncInterval, getSyncOperation(context));
+        getAlarmManager(context).setRepeating(AlarmManager.RTC_WAKEUP, nextSync, syncInterval, getSyncOperation(context, Constants.IntentRequestCodes.ALARM_SYNC_REPEAT));
     }
 
     /**
@@ -146,6 +141,6 @@ public class AlarmUtil {
         Calendar syncTime = Calendar.getInstance();
         syncTime.add(Calendar.MINUTE, 5);
 
-        getAlarmManager(context).set(AlarmManager.RTC_WAKEUP, syncTime.getTime().getTime(), getSyncOperation(context));
+        getAlarmManager(context).set(AlarmManager.RTC_WAKEUP, syncTime.getTime().getTime(), getSyncOperation(context, Constants.IntentRequestCodes.ALARM_SYNC_RETRY));
     }
 }

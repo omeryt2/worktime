@@ -107,6 +107,7 @@ public class Constants {
 
 
         public static final int ALARM_SYNC_REPEAT = 9000;
+        public static final int ALARM_SYNC_RETRY = 9001;
     }
     public class IntentResultCodes {
         public static final int RESULT_OK_SPLIT = 100;
