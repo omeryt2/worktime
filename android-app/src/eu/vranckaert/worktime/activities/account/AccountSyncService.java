@@ -141,20 +141,12 @@ public class AccountSyncService extends RoboIntentService {
     private void showMessageSuccess(int titleResId, int smallMsgResId, int msgResId) {
         if (Preferences.Account.syncShowNotificationsOnSuccess(AccountSyncService.this)) {
             notificationService.addStatusBarNotificationForSync(titleResId, smallMsgResId, msgResId);
-        } else {
-            showText(msgResId);
         }
     }
 
     private void showMessageError(int titleResId, int smallMsgResId, int msgResId) {
         if (Preferences.Account.syncShowNotificationsOnError(AccountSyncService.this)) {
             notificationService.addStatusBarNotificationForSync(titleResId, smallMsgResId, msgResId);
-        } else {
-            showText(msgResId);
         }
-    }
-
-    private void showText(int resId) {
-        // Toast.makeText(AccountSyncService.this, resId, Toast.LENGTH_LONG).show();
     }
 }
