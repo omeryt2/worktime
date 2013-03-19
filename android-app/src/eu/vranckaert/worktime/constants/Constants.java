@@ -144,6 +144,7 @@ public class Constants {
         public static final boolean ACCOUNT_SYNC_ERROR_NOTIFICATIONS_DEFAULT_VALUE = false;
         public static final boolean ACCOUNT_SYNC_RETRY_ON_ERROR_DEFAULT_VALUE = true;
         public static final String ACCOUNT_SYNC_ERROR_NOTIFICATION_CASES_DEFAULT_VALUE = "LoginCredentialsMismatchException|GeneralWebException|BackupException|SynchronizationFailedException";
+        public static final int SHOW_CASE_LAST_SHOWN_FOR_APP_VERSION_DEFAULT_VALUE = -1;
 
         public class Keys {
             public static final String WIDGET_ASK_FOR_TASK_SELECTION_IF_ONLY_ONE = "askForTaskSelectionIfOnlyOne";
@@ -178,6 +179,7 @@ public class Constants {
             public static final String ACCOUNT_SYNC_SUCCESS_NOTIFICATIONS = "accountSyncSuccessShowNotifications";
             public static final String ACCOUNT_SYNC_ERROR_NOTIFICATIONS = "accountSyncErrorShowNotifications";
             public static final String ACCOUNT_SYNC_ERROR_NOTIFICATION_CASES = "accountSyncErrorShowNotificationCases";
+            public static final String SHOW_CASE_LAST_SHOWN_FOR_APP_VERSION = "showCaseLastShownForAppVersion";
         }
     }
     public class Disk {

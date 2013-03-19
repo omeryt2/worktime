@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import com.github.espiandev.showcaseview.ShowcaseView;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.about.AboutActivity;
@@ -37,11 +38,18 @@ import eu.vranckaert.worktime.service.CommentHistoryService;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
+import eu.vranckaert.worktime.utils.context.ContextUtils;
+import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
+import eu.vranckaert.worktime.utils.view.showcase.ShowcaseViewElement;
+import eu.vranckaert.worktime.utils.view.showcase.ShowcaseViewUtility;
 
-public class HomeActivity extends ActionBarGuiceActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class HomeActivity extends ActionBarGuiceActivity implements ShowcaseViewUtility.OnShowcaseEndedListener {
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
 
     @Inject
@@ -70,6 +78,8 @@ public class HomeActivity extends ActionBarGuiceActivity {
         tracker.trackPageView(TrackerConstants.PageView.HOME_ACTIVITY);
 
         initiateDatabase();
+
+        showShowcase();
     }
 
     private void initiateDatabase() {
@@ -150,5 +160,37 @@ public class HomeActivity extends ActionBarGuiceActivity {
     protected void onDestroy() {
         super.onDestroy();
         tracker.stopSession();
+    }
+
+    private void showShowcase() {
+        // In case of new features for which the showcase must be shown again on the dashboard this check must include
+        // the new app version code.
+        if (Preferences.Showcase.getShowcaseLastShownForAppVersion(this) < 244) {
+            ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
+            co.hideOnClickOutside = false;
+            co.block = true;
+            co.noButton = false;
+            co.shotType = ShowcaseView.TYPE_NO_LIMIT;
+            co.insert = ShowcaseView.INSERT_TO_DECOR;
+            co.alignVertical = ShowcaseView.BOTTOM;
+            co.alignHorizontal = ShowcaseView.LEFT;
+
+            List<ShowcaseViewElement> showcaseViewElements = new ArrayList<ShowcaseViewElement>();
+            showcaseViewElements.add(new ShowcaseViewElement(findViewById(R.id.home_activity_module_projects_tasks), R.string.home_showcase_projects_title, R.string.home_showcase_projects_text, co));
+            showcaseViewElements.add(new ShowcaseViewElement(findViewById(R.id.home_activity_module_time_registrations), R.string.home_showcase_time_registrations_title, R.string.home_showcase_time_registrations_text, co));
+            View punchBarAction = findViewById(R.id.punchBarActionId);
+            if (punchBarAction != null) {
+                showcaseViewElements.add(new ShowcaseViewElement(punchBarAction, R.string.home_showcase_punchbar_title, R.string.home_showcase_punchbar_text, co));
+            }
+            showcaseViewElements.add(new ShowcaseViewElement(R.id.menu_home_activity_account, R.string.home_showcase_account_title, R.string.home_showcase_account_text, co));
+            showcaseViewElements.add(new ShowcaseViewElement(findViewById(R.id.home_activity_module_reporting), R.string.home_showcase_reporting_title, R.string.home_showcase_reporting_text, co));
+            showcaseViewElements.add(new ShowcaseViewElement(findViewById(R.id.home_activity_module_preferences), R.string.home_showcase_preferences_title, R.string.home_showcase_preferences_text, co));
+            ShowcaseViewUtility.start(showcaseViewElements, this).setOnShowcaseEndedListener(this);
+        }
+    }
+
+    @Override
+    public void onShowcaseEndedListener() {
+        Preferences.Showcase.setShowcaseLastShownForAppVersion(this, ContextUtils.getCurrentApplicationVersionCode(this));
     }
 }

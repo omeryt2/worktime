@@ -791,4 +791,19 @@ public class Preferences {
             }
         }
     }
+
+    public static class Showcase {
+        public static int getShowcaseLastShownForAppVersion(Context ctx) {
+            return getSharedPreferences(ctx).getInt(
+                    Constants.Preferences.Keys.SHOW_CASE_LAST_SHOWN_FOR_APP_VERSION,
+                    Constants.Preferences.SHOW_CASE_LAST_SHOWN_FOR_APP_VERSION_DEFAULT_VALUE
+            );
+        }
+
+        public static void setShowcaseLastShownForAppVersion(Context ctx, int appVersion) {
+            SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+            editor.putInt(Constants.Preferences.Keys.SHOW_CASE_LAST_SHOWN_FOR_APP_VERSION, appVersion);
+            editor.commit();
+        }
+    }
 }

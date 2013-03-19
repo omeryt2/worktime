@@ -70,6 +70,19 @@
     <string name="home_btn_preferences">Preferences</string>
     <string name="home_btn_reporting">Reporting</string>
     <string name="home_comp_start_stop_time_registration_no_ongoing">No ongoing time regstration!</string>
+    <!-- Showcase -->
+    <string name="home_showcase_projects_title">Projects and Tasks</string>
+    <string name="home_showcase_projects_text">Manage projects and tasks to which your time registrations will be linked</string>
+    <string name="home_showcase_time_registrations_title">Time Registrations</string>
+    <string name="home_showcase_time_registrations_text">Manage all your time registrations (create, delete, split,...)</string>
+    <string name="home_showcase_reporting_title">Reporting</string>
+    <string name="home_showcase_reporting_text">Generate reports of your registered data and export to Excel</string>
+    <string name="home_showcase_preferences_title">Preferences</string>
+    <string name="home_showcase_preferences_text">Manage all kinds of settings for time registrations, projects, date and time, account,...</string>
+    <string name="home_showcase_account_title">Online Account</string>
+    <string name="home_showcase_account_text">Create an online account and keep all your data backed up online</string>
+    <string name="home_showcase_punchbar_title">Punch Bar</string>
+    <string name="home_showcase_punchbar_text">Quickly start and stop a time registration from the punch bar.</string>
 
     <!-- MANAGE PROJECTS -->
     <string name="btn_manage_projects_title">Manage Projects</string>
@@ -615,13 +628,13 @@
     <string name="pref_account_sync_error_show_notification_cases_title">Synchronisation errors to show</string>
     <string name="pref_account_sync_error_show_notification_cases_summary">Select for which synchronisation errors a notification should be shown.</string>
     <string-array name="pref_account_sync_error_show_notification_cases_options">
-        <item>Not logged in anymore</item>
-        <item>Server-side error or server down</item>
+        <item>Not Logged In</item>
+        <item>Error on server or server down</item>
         <item>No network connection</item>
         <item>No WiFi connection</item>
         <item>Backup creation failed</item>
-        <item>Another synchronization is already busy</item>
-        <item>Synchronisation executed unsuccessfully</item>
+        <item>Synchronisation already busy</item>
+        <item>Synchronisation error</item>
     </string-array>
     <string-array name="pref_account_sync_error_show_notification_cases_option_values">
         <item>LoginCredentialsMismatchException</item>

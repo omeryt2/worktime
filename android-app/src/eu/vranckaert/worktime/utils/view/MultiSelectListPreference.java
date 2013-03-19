@@ -27,10 +27,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
-// android:defaultValue="entryValue1|entryValue2"
 public class MultiSelectListPreference extends ListPreference {
+    /**
+     * The preferences seperator
+     */
+    private static final String SEP = "|";
 
-	public static String[] fromPersistedPreferenceValue(String val) {
+    /**
+     * This array indicates for each option if it should be checked or not.
+     */
+    private boolean[] checkedEntryIndexes;
+    /**
+     * Convert the preferences value to a list of values.
+     * @param val The preferences value.
+     * @return A String array with all the selectable values.
+     */
+	private static String[] fromPersistedPreferenceValue(String val) {
         if (StringUtils.isBlank(val)) {
 			return new String[0];
 		} else {
@@ -38,7 +50,12 @@ public class MultiSelectListPreference extends ListPreference {
 		}
 	}
 
-	public static String toPersistedPreferenceValue(CharSequence... entryKeys) {
+    /**
+     * Create the preference value that should be stored based on a list of values.
+     * @param entryKeys The values that should be converted to a preferences string.
+     * @return The string as it should be stored in the preferences.
+     */
+	private static String toPersistedPreferenceValue(CharSequence... entryKeys) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < entryKeys.length; i++) {
 			sb.append(entryKeys[i]);
@@ -49,22 +66,38 @@ public class MultiSelectListPreference extends ListPreference {
 		return sb.toString();
 	}
 
-	public CharSequence[] getCheckedEntries() {
-		CharSequence[] entries = getEntries();
-		ArrayList<CharSequence> checkedEntries = new ArrayList<CharSequence>();
-		for (int i = 0; i < entries.length; i++) {
-			if (checkedEntryIndexes[i]) {
-				checkedEntries.add(entries[i]);
-			}
-		}
-		return checkedEntries.toArray(new String[checkedEntries.size()]);
-	}
+    /**
+     * Checks which elements in the list of options should be checked and which doesn't. The order of how the values
+     * are stored in the preferences doesn't matter in this case.
+     */
+    private void updateCheckedEntryIndexes() {
+        CharSequence[] entryVals = getEntryValues();
+        checkedEntryIndexes = new boolean[entryVals.length];
+        String val = getValue();
+        if (val != null) {
+            HashSet<String> checkedEntryVals = new HashSet<String>(
+                    Arrays.asList(fromPersistedPreferenceValue(val)));
+            for (int i = 0; i < entryVals.length; i++) {
+                checkedEntryIndexes[i] = checkedEntryVals
+                        .contains(entryVals[i]);
+            }
+        }
+    }
 
-	// boring stuff
-
-	private static final String SEP = "|";
-
-	private boolean[] checkedEntryIndexes;
+    /**
+     * Get an array of selected values.
+     * @return Get an array of the current selected values.
+     */
+    public CharSequence[] getCheckedEntries() {
+        CharSequence[] entries = getEntries();
+        ArrayList<CharSequence> checkedEntries = new ArrayList<CharSequence>();
+        for (int i = 0; i < entries.length; i++) {
+            if (checkedEntryIndexes[i]) {
+                checkedEntries.add(entries[i]);
+            }
+        }
+        return checkedEntries.toArray(new String[checkedEntries.size()]);
+    }
 
 	public MultiSelectListPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -112,22 +145,10 @@ public class MultiSelectListPreference extends ListPreference {
 			}
 			String val = toPersistedPreferenceValue(checkedVals
 					.toArray(new CharSequence[checkedVals.size()]));
-			if (callChangeListener(val)) {
+            String oldVal = getValue();
+            // Only update if the values have really changed
+			if (!val.equals(oldVal) && callChangeListener(val)) {
 				setValue(val);
-			}
-		}
-	}
-
-	private void updateCheckedEntryIndexes() {
-		CharSequence[] entryVals = getEntryValues();
-		checkedEntryIndexes = new boolean[entryVals.length];
-		String val = getValue();
-		if (val != null) {
-			HashSet<String> checkedEntryVals = new HashSet<String>(
-					Arrays.asList(fromPersistedPreferenceValue(val)));
-			for (int i = 0; i < entryVals.length; i++) {
-				checkedEntryIndexes[i] = checkedEntryVals
-						.contains(entryVals[i]);
 			}
 		}
 	}

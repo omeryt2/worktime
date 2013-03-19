@@ -35,11 +35,13 @@
             <Button style="@style/HomeButton"
                 android:onClick="onTimeRegistrationsClick"
                 android:text="@string/home_btn_timeregs"
-                android:drawableTop="@drawable/home_btn_timeregistrations"/>
+                android:drawableTop="@drawable/home_btn_timeregistrations"
+                android:id="@+id/home_activity_module_time_registrations"/>
             <Button style="@style/HomeButton"
                 android:onClick="onProjectsClick"
                 android:text="@string/home_btn_projects"
-                android:drawableTop="@drawable/home_btn_projects"/>
+                android:drawableTop="@drawable/home_btn_projects"
+                android:id="@+id/home_activity_module_projects_tasks"/>
         </LinearLayout>
 
         <LinearLayout
@@ -50,11 +52,13 @@
             <Button style="@style/HomeButton"
                 android:onClick="onReportingClick"
                 android:text="@string/home_btn_reporting"
-                android:drawableTop="@drawable/home_btn_reporting"/>
+                android:drawableTop="@drawable/home_btn_reporting"
+                android:id="@+id/home_activity_module_reporting"/>
             <Button style="@style/HomeButton"
                 android:onClick="onPreferencesClick"
                 android:text="@string/home_btn_preferences"
-                android:drawableTop="@drawable/home_btn_preferences"/>
+                android:drawableTop="@drawable/home_btn_preferences"
+                android:id="@+id/home_activity_module_preferences"/>
         </LinearLayout>
     </LinearLayout>
 
