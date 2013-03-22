@@ -28,7 +28,6 @@ public class Constants {
         public static final int CHOOSE_SELECTED_PROJECT = 8;
         public static final int LOADING_TIME_REGISTRATION_PUNCH_OUT = 9;
         public static final int CHOOSE_TASK = 10;
-        public static final int NO_TASKS_AVAILABLE = 11;
         public static final int DELETE_TASK_YES_NO = 12;
         public static final int DELETE_TIME_REGISTRATIONS_OF_TASK_YES_NO = 13;
         public static final int TIME_REGISTRATION_ACTION = 15;

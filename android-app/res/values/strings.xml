@@ -744,7 +744,7 @@
     <string name="lbl_widget_title_select_project">Select project</string>
     <string name="lbl_widget_title_select_task">Select task</string>
     <string name="lbl_widget_select_no_task_option">Don\'t select a task</string>
-    <string name="msg_no_tasks_available_choose_other_project">No tasks are available for the selected project. Select another project or go back and create a task for the project first.</string>
+    <string name="lbl_widget_select_new_project_task">Create new...</string>
 
     <!-- NOTIFICATION BAR -->
     <string name="lbl_notif_new_tr_started">A new time registration has been started</string>

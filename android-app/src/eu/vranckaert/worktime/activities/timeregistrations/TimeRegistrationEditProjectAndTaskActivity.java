@@ -18,9 +18,12 @@ package eu.vranckaert.worktime.activities.timeregistrations;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.activities.projects.AddEditProjectActivity;
+import eu.vranckaert.worktime.activities.tasks.AddEditTaskActivity;
 import eu.vranckaert.worktime.comparators.project.ProjectByNameComparator;
 import eu.vranckaert.worktime.comparators.task.TaskByNameComparator;
 import eu.vranckaert.worktime.constants.Constants;
@@ -107,6 +110,17 @@ public class TimeRegistrationEditProjectAndTaskActivity extends SyncLockedGuiceA
         return availableProjects;
     }
 
+    private List<Task> loadAllTasks() {
+        List<Task> availableTasks;
+        if (Preferences.getSelectTaskHideFinished(getApplicationContext())) {
+            availableTasks = taskService.findNotFinishedTasksForProject(newSelectedProject);
+        } else {
+            availableTasks = taskService.findTasksForProject(newSelectedProject);
+        }
+        Collections.sort(availableTasks, new TaskByNameComparator());
+        return availableTasks;
+    }
+
     @Override
     protected Dialog onCreateDialog(int id) {
         Dialog dialog = null;
@@ -128,29 +142,28 @@ public class TimeRegistrationEditProjectAndTaskActivity extends SyncLockedGuiceA
                     Log.d(getApplicationContext(), LOG_TAG, "Project with name " + project.getName() + " is added to the selection list");
                 }
 
+                projects.add(getString(R.string.lbl_widget_select_new_project_task));
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(R.string.lbl_widget_title_select_project)
                        .setSingleChoiceItems(
                                StringUtils.convertListToArray(projects),
                                selectedProjectIndex,
                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialogInterface, int index) {
-                                        newSelectedProject = availableProjects.get(index);
+                                   public void onClick(DialogInterface dialogInterface, int index) {
+                                       if (index != availableProjects.size()) {
+                                           newSelectedProject = availableProjects.get(index);
 
-                                        if (Preferences.getSelectTaskHideFinished(getApplicationContext())) {
-                                            availableTasks = taskService.findNotFinishedTasksForProject(newSelectedProject);
-                                        } else {
-                                            availableTasks = taskService.findTasksForProject(newSelectedProject);
-                                        }
-                                        Collections.sort(availableTasks, new TaskByNameComparator());
+                                           availableTasks = loadAllTasks();
 
-                                        if (availableTasks == null || availableTasks.size() == 0) {
-                                            showDialog(Constants.Dialog.NO_TASKS_AVAILABLE);
-                                        } else {
-                                            removeDialog(Constants.Dialog.CHOOSE_SELECTED_PROJECT);
-                                            showDialog(Constants.Dialog.CHOOSE_TASK);
-                                        }
-                                    }
+                                           removeDialog(Constants.Dialog.CHOOSE_SELECTED_PROJECT);
+                                           showDialog(Constants.Dialog.CHOOSE_TASK);
+                                       } else {
+                                           removeDialog(Constants.Dialog.CHOOSE_SELECTED_PROJECT);
+                                           Intent intent = new Intent(TimeRegistrationEditProjectAndTaskActivity.this, AddEditProjectActivity.class);
+                                           startActivityForResult(intent, Constants.IntentRequestCodes.ADD_PROJECT);
+                                       }
+                                   }
                                }
                        )
                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -178,19 +191,28 @@ public class TimeRegistrationEditProjectAndTaskActivity extends SyncLockedGuiceA
                     Log.d(getApplicationContext(), LOG_TAG, "Selected task index is: " + selectedTaskIndex);
                 }
 
+                tasks.add(getString(R.string.lbl_widget_select_new_project_task));
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(R.string.lbl_widget_title_select_task)
                        .setSingleChoiceItems(
                                StringUtils.convertListToArray(tasks),
                                selectedTaskIndex,
                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialogInterface, int index) {
-                                        Log.d(getApplicationContext(), LOG_TAG, "Task at index " + index + " choosen.");
-                                        newSelectedTask = availableTasks.get(index);
-                                        Log.d(getApplicationContext(), LOG_TAG, "About to update the time registration for task with name " + newSelectedTask.getName());
-                                        removeDialog(Constants.Dialog.CHOOSE_TASK);
-                                        updateTimeRegistration();
-                                    }
+                                   public void onClick(DialogInterface dialogInterface, int index) {
+                                       if (index != availableTasks.size()) {
+                                           Log.d(getApplicationContext(), LOG_TAG, "Task at index " + index + " choosen.");
+                                           newSelectedTask = availableTasks.get(index);
+                                           Log.d(getApplicationContext(), LOG_TAG, "About to update the time registration for task with name " + newSelectedTask.getName());
+                                           removeDialog(Constants.Dialog.CHOOSE_TASK);
+                                           updateTimeRegistration();
+                                       } else {
+                                           removeDialog(Constants.Dialog.CHOOSE_TASK);
+                                           Intent intent = new Intent(TimeRegistrationEditProjectAndTaskActivity.this, AddEditTaskActivity.class);
+                                           intent.putExtra(Constants.Extras.PROJECT, newSelectedProject);
+                                           startActivityForResult(intent, Constants.IntentRequestCodes.ADD_TASK);
+                                       }
+                                   }
                                }
                        )
                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -201,18 +223,6 @@ public class TimeRegistrationEditProjectAndTaskActivity extends SyncLockedGuiceA
                            }
                        });
                 dialog = builder.create();
-                break;
-            }
-            case Constants.Dialog.NO_TASKS_AVAILABLE: {
-                AlertDialog.Builder alertNoTaskAvailable = new AlertDialog.Builder(this);
-				alertNoTaskAvailable.setMessage(R.string.msg_no_tasks_available_choose_other_project)
-						   .setCancelable(false)
-						   .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                               public void onClick(DialogInterface dialog, int which) {
-                                   removeDialog(Constants.Dialog.NO_TASKS_AVAILABLE);
-                               }
-                           });
-				dialog = alertNoTaskAvailable.create();
                 break;
             }
         }
@@ -238,5 +248,17 @@ public class TimeRegistrationEditProjectAndTaskActivity extends SyncLockedGuiceA
 
         setResult(RESULT_OK);
         finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.IntentRequestCodes.ADD_PROJECT && resultCode == RESULT_OK) {
+            availableProjects = loadAllProjects();
+            showDialog(Constants.Dialog.CHOOSE_SELECTED_PROJECT);
+        } else if (requestCode == Constants.IntentRequestCodes.ADD_TASK && resultCode == RESULT_OK) {
+            availableTasks = loadAllTasks();
+
+            showDialog(Constants.Dialog.CHOOSE_TASK);
+        }
     }
 }
