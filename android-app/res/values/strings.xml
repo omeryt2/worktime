@@ -83,6 +83,8 @@
     <string name="home_showcase_account_text">Create an online account and keep all your data backed up online</string>
     <string name="home_showcase_punchbar_title">Punch Bar</string>
     <string name="home_showcase_punchbar_text">Quickly start and stop a time registration from the punch bar.</string>
+    <string name="home_showcase_about_title">Donate</string>
+    <string name="home_showcase_about_text">If you like the application you can donate to support the development.</string>
 
     <!-- MANAGE PROJECTS -->
     <string name="btn_manage_projects_title">Manage Projects</string>

@@ -165,7 +165,7 @@ public class HomeActivity extends ActionBarGuiceActivity implements ShowcaseView
     private void showShowcase() {
         // In case of new features for which the showcase must be shown again on the dashboard this check must include
         // the new app version code.
-        if (Preferences.Showcase.getShowcaseLastShownForAppVersion(this) < 244) {
+        if (Preferences.Showcase.getShowcaseLastShownForAppVersion(this) < 246) {
             ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
             co.hideOnClickOutside = false;
             co.block = true;
@@ -185,6 +185,7 @@ public class HomeActivity extends ActionBarGuiceActivity implements ShowcaseView
             showcaseViewElements.add(new ShowcaseViewElement(R.id.menu_home_activity_account, R.string.home_showcase_account_title, R.string.home_showcase_account_text, co));
             showcaseViewElements.add(new ShowcaseViewElement(findViewById(R.id.home_activity_module_reporting), R.string.home_showcase_reporting_title, R.string.home_showcase_reporting_text, co));
             showcaseViewElements.add(new ShowcaseViewElement(findViewById(R.id.home_activity_module_preferences), R.string.home_showcase_preferences_title, R.string.home_showcase_preferences_text, co));
+            showcaseViewElements.add(new ShowcaseViewElement(R.id.menu_home_activity_about, R.string.home_showcase_about_title, R.string.home_showcase_about_text, co));
             ShowcaseViewUtility.start(showcaseViewElements, this).setOnShowcaseEndedListener(this);
         }
     }
