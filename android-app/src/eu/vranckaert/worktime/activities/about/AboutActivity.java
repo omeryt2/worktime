@@ -30,6 +30,7 @@ import eu.vranckaert.worktime.dao.utils.DaoConstants;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.context.Log;
+import eu.vranckaert.worktime.utils.donations.DonationsActivity;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceListActivity;
 
@@ -100,6 +101,10 @@ public class AboutActivity extends ActionBarGuiceListActivity {
         licenseIntent.setData(Uri.parse("http://www.apache.org/licenses/LICENSE-2.0"));
         AboutListElement licensingElement = new AboutListElement(R.string.lbl_about_license, getString(R.string.lbl_about_license_apache_2_0), licenseIntent);
         aboutListElements.add(licensingElement);
+
+        Intent donationIntent = new Intent(this, DonationsActivity.class);
+        AboutListElement donationElement = new AboutListElement(R.string.lbl_about_donation, getString(R.string.lbl_about_donation_summary), donationIntent);
+        aboutListElements.add(donationElement);
 
         String databaseName  = DaoConstants.DATABASE;
         AboutListElement databaseNameElement = new AboutListElement(R.string.lbl_about_database_name, databaseName);

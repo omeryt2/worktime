@@ -57,4 +57,6 @@ public interface StatusBarNotificationService {
      * @param msgResId      The string-resrouce-id for the big message.
      */
     void addStatusBarNotificationForSync(int titleResId, int smallMsgResId, int msgResId);
+
+    void removeSyncNotifications();
 }

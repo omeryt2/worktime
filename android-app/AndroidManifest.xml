@@ -25,7 +25,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission."/>
+
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="17"/>
 
@@ -263,5 +264,23 @@
         <activity android:name="eu.vranckaert.worktime.utils.file.DirectoryPicker"
                   android:theme="@style/AppTheme"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
+
+        <!-- Donation -->
+        <activity
+                android:name="eu.vranckaert.worktime.utils.donations.DonationsActivity"
+                android:excludeFromRecents="true"
+                android:launchMode="singleTask"
+                android:theme="@android:style/Theme.DeviceDefault.Dialog" />
+
+        <!-- - Google Play Store donations -->
+        <service android:name="eu.vranckaert.worktime.utils.donations.google.BillingService" />
+
+        <receiver android:name="eu.vranckaert.worktime.utils.donations.google.BillingReceiver" >
+            <intent-filter>
+                <action android:name="com.android.vending.billing.IN_APP_NOTIFY" />
+                <action android:name="com.android.vending.billing.RESPONSE_CODE" />
+                <action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

@@ -33,6 +33,8 @@ import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
 import roboguice.service.RoboIntentService;
 
+import java.util.Collections;
+
 /**
  * User: Dirk Vranckaert
  * Date: 15/01/13
@@ -70,6 +72,9 @@ public class AccountSyncService extends RoboIntentService {
      * the synchronization will end.
      */
     private Exception sync() {
+        // First off all remove all sync-notifications for both success or errors
+        notificationService.removeSyncNotifications();
+
         Exception exception = null;
 
         syncTries++;

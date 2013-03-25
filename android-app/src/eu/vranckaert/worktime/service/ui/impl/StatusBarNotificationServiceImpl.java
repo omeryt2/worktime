@@ -243,6 +243,11 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
         setStatusBarNotification(title, message, ticker, intent, bigTextMessage, title, Constants.StatusBarNotificationIds.SYNC, NotificationCompat2.PRIORITY_HIGH, null, false);
     }
 
+    @Override
+    public void removeSyncNotifications() {
+        removeMessage(Constants.StatusBarNotificationIds.SYNC);
+    }
+
     /**
      * Get an instance of the Android {@link NotificationManager}.
      * @return An instance of the {@link NotificationManager}.
@@ -306,7 +311,8 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
                 .setContentTitle(title)
                 .setContentText(message)
                 .setContentIntent(contentIntent)
-                .setPriority(priority);
+                .setPriority(priority)
+                .setOngoing(fixed);
 
         for (NotificationAction action : actions) {
             builder.addAction(action.getDrawable(), action.getText(), PendingIntent.getActivity(context, action.getIntentRequestCode(), action.getIntent(), 0));
@@ -317,8 +323,8 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
             bigTextStyle.setBigContentTitle(bigContentTitle);
         }
         Notification notification = bigTextStyle.build();
-        if (fixed)
-            notification.flags |= Notification.FLAG_NO_CLEAR;
+//        if (fixed)
+//            notification.flags |= Notification.FLAG_NO_CLEAR;
         mgr.notify(notificationId, notification);
     }
 

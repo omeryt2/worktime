@@ -724,6 +724,8 @@
     <string name="lbl_about_version_code">Version code</string>
     <string name="lbl_about_license">Licensing</string>
     <string name="lbl_about_license_apache_2_0">Apache License 2.0</string>
+    <string name="lbl_about_donation">Donation</string>
+    <string name="lbl_about_donation_summary">If you like this application please support it\'s development by donating something.</string>
     <string name="lbl_about_database_name">Database name</string>
     <string name="lbl_about_database_version">Database version</string>
     <string name="lbl_about_website">Website</string>
@@ -793,4 +795,35 @@
     <string name="lbl_activity_locking_progress_sync_on_server">Synchronizing on server...</string>
     <string name="lbl_activity_locking_progress_sync_local">Checking incoming data...</string>
     <string name="lbl_activity_locking_progress_done">Synchronization is done.</string>
+
+    <!-- Donation -->
+    <string name="donations__description">Do you find this application useful?\nSupport it\'s development by sending donations to the developer!</string>
+    <string name="donations__google_android_market_donate_button">Donate!</string>
+    <string name="donations__thanks_dialog_title">Thanks!</string>
+    <string name="donations__thanks_dialog">Thanks for donating!\nI really appreciate this!</string>
+    <string name="donations__button_close">Close</string>
+    <!-- Google Play Store -->
+    <string name="donations__google_android_market">Google Play Store</string>
+    <string name="donations__google_android_market_not_supported_title">In-App Donations are not supported</string>
+    <string name="donations__google_android_market_not_supported">In-App Donations are not supported. Is Google Play Store installed correctly?</string>
+    <string name="donations__google_android_market_description">Choose an amount to donate using the Google Play Store:</string>
+    <string name="donations__google_android_market_text">How much?</string>
+    <string-array name="donations__google_android_market_promt_array">
+        <item>1 Euro</item>
+        <item>2 Euros</item>
+        <item>3 Euros</item>
+        <item>4 Euros</item>
+        <item>5 Euros</item>
+        <item>10 Euros</item>
+        <item>15 Euros</item>
+        <item>20 Euros</item>
+        <item>25 Euros</item>
+        <item>50 Euros</item>
+    </string-array>
+    <!-- PAYPAL -->
+    <string name="donations__paypal">PayPal</string>
+    <string name="donations__paypal_description">You can choose how much you want to donate after clicking the button!</string>
+    <!-- FLATTR -->
+    <string name="donations__flattr"/>
+    <string name="donations__flattr_description"/>
 </resources>
