@@ -69,7 +69,7 @@
     <string name="home_btn_projects">Projects</string>
     <string name="home_btn_preferences">Preferences</string>
     <string name="home_btn_reporting">Reporting</string>
-    <string name="home_comp_start_stop_time_registration_no_ongoing">No ongoing time regstration!</string>
+    <string name="home_comp_start_stop_time_registration_no_ongoing">No ongoing time registration!</string>
     <!-- Showcase -->
     <string name="home_showcase_projects_title">Projects and Tasks</string>
     <string name="home_showcase_projects_text">Manage projects and tasks to which your time registrations will be linked</string>
