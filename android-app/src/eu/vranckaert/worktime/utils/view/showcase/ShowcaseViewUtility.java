@@ -37,17 +37,6 @@ public class ShowcaseViewUtility implements ShowcaseView.OnShowcaseEventListener
             ShowcaseViewElement showcaseViewElement = showcaseViewElements.get(currentShowcaseViewIndex);
             showcaseView = showcaseViewElement.getShowcaseView(activity);
             showcaseView.setOnShowcaseEventListener(this);
-
-            if (!showcaseViewElement.isActionBarItem()) {
-                View hand = showcaseView.getHand();
-                View showcaseView = showcaseViewElement.getViewToShowcase();
-
-                float x = showcaseView.getX() + (showcaseView.getWidth() / 2);
-                float y = showcaseView.getY() + (showcaseView.getHeight() / 2);
-
-                hand.setX(x);
-                hand.setY(y);
-            }
         } else if (onShowcaseEndedListener != null) {
             onShowcaseEndedListener.onShowcaseEndedListener();
         }
