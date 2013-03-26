@@ -17,7 +17,7 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="eu.vranckaert.worktime"
-      android:versionCode="253"
+      android:versionCode="254"
       android:versionName="1.1.13.2 - UNSTABLE">
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
