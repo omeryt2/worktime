@@ -163,6 +163,10 @@ public class HomeActivity extends ActionBarGuiceActivity implements ShowcaseView
     }
 
     private void showShowcase() {
+        if (ContextUtils.getAndroidApiVersion() < 15) {
+            return;
+        }
+
         // In case of new features for which the showcase must be shown again on the dashboard this check must include
         // the new app version code.
         if (Preferences.Showcase.getShowcaseLastShownForAppVersion(this) < 246) {
