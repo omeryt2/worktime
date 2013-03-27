@@ -20,6 +20,7 @@ import android.util.Log;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.constants.EnvironmentConstants;
 import eu.vranckaert.worktime.dao.web.WorkTimeWebDao;
+import eu.vranckaert.worktime.dao.web.model.base.request.UserChangePasswordRequest;
 import eu.vranckaert.worktime.dao.web.model.request.sync.WorkTimeSyncRequest;
 import eu.vranckaert.worktime.dao.web.model.request.user.UserLoginRequest;
 import eu.vranckaert.worktime.dao.web.model.request.user.UserRegistrationRequest;
@@ -58,6 +59,7 @@ public class WorkTimeWebDaoImpl extends JsonWebServiceImpl implements WorkTimeWe
     private static final String ENDPOINT_REST = "rest/";
     private static final String ENDPOINT_METHOD_LOGIN = "user/login";
     private static final String ENDPOINT_METHOD_REGISTER = "user/register";
+    private static final String ENDPOINT_METHOD_CHANGE_PASSWORD = "user/changePassword";
     private static final String ENDPOINT_METHOD_PROFILE = "user/profile";
     private static final String ENDPOINT_METHOD_LOGOUT = "user/logout";
     private static final String ENDPOINT_METHOD_SYNC = "sync/all";
@@ -151,6 +153,47 @@ public class WorkTimeWebDaoImpl extends JsonWebServiceImpl implements WorkTimeWe
                 throw new RegisterEmailAlreadyInUseException();
             } else if (response.getPasswordLengthInvalidJSONException() != null) {
                 throw new PasswordLengthValidationException();
+            } else if (response.getServiceNotAllowedException() != null) {
+                throw new RuntimeException("Your service is not allowed to access the application-server");
+            } else {
+                throw  new RuntimeException("Something went wrong...");
+            }
+        }
+
+        return response.getSessionKey();
+    }
+
+    @Override
+    public String changePassword(User user, String newPassword) throws NoNetworkConnectionException, GeneralWebException, LoginCredentialsMismatchException {
+        checkNetworkConnection();
+
+        UserChangePasswordRequest request = new UserChangePasswordRequest();
+        request.setSessionKey(user.getSessionKey());
+        request.setEmail(user.getEmail());
+        request.setOldPassword(user.getPassword());
+        request.setNewPassword(newPassword);
+
+        JsonResult result = null;
+        try {
+            result = webInvokePost(ENDPOINT_BASE_URL + ENDPOINT_REST, ENDPOINT_METHOD_CHANGE_PASSWORD, null, null, request, null);
+        } catch (WebException e) {
+            String msg = "Cannot change the password due to a web exception... Exception is: " + e.getMessage();
+            Log.e(LOG_TAG, msg, e);
+            throw new GeneralWebException(msg);
+        } catch (CommunicationException e) {
+            String msg = "Cannot change the password due to a communication exception... Exception is: " + e.getMessage();
+            Log.e(LOG_TAG, msg, e);
+            throw new GeneralWebException(msg);
+        }
+
+        if (result == null) {
+            return null;
+        }
+
+        AuthenticationResponse response = result.getSingleResult(AuthenticationResponse.class);
+        if (!response.isResultOk()) {
+            if (response.getEmailOrPasswordIncorrectJSONException() != null) {
+                throw new LoginCredentialsMismatchException();
             } else if (response.getServiceNotAllowedException() != null) {
                 throw new RuntimeException("Your service is not allowed to access the application-server");
             } else {

@@ -132,6 +132,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public void changePassword(String oldPassword, String newPassword) throws GeneralWebException, NoNetworkConnectionException, LoginCredentialsMismatchException {
+        User user = accountDao.getLoggedInUser();
+        user.setPassword(oldPassword);
+        String sessionKey = workTimeWebDao.changePassword(user, newPassword);
+
+        user.setSessionKey(sessionKey);
+        user.setPassword(newPassword);
+        accountDao.update(user);
+    }
+
+    @Override
     public User getOfflineUserDate() {
         User user = accountDao.getLoggedInUser();
         if (user.isProfileComplete()) {

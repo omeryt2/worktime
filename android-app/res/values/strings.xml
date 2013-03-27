@@ -55,6 +55,8 @@
     <!-- GENERAL ERRORS -->
     <string name="error_general_web_exception">Something went wrong while connecting to the web. Please try again. Possibly the server may be down. If you keep seeing this error please report a bug.</string>
     <string name="error_no_network_connection">Your device seems to be offline. Please make sure an internet connection is active and try again.</string>
+    <!-- GENERAL VALIDATION ERRORS -->
+    <string name="error_general_required_field">This is requried</string>
 
     <!-- DEFUALT VALUES DB -->
     <string name="default_project_name">Default Project</string>
@@ -685,6 +687,7 @@
     <string name="account_profile_ab_menu_sync_now">Sync Now</string>
     <string name="account_profile_ab_menu_settings">Sync Settings</string>
     <string name="account_profile_ab_menu_logout">Logout</string>
+    <string name="account_profile_ab_menu_change_password">Change Password</string>
     <string name="lbl_account_profile_account_title">Profile Details</string>
     <string name="lbl_account_profile_email">Email:</string>
     <string name="lbl_account_profile_name">Name:</string>
@@ -699,6 +702,14 @@
     <string name="lbl_account_profile_error_user_not_logged_in">You are currently not logged in anymore. Please login again!</string>
     <string name="lbl_account_profile_logout_confirmation_title">Logout</string>
     <string name="lbl_account_profile_logout_confirmation_message">Do you really want to logout? The data on the device will be kept but it will no longer be connected and synchronized to the server.</string>
+    <!-- CHANGE PASSWORD -->
+    <string name="lbl_account_change_password_title">Change Password</string>
+    <string name="account_change_password_ab_menu_change">Change</string>
+    <string name="lbl_account_change_password_old_password">Old Password</string>
+    <string name="lbl_account_change_password_new_password">New Password</string>
+    <string name="lbl_account_change_password_new_password_repeat">Repeat New Password</string>
+    <string name="lbl_account_change_password_new_password_error_new_password_equals">Both passwords should be the same!</string>
+    <string name="lbl_account_change_password_old_password_incorrect">The password is not correct</string>
     <!-- SYNC HISTORY -->
     <string name="lbl_account_sync_history_title">Synchronization History</string>
     <string name="lbl_account_sync_history_list_item_start_time">Started:</string>

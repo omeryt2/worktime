@@ -65,6 +65,18 @@ public interface WorkTimeWebDao extends JsonWebService {
     String register(String email, String firstName, String lastName, String password) throws NoNetworkConnectionException, GeneralWebException, RegisterEmailAlreadyInUseException, PasswordLengthValidationException, RegisterFieldRequiredException;
 
     /**
+     * Change the password of the {@link User}.
+     * @param user The {@link User} to change the password for.
+     * @param newPassword The new password for the {@link User}.
+     * @return The session key of the registered user.
+     * @throws NoNetworkConnectionException No working network connection is found.
+     * @throws GeneralWebException Some kind of exception occurred during the web request.
+     * @throws LoginCredentialsMismatchException The credentials provided are not correct and so the user is not logged
+     * in!
+     */
+    String changePassword(User user, String newPassword) throws NoNetworkConnectionException, GeneralWebException, LoginCredentialsMismatchException;
+
+    /**
      * Loads the profile of a certain user.
      * @param user A {@link User} object that contains at least the email address of the user and the session key with
      *             which the user has logged in.

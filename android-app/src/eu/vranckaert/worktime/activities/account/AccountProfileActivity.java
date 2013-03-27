@@ -134,6 +134,11 @@ public class AccountProfileActivity extends SyncLockedActivity {
                 startActivity(intent);
                 break;
             }
+            case R.id.menu_account_profile_activity_change_password: {
+                Intent intent = new Intent(AccountProfileActivity.this, AccountChangePasswordActivity.class);
+                startActivity(intent);
+                break;
+            }
             case R.id.menu_account_profile_activity_logout:
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
                 dialogBuilder.setTitle(R.string.lbl_account_profile_logout_confirmation_title)

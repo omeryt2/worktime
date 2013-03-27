@@ -45,7 +45,7 @@ public interface AccountService {
      * @param password The password of the user in plain text.
      * @throws NoNetworkConnectionException No working network connection is found.
      * @throws GeneralWebException Some kind of exception occurred during the web request.
-     * @throws eu.vranckaert.worktime.exceptions.worktime.account.LoginCredentialsMismatchException The credentials provided are not correct and so the user is not logged
+     * @throws LoginCredentialsMismatchException The credentials provided are not correct and so the user is not logged
      * in!
      */
     void login(String email, String password) throws GeneralWebException, NoNetworkConnectionException, LoginCredentialsMismatchException;
@@ -65,6 +65,16 @@ public interface AccountService {
      * @throws eu.vranckaert.worktime.exceptions.worktime.account.RegisterFieldRequiredException If one of the required fields is missing.
      */
     void register(String email, String firstName, String lastName, String password) throws GeneralWebException, NoNetworkConnectionException, RegisterEmailAlreadyInUseException, PasswordLengthValidationException, RegisterFieldRequiredException;
+
+    /**
+     * Change the password of the currently logged in user.
+     * @param newPassword The old password for the currently logged in user.
+     * @param newPassword The new password for the currently logged in user.
+     * @throws NoNetworkConnectionException No working network connection is found.
+     * @throws GeneralWebException Some kind of exception occurred during the web request.
+     * @throws LoginCredentialsMismatchException The provided original password is not correct.
+     */
+    void changePassword(String oldPassword, String newPassword) throws GeneralWebException, NoNetworkConnectionException, LoginCredentialsMismatchException;
 
     /**
      * Retrieve the user data that is stored offline. If the user data is incomplete (no firstname, lastname, registered
