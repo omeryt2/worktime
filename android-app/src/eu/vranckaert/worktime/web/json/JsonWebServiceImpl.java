@@ -32,6 +32,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 
 import java.io.*;
 import java.net.*;
@@ -66,6 +67,7 @@ public class JsonWebServiceImpl implements JsonWebService {
         endpoint = buildEndpointWithAmpParams(endpoint, ampParams);
 
         httpPost = new HttpPost(endpoint);
+        httpPost.setHeader(new BasicHeader(HTTP.CONTENT_ENCODING, "utf-8"));
         httpPost.setHeader(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
         if (authorizationHeader != null) {
             httpPost.setHeader("Authorization", authorizationHeader.getContent());
@@ -75,7 +77,7 @@ public class JsonWebServiceImpl implements JsonWebService {
             String data = jsonEntity.toJSON();
 
             try {
-                StringEntity entity = new StringEntity(data);
+                StringEntity entity = new StringEntity(data, "utf-8");
                 entity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
                 httpPost.setEntity(entity);
             } catch (UnsupportedEncodingException e) {}
@@ -229,11 +231,13 @@ public class JsonWebServiceImpl implements JsonWebService {
 
                 if (entity != null) {
 
-                    InputStream is = entity.getContent();
-                    String result = convertStreamToString(is);
+//                    InputStream is = entity.getContent();
+//                    String result = convertStreamToString(is);
+//
+//                    // Closing the input stream will trigger connection release
+//                    is.close();
 
-                    // Closing the input stream will trigger connection release
-                    is.close();
+                    String result = EntityUtils.toString(entity, HTTP.UTF_8);
 
                     return new JsonResult(result);
                 }

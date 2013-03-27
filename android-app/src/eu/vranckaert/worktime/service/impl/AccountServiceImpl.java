@@ -670,7 +670,7 @@ public class AccountServiceImpl implements AccountService {
      */
     private void markSyncAsFailed(Exception e) {
         SyncHistory syncHistory = syncHistoryDao.getOngoingSyncHistory();
-        if (syncHistory.getStatus().equals(SyncHistoryStatus.BUSY)) {
+        if (syncHistory != null && syncHistory.getStatus().equals(SyncHistoryStatus.BUSY)) {
             syncHistory.setStatus(SyncHistoryStatus.FAILED);
             syncHistory.setEnded(new Date());
             if (e != null) {
