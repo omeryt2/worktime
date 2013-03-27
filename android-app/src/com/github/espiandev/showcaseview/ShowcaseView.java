@@ -14,6 +14,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.*;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import com.nineoldandroids.animation.Animator;
@@ -227,6 +228,10 @@ public class ShowcaseView extends RelativeLayout implements View.OnClickListener
 					throw new RuntimeException("insertShowcaseViewWithType cannot be used when the theme " +
 							"has no ActionBar");
 				ViewParent p = homeButton.getParent().getParent(); //ActionBarView
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    p = p.getParent();
+                }
 
 				Class abv = p.getClass(); //ActionBarView class
 				Class absAbv = abv.getSuperclass(); //AbsActionBarView class
