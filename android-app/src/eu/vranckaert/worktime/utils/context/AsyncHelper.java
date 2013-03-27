@@ -31,7 +31,7 @@ public class AsyncHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Void[]{});
         } else {
-            task.execute();
+            task.execute(new Void[]{});
         }
     }
 
