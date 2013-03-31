@@ -869,7 +869,7 @@ public class AccountServiceImpl implements AccountService {
 
         // Logout the current logged in user
         User user = accountDao.getLoggedInUser();
-        if (user != null) {
+        if (user != null) { // Issue 212 Fix
             workTimeWebDao.logout(user);
             accountDao.delete(user);
         }
