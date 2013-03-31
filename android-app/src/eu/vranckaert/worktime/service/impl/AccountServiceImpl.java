@@ -112,14 +112,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void reLogin() throws GeneralWebException, NoNetworkConnectionException, LoginCredentialsMismatchException {
-        User user = accountDao.getLoggedInUser();
-        if (user != null) {
-            login(user.getEmail(), user.getPassword());
-        }
-    }
-
-    @Override
     public void register(String email, String firstName, String lastName, String password) throws GeneralWebException, NoNetworkConnectionException, RegisterEmailAlreadyInUseException, PasswordLengthValidationException, RegisterFieldRequiredException {
         String sessionKey = workTimeWebDao.register(email, firstName, lastName, password);
 
@@ -263,7 +255,6 @@ public class AccountServiceImpl implements AccountService {
                 // Execute the sync on the server
                 result = workTimeWebDao.sync(user, conflictConfiguration, lastSuccessfulSyncDate, projects, tasks, timeRegistrations, syncRemovalMap);
             } catch (UserNotLoggedInException e) {
-                accountDao.delete(user);
                 markSyncAsFailed(e);
                 throw e;
             } catch (SynchronizationFailedException e) {
@@ -878,7 +869,10 @@ public class AccountServiceImpl implements AccountService {
 
         // Logout the current logged in user
         User user = accountDao.getLoggedInUser();
-        accountDao.delete(user);
-        workTimeWebDao.logout(user);
+        if (user != null) {
+            workTimeWebDao.logout(user);
+            accountDao.delete(user);
+        }
+
     }
 }

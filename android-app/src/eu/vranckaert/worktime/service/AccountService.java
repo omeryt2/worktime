@@ -50,8 +50,6 @@ public interface AccountService {
      */
     void login(String email, String password) throws GeneralWebException, NoNetworkConnectionException, LoginCredentialsMismatchException;
 
-    void reLogin() throws GeneralWebException, NoNetworkConnectionException, LoginCredentialsMismatchException;
-
     /**
      * Register a new user-account with the provided details.
      * @param email The email of the user.

@@ -25,6 +25,7 @@ import eu.vranckaert.worktime.exceptions.worktime.account.LoginCredentialsMismat
 import eu.vranckaert.worktime.exceptions.worktime.account.UserNotLoggedInException;
 import eu.vranckaert.worktime.exceptions.worktime.sync.SyncAlreadyBusyException;
 import eu.vranckaert.worktime.exceptions.worktime.sync.SynchronizationFailedException;
+import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
@@ -83,7 +84,9 @@ public class AccountSyncService extends RoboIntentService {
         } catch (UserNotLoggedInException e) {
             if (syncTries < 2) { // Only tries to start the sync twice...
                 try {
-                    accountService.reLogin();
+                    User user = accountService.getOfflineUserDate();
+                    accountService.logout();
+                    accountService.login(user.getEmail(), user.getPassword());
                     return sync();
                 } catch (GeneralWebException e1) {
                     exception = e1;

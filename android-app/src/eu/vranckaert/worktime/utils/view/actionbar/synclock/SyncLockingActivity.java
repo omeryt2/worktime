@@ -111,10 +111,12 @@ public class SyncLockingActivity extends ActionBarGuiceActivity {
 
     private void stopLocking() {
         SyncHistory syncHistory = accountService.getLastSyncHistory();
-        if (syncHistory.getStatus().equals(SyncHistoryStatus.FAILED) || syncHistory.getStatus().equals(SyncHistoryStatus.FAILED)) {
-            setResult(Constants.IntentResultCodes.SYNC_COMPLETED_ERROR);
-        } else {
-            setResult(Constants.IntentResultCodes.SYNC_COMPLETED_SUCCESS);
+        if (syncHistory != null) {
+            if (syncHistory.getStatus().equals(SyncHistoryStatus.FAILED)) {
+                setResult(Constants.IntentResultCodes.SYNC_COMPLETED_ERROR);
+            } else {
+                setResult(Constants.IntentResultCodes.SYNC_COMPLETED_SUCCESS);
+            }
         }
         super.finish();
     }
