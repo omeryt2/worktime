@@ -1,5 +1,6 @@
 package eu.vranckaert.worktime.model;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import com.google.code.twig.annotation.Entity;
@@ -13,6 +14,7 @@ public class PasswordResetRequest {
 	private Date requestDate;
 	private String email;
 	private boolean used;
+	private Date usedDate;
 	
 	public PasswordResetRequest() {}
 	
@@ -53,5 +55,31 @@ public class PasswordResetRequest {
 	
 	public void setUsed(boolean used) {
 		this.used = used;
+	}
+
+	public Date getUsedDate() {
+		return usedDate;
+	}
+
+	public void setUsedDate(Date usedDate) {
+		this.usedDate = usedDate;
+	}
+	
+	public boolean isExpired() {
+		if (used) {
+			return true;
+		}
+		
+		Calendar expireDate = Calendar.getInstance();
+		expireDate.setTime(this.requestDate);
+		expireDate.add(Calendar.HOUR_OF_DAY, 24);
+		
+		Date now = new Date();
+		
+		if (now.after(expireDate.getTime())) {
+			return true;
+		}
+		
+		return false;
 	}
 }

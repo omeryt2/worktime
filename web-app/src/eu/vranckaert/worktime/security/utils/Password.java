@@ -10,6 +10,8 @@ import javax.crypto.spec.PBEKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 
+import eu.vranckaert.worktime.security.exception.PasswordLenghtInvalidException;
+
 public class Password {
 	// The higher the number of iterations the more 
     // expensive computing the hash is for us
@@ -17,6 +19,34 @@ public class Password {
     private static final int iterations = 10*1024;
     private static final int saltLen = 32;
     private static final int desiredKeyLen = 256;
+    
+    /**
+     * Validate if the provided password is valid.
+     * @param password The password.
+     * @throws PasswordLenghtInvalidException If the password is less than six
+     * characters or more then 30.
+     */
+	public static void validatePassword(String password) throws PasswordLenghtInvalidException {
+		if (password.length() < 6 || password.length() > 30) {
+			throw new PasswordLenghtInvalidException();
+		}
+	}
+	
+	/**
+	 * Validate if the provided password is valid.
+     * @param password The password.
+     * @return {@link Boolean#FALSE} if the password is less than six characters
+     * or more then 30. Otherwise {@link Boolean#TRUE}.
+	 */
+	public static boolean validatePasswordCheck(String password) {
+		try {
+			Password.validatePassword(password);
+		} catch (PasswordLenghtInvalidException e) {
+			return false;
+		}
+		
+		return true;
+	}
 
     /**
      * Computes a salted PBKDF2 hash of given plaintext password suitable for 

@@ -314,10 +314,11 @@ public class SyncServiceImpl implements SyncService {
 			}
 			log.info(timeRegistrationsSynced + " time registrations have been synced for user " + user.getEmail());
 			
-			tx.commit();
+			if (tx != null)
+				tx.commit();
 		} catch (DeadlineExceededException e) {
 			log.info("Timeout occured... Comitting transaction and returning result. Message is: " + e.getMessage());
-			if (tx.isActive()) {
+			if (tx != null && tx.isActive()) {
 				tx.commit();
 			}
 		} catch (Exception e) {
@@ -325,7 +326,7 @@ public class SyncServiceImpl implements SyncService {
 			log.throwing(SyncServiceImpl.class.getSimpleName(), "sync", e);
 			e.printStackTrace();
 		} finally {
-			if (tx.isActive()) {
+			if (tx != null && tx.isActive()) {
 				tx.rollback();
 				
 				syncHistory.setEndTime(new Date());

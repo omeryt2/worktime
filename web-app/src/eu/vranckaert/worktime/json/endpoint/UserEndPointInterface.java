@@ -4,12 +4,14 @@ import javax.ws.rs.core.Response;
 
 import eu.vranckaert.worktime.json.exception.user.EmailOrPasswordIncorrectJSONException;
 import eu.vranckaert.worktime.json.exception.user.UserNotFoundJSONException;
+import eu.vranckaert.worktime.json.request.user.ResetPasswordRequest;
 import eu.vranckaert.worktime.json.request.user.UserChangePasswordRequest;
 import eu.vranckaert.worktime.json.request.user.UserChangePermissionsRequest;
 import eu.vranckaert.worktime.json.request.user.UserLoginRequest;
 import eu.vranckaert.worktime.json.request.user.UserRegistrationRequest;
 import eu.vranckaert.worktime.json.response.user.AuthenticationResponse;
 import eu.vranckaert.worktime.json.response.user.ChangePermissionsResponse;
+import eu.vranckaert.worktime.json.response.user.ResetPasswordResponse;
 import eu.vranckaert.worktime.json.response.user.UserProfileResponse;
 import eu.vranckaert.worktime.security.exception.EmailAlreadyInUseException;
 
@@ -55,7 +57,9 @@ public interface UserEndPointInterface {
 	ChangePermissionsResponse changePermissions(UserChangePermissionsRequest request);
 
 	/**
-	 * Reset the password of the user with a certain email address.
+	 * Request a password reset of the user with a certain email address. This
+	 * will trigger an email to be sent to the user with a hyperlink that
+	 * contains a reset key for the user.
 	 * @param serviceKey The key of the services that is wanting to access this
 	 * GET method.
 	 * @param email The email address to which the reset-mail should be sent.
@@ -63,7 +67,17 @@ public interface UserEndPointInterface {
 	 * @return A response with status code 200 always except when the service is
 	 * not allowed then the status code will be 405.
 	 */
-	Response resetPassword(String serviceKey, String email);
+	Response resetPasswordRequest(String serviceKey, String email);
+	
+	/**
+	 * Actually reset the password after a 
+	 * {@link UserEndPointInterface#resetPasswordRequest(String, String)} has 
+	 * been executed.
+	 * @param resetPasswordRequest The {@link ResetPasswordRequest} with the
+	 * reset-key and new password filled in.
+	 * @return The {@link ResetPasswordResponse}.
+	 */
+	ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest);
 
 	/**
 	 * Retrieves the user-profile data using a GET-method.

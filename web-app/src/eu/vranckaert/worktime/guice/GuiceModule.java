@@ -6,9 +6,11 @@ import com.google.code.twig.ObjectDatastore;
 import com.google.code.twig.ObjectDatastoreFactory;
 import com.google.code.twig.annotation.AnnotationObjectDatastore;
 import com.google.inject.AbstractModule;
+import com.google.inject.Scopes;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.RequestScoped;
 
+import eu.vranckaert.worktime.cron.reporting.ReportNewUsersServlet;
 import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.SyncHistoryDao;
 import eu.vranckaert.worktime.dao.TaskDao;
@@ -39,7 +41,9 @@ import eu.vranckaert.worktime.security.service.UserService;
 import eu.vranckaert.worktime.security.service.impl.SecurityCheckerImpl;
 import eu.vranckaert.worktime.security.service.impl.ServiceServiceImpl;
 import eu.vranckaert.worktime.security.service.impl.UserServiceImpl;
+import eu.vranckaert.worktime.service.ReportingService;
 import eu.vranckaert.worktime.service.SyncService;
+import eu.vranckaert.worktime.service.impl.ReportingServiceImpl;
 import eu.vranckaert.worktime.service.impl.SyncServiceImpl;
 
 public class GuiceModule extends AbstractModule {
@@ -76,29 +80,30 @@ public class GuiceModule extends AbstractModule {
 	private void bindSecurity() {
 		logger.info("Binding Security...");
 		// DAO's
-		bind(UserDao.class).to(UserDaoImpl.class).in(RequestScoped.class);
-		bind(ServiceDao.class).to(ServiceDaoImpl.class).in(RequestScoped.class);
-		bind(SessionDao.class).to(SessionDaoImpl.class).in(RequestScoped.class);
-		bind(PasswordResetRequestDao.class).to(PasswordResetRequestDaoImpl.class).in(RequestScoped.class);
+		bind(UserDao.class).to(UserDaoImpl.class);
+		bind(ServiceDao.class).to(ServiceDaoImpl.class);
+		bind(SessionDao.class).to(SessionDaoImpl.class);
+		bind(PasswordResetRequestDao.class).to(PasswordResetRequestDaoImpl.class);
 		// Services
-		bind(UserService.class).to(UserServiceImpl.class).in(RequestScoped.class);
-		bind(ServiceService.class).to(ServiceServiceImpl.class).in(RequestScoped.class);
-		bind(SecurityChecker.class).to(SecurityCheckerImpl.class).in(RequestScoped.class);
+		bind(UserService.class).to(UserServiceImpl.class);
+		bind(ServiceService.class).to(ServiceServiceImpl.class);
+		bind(SecurityChecker.class).to(SecurityCheckerImpl.class);
 		logger.info("All security services and DAO's are now bound...");
 	}
 	
 	private void bindDaos() {
 		logger.info("Binding DAO's...");
-		bind(SyncHistoryDao.class).to(SyncHistoryDaoImpl.class).in(RequestScoped.class);
-		bind(ProjectDao.class).to(ProjectDaoImpl.class).in(RequestScoped.class);
-		bind(TaskDao.class).to(TaskDaoImpl.class).in(RequestScoped.class);
-		bind(TimeRegistrationDao.class).to(TimeRegistrationDaoImpl.class).in(RequestScoped.class);
+		bind(SyncHistoryDao.class).to(SyncHistoryDaoImpl.class);
+		bind(ProjectDao.class).to(ProjectDaoImpl.class);
+		bind(TaskDao.class).to(TaskDaoImpl.class);
+		bind(TimeRegistrationDao.class).to(TimeRegistrationDaoImpl.class);
 		logger.info("All DAO's are now bound...");
 	}
 	
 	private void bindServices() {
 		logger.info("Binding services...");
-		bind(SyncService.class).to(SyncServiceImpl.class).in(RequestScoped.class);
+		bind(ReportingService.class).to(ReportingServiceImpl.class);
+		bind(SyncService.class).to(SyncServiceImpl.class);
 		logger.info("All services are now bound...");
 	}
 }

@@ -1,13 +1,18 @@
 package eu.vranckaert.worktime.security.service;
 
 import java.util.Date;
+import java.util.List;
 
+import eu.vranckaert.worktime.model.PasswordResetRequest;
 import eu.vranckaert.worktime.model.Role;
 import eu.vranckaert.worktime.model.Session;
 import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.security.exception.EmailAlreadyInUseException;
+import eu.vranckaert.worktime.security.exception.InvalidPasswordResetKeyException;
 import eu.vranckaert.worktime.security.exception.PasswordIncorrectException;
 import eu.vranckaert.worktime.security.exception.PasswordLenghtInvalidException;
+import eu.vranckaert.worktime.security.exception.PasswordResetKeyAlreadyUsedException;
+import eu.vranckaert.worktime.security.exception.PasswordResetKeyExpiredException;
 import eu.vranckaert.worktime.security.exception.UserNotFoundException;
 
 /**
@@ -90,7 +95,33 @@ public interface UserService {
 	 * @param email The email address of the user account for which the password
 	 * reset procedure needs to be started.
 	 */
-	void startResetPassword(String email);
+	void resetPasswordRequest(String email);
+	
+	/**
+	 * Get the {@link PasswordResetRequest} for the specified passwordResetKey.
+	 * @param passwordResetKey The reset key which is unique.
+	 * @return The {@link PasswordResetRequest} that matches the reset key.
+	 * @throws InvalidPasswordResetKeyException Thrown if the reset key is not known.
+	 * @throws PasswordResetKeyAlreadyUsedException Thrown if the reset key has been used before.
+	 * @throws PasswordResetKeyExpiredException Thrown if the reset key has expired (after 24 hours).
+	 */
+	PasswordResetRequest getPasswordResetRequestKey(String passwordResetKey) 
+			throws InvalidPasswordResetKeyException, PasswordResetKeyAlreadyUsedException, 
+			PasswordResetKeyExpiredException;
+	
+	/**
+	 * Reset the password of a certain user that matches the provided password
+	 * reset key and set it's password to the new password.
+	 * @param passwordResetKey The password reset key.
+	 * @param newPassword The new password.
+	 * @throws PasswordLenghtInvalidException If the lenght of the password is
+	 * invalid. Minimum should be 6 characters, maximum is 30 characters.
+	 * @throws InvalidPasswordResetKeyException Thrown if the reset key is not known.
+	 * @throws PasswordResetKeyAlreadyUsedException Thrown if the reset key has been used before.
+	 * @throws PasswordResetKeyExpiredException Thrown if the reset key has expired (after 24 hours).
+	 */
+	void resetPassword(String passwordResetKey, String newPassword) throws PasswordLenghtInvalidException, 
+	InvalidPasswordResetKeyException, PasswordResetKeyAlreadyUsedException, PasswordResetKeyExpiredException;
 
 	/**
 	 * Find the date and time for which the specified user logged in with the
@@ -107,4 +138,10 @@ public interface UserService {
 	 * @param sessionKey The session key that matches the user-account.
 	 */
 	void logout(String email, String sessionKey);
+
+	/**
+	 * Find all {@link User}s registered in the system.
+	 * @return The list of {@link User}s.
+	 */
+	List<User> findAll();
 }

@@ -23,21 +23,29 @@ import eu.vranckaert.worktime.json.exception.security.UserIncorrectRoleException
 import eu.vranckaert.worktime.json.exception.security.UserNotLoggedInJSONException;
 import eu.vranckaert.worktime.json.exception.user.EmailOrPasswordIncorrectJSONException;
 import eu.vranckaert.worktime.json.exception.user.InvalidEmailJSONException;
+import eu.vranckaert.worktime.json.exception.user.InvalidPasswordResetKeyJSONException;
 import eu.vranckaert.worktime.json.exception.user.PasswordLengthInvalidJSONException;
+import eu.vranckaert.worktime.json.exception.user.PasswordResetKeyAlreadyUsedJSONException;
+import eu.vranckaert.worktime.json.exception.user.PasswordResetKeyExpiredJSONException;
 import eu.vranckaert.worktime.json.exception.user.RegisterEmailAlreadyInUseJSONException;
 import eu.vranckaert.worktime.json.exception.user.UserNotFoundJSONException;
+import eu.vranckaert.worktime.json.request.user.ResetPasswordRequest;
 import eu.vranckaert.worktime.json.request.user.UserChangePasswordRequest;
 import eu.vranckaert.worktime.json.request.user.UserChangePermissionsRequest;
 import eu.vranckaert.worktime.json.request.user.UserLoginRequest;
 import eu.vranckaert.worktime.json.request.user.UserRegistrationRequest;
 import eu.vranckaert.worktime.json.response.user.AuthenticationResponse;
 import eu.vranckaert.worktime.json.response.user.ChangePermissionsResponse;
+import eu.vranckaert.worktime.json.response.user.ResetPasswordResponse;
 import eu.vranckaert.worktime.json.response.user.UserProfileResponse;
 import eu.vranckaert.worktime.model.Role;
 import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.security.exception.EmailAlreadyInUseException;
+import eu.vranckaert.worktime.security.exception.InvalidPasswordResetKeyException;
 import eu.vranckaert.worktime.security.exception.PasswordIncorrectException;
 import eu.vranckaert.worktime.security.exception.PasswordLenghtInvalidException;
+import eu.vranckaert.worktime.security.exception.PasswordResetKeyAlreadyUsedException;
+import eu.vranckaert.worktime.security.exception.PasswordResetKeyExpiredException;
 import eu.vranckaert.worktime.security.exception.ServiceNotAllowedException;
 import eu.vranckaert.worktime.security.exception.UserNotAdminException;
 import eu.vranckaert.worktime.security.exception.UserNotFoundException;
@@ -169,10 +177,10 @@ public class UserEndpoint implements UserEndPointInterface {
 	}
 	
 	@GET
-	@Path("resetPassword")
+	@Path("resetPasswordRequest")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Override
-	public Response resetPassword(@QueryParam("serviceKey") String serviceKey, @QueryParam("email") String email) {
+	public Response resetPasswordRequest(@QueryParam("serviceKey") String serviceKey, @QueryParam("email") String email) {
 		RegisteredServiceRequest request = new RegisteredServiceRequest() {};
 		request.setServiceKey(serviceKey);
 		
@@ -182,9 +190,43 @@ public class UserEndpoint implements UserEndPointInterface {
 			return Response.status(405).build();
 		}
 		
-		userService.startResetPassword(email);
+		userService.resetPasswordRequest(email);
 		
 		return Response.status(200).build();
+	}
+	
+	@POST
+	@Path("resetPassword")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Override
+	public ResetPasswordResponse resetPassword(ResetPasswordRequest request) {
+		ResetPasswordResponse response = null;
+		
+		if (StringUtils.isBlank(request.getNewPassword())) {
+			response.setFieldRequiredJSONException(new FieldRequiredJSONException("user/resetPassword", request, "newPassword"));
+		}
+		
+		try {
+			securityChecker.checkService(request);
+		} catch (ServiceNotAllowedException e) {
+			ServiceNotAllowedJSONException exception = new ServiceNotAllowedJSONException("user/resetPassword", request.getServiceKey());
+			response.setServiceNotAllowedException(exception);
+			return response;
+		}
+		
+		try {
+			userService.resetPassword(request.getPasswordResetKey(), request.getNewPassword());
+		} catch (PasswordLenghtInvalidException e) {
+			response.setPasswordLengthInvalidJSONException(new PasswordLengthInvalidJSONException("user/resetPassword"));
+		} catch (InvalidPasswordResetKeyException e) {
+			response.setInvalidPasswordResetKeyJSONException(new InvalidPasswordResetKeyJSONException());
+		} catch (PasswordResetKeyAlreadyUsedException e) {
+			response.setPasswordResetKeyAlreadyUsedJSONException(new PasswordResetKeyAlreadyUsedJSONException());
+		} catch (PasswordResetKeyExpiredException e) {
+			response.setPasswordResetKeyExpiredJSONException(new PasswordResetKeyExpiredJSONException());
+		}
+		
+		return response;
 	}
 	
 	@POST

@@ -2,6 +2,7 @@ package eu.vranckaert.worktime.security.service.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -30,8 +31,11 @@ import eu.vranckaert.worktime.security.dao.PasswordResetRequestDao;
 import eu.vranckaert.worktime.security.dao.SessionDao;
 import eu.vranckaert.worktime.security.dao.UserDao;
 import eu.vranckaert.worktime.security.exception.EmailAlreadyInUseException;
+import eu.vranckaert.worktime.security.exception.InvalidPasswordResetKeyException;
 import eu.vranckaert.worktime.security.exception.PasswordIncorrectException;
 import eu.vranckaert.worktime.security.exception.PasswordLenghtInvalidException;
+import eu.vranckaert.worktime.security.exception.PasswordResetKeyAlreadyUsedException;
+import eu.vranckaert.worktime.security.exception.PasswordResetKeyExpiredException;
 import eu.vranckaert.worktime.security.exception.UserNotFoundException;
 import eu.vranckaert.worktime.security.service.UserService;
 import eu.vranckaert.worktime.security.utils.KeyGenerator;
@@ -56,9 +60,7 @@ public class UserServiceImpl implements UserService {
 			throw new EmailAlreadyInUseException();
 		}
 		
-		if (password.length() < 6 || password.length() > 30) {
-			throw new PasswordLenghtInvalidException();
-		}
+		Password.validatePassword(password);
 		
 		// Hash password
 		user.setPasswordHash(Password.getSaltedHash(password));
@@ -203,7 +205,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void startResetPassword(String email) {
+	public void resetPasswordRequest(String email) {
 		User user = userDao.findById(email);
 		if (user != null) {
 			Transaction tx = datastores.get().getTransaction();
@@ -212,7 +214,7 @@ public class UserServiceImpl implements UserService {
 				passwordResetRequestDao.persist(resetRequest);
 				
 				String resetRequestKey = resetRequest.getKey();
-				String resetUrl = "https://worktime-web.appspot.com/resetPassword?email=" + email + "&key=" + resetRequestKey;			
+				String resetUrl = "https://worktime-web.appspot.com/resetPassword/" + resetRequestKey;			
 				String htmlBody = "<html><body><p>Dear WorkTime user,</p><p>You have requested a password reset for your online account.<br/>To reset your password follow this link: <a href=\"" + resetUrl + "\">" + resetUrl + "</a></p><p>If you cannot open the previous link then manually copy and paste the following url in your favorite browser:<br/>" + resetUrl + "</p><p>This password reset email is only valid for the next 24 hours. Afterwards this email will be unusable!</p>Kind Regards,<br/><br/>The WorkTime team!</body></html>";
 				
 				try {
@@ -231,7 +233,8 @@ public class UserServiceImpl implements UserService {
 		            msg.setSubject("WorkTime Password Reset");
 		            Transport.send(msg);
 		            
-		            tx.commit();
+		            if (tx != null)
+		            	tx.commit();
 				} catch (AddressException e) {
 					log.warning("Could not send 'reset password' email to " + email + " because of an address exception...");
 				} catch (MessagingException e) {
@@ -240,11 +243,45 @@ public class UserServiceImpl implements UserService {
 					log.warning("Could not send 'reset password' email to " + email + " because of an unsupported encoding exception...");
 				}
 			} finally {
-				if (tx.isActive()) {
+				if (tx != null && tx.isActive()) {
 					tx.rollback();
 				}
 			}
 		}
+	}
+
+	@Override
+	public PasswordResetRequest getPasswordResetRequestKey(String passwordResetKey) 
+			throws InvalidPasswordResetKeyException, PasswordResetKeyAlreadyUsedException, 
+			PasswordResetKeyExpiredException {
+		PasswordResetRequest resetRequest = passwordResetRequestDao.findById(passwordResetKey);
+		
+		if (resetRequest == null) {
+			throw new InvalidPasswordResetKeyException();
+		} else if (resetRequest.isUsed()) {
+			throw new PasswordResetKeyAlreadyUsedException();
+		} else if (resetRequest.isExpired()) {
+			throw new PasswordResetKeyExpiredException();
+		}
+		
+		return resetRequest;
+	}
+
+	@Override
+	public void resetPassword(String passwordResetKey, String newPassword) 
+			throws PasswordLenghtInvalidException, InvalidPasswordResetKeyException, 
+			PasswordResetKeyAlreadyUsedException, PasswordResetKeyExpiredException {
+		PasswordResetRequest resetRequest = getPasswordResetRequestKey(passwordResetKey);
+		
+		Password.validatePassword(newPassword);
+		
+		User user = userDao.findById(resetRequest.getEmail());
+		user.setPasswordHash(Password.getSaltedHash(newPassword));
+		userDao.update(user);
+		
+		resetRequest.setUsed(true);
+		resetRequest.setUsedDate(new Date());
+		passwordResetRequestDao.update(resetRequest);
 	}
 
 	@Override
@@ -267,5 +304,10 @@ public class UserServiceImpl implements UserService {
 			user.removeSessionKey(sessionKey);
 			userDao.update(user);
 		}
+	}
+
+	@Override
+	public List<User> findAll() {
+		return userDao.findAll();
 	}
 }

@@ -23,9 +23,25 @@
         </user-data-constraint>
     </security-constraint>
 	
-	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
-	</welcome-file-list>
+	<!-- All user-specific pages should go over HTTPS -->
+	<security-constraint>
+        <web-resource-collection>
+            <url-pattern>/resetPassword/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    
+    <!-- Make sure the cron-urls are secured and not publicly accessible -->
+    <security-constraint>
+        <web-resource-collection>
+            <url-pattern>/cron/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
 	
 	<!-- GAE Specific (auto-gen) stuff -->
 	<servlet>
