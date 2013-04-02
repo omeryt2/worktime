@@ -9,6 +9,6 @@ import eu.vranckaert.worktime.model.User;
  * 
  * @author Dirk Vranckaert
  */
-public interface ReportingService {
+public interface CronJobService {
 	List<User> findUsersRegisteredOnDay(Date date);
 }

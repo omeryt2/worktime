@@ -41,9 +41,9 @@ import eu.vranckaert.worktime.security.service.UserService;
 import eu.vranckaert.worktime.security.service.impl.SecurityCheckerImpl;
 import eu.vranckaert.worktime.security.service.impl.ServiceServiceImpl;
 import eu.vranckaert.worktime.security.service.impl.UserServiceImpl;
-import eu.vranckaert.worktime.service.ReportingService;
+import eu.vranckaert.worktime.service.CronJobService;
 import eu.vranckaert.worktime.service.SyncService;
-import eu.vranckaert.worktime.service.impl.ReportingServiceImpl;
+import eu.vranckaert.worktime.service.impl.CronJobServiceImpl;
 import eu.vranckaert.worktime.service.impl.SyncServiceImpl;
 
 public class GuiceModule extends AbstractModule {
@@ -102,7 +102,7 @@ public class GuiceModule extends AbstractModule {
 	
 	private void bindServices() {
 		logger.info("Binding services...");
-		bind(ReportingService.class).to(ReportingServiceImpl.class);
+		bind(CronJobService.class).to(CronJobServiceImpl.class);
 		bind(SyncService.class).to(SyncServiceImpl.class);
 		logger.info("All services are now bound...");
 	}

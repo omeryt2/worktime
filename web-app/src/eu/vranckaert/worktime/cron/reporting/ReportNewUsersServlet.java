@@ -25,13 +25,13 @@ import com.google.inject.Inject;
 
 import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.security.service.UserService;
-import eu.vranckaert.worktime.service.ReportingService;
+import eu.vranckaert.worktime.service.CronJobService;
 
 public class ReportNewUsersServlet extends HttpServlet {
 	private static final Logger log = Logger.getLogger(ReportNewUsersServlet.class.getName());
 	
 	@Inject private UserService userService;
-	@Inject private ReportingService reportingService;
+	@Inject private CronJobService cronJobService;
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -41,7 +41,7 @@ public class ReportNewUsersServlet extends HttpServlet {
 		Calendar yesterday = Calendar.getInstance();
 		yesterday.add(Calendar.DAY_OF_MONTH, -1);
 		
-		List<User> usersRegisteredYesterday = reportingService.findUsersRegisteredOnDay(yesterday.getTime());
+		List<User> usersRegisteredYesterday = cronJobService.findUsersRegisteredOnDay(yesterday.getTime());
 		
 		String body = "The total number of users registered in the system yesterday is " + allUsers.size() + ".</br>" +
 				"Yesterday " + usersRegisteredYesterday.size() + " user(s) have registered.";
