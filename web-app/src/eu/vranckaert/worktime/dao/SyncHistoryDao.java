@@ -1,5 +1,8 @@
 package eu.vranckaert.worktime.dao;
 
+import java.util.Date;
+import java.util.List;
+
 import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.model.sync.SyncHistory;
 
@@ -18,4 +21,7 @@ public interface SyncHistoryDao extends BaseDao<SyncHistory> {
 	 * @return The ongoing {@link SyncHistory} or null if no ongoing is found.
 	 */
 	SyncHistory getOngoingSyncHistory(User user);
+
+	List<SyncHistory> findSyncsBetween(Date dayWithMinimalTimeValues,
+			Date dayWithMaximumTimeValues, boolean b);
 }
