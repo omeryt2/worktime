@@ -123,6 +123,7 @@ public class AccountSyncService extends RoboIntentService {
                 showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.lbl_sync_service_error_user_not_logged_in, e);
                 accountService.logout();
                 Intent intent = new Intent(AccountSyncService.this, AccountLoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             } else if (e instanceof GeneralWebException) {
                 showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.error_general_web_exception, e);

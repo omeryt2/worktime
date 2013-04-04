@@ -22,10 +22,12 @@ import eu.vranckaert.worktime.constants.EnvironmentConstants;
 import eu.vranckaert.worktime.dao.web.WorkTimeWebDao;
 import eu.vranckaert.worktime.dao.web.model.base.request.UserChangePasswordRequest;
 import eu.vranckaert.worktime.dao.web.model.request.sync.WorkTimeSyncRequest;
+import eu.vranckaert.worktime.dao.web.model.request.user.ResetPasswordRequest;
 import eu.vranckaert.worktime.dao.web.model.request.user.UserLoginRequest;
 import eu.vranckaert.worktime.dao.web.model.request.user.UserRegistrationRequest;
 import eu.vranckaert.worktime.dao.web.model.response.sync.WorkTimeSyncResponse;
 import eu.vranckaert.worktime.dao.web.model.response.user.AuthenticationResponse;
+import eu.vranckaert.worktime.dao.web.model.response.user.ResetPasswordResponse;
 import eu.vranckaert.worktime.dao.web.model.response.user.UserProfileResponse;
 import eu.vranckaert.worktime.exceptions.network.NoNetworkConnectionException;
 import eu.vranckaert.worktime.exceptions.worktime.account.*;
@@ -63,6 +65,8 @@ public class WorkTimeWebDaoImpl extends JsonWebServiceImpl implements WorkTimeWe
     private static final String ENDPOINT_METHOD_PROFILE = "user/profile";
     private static final String ENDPOINT_METHOD_LOGOUT = "user/logout";
     private static final String ENDPOINT_METHOD_SYNC = "sync/all";
+    private static final String ENDPOINT_METHOD_RESET_PASSWORD_REQUEST = "user/resetPasswordRequest";
+    private static final String ENDPOINT_METHOD_RESET_PASSWORD = "user/resetPassword";
 
     private Context context;
 
@@ -318,6 +322,72 @@ public class WorkTimeWebDaoImpl extends JsonWebServiceImpl implements WorkTimeWe
         } catch (CommunicationException e) {
             String msg = "Cannot logout due to a communication exception... Exception is: " + e.getMessage();
             Log.e(LOG_TAG, msg, e);
+        }
+    }
+
+    @Override
+    public void resetPasswordRequest(String email) throws NoNetworkConnectionException, GeneralWebException {
+        checkNetworkConnection();
+
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("serviceKey", EnvironmentConstants.WorkTimeWeb.SERVICE_KEY);
+        parameters.put("email", email);
+
+        try {
+            webInvokeGet(ENDPOINT_BASE_URL + ENDPOINT_REST, ENDPOINT_METHOD_RESET_PASSWORD_REQUEST, null, parameters, null);
+        } catch (WebException e) {
+            String msg = "Cannot request password reset due to a web exception... Exception is: " + e.getMessage();
+            Log.e(LOG_TAG, msg, e);
+            throw new GeneralWebException(msg);
+        } catch (CommunicationException e) {
+            String msg = "Cannot request password reset due to a communication exception... Exception is: " + e.getMessage();
+            Log.e(LOG_TAG, msg, e);
+            throw new GeneralWebException(msg);
+        }
+    }
+
+    @Override
+    public void resetPassword(String passwordResetRequestKey, String newPassword) throws NoNetworkConnectionException, GeneralWebException, PasswordLengthValidationException, InvalidPasswordResetKeyException, PasswordResetKeyAlreadyUsedException, PasswordResetKeyExpiredException {
+        checkNetworkConnection();
+
+        ResetPasswordRequest request = new ResetPasswordRequest();
+        request.setPasswordResetKey(passwordResetRequestKey);
+        request.setNewPassword(newPassword);
+
+        JsonResult result = null;
+        try {
+            result = webInvokePost(ENDPOINT_BASE_URL + ENDPOINT_REST, ENDPOINT_METHOD_RESET_PASSWORD, null, null, request, null);
+        } catch (WebException e) {
+            String msg = "Cannot login due to a web exception... Exception is: " + e.getMessage();
+            Log.e(LOG_TAG, msg, e);
+            throw new GeneralWebException(msg);
+        } catch (CommunicationException e) {
+            String msg = "Cannot login due to a communication exception... Exception is: " + e.getMessage();
+            Log.e(LOG_TAG, msg, e);
+            throw new GeneralWebException(msg);
+        }
+
+        if (result == null) {
+            return;
+        }
+
+        ResetPasswordResponse response = result.getSingleResult(ResetPasswordResponse.class);
+        if (!response.isResultOk()) {
+            if (response.getFieldRequiredJSONException() != null) {
+                // nothing to be done
+            } else if (response.getPasswordLengthInvalidJSONException() != null) {
+                throw new PasswordLengthValidationException();
+            } else if (response.getInvalidPasswordResetKeyJSONException() != null) {
+                throw  new InvalidPasswordResetKeyException();
+            } else if (response.getPasswordResetKeyAlreadyUsedJSONException() != null) {
+                throw new PasswordResetKeyAlreadyUsedException();
+            } else if (response.getPasswordResetKeyExpiredJSONException() != null) {
+                throw new PasswordResetKeyExpiredException();
+            } else if (response.getServiceNotAllowedException() != null) {
+                throw new RuntimeException("Your service is not allowed to access the application-server");
+            } else {
+                throw  new RuntimeException("Something went wrong...");
+            }
         }
     }
 }

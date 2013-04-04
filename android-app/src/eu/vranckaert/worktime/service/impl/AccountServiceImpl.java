@@ -811,7 +811,7 @@ public class AccountServiceImpl implements AccountService {
         SyncHistory ongoingSyncHistory = syncHistoryDao.getOngoingSyncHistory();
         if (ongoingSyncHistory != null) {
             long startTime = ongoingSyncHistory.getStarted().getTime();
-            if (new Date().getTime() - startTime  > 600000) { // Checks for a 10 minute timeout.
+            if (new Date().getTime() - startTime  > 300000) { // Checks for a 5 minute timeout.
                 ongoingSyncHistory.setStatus(SyncHistoryStatus.TIMED_OUT);
                 ongoingSyncHistory.setEnded(new Date());
                 syncHistoryDao.update(ongoingSyncHistory);
@@ -858,6 +858,16 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<SyncHistory> findAllSyncHistories() {
         return syncHistoryDao.findAll();
+    }
+
+    @Override
+    public void resetPasswordRequest(String email) throws GeneralWebException, NoNetworkConnectionException {
+        workTimeWebDao.resetPasswordRequest(email);
+    }
+
+    @Override
+    public void resetPassword(String passwordResetRequestKey, String newPassword) throws PasswordResetKeyExpiredException, InvalidPasswordResetKeyException, PasswordLengthValidationException, GeneralWebException, PasswordResetKeyAlreadyUsedException, NoNetworkConnectionException {
+        workTimeWebDao.resetPassword(passwordResetRequestKey, newPassword);
     }
 
     private void clearUserAppData() {

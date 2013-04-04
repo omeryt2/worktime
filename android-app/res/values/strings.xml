@@ -509,6 +509,7 @@
     <string name="lbl_pref_backup_send_app_chooser_title">Choose application to send backup with</string>
     <string name="pref_backup_restore_doc_title">Backup/Restore documentation</string>
     <string name="pref_backup_restore_doc_summary">Read the backup/restore functionality documentation.</string>
+    <string name="pref_cleanup_corrupt_data_category_title">Cleanup Corrupt Data</string>
     <string name="pref_time_registrations_category_title">Time Registrations</string>
     <string name="pref_time_registrations_sub_category_general_title">General</string>
     <string name="pref_time_registrations_sub_category_punch_in_title">Punch In</string>
@@ -661,12 +662,30 @@
     <string name="lbl_account_login_title">Login</string>
     <string name="lbl_account_login_email_hint">Email</string>
     <string name="lbl_account_login_password_hint">Password</string>
+    <string name="lbl_account_login_link_forgot_password">Forgot your password?</string>
     <string name="lbl_account_login_button_login">Login</string>
     <string name="lbl_account_login_or">OR</string>
     <string name="lbl_account_login_button_register">Create New Account</string>
     <string name="lbl_account_login_error_all_required">Both the email and password need to be provided before you can login!</string>
     <string name="lbl_account_login_error_credential_mismatch">The provided email and/or password are not correct. Make sure you are registered and try again.</string>
     <string name="lbl_account_login_error_invalid_email">The provided email address is not a valid address. Please correct and try again.</string>
+    <!-- PASSWORD RESET REQUEST -->
+    <string name="lbl_account_reset_password_request_title">Forgot Your Password</string>
+    <string name="account_reset_password_request_ab_menu_execute">Request Reset</string>
+    <string name="txt_account_reset_password_request_explanation">Enter the email address below for the account that you have forgotten the password for. An email will then be sent to your account with a link for resetting your password.</string>
+    <string name="lbl_account_reset_password_request_email_hint">Email</string>
+    <string name="lbl_account_reset_password_request_error_email_required">Email is required!</string>
+    <!-- PASSWORD RESET -->
+    <string name="lbl_account_reset_password_title">Reset Password</string>
+    <string name="account_reset_password_ab_menu_execute">Reset</string>
+    <string name="lbl_account_reset_password_new_password_hint">New Password</string>
+    <string name="lbl_account_reset_password_repeat_password_hint">Repeat Password</string>
+    <string name="lbl_account_reset_password_repeat_error_new_password_required">You should enter a password</string>
+    <string name="lbl_account_reset_password_repeat_error_new_password_match_repeat_password">The passwords do not match</string>
+    <string name="lbl_account_change_password_error_invalid_reset_key">The password reset link is invalid!</string>
+    <string name="lbl_account_change_password_error_reset_key_expired">The password reset link has expired! It\'s only valid for 24 hours. Request a new reset if you still cannot login!</string>
+    <string name="lbl_account_change_password_error_reset_key_already_used">The password reset has already been used! Request a new reset if you still cannot login!</string>
+    <string name="lbl_account_change_password_error_password_length_invalid">The password should be at least 6 characters long and maximum 30.</string>
     <!-- REGISTER -->
     <string name="lbl_account_register_title">Create Account</string>
     <string name="lbl_account_register_email_hint">Email</string>

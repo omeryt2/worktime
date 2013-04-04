@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-    >
+              android:layout_height="fill_parent">
 
     <TextView
         android:layout_width="fill_parent"
@@ -22,6 +21,15 @@
               android:id="@+id/account_login_password"
               android:password="true"
               android:inputType="textPassword"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/account_login_forgot_password"
+            android:text="@string/lbl_account_login_link_forgot_password"
+            android:layout_gravity="right"
+            android:clickable="true"
+            android:textColorHighlight="@color/grey"
+            android:singleLine="true"/>
     <Button android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/account_login_button"

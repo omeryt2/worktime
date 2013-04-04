@@ -55,6 +55,7 @@ public class AccountLoginActivity extends ActionBarGuiceActivity {
 
     @InjectView(R.id.account_login_button) private Button loginButton;
     @InjectView(R.id.account_login_register_button) private Button registerButton;
+    @InjectView(R.id.account_login_forgot_password) private View forgotPassword;
     @InjectView(R.id.account_login_email) private EditText emailInput;
     @InjectView(R.id.account_login_password) private EditText passwordInput;
     @InjectView(R.id.account_login_error) private TextView errorTextView;
@@ -101,6 +102,14 @@ public class AccountLoginActivity extends ActionBarGuiceActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(AccountLoginActivity.this, AccountRegisterActivity.class);
                 startActivityForResult(intent, Constants.IntentRequestCodes.ACCOUNT_REGISTER);
+            }
+        });
+
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AccountLoginActivity.this, AccountResetPasswordRequestActivity.class);
+                startActivity(intent);
             }
         });
     }

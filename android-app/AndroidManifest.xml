@@ -185,6 +185,9 @@
         <activity android:name=".activities.preferences.ResetPreferencesActivity"
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <activity android:name=".activities.preferences.CleanupCorruptDataPreferencesActivity"
+                  android:theme="@style/Theme.Translucent"
+                  android:configChanges="orientation|keyboardHidden|screenSize"/>
 
         <!-- Account activities -->
         <activity android:name=".activities.account.AccountProfileActivity"
@@ -204,6 +207,19 @@
         <activity android:name=".utils.view.actionbar.synclock.SyncLockingActivity"
                   android:theme="@style/AppTheme"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <activity android:name=".activities.account.AccountResetPasswordRequestActivity"
+                  android:theme="@style/AppTheme"
+                  android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <activity android:name=".activities.account.AccountResetPasswordActivity"
+                  android:theme="@style/AppTheme"
+                  android:configChanges="orientation|keyboardHidden|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE"></category>
+                <data android:scheme="https" android:host="worktime-web.appspot.com" android:pathPrefix="/resetPassword"/>
+            </intent-filter>
+        </activity>
 
         <!-- Widget activities -->
         <!-- Configuration -->

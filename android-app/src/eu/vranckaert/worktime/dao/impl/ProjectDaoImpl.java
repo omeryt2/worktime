@@ -89,7 +89,7 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
         List<Project> projects = null;
         QueryBuilder<Project, Integer> qb = dao.queryBuilder();
         try {
-            qb.where().eq("name", projectName);
+            qb.where().eq("name", new SelectArg(projectName));
             PreparedQuery<Project> pq = qb.prepare();
             projects = dao.query(pq);
         } catch (SQLException e) {
@@ -151,7 +151,7 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
 
         QueryBuilder<Project, Integer> qb = dao.queryBuilder();
         try {
-            qb.where().eq("name", name);
+            qb.where().eq("name", new SelectArg(name));
             PreparedQuery<Project> pq = qb.prepare();
             projects = dao.query(pq);
         } catch (SQLException e) {

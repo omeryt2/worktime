@@ -127,4 +127,30 @@ public interface WorkTimeWebDao extends JsonWebService {
      * @param user The logged in user.
      */
     void logout(User user);
+
+    /**
+     * Request a reset of the password for a certain user account.
+     * @param email The email address for which the reset request should be made. If the password is not know no error
+     *              will be returned.
+     * @throws NoNetworkConnectionException Throw if no network connection is available when making the call to the
+     * remote server.
+     * @throws GeneralWebException Thrown if anything goes wrong while calling the remote server or if anything went
+     * wrong on the server internally during the call.
+     */
+    void resetPasswordRequest(String email) throws NoNetworkConnectionException, GeneralWebException;
+
+    /**
+     * Reset the password based on a unique password reset key.
+     * @param passwordResetRequestKey The password reset key.
+     * @param newPassword             The new password.
+     * @throws NoNetworkConnectionException Throw if no network connection is available when making the call to the
+     * remote server.
+     * @throws GeneralWebException Thrown if anything goes wrong while calling the remote server or if anything went
+     * wrong on the server internally during the call.
+     * @throws PasswordLengthValidationException Thrown if the password length is invalid (< 6 or > 30 chars).
+     * @throws InvalidPasswordResetKeyException Thrown if the password reset key is invalid.
+     * @throws PasswordResetKeyAlreadyUsedException Thrown if the password reset key is already  used before.
+     * @throws PasswordResetKeyExpiredException Throw if the password reset key has expired (> 24 hours).
+     */
+    void resetPassword(String passwordResetRequestKey, String newPassword) throws NoNetworkConnectionException, GeneralWebException, PasswordLengthValidationException, InvalidPasswordResetKeyException, PasswordResetKeyAlreadyUsedException, PasswordResetKeyExpiredException;
 }

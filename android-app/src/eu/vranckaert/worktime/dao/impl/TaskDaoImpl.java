@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.stmt.Where;
 import eu.vranckaert.worktime.dao.SyncRemovalCacheDao;
 import eu.vranckaert.worktime.dao.TaskDao;
@@ -138,10 +139,9 @@ public class TaskDaoImpl extends GenericDaoImpl<Task, Integer> implements TaskDa
     @Override
     public Task findByName(String name, Project project) {
         List<Task> tasks = null;
-
         QueryBuilder<Task, Integer> qb = dao.queryBuilder();
         try {
-            qb.where().eq("name", name).and().eq("projectId", project.getId());
+            qb.where().eq("name", new SelectArg(name)).and().eq("projectId", project.getId());
             PreparedQuery<Task> pq = qb.prepare();
             tasks = dao.query(pq);
         } catch (SQLException e) {
