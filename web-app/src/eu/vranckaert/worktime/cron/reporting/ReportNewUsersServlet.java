@@ -82,7 +82,11 @@ public class ReportNewUsersServlet extends HttpServlet {
 		
 		
 		List<User> recipients = new ArrayList<User>();
-		recipients.add(userService.findUser("dirkvranckaert@gmail.com"));
+		User user = new User();
+		user.setEmail("dirkvranckaert@gmail.com");
+		user.setFirstName("Dirk");
+		user.setLastName("Vranckaert");
+		recipients.add(user);
 		EmailUtil.sendEmail("WorkTime Reporting - Users/New Users", body, "text/html", recipients);
 	}
 }

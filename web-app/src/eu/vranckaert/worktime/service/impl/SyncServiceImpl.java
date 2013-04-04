@@ -21,6 +21,7 @@ import eu.vranckaert.worktime.dao.SyncHistoryDao;
 import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
 import eu.vranckaert.worktime.exception.CorruptDataException;
+import eu.vranckaert.worktime.exception.NumberOfEntitiesSyncedExceededException;
 import eu.vranckaert.worktime.exception.SynchronisationLockedException;
 import eu.vranckaert.worktime.exception.SyncronisationFailedException;
 import eu.vranckaert.worktime.model.Project;
@@ -108,6 +109,14 @@ public class SyncServiceImpl implements SyncService {
 		if (isSyncingTooLong(startTime)) {
 			syncInterrupted = true;
 			throw new DeadlineExceededException("The custom deadline of 20 seconds has been exceeded!");
+		}
+	}
+	
+	private void checkNumberOfEntitiesSynced(int projectsSynced, int tasksSynced, int timeRegistrationsSynced) throws NumberOfEntitiesSyncedExceededException {
+		int limit = 50;
+		if (projectsSynced + tasksSynced + timeRegistrationsSynced > limit) {
+			syncInterrupted = true;
+			throw new NumberOfEntitiesSyncedExceededException("The maximum of " + limit + " entities at a time to be synced is reached!");
 		}
 	}
 	
@@ -239,6 +248,7 @@ public class SyncServiceImpl implements SyncService {
 			log.info("Starting to synchronize projects for user " + user.getEmail());
 			for (Project project : projects) {
 				checkSyncDuration(syncStartTime);
+				checkNumberOfEntitiesSynced(projectsSynced, tasksSynced, timeRegistrationsSynced);
 				
 				ProjectSyncResult result = syncProject(project, user, conflictConfiguration);
 				if (result.getResolution() != EntitySyncResolution.NO_ACTION)
@@ -251,6 +261,7 @@ public class SyncServiceImpl implements SyncService {
 			log.info("Starting to synchronize tasks for user " + user.getEmail());
 			for (Task task : tasks) {
 				checkSyncDuration(syncStartTime);
+				checkNumberOfEntitiesSynced(projectsSynced, tasksSynced, timeRegistrationsSynced);
 				
 				Project projectForTask = projectDao.find(task.getProject().getName(), user);
 				TaskSyncResult result = syncTask(task, projectForTask, user, conflictConfiguration);
@@ -261,6 +272,7 @@ public class SyncServiceImpl implements SyncService {
 			log.info(tasksSynced + " tasks have been synced for user " + user.getEmail());
 			
 			checkSyncDuration(syncStartTime);
+			checkNumberOfEntitiesSynced(projectsSynced, tasksSynced, timeRegistrationsSynced);
 			
 			// First check if an ongoing time registration can be found on the server and sync the according incoming entity
 			log.info("Starting to synchronize ongoing time registration (if any) for user " + user.getEmail());
@@ -299,11 +311,13 @@ public class SyncServiceImpl implements SyncService {
 			}
 
 			checkSyncDuration(syncStartTime);
+			checkNumberOfEntitiesSynced(projectsSynced, tasksSynced, timeRegistrationsSynced);
 			
 			// Sync all time registrations
 			log.info("Starting to synchronize time registrations for user " + user.getEmail());
 			for (TimeRegistration timeRegistration : incomingTimeRegistrations) {
 				checkSyncDuration(syncStartTime);
+				checkNumberOfEntitiesSynced(projectsSynced, tasksSynced, timeRegistrationsSynced);
 				
 				Project projectForTr = projectDao.find(timeRegistration.getTask().getProject().getName(), user);
 				Task taskForTr = taskDao.find(timeRegistration.getTask().getName(), projectForTr);
@@ -318,6 +332,11 @@ public class SyncServiceImpl implements SyncService {
 				tx.commit();
 		} catch (DeadlineExceededException e) {
 			log.info("Timeout occured... Comitting transaction and returning result. Message is: " + e.getMessage());
+			if (tx != null && tx.isActive()) {
+				tx.commit();
+			}
+		} catch (NumberOfEntitiesSyncedExceededException e) {
+			log.info("Number of entities exceeded. Message is: " + e.getMessage());
 			if (tx != null && tx.isActive()) {
 				tx.commit();
 			}
