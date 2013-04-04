@@ -113,8 +113,8 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
         //Category BACKUP AND RESTORE
         createCategoryButton(ctx, preferences, R.string.pref_backup_category_title, BackupPreferencesActivity.class);
 
-        //Category CLEAN UP CORRUPT DATA
-        createCategoryButton(ctx, preferences, R.string.pref_cleanup_corrupt_data_category_title, CleanupCorruptDataPreferencesActivity.class);
+//        //Category CLEAN UP CORRUPT DATA
+//        createCategoryButton(ctx, preferences, R.string.pref_cleanup_corrupt_data_category_title, CleanupCorruptDataPreferencesActivity.class);
 
         //Category RESET APPLICATION
         Preference resetAppItem = new Preference(ctx);
