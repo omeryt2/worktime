@@ -316,11 +316,18 @@ public class SyncServiceImpl implements SyncService {
 			// Sync all time registrations
 			log.info("Starting to synchronize time registrations for user " + user.getEmail());
 			for (TimeRegistration timeRegistration : incomingTimeRegistrations) {
+				log.info("Tyring to sync time registration with task " + timeRegistration.getTask().getName());
+				log.info("Trying to sync time registration with project " + timeRegistration.getTask().getProject().getName());
+				
 				checkSyncDuration(syncStartTime);
 				checkNumberOfEntitiesSynced(projectsSynced, tasksSynced, timeRegistrationsSynced);
 				
 				Project projectForTr = projectDao.find(timeRegistration.getTask().getProject().getName(), user);
+				if (projectForTr==null)
+					log.warning("No project found in database for this time registration!");
 				Task taskForTr = taskDao.find(timeRegistration.getTask().getName(), projectForTr);
+				if (taskForTr==null)
+					log.warning("No task found in database for this time registration!");
 				TimeRegistrationSyncResult result = syncTimeRegistration(timeRegistration, taskForTr, user, conflictConfiguration);
 				if (result.getResolution() != EntitySyncResolution.NO_ACTION)
 					timeRegistrationsSynced++;
@@ -341,9 +348,9 @@ public class SyncServiceImpl implements SyncService {
 				tx.commit();
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			log.info("Exception occured during sycnhronisation for user " + user.getEmail() + ". Exception " + e.getClass().getName() + " message is: " + e.getMessage());
 			log.throwing(SyncServiceImpl.class.getSimpleName(), "sync", e);
-			e.printStackTrace();
 		} finally {
 			if (tx != null && tx.isActive()) {
 				tx.rollback();

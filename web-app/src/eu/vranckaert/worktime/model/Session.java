@@ -1,5 +1,6 @@
 package eu.vranckaert.worktime.model;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import com.google.appengine.api.datastore.Key;
@@ -14,14 +15,18 @@ public class Session {
 	private String sessionKey;
 	private Date creationDate;
 	private int timesUsed;
+	private Date lastTimeUsed;
+	private Platform platform;
 	
 	public Session() {}
 	
-	public Session(String sessionKey, User user) {
+	public Session(String sessionKey, User user, Platform platform) {
 		this.creationDate = new Date();
 		this.sessionKey = sessionKey;
 		this.user = user;
 		this.timesUsed = 1;
+		this.lastTimeUsed = new Date();
+		this.platform = platform;
 	}
 
 	public Key getKey() {
@@ -64,6 +69,28 @@ public class Session {
 		this.timesUsed = timesUsed;
 	}
 
+	public Date getLastTimeUsed() {
+		return lastTimeUsed;
+	}
+
+	public void setLastTimeUsed(Date lastTimeUsed) {
+		this.lastTimeUsed = lastTimeUsed;
+	}
+
+	public Platform getPlatform() {
+		if (platform == null) {
+			platform = Platform.OTHER;
+		}
+		return platform;
+	}
+
+	public void setPlatform(Platform platform) {
+		if (platform == null) {
+			platform = Platform.OTHER;
+		}
+		this.platform = platform;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -94,5 +121,28 @@ public class Session {
 		} else if (!user.equals(other.user))
 			return false;
 		return true;
+	}
+	
+	public enum Platform {
+		WEB, OTHER;
+	}
+
+	public boolean isExpired() {
+		switch (getPlatform()) {
+		case WEB:
+			Date now = new Date();
+			Calendar expirationDate = Calendar.getInstance();
+			if (lastTimeUsed != null)
+				expirationDate.setTime(lastTimeUsed);
+			else
+				expirationDate.setTime(creationDate);
+			expirationDate.add(Calendar.HOUR_OF_DAY, 24);
+			if (expirationDate.getTime().before(now)) {
+				return true;
+			}
+			break;
+		}
+		
+		return false;
 	}
 }

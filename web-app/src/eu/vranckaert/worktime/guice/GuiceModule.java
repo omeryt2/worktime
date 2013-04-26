@@ -8,6 +8,7 @@ import com.google.code.twig.annotation.AnnotationObjectDatastore;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.google.inject.Singleton;
+import com.google.inject.matcher.Matchers;
 import com.google.inject.servlet.RequestScoped;
 
 import eu.vranckaert.worktime.cron.reporting.ReportNewUsersServlet;

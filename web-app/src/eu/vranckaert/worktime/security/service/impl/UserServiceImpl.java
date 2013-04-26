@@ -1,6 +1,7 @@
 package eu.vranckaert.worktime.security.service.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -26,6 +27,7 @@ import com.google.inject.Provider;
 import eu.vranckaert.worktime.model.PasswordResetRequest;
 import eu.vranckaert.worktime.model.Role;
 import eu.vranckaert.worktime.model.Session;
+import eu.vranckaert.worktime.model.Session.Platform;
 import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.security.dao.PasswordResetRequestDao;
 import eu.vranckaert.worktime.security.dao.SessionDao;
@@ -40,6 +42,7 @@ import eu.vranckaert.worktime.security.exception.UserNotFoundException;
 import eu.vranckaert.worktime.security.service.UserService;
 import eu.vranckaert.worktime.security.utils.KeyGenerator;
 import eu.vranckaert.worktime.security.utils.Password;
+import eu.vranckaert.worktime.util.EmailUtil;
 
 public class UserServiceImpl implements UserService {
 	private static final Logger log = Logger.getLogger(UserService.class.getName());
@@ -54,7 +57,9 @@ public class UserServiceImpl implements UserService {
 	private Provider<ObjectDatastore> datastores;
 
 	@Override
-	public String register(User user, String password) throws EmailAlreadyInUseException, PasswordLenghtInvalidException {		
+	public String register(User user, String password, Platform platform) throws EmailAlreadyInUseException, PasswordLenghtInvalidException {
+		user.setEmail(user.getEmail().toLowerCase());
+		
 		// Check for duplicate users (email address should be unique!)
 		if (userDao.isEmailAlreadyInUse(user.getEmail())) {
 			throw new EmailAlreadyInUseException();
@@ -67,7 +72,7 @@ public class UserServiceImpl implements UserService {
 		
 		// Generate a session key (for immediate login)
 		String sessionKey = KeyGenerator.getNewKey();
-		user.addSessionKey(sessionKey);
+		user.addSessionKey(sessionKey, platform);
 		
 		// Set date fields
 		user.setRegistrationDate(new Date());
@@ -80,8 +85,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String login(String email, String password) 
+	public String login(String email, String password, Platform platform) 
 			throws UserNotFoundException, PasswordIncorrectException {
+		email = email.toLowerCase();
+		
 		// Retrieve the user
 		User user = userDao.findById(email);
 		if (user == null) {
@@ -95,7 +102,7 @@ public class UserServiceImpl implements UserService {
 			throw new PasswordIncorrectException();
 		} else {
 			String sessionKey = KeyGenerator.getNewKey();
-			user.addSessionKey(sessionKey);
+			user.addSessionKey(sessionKey, platform);
 			
 			// Update last login date
 			user.setLastLoginDate(new Date());
@@ -107,7 +114,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public String changePassword(String email, String oldPassword, String newPassword) 
+	public String changePassword(String email, String oldPassword, String newPassword, Platform platform) 
 			throws UserNotFoundException, PasswordIncorrectException {
 		// Retrieve the user
 		User user = userDao.findById(email);
@@ -127,7 +134,7 @@ public class UserServiceImpl implements UserService {
 			sessionDao.removeAllSessions(user);
 			user.getSessions().clear();
 			
-			user.addSessionKey(sessionKey);
+			user.addSessionKey(sessionKey, platform);
 			userDao.update(user);
 			
 			return sessionKey;
@@ -160,6 +167,11 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		if (session != null) {
+			if (session.isExpired()) {
+				logout(email,  sessionKey);
+				return false;
+			}
+			
 			return true;
 		}
 		
@@ -182,6 +194,7 @@ public class UserServiceImpl implements UserService {
 		}
 		if (session != null) {
 			session.setTimesUsed(session.getTimesUsed() + 1);
+			session.setLastTimeUsed(new Date());
 			sessionDao.update(session);
 		}
 	}
@@ -189,6 +202,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User findUser(String email) {
 		User user = userDao.findById(email);
+		User clonedUser = user.clone();		
 		return user;
 	}
 
@@ -217,31 +231,7 @@ public class UserServiceImpl implements UserService {
 				String resetUrl = "https://worktime-web.appspot.com/resetPassword/" + resetRequestKey;			
 				String htmlBody = "<html><body><p>Dear WorkTime user,</p><p>You have requested a password reset for your online account.<br/>To reset your password follow this link: <a href=\"" + resetUrl + "\">" + resetUrl + "</a></p><p>If you cannot open the previous link then manually copy and paste the following url in your favorite browser:<br/>" + resetUrl + "</p><p>This password reset email is only valid for the next 24 hours. Afterwards this email will be unusable!</p>Kind Regards,<br/><br/>The WorkTime team!</body></html>";
 				
-				try {
-					Multipart mp = new MimeMultipart();
-					MimeBodyPart htmlPart = new MimeBodyPart();
-					htmlPart.setContent(htmlBody, "text/html");
-					mp.addBodyPart(htmlPart);
-					
-					Properties props = new Properties();
-					javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, null);
-					Message msg = new MimeMessage(session);
-					msg.setContent(mp);
-					msg.setFrom(new InternetAddress("no-reply@worktime-web.appspotmail.com", "WorkTime"));
-		            msg.addRecipient(Message.RecipientType.TO,
-		                             new InternetAddress(user.getEmail(), user.getLastName() + " " + user.getFirstName()));
-		            msg.setSubject("WorkTime Password Reset");
-		            Transport.send(msg);
-		            
-		            if (tx != null)
-		            	tx.commit();
-				} catch (AddressException e) {
-					log.warning("Could not send 'reset password' email to " + email + " because of an address exception...");
-				} catch (MessagingException e) {
-					log.warning("Could not send 'reset password' email to " + email + " because of a messaging exception...");
-				} catch (UnsupportedEncodingException e) {
-					log.warning("Could not send 'reset password' email to " + email + " because of an unsupported encoding exception...");
-				}
+				EmailUtil.sendEmail("WorkTime Password Reset", htmlBody, "text/html", Arrays.asList(new User[] {user}));
 			} finally {
 				if (tx != null && tx.isActive()) {
 					tx.rollback();
@@ -309,5 +299,15 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> findAll() {
 		return userDao.findAll();
+	}
+
+	@Override
+	public void update(User user) {
+		User originalUser = userDao.findById(user.getEmail());
+		originalUser.setEmail(user.getEmail().toLowerCase());
+		originalUser.setFirstName(user.getFirstName());
+		originalUser.setLastName(user.getLastName());
+		originalUser.setProfileImageUrl(user.getProfileImageUrl());
+		userDao.update(originalUser);
 	}
 }

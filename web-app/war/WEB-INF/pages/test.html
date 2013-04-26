@@ -1,0 +1,169 @@
+<html>
+	<head>
+		<!-- CSS -->
+		<link rel="stylesheet" type="text/css" href="/webapp/stylesheet/jMenu.jquery.css">
+		<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css">
+		<link rel="stylesheet" type="text/css" href="/webapp/stylesheet/base.css">
+		
+		<!-- JS Imports -->
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+		<script src="/webapp/js/jMenu.jquery.js"></script>
+		
+		<!-- JS -->
+		<script type="text/javascript" src="/webapp/js/app.js"></script>
+		<script type="text/javascript">
+			APP.constants.sessionKey='${loggedInSessionKey}';
+			APP.constants.user='${loggedInUser}';
+			
+			$(document).ready(function() {
+				APP.renderMenu();
+			});
+		</script>
+		<title>${title}</title>
+	</head>
+	<body>
+		<div id="dialog-logout-confirmation" title="Logout?">
+		  <p>
+		  	Are you sure you want to logout?
+		  </p>
+		</div>
+	
+		<div class="bodyFooter">
+			<div class="headerFullScreenContainer">
+				<div class="content">
+					@ShowIf(!isHomePage)
+					<div class="clickableLogo">
+						<a href="/">
+							<img src="/webapp/img/logo.png" class="logo"/>
+						</a>
+					</div>
+					@ShowIf(isHomePage)
+					<div class="nonClickableLogo">
+						<img src="/webapp/img/logo.png" class="logo"/>
+					</div>
+					
+					<div class="title">${messages.title()}</div>
+					
+					@ShowIf(showUserHeader)
+					<div class="userArea">
+						@ShowIf(!loggedIn)
+						<div style="text-align:right;">
+							<div>${messages.generalCurrentlyNotLoggedIn()}</div>
+							<div><a href="/user/login">${messages.generalLogin()}</a> ${messages.generalOr()} <a href="/user/register">${messages.generalRegister()}</a></div>
+						</div>
+						
+						@ShowIf(loggedIn)
+						<div style="text-align:right;">
+							<a href="/user/profile">
+								@ShowIf(user.profileImageUrl != null && user.profileImageUrl.length() > 0)
+								<img src="${user.profileImageUrl}" style="width: 40px; height: 40px; float:left;"/>
+								@ShowIf(user.profileImageUrl == null || user.profileImageUrl.length() == 0)
+								<img src="/webapp/img/no-avatar.png" style="width: 40px; height: 40px; float:left;"/>
+							</a>
+							<div style="text-align: left; padding-left: 50px;">${messages.generalWelcome(user.fullName)}</div>
+							<div style="text-align: left; padding-left: 50px;">No ongoing time registrations</div>
+						</div>
+					</div>					
+				</div>
+			</div>
+			@ShowIf(loggedIn)
+			<div class="headerFullScreenContainer menu">
+				<div class="content">
+					<ul id="jMenu">
+						<li style="border-right: 1px solid rgb(182, 182, 182);">
+							<a class="fNiv">Projects & Tasks</a>
+							<ul>
+								<li class="arrow"></li>
+								<li><a>Manage Projects</a></li>
+								<li><a>Manage Tasks</a></li>
+							</ul>
+						</li>
+						<li style="border-right: 1px solid rgb(182, 182, 182);">
+							<a class="fNiv">Time Registrations</a>
+						</li>
+						<li>
+							<a class="fNiv">Account</a>
+							<ul>
+								<li class="arrow"></li>
+								<li><a href="/user/profile">Profile</a></li>
+<!-- 								<form name="logoutForm" action="/user/logout" method="POST"> -->
+								<li><a href="javascript:APP.logoutConfirmation()">${messages.generalLogout()}</a></li>
+<!-- 								</form>								 -->
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="body">
+				<div class="content">
+					@ShowIf(pageTitle != null)
+					<div class="pageTitle">
+						${pageTitle}
+					</div>
+				
+						@ShowIf(infoMessages != null && !infoMessages.isEmpty())
+						<div>
+							<div class="messages">
+								@Repeat(items=infoMessages, var="message")
+								<div class="info">
+									<div class="messageIcon"><img src="/webapp/img/info.png"/></div>
+									<div class="messageText">${message}</div>
+								</div>
+							</div>
+						</div>
+						
+						@ShowIf(validationMessages != null && !validationMessages.isEmpty())
+						<div>
+							<div class="messages">
+								@Repeat(items=validationMessages, var="message")
+								<div class="validation">
+									<div class="messageIcon"><img src="/webapp/img/warning.png"/></div>
+									<div class="messageText">${message}</div>
+								</div>
+							</div>
+						</div>
+						
+						@ShowIf(warningMessages != null && !warningMessages.isEmpty())
+						<div>
+							<div class="messages">
+								@Repeat(items=warningMessages, var="message")
+								<div class="warning">
+									<div class="messageIcon"><img src="/webapp/img/warning.png"/></div>
+									<div class="messageText">${message}</div>
+								</div>
+							</div>
+						</div>
+						
+						@ShowIf(errorMessages != null && !errorMessages.isEmpty())
+						<div>
+							<div class="messages">
+								@Repeat(items=errorMessages, var="message")
+								<div class="error">
+									<div class="messageIcon"><img src="/webapp/img/error.png"/></div>
+									<div class="messageText">${message}</div>
+								</div>
+							</div>
+						</div>
+						
+					
+					<div class="page">
+						@Decorated
+						<div/>
+					</div>
+				</div>
+			</div>
+			<footer>
+				<div class="content">
+					<div class="menu">
+						<a href="/terms-of-service">Terms of Service</a> | <a href="/privacy">Privacy Policy</a> | <a href="/contact">Contact</a> | <a href="/contact?reason=BUG_REPORT">Report a Bug</a>
+					</div>
+					<div class="copyright">
+						&copy; Dirk Vranckaert - ${copyrightYear}
+					</div>
+				</div>
+			</footer>
+		</div>
+	</body>
+</html>

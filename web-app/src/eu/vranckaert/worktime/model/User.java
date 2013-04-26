@@ -9,8 +9,10 @@ import com.google.code.twig.annotation.Child;
 import com.google.code.twig.annotation.Entity;
 import com.google.code.twig.annotation.Id;
 
+import eu.vranckaert.worktime.model.Session.Platform;
+
 @Entity(kind="user")
-public class User {
+public class User implements Cloneable {
 	@Id private String email;
 	private String passwordHash;
 	private String lastName;
@@ -18,6 +20,8 @@ public class User {
 	private Date registrationDate;
 	private Date lastLoginDate;
 	private Role role = Role.USER;
+	
+	private String profileImageUrl;
 	
 	@Activate @Child private List<Session> sessions;
 	
@@ -76,6 +80,14 @@ public class User {
 	public void setRole(Role role) {
 		this.role = role;
 	}
+
+	public String getProfileImageUrl() {
+		return profileImageUrl;
+	}
+
+	public void setProfileImageUrl(String profileImageUrl) {
+		this.profileImageUrl = profileImageUrl;
+	}
 	
 	public List<Session> getSessions() {
 		return sessions;
@@ -90,12 +102,12 @@ public class User {
 	 * key. The session will be persisted when the user is persisted/updated. 
 	 * @param sessionKey The session key.
 	 */
-	public void addSessionKey(String sessionKey) {
+	public void addSessionKey(String sessionKey, Platform platform) {
 		if (sessions == null) {
 			sessions = new ArrayList<Session>();
 		}
 		
-		Session session = new Session(sessionKey, this);
+		Session session = new Session(sessionKey, this, platform);
 		sessions.add(session);
 	}
 
@@ -121,6 +133,10 @@ public class User {
 			sessions.remove(sessionForRemoval);
 		}
 	}
+	
+	public String getFullName() {
+		return firstName + " " + lastName;
+	}
 
 	@Override
 	public int hashCode() {
@@ -145,5 +161,25 @@ public class User {
 		} else if (!email.equals(other.email))
 			return false;
 		return true;
+	}
+
+	@Override
+	public User clone() {
+		User user = new User();
+		user.setEmail(getEmail());
+		user.setFirstName(getFirstName());
+		user.setLastName(getLastName());
+		user.setLastLoginDate(getLastLoginDate());
+		user.setRegistrationDate(getRegistrationDate());
+		user.setRole(getRole());
+		return user;
+	}
+	
+	public static User getTechnicalUser() {
+		User from = new User();
+		from.setEmail("no-reply@worktime-web.appspotmail.com");
+		from.setFirstName("Work");
+		from.setLastName("Time");
+		return from;
 	}
 }

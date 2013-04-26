@@ -6,6 +6,7 @@ import java.util.List;
 import eu.vranckaert.worktime.model.PasswordResetRequest;
 import eu.vranckaert.worktime.model.Role;
 import eu.vranckaert.worktime.model.Session;
+import eu.vranckaert.worktime.model.Session.Platform;
 import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.security.exception.EmailAlreadyInUseException;
 import eu.vranckaert.worktime.security.exception.InvalidPasswordResetKeyException;
@@ -24,6 +25,7 @@ public interface UserService {
 	 * Register a new user in the system.
 	 * @param user The user to be registered in the system.
 	 * @param password The password in plain text.
+	 * @param platform The {@link Platform} for which this action is taken.
 	 * @return Returns the session key for this user if registration is 
 	 * successful.
 	 * @throws EmailAlreadyInUseException Thrown if there is already a user in 
@@ -31,18 +33,19 @@ public interface UserService {
 	 * @throws PasswordLenghtInvalidException If the lenght of the password is
 	 * invalid. Minimum should be 6 characters, maximum is 30 characters.
 	 */
-	String register(User user, String password) throws EmailAlreadyInUseException, PasswordLenghtInvalidException;
+	String register(User user, String password, Platform platform) throws EmailAlreadyInUseException, PasswordLenghtInvalidException;
 	
 	/**
 	 * Try to login a user with a specific email address and password.
 	 * @param email The email.
 	 * @param password The password in plain text.
+	 * @param platform The {@link Platform} for which this action is taken.
 	 * @return The session key for the logged in user.
 	 * @throws UserNotFoundException The user is not found based on the provided
 	 * email address.
 	 * @throws PasswordIncorrectException The password did not match the user.
 	 */
-	String login(String email, String password) throws UserNotFoundException, PasswordIncorrectException;
+	String login(String email, String password, Platform platform) throws UserNotFoundException, PasswordIncorrectException;
 	
 	/**
 	 * Change the password of a certain account to a new password. If password 
@@ -51,12 +54,13 @@ public interface UserService {
 	 * @param email The email of the account to reset.
 	 * @param oldPassword The old password.
 	 * @param newPassword The new password.
+	 * @param platform The {@link Platform} for which this action is taken.
 	 * @return The new generated session key.
 	 * @throws UserNotFoundException The user is not found based on the provided
 	 * email address.
 	 * @throws PasswordIncorrectException The password did not match the user.
 	 */
-	String changePassword(String email, String oldPassword, String newPassword) throws UserNotFoundException, PasswordIncorrectException;
+	String changePassword(String email, String oldPassword, String newPassword, Platform platform) throws UserNotFoundException, PasswordIncorrectException;
 
 	/**
 	 * Checks if a certain user is logged in based on it's sessionKey.
@@ -144,4 +148,10 @@ public interface UserService {
 	 * @return The list of {@link User}s.
 	 */
 	List<User> findAll();
+	
+	/**
+	 * Update a user.
+	 * @param user The {@link User} with some modified fields to be updated.
+	 */
+	void update(User user);
 }

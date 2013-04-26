@@ -3,6 +3,8 @@ package eu.vranckaert.worktime.security.dao.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.appengine.api.datastore.Query.FilterOperator;
 
 import eu.vranckaert.worktime.dao.impl.BaseDaoImpl;
@@ -14,6 +16,15 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao {
 
 	public UserDaoImpl() {
 		super(User.class);
+	}
+
+	@Override
+	public User update(User instance) {
+		if (StringUtils.isBlank(instance.getPasswordHash())) {
+			User oldData = super.findById(instance.getEmail());
+			instance.setPasswordHash(oldData.getPasswordHash());
+		}
+		return super.update(instance);
 	}
 
 	@Override

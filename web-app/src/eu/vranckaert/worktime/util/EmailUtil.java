@@ -21,7 +21,11 @@ import eu.vranckaert.worktime.model.User;
 public class EmailUtil {
 	private static final Logger log = Logger.getLogger(ReportNewUsersServlet.class.getName());
 	
-	public static final void sendEmail(String subject, Object body, String bodyType, List<User> recipients) {
+	public static final void sendEmail(String subject, Object body, String bodyType, List<User> recipients) {		
+		sendEmail(subject, body, bodyType, User.getTechnicalUser(), recipients);
+	}
+	
+	public static final void sendEmail(String subject, Object body, String bodyType, User from, List<User> recipients) {
 		try {
 			Multipart mp = new MimeMultipart();
 			MimeBodyPart htmlPart = new MimeBodyPart();
@@ -32,7 +36,7 @@ public class EmailUtil {
 			javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, null);
 			Message msg = new MimeMessage(session);
 			msg.setContent(mp);
-			msg.setFrom(new InternetAddress("no-reply@worktime-web.appspotmail.com", "WorkTime"));
+			msg.setFrom(new InternetAddress(from.getEmail(), from.getFirstName() + " " + from.getLastName()));
 			for (User recipient : recipients) {
 				msg.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient.getEmail(), recipient.getFirstName() + " " + recipient.getLastName()));
 			}

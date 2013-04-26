@@ -6,13 +6,13 @@ import com.google.sitebricks.rendering.Decorated;
 
 import eu.vranckaert.worktime.view.BaseView;
 
-@At(HomeView.PAGE_URL)
-@Show("/WEB-INF/pages/home.jsp")
+@At(PrivacyView.PAGE_URL)
+@Show("/WEB-INF/pages/privacy.jsp")
 //@Decorated
-public class HomeView extends BaseView {
-	public static final String PAGE_URL = "/";
-	
-	private String test = "TEST";
+public class PrivacyView extends BaseView {
+public static final String PAGE_URL = "/privacy";
+
+	private String website = "http://worktime-web.appspot.com";
 
 	@Override
 	protected void fetchUrlParameters(String... urlParameters) {}
@@ -29,14 +29,10 @@ public class HomeView extends BaseView {
 
 	@Override
 	public String getPageTitle() {
-		return null;
+		return getMessage("privacyPolicy.title");
 	}
 
-	public String getTest() {
-		return test;
-	}
-
-	public void setTest(String test) {
-		this.test = test;
+	public String getWebsite() {
+		return website;
 	}
 }

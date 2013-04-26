@@ -40,6 +40,7 @@ import eu.vranckaert.worktime.json.response.user.ResetPasswordResponse;
 import eu.vranckaert.worktime.json.response.user.UserProfileResponse;
 import eu.vranckaert.worktime.model.Role;
 import eu.vranckaert.worktime.model.User;
+import eu.vranckaert.worktime.model.Session.Platform;
 import eu.vranckaert.worktime.security.exception.EmailAlreadyInUseException;
 import eu.vranckaert.worktime.security.exception.InvalidPasswordResetKeyException;
 import eu.vranckaert.worktime.security.exception.PasswordIncorrectException;
@@ -102,7 +103,7 @@ public class UserEndpoint implements UserEndPointInterface {
 		user.setLastName(request.getLastName());
 				
 		try {
-			String sessionKey = userService.register(user, request.getPassword());
+			String sessionKey = userService.register(user, request.getPassword(), Platform.OTHER);
 			response.setSessionKey(sessionKey);
 			return response;
 		} catch (EmailAlreadyInUseException e) {
@@ -131,7 +132,7 @@ public class UserEndpoint implements UserEndPointInterface {
 		}
 		
 		try {
-			String sessionKey = userService.login(request.getEmail(), request.getPassword());
+			String sessionKey = userService.login(request.getEmail(), request.getPassword(), Platform.OTHER);
 			response.setSessionKey(sessionKey);
 			return response;
 		} catch (UserNotFoundException e) {
@@ -164,7 +165,7 @@ public class UserEndpoint implements UserEndPointInterface {
 		}
 		
 		try {
-			String sessionKey = userService.changePassword(request.getEmail(), request.getOldPassword(), request.getNewPassword());
+			String sessionKey = userService.changePassword(request.getEmail(), request.getOldPassword(), request.getNewPassword(), Platform.OTHER);
 			response.setSessionKey(sessionKey);
 			return response;
 		} catch (UserNotFoundException e) {
