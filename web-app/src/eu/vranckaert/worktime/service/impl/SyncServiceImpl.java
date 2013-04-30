@@ -277,10 +277,15 @@ public class SyncServiceImpl implements SyncService {
 			// First check if an ongoing time registration can be found on the server and sync the according incoming entity
 			log.info("Starting to synchronize ongoing time registration (if any) for user " + user.getEmail());
 			TimeRegistration ongoingTimeRegistration = timeRegistrationDao.findOngoingTimeRegistration(user);
-			for (Entry<String, String> entry : syncRemovalMap.entrySet()) {
-				if (ongoingTimeRegistration.getSyncKey().equals(entry.getKey())) {
-					ongoingTimeRegistration = null;
-					break;
+			if (ongoingTimeRegistration != null) {
+				log.info("An ongoing time registration is found, checking if it's it has been removed");
+				for (Entry<String, String> entry : syncRemovalMap.entrySet()) {
+					log.info("Check if ongoing time registration's sync key matches a sync key in the removal map");
+					if (ongoingTimeRegistration.getSyncKey().equals(entry.getKey())) {
+						log.info("Time registration is in the removal map, setting to null now");
+						ongoingTimeRegistration = null;
+						break;
+					}
 				}
 			}
 			if (ongoingTimeRegistration != null && StringUtils.isNotBlank(ongoingTimeRegistration.getSyncKey())) {
