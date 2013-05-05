@@ -22,4 +22,13 @@
             android:summaryOn="@string/pref_stat_bar_notifs_ask_for_comment_summary_on"
             android:summaryOff="@string/pref_stat_bar_notifs_ask_for_comment_summary_off"
             android:onClick="updateWidget"/>
+    <eu.vranckaert.worktime.utils.view.MultiSelectListPreference
+            android:key="defaultNotificationActionsPreference"
+            android:dependency="showStatusBarNotificationsPreference"
+            android:title="@string/pref_stat_bar_notifs_default_actions_title"
+            android:summary="@string/pref_stat_bar_notifs_default_actions_summary"
+            android:defaultValue="PUNCH_OUT|SPLIT|OTHER_ACTIONS"
+            android:entries="@array/pref_stat_bar_notifs_default_actions_entries"
+            android:entryValues="@array/pref_stat_bar_notifs_default_actions_entry_values"
+            android:dialogTitle="@string/pref_stat_bar_notifs_default_actions_dialog_title"/>
 </PreferenceScreen>

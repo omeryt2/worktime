@@ -19,5 +19,6 @@ package eu.vranckaert.worktime.enums.timeregistration;
 public enum TimeRegistrationActionScope {
     ONGOING_TIME_REGISTRATION,
     ENDED_TIME_REGISTRATION,
-    BOTH;
+    BOTH,
+    NONE;
 }

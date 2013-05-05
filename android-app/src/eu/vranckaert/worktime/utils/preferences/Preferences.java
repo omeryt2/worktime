@@ -806,4 +806,27 @@ public class Preferences {
             editor.commit();
         }
     }
+
+    public static class Notifications {
+        public static List<TimeRegistrationAction> getDefaultTimeRegistrationNotificationActions(Context ctx) {
+            String preference = getSharedPreferences(ctx).getString(
+                    Constants.Preferences.Keys.DEFAULT_NOTIFICATION_ACTIONS,
+                    Constants.Preferences.DEFAULT_NOTIFICATION_ACTIONS_DEFAULT_VALUE
+            );
+
+            String[] preferences = preference.split("\\|");
+            List<TimeRegistrationAction> timeRegistrationActions = new ArrayList<TimeRegistrationAction>();
+            for (String notificationAction : preferences) {
+                timeRegistrationActions.add(TimeRegistrationAction.valueOf(notificationAction));
+            }
+
+            return timeRegistrationActions;
+        }
+
+        public static void setDefaultTimeRegistrationNotificationActions(Context ctx, String value) {
+            SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+            editor.putString(Constants.Preferences.Keys.DEFAULT_NOTIFICATION_ACTIONS, value);
+            editor.commit();
+        }
+    }
 }

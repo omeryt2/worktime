@@ -488,6 +488,34 @@
     <string name="pref_stat_bar_notifs_ask_for_comment_title">Show status bar notifications?</string>
     <string name="pref_stat_bar_notifs_ask_for_comment_summary_on">Notifications will be shown in the status bar.</string>
     <string name="pref_stat_bar_notifs_ask_for_comment_summary_off">No notifications will be shown in the status bar.</string>
+
+    <string name="pref_stat_bar_notifs_default_actions_title">Actions available in notification</string>
+    <string name="pref_stat_bar_notifs_default_actions_summary">Select the default actions that should be available in a notification for an ongoing time registration</string>
+    <string name="pref_stat_bar_notifs_default_actions_dialog_title">Select Actions</string>
+    <string-array name="pref_stat_bar_notifs_default_actions_entries">
+        <item>Punch Out</item>
+        <item>Punch Out and start next</item>
+        <item>Split</item>
+        <item>Open details</item>
+        <item>Edit starting time</item>
+        <item>Edit project and task</item>
+        <item>Set comment</item>
+        <item>Delete</item>
+        <item>Others</item>
+    </string-array>
+    <string-array name="pref_stat_bar_notifs_default_actions_entry_values">
+        <item>PUNCH_OUT</item>
+        <item>PUNCH_OUT_AND_START_NEXT</item>
+        <item>SPLIT</item>
+        <item>TIME_REGISTRATION_DETAILS</item>
+        <item>EDIT_STARTING_TIME</item>
+        <item>EDIT_PROJECT_AND_TASK</item>
+        <item>SET_COMMENT</item>
+        <item>DELETE_TIME_REGISTRATION</item>
+        <item>OTHER_ACTIONS</item>
+    </string-array>
+    <string name="pref_stat_bar_notifs_default_warning_select_max_3">WARNING: Only the first 3 actions you selected will be available in the notification</string>
+
     <string name="pref_projects_tasks_category_title">Projects and Tasks</string>
     <string name="pref_projects_tasks_select_task_hide_finished_title">Hide finished tasks in selection</string>
     <string name="pref_projects_tasks_select_task_hide_finished_summary_on">Finished tasks are hidden when selecting tasks from a list</string>
@@ -791,7 +819,13 @@
     <string name="lbl_notif_big_text_comment">Comment</string>
     <string name="lbl_notif_no_tr_found">For some reason no time registration could be found for this notification. The notification will now be removed.</string>
     <string name="lbl_notif_action_punch_out">Punch Out</string>
+    <string name="lbl_notif_action_punch_out_and_start_next">Start Next</string>
     <string name="lbl_notif_action_split">Split</string>
+    <string name="lbl_notif_action_details">Details</string>
+    <string name="lbl_notif_action_edit_starting_time">Edit Start</string>
+    <string name="lbl_notif_action_edit_project_task">Edit Project/Task</string>
+    <string name="lbl_notif_action_set_comment">Comment</string>
+    <string name="lbl_notif_action_delete">Delete</string>
     <string name="lbl_notif_action_others">Others</string>
 
     <!-- WIZARD -->

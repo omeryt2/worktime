@@ -19,6 +19,7 @@ package eu.vranckaert.worktime.activities.preferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.widget.Toast;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
@@ -27,6 +28,7 @@ import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.utils.activity.GenericPreferencesActivity;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
+import eu.vranckaert.worktime.utils.view.MultiSelectListPreference;
 
 /**
  * User: DIRK VRANCKAERT
@@ -62,6 +64,22 @@ public class NotificationsPreferencesActivity extends GenericPreferencesActivity
                 }
 
                 return false;
+            }
+        });
+
+        final MultiSelectListPreference multiSelectListPreference = (MultiSelectListPreference) getPreferenceScreen().findPreference(Constants.Preferences.Keys.DEFAULT_NOTIFICATION_ACTIONS);
+        multiSelectListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                Preferences.Notifications.setDefaultTimeRegistrationNotificationActions(NotificationsPreferencesActivity.this, (String) newValue);
+                statusBarNotificationService.addOrUpdateNotification(null);
+
+                String[] actions = ((String) newValue).split("\\|");
+                if (actions.length > 3) {
+                    Toast.makeText(NotificationsPreferencesActivity.this, R.string.pref_stat_bar_notifs_default_warning_select_max_3, Toast.LENGTH_LONG).show();
+                }
+
+                return true;
             }
         });
     }

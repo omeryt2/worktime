@@ -144,6 +144,7 @@ public class Constants {
         public static final boolean ACCOUNT_SYNC_RETRY_ON_ERROR_DEFAULT_VALUE = true;
         public static final String ACCOUNT_SYNC_ERROR_NOTIFICATION_CASES_DEFAULT_VALUE = "LoginCredentialsMismatchException|GeneralWebException|BackupException|SynchronizationFailedException";
         public static final int SHOW_CASE_LAST_SHOWN_FOR_APP_VERSION_DEFAULT_VALUE = -1;
+        public static final String DEFAULT_NOTIFICATION_ACTIONS_DEFAULT_VALUE = "PUNCH_OUT|SPLIT|OTHER_ACTIONS";
 
         public class Keys {
             public static final String WIDGET_ASK_FOR_TASK_SELECTION_IF_ONLY_ONE = "askForTaskSelectionIfOnlyOne";
@@ -179,6 +180,7 @@ public class Constants {
             public static final String ACCOUNT_SYNC_ERROR_NOTIFICATIONS = "accountSyncErrorShowNotifications";
             public static final String ACCOUNT_SYNC_ERROR_NOTIFICATION_CASES = "accountSyncErrorShowNotificationCases";
             public static final String SHOW_CASE_LAST_SHOWN_FOR_APP_VERSION = "showCaseLastShownForAppVersion";
+            public static final String DEFAULT_NOTIFICATION_ACTIONS = "defaultNotificationActionsPreference";
         }
     }
     public class Disk {
@@ -241,5 +243,8 @@ public class Constants {
     public class Broadcast {
         public static final String TIME_REGISTRATION_ACTION_DIALOG = "eu.vranckaert.worktime.time_registration_action_dialog";
         public static final String TIME_REGISTRATION_SPLIT = "eu.vranckaert.worktime.time_registration_action_split";
+        public static final String TIME_REGISTRATION_DETAILS = "eu.vranckaert.worktime.time_registration_details";
+        public static final String TIME_REGISTRATION_EDIT_START_TIME = "eu.vranckaert.worktime.time_registration_edit_start_time";
+        public static final String TIME_REGISTRATION_EDIT_PROJECT_AND_TASK = "eu.vranckaert.worktime.time_registration_edit_project_and_task";
     }
 }

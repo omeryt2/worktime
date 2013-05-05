@@ -44,14 +44,18 @@
 			<meta-data android:name="android.appwidget.provider"
 					   android:resource="@xml/appwidget_2x2_project"/>
 		</receiver>
-
         <receiver android:name=".broadcastreceiver.AlarmSyncInitBroadcastReceiver" android:enabled="true" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
             </intent-filter>
         </receiver>
-
+        <receiver android:name=".broadcastreceiver.ResetNotificationAreaBroadcastReceiver" android:enabled="true" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+            </intent-filter>
+        </receiver>
         <receiver android:name=".broadcastreceiver.ActionDialogBroadCastReceiver" android:enabled="true" android:exported="false">
             <intent-filter>
                 <action android:name="eu.vranckaert.worktime.time_registration_action_dialog" />
@@ -60,6 +64,21 @@
         <receiver android:name=".broadcastreceiver.SplitBroadCastReceiver" android:enabled="true" android:exported="false">
             <intent-filter>
                 <action android:name="eu.vranckaert.worktime.time_registration_action_split" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".broadcastreceiver.DetailsBroadCastReceiver" android:enabled="true" android:exported="false">
+            <intent-filter>
+                <action android:name="eu.vranckaert.worktime.time_registration_details" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".broadcastreceiver.EditStartTimeBroadCastReceiver" android:enabled="true" android:exported="false">
+            <intent-filter>
+                <action android:name="eu.vranckaert.worktime.time_registration_edit_start_time" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".broadcastreceiver.EditProjectAndTaskBroadCastReceiver" android:enabled="true" android:exported="false">
+            <intent-filter>
+                <action android:name="eu.vranckaert.worktime.time_registration_edit_project_and_task" />
             </intent-filter>
         </receiver>
 
@@ -235,10 +254,28 @@
         <activity android:name=".activities.notifcationbar.StatusBarPunchOutHandleActivity"
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
-        <activity android:name=".activities.notifcationbar.StatusBarOthersActionHandleActivity"
+        <activity android:name=".activities.notifcationbar.StatusBarPunchOutAndStartNextHandleActivity"
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.notifcationbar.StatusBarSplitActionHandleActivity"
+                  android:theme="@style/Theme.Translucent"
+                  android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <activity android:name=".activities.notifcationbar.StatusBarTimeRegistrationDetailsHandleActivity"
+                  android:theme="@style/Theme.Translucent"
+                  android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <activity android:name=".activities.notifcationbar.StatusBarEditStartingTimeHandleActivity"
+                  android:theme="@style/Theme.Translucent"
+                  android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <activity android:name=".activities.notifcationbar.StatusBarEditProjectAndTaskTimeHandleActivity"
+                  android:theme="@style/Theme.Translucent"
+                  android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <activity android:name=".activities.notifcationbar.StatusBarSetCommentHandleActivity"
+                  android:theme="@style/Theme.Translucent"
+                  android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <activity android:name=".activities.notifcationbar.StatusBarDeleteHandleActivity"
+                  android:theme="@style/Theme.Translucent"
+                  android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <activity android:name=".activities.notifcationbar.StatusBarOthersActionHandleActivity"
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
 

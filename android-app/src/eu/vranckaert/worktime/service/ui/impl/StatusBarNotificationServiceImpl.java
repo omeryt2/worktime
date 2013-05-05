@@ -25,10 +25,10 @@ import com.jakewharton.notificationcompat2.NotificationCompat2;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.HomeActivity;
 import eu.vranckaert.worktime.activities.account.AccountSyncHistoryActivity;
-import eu.vranckaert.worktime.activities.notifcationbar.StatusBarOthersActionHandleActivity;
-import eu.vranckaert.worktime.activities.notifcationbar.StatusBarPunchOutHandleActivity;
-import eu.vranckaert.worktime.activities.notifcationbar.StatusBarSplitActionHandleActivity;
+import eu.vranckaert.worktime.activities.notifcationbar.*;
 import eu.vranckaert.worktime.constants.Constants;
+import eu.vranckaert.worktime.enums.timeregistration.TimeRegistrationAction;
+import eu.vranckaert.worktime.enums.timeregistration.TimeRegistrationActionScope;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.model.notification.NotificationAction;
 import eu.vranckaert.worktime.service.ProjectService;
@@ -45,7 +45,9 @@ import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class StatusBarNotificationServiceImpl implements StatusBarNotificationService {
     private static final String LOG_TAG = StatusBarNotificationServiceImpl.class.getSimpleName();
@@ -129,29 +131,73 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
 
 
             // Prepare the notification action buttons for jelly bean (4.1) and up!
-            Intent punchOutActionIntent = new Intent(context, StatusBarPunchOutHandleActivity.class);
-            punchOutActionIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            List<TimeRegistrationAction> timeRegistrationActions = Preferences.Notifications.getDefaultTimeRegistrationNotificationActions(context);
+            NotificationAction[] notificationActions = new NotificationAction[timeRegistrationActions.size()];
+            for (TimeRegistrationAction timeRegistrationAction : timeRegistrationActions) {
+                String text = null;
+                Intent actionIntent = null;
+                int requestCode = -1;
 
-            Intent splitActionIntent = new Intent(context, StatusBarSplitActionHandleActivity.class);
-            splitActionIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                switch (timeRegistrationAction) {
+                    case PUNCH_OUT:
+                        actionIntent = new Intent(context, StatusBarPunchOutHandleActivity.class);
+                        text = context.getString(R.string.lbl_notif_action_punch_out);
+                        break;
+                    case PUNCH_OUT_AND_START_NEXT:
+                        actionIntent = new Intent(context, StatusBarPunchOutAndStartNextHandleActivity.class);
+                        text = context.getString(R.string.lbl_notif_action_punch_out_and_start_next);
+                        break;
+                    case SPLIT:
+                        actionIntent = new Intent(context, StatusBarSplitActionHandleActivity.class);
+                        text = context.getString(R.string.lbl_notif_action_split);
+                        requestCode = Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION;
+                        break;
+                    case TIME_REGISTRATION_DETAILS:
+                        actionIntent = new Intent(context, StatusBarTimeRegistrationDetailsHandleActivity.class);
+                        text = context.getString(R.string.lbl_notif_action_details);
+                        break;
+                    case EDIT_STARTING_TIME:
+                        actionIntent = new Intent(context, StatusBarEditStartingTimeHandleActivity.class);
+                        actionIntent.putExtra(Constants.Extras.DEFAULT_ACTION, timeRegistrationAction);
+                        text = context.getString(R.string.lbl_notif_action_edit_starting_time);
+                        break;
+                    case EDIT_PROJECT_AND_TASK:
+                        actionIntent = new Intent(context, StatusBarEditProjectAndTaskTimeHandleActivity.class);
+                        text = context.getString(R.string.lbl_notif_action_edit_project_task);
+                        break;
+                    case SET_COMMENT:
+                        actionIntent = new Intent(context, StatusBarSetCommentHandleActivity.class);
+                        text = context.getString(R.string.lbl_notif_action_set_comment);
+                        break;
+                    case DELETE_TIME_REGISTRATION:
+                        actionIntent = new Intent(context, StatusBarDeleteHandleActivity.class);
+                        text = context.getString(R.string.lbl_notif_action_delete);
+                        break;
+                    case OTHER_ACTIONS:
+                        actionIntent = new Intent(context, StatusBarOthersActionHandleActivity.class);
+                        text = context.getString(R.string.lbl_notif_action_others);
+                        requestCode = Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION;
+                        break;
+                }
 
-            Intent othersActionIntent = new Intent(context, StatusBarOthersActionHandleActivity.class);
-            othersActionIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            NotificationAction punchOutAction = new NotificationAction(context.getString(R.string.lbl_notif_action_punch_out), punchOutActionIntent);
-            NotificationAction splitAction = new NotificationAction(context.getString(R.string.lbl_notif_action_split), splitActionIntent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
-            NotificationAction othersAction = new NotificationAction(context.getString(R.string.lbl_notif_action_others), othersActionIntent, Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION);
+                if (StringUtils.isNotBlank(text) && actionIntent != null) {
+                    actionIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    NotificationAction action = null;
+                    if (requestCode == -1) {
+                        action = new NotificationAction(text, actionIntent);
+                    } else {
+                        action = new NotificationAction(text, actionIntent, requestCode);
+                    }
+                    notificationActions[timeRegistrationActions.indexOf(timeRegistrationAction)] = action;
+                }
+            }
 
             setStatusBarNotification(
                     title, message, ticker, intent, bigText, null,
                     Constants.StatusBarNotificationIds.ONGOING_TIME_REGISTRATION_MESSAGE,
-                    NotificationCompat2.PRIORITY_LOW, null, true, punchOutAction, splitAction, othersAction
+                    NotificationCompat2.PRIORITY_LOW, null, true, notificationActions
             );
         }
-    }
-
-    public void addStatusBarNotificationForBackup(boolean success) {
-
     }
 
     @Override
@@ -311,8 +357,9 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
                 .setContentTitle(title)
                 .setContentText(message)
                 .setContentIntent(contentIntent)
-                .setPriority(priority)
-                .setOngoing(fixed);
+                .setPriority(priority);
+        // Issue-230
+//                .setOngoing(fixed);
 
         for (NotificationAction action : actions) {
             builder.addAction(action.getDrawable(), action.getText(), PendingIntent.getActivity(context, action.getIntentRequestCode(), action.getIntent(), 0));
@@ -323,8 +370,9 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
             bigTextStyle.setBigContentTitle(bigContentTitle);
         }
         Notification notification = bigTextStyle.build();
-//        if (fixed)
-//            notification.flags |= Notification.FLAG_NO_CLEAR;
+        // Issue-230
+        if (fixed)
+            notification.flags |= Notification.FLAG_NO_CLEAR;
         mgr.notify(notificationId, notification);
     }
 

@@ -23,9 +23,9 @@ import eu.vranckaert.worktime.enums.timeregistration.TimeRegistrationAction;
  * Date: 27/04/11
  * Time: 21:46
  */
-public class StatusBarPunchOutHandleActivity extends StatusBarActionDialogActivity {
+public class StatusBarSetCommentHandleActivity extends StatusBarActionDialogActivity {
     @Override
     protected TimeRegistrationAction getTimeRegistrationAction() {
-        return TimeRegistrationAction.PUNCH_OUT;
+        return TimeRegistrationAction.SET_COMMENT;
     }
 }
