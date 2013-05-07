@@ -12,9 +12,12 @@ import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.utils.context.AsyncHelper;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Date: 4/04/13
@@ -22,7 +25,7 @@ import java.util.*;
  *
  * @author Dirk Vranckaert
  */
-public class CleanupCorruptDataPreferencesActivity extends ActionBarGuiceActivity {
+public class CleanupCorruptDataPreferencesActivity extends RoboSherlockActivity {
     private static final String LOG_TAG = CleanupCorruptDataPreferencesActivity.class.getSimpleName();
 
     @Inject private TaskDao taskDao;

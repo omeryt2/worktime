@@ -2,12 +2,13 @@ package eu.vranckaert.worktime.activities.account;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.exceptions.network.NoNetworkConnectionException;
@@ -15,7 +16,7 @@ import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
 import roboguice.inject.InjectView;
 
@@ -25,7 +26,7 @@ import roboguice.inject.InjectView;
  *
  * @author Dirk Vranckaert
  */
-public class AccountResetPasswordRequestActivity extends ActionBarGuiceActivity {
+public class AccountResetPasswordRequestActivity extends RoboSherlockActivity {
     @InjectView(R.id.account_reset_password_request_email) private EditText email;
     @InjectView(R.id.account_reset_password_request_error) private TextView errorTextView;
 
@@ -34,18 +35,20 @@ public class AccountResetPasswordRequestActivity extends ActionBarGuiceActivity 
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         setContentView(R.layout.activity_account_reset_password_request);
+        setSupportProgressBarIndeterminateVisibility(false);
 
         setTitle(R.string.lbl_account_reset_password_request_title);
-        setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         errorTextView.setVisibility(View.GONE);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
+        MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.ab_activity_acount_reset_password_request, menu);
 
         // Calling super after populating the menu is necessary here to ensure that the
@@ -76,7 +79,7 @@ public class AccountResetPasswordRequestActivity extends ActionBarGuiceActivity 
         @Override
         protected void onPreExecute() {
             errorTextView.setVisibility(View.GONE);
-            getActionBarHelper().setRefreshActionItemState(true, R.id.menu_account_reset_password_request_execute);
+            setSupportProgressBarIndeterminateVisibility(true);
         }
 
         @Override
@@ -94,7 +97,7 @@ public class AccountResetPasswordRequestActivity extends ActionBarGuiceActivity 
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            getActionBarHelper().setRefreshActionItemState(false, R.id.menu_account_reset_password_request_execute);
+            setSupportProgressBarIndeterminateVisibility(false);
             if (StringUtils.isNotBlank(error)) {
                 errorTextView.setText(error);
                 errorTextView.setVisibility(View.VISIBLE);

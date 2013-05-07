@@ -18,13 +18,14 @@ package eu.vranckaert.worktime.activities.account;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.preferences.AccountSyncPreferencesActivity;
@@ -38,7 +39,7 @@ import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
 import org.apache.commons.validator.routines.EmailValidator;
 import roboguice.inject.InjectView;
@@ -48,7 +49,7 @@ import roboguice.inject.InjectView;
  * Date: 12/12/12
  * Time: 10:04
  */
-public class AccountLoginActivity extends ActionBarGuiceActivity {
+public class AccountLoginActivity extends RoboSherlockActivity {
     private AnalyticsTracker tracker;
 
     @Inject private AccountService accountService;
@@ -62,6 +63,7 @@ public class AccountLoginActivity extends ActionBarGuiceActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         if (accountService.isUserLoggedIn()){
             Intent intent = new Intent(AccountLoginActivity.this, AccountProfileActivity.class);
@@ -69,9 +71,10 @@ public class AccountLoginActivity extends ActionBarGuiceActivity {
         }
 
         setContentView(R.layout.activity_account_login);
+        setSupportProgressBarIndeterminateVisibility(false);
 
         setTitle(R.string.lbl_account_login_title);
-        setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.ACCOUNT_LOGIN_ACTIVITY);
@@ -131,7 +134,7 @@ public class AccountLoginActivity extends ActionBarGuiceActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
+        MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.ab_activity_acount_login, menu);
 
         // Calling super after populating the menu is necessary here to ensure that the
@@ -170,7 +173,7 @@ public class AccountLoginActivity extends ActionBarGuiceActivity {
             ContextUtils.hideKeyboard(AccountLoginActivity.this, emailInput);
             ContextUtils.hideKeyboard(AccountLoginActivity.this, passwordInput);
 
-            getActionBarHelper().setLoadingIndicator(true);
+            setSupportProgressBarIndeterminateVisibility(true);
         }
 
         @Override
@@ -194,7 +197,7 @@ public class AccountLoginActivity extends ActionBarGuiceActivity {
 
         @Override
         protected void onPostExecute(Void o) {
-            getActionBarHelper().setLoadingIndicator(false);
+            setSupportProgressBarIndeterminateVisibility(false);
 
             if (error != null) {
                 errorTextView.setText(error);

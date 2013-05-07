@@ -22,19 +22,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.SparseArray;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.DatePicker;
-import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.*;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
+import com.google.inject.internal.Nullable;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.project.ProjectByNameComparator;
 import eu.vranckaert.worktime.comparators.task.TaskByNameComparator;
@@ -59,20 +53,12 @@ import eu.vranckaert.worktime.utils.file.FileUtil;
 import eu.vranckaert.worktime.utils.file.XlsFilenameFilter;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-import com.google.inject.internal.Nullable;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * User: DIRK VRANCKAERT
@@ -153,7 +139,7 @@ public class ReportingCriteriaActivity extends SyncLockedActivity {
         setContentView(R.layout.activity_reporting_criteria);
 
         setTitle(R.string.lbl_reporting_criteria_title);
-        setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.REPORTING_CRITERIA_ACTIVITY);
@@ -772,7 +758,7 @@ public class ReportingCriteriaActivity extends SyncLockedActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
+        MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.ab_activity_reporting_criteria, menu);
 
         // Calling super after populating the menu is necessary here to ensure that the

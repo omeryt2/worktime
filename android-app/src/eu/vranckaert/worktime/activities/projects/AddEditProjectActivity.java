@@ -18,12 +18,13 @@ package eu.vranckaert.worktime.activities.projects;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
@@ -81,10 +82,12 @@ public class AddEditProjectActivity extends SyncLockedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_add_edit_project);
+        setSupportProgressBarIndeterminateVisibility(false);
 
         setTitle(R.string.lbl_add_project_title);
-        setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.ADD_EDIT_PROJECT_ACTIVITY);
@@ -115,7 +118,7 @@ public class AddEditProjectActivity extends SyncLockedActivity {
                 AsyncTask<String, Void, Project> task = new AsyncTask<String, Void, Project>(){
                     @Override
                     protected void onPreExecute() {
-                        getActionBarHelper().setRefreshActionItemState(true, R.id.menu_add_project_activity_save);
+                        setSupportProgressBarIndeterminateVisibility(true);
                     }
 
                     @Override
@@ -169,7 +172,7 @@ public class AddEditProjectActivity extends SyncLockedActivity {
                             }
                         }
 
-                        getActionBarHelper().setRefreshActionItemState(false, R.id.menu_add_project_activity_save);
+                        setSupportProgressBarIndeterminateVisibility(false);
                         Intent intentData = new Intent();
                         intentData.putExtra(Constants.Extras.PROJECT, project);
                         setResult(RESULT_OK, intentData);
@@ -213,7 +216,7 @@ public class AddEditProjectActivity extends SyncLockedActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
+        MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.ab_activity_add_project, menu);
 
         // Calling super after populating the menu is necessary here to ensure that the

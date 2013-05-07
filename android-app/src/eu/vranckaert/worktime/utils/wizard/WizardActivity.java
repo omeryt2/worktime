@@ -20,16 +20,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ScrollView;
+import com.actionbarsherlock.view.MenuItem;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +117,7 @@ import java.util.List;
  *   }
  * }
  */
-public abstract class WizardActivity extends ActionBarGuiceActivity {
+public abstract class WizardActivity extends RoboSherlockActivity {
     private static final String LOG_TAG = WizardActivity.class.getSimpleName();
 
     private View cancelButton;
@@ -145,7 +145,7 @@ public abstract class WizardActivity extends ActionBarGuiceActivity {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.wizard);
 
-        setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         layoutInflater = (LayoutInflater) WizardActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }

@@ -57,6 +57,10 @@ public class SelectTaskActivity extends SyncLockedGuiceActivity {
     @Nullable
     private Integer widgetId;
 
+    @InjectExtra(value = Constants.Extras.PROJECT, optional = true)
+    @Nullable
+    private Project project;
+
     @InjectExtra(value = Constants.Extras.ONLY_SELECT, optional = true)
     private boolean onlySelect = false;
 
@@ -92,8 +96,10 @@ public class SelectTaskActivity extends SyncLockedGuiceActivity {
     private List<Task> loadSelectableTasks() {
         List<Task> selectableTasks = null;
         //Find all tasks and sort by name
-        if (widgetId != null) {
-            Project project = projectService.getSelectedProject(widgetId);
+        if (widgetId != null || project != null) {
+            if (widgetId != null) {
+                project = projectService.getSelectedProject(widgetId);
+            }
             if (Preferences.getSelectTaskHideFinished(SelectTaskActivity.this)) {
                 selectableTasks = taskService.findNotFinishedTasksForProject(project);
             } else {
@@ -116,7 +122,7 @@ public class SelectTaskActivity extends SyncLockedGuiceActivity {
             tasks.add(task.getName());
         }
 
-        if (widgetId != null) {
+        if (widgetId != null || project != null) {
             tasks.add(getString(R.string.lbl_widget_select_new_project_task));
         }
 
@@ -132,7 +138,7 @@ public class SelectTaskActivity extends SyncLockedGuiceActivity {
                                     if (!onlySelect && widgetId != null)
                                         taskService.setSelectedTask(widgetId, newSelectedTask);
 
-                                    if (updateWidget)
+                                    if (widgetId != null && updateWidget)
                                         widgetService.updateWidget(widgetId);
 
                                     Intent resultValue = new Intent();
@@ -142,7 +148,11 @@ public class SelectTaskActivity extends SyncLockedGuiceActivity {
                                 } else {
                                     dialogInterface.dismiss();
                                     Intent intent = new Intent(SelectTaskActivity.this, AddEditTaskActivity.class);
-                                    intent.putExtra(Constants.Extras.PROJECT, projectService.getSelectedProject(widgetId));
+                                    Project project = SelectTaskActivity.this.project;
+                                    if (project == null) {
+                                        project = projectService.getSelectedProject(widgetId);
+                                    }
+                                    intent.putExtra(Constants.Extras.PROJECT, project);
                                     startActivityForResult(intent, Constants.IntentRequestCodes.ADD_TASK);
                                 }
                             }

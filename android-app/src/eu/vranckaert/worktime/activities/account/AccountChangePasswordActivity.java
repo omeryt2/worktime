@@ -2,12 +2,13 @@ package eu.vranckaert.worktime.activities.account;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.exceptions.network.NoNetworkConnectionException;
@@ -16,7 +17,7 @@ import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
 import roboguice.inject.InjectView;
 
@@ -26,7 +27,7 @@ import roboguice.inject.InjectView;
  *
  * @author Dirk Vranckaert
  */
-public class AccountChangePasswordActivity extends ActionBarGuiceActivity {
+public class AccountChangePasswordActivity extends RoboSherlockActivity {
     @InjectView(R.id.account_change_password_old_password)
     private EditText oldPassword;
     @InjectView(R.id.account_change_password_new_password)
@@ -41,25 +42,20 @@ public class AccountChangePasswordActivity extends ActionBarGuiceActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         setContentView(R.layout.activity_account_change_password);
+        setSupportProgressBarIndeterminateVisibility(false);
 
         setTitle(R.string.lbl_account_change_password_title);
-        setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
+        MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.ab_activity_account_change_password, menu);
-
-        // Calling super after populating the menu is necessary here to ensure that the
-        // action bar helpers have a chance to handle this event.
-        boolean r = super.onCreateOptionsMenu(menu);
-
-        // Disable click on home-button
-        getActionBarHelper().setHomeButtonEnabled(false);
-        return r;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -118,7 +114,7 @@ public class AccountChangePasswordActivity extends ActionBarGuiceActivity {
 
         @Override
         protected void onPreExecute() {
-            getActionBarHelper().setRefreshActionItemState(true, R.id.menu_account_change_password_activity_change);
+            setSupportProgressBarIndeterminateVisibility(true);
         }
 
         @Override
@@ -147,7 +143,7 @@ public class AccountChangePasswordActivity extends ActionBarGuiceActivity {
                 finish();
             }
 
-            getActionBarHelper().setRefreshActionItemState(false, R.id.menu_account_change_password_activity_change);
+            setSupportProgressBarIndeterminateVisibility(false);
         }
     }
 }

@@ -20,8 +20,13 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.*;
+import android.view.ContextMenu;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.project.ProjectByNameComparator;
@@ -83,7 +88,7 @@ public class ManageProjectsActivity extends SyncLockedListActivity {
         setContentView(R.layout.activity_manage_projects);
 
         setTitle(R.string.btn_manage_projects_title);
-        setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.MANAGE_PROJECTS_ACTIVITY);
@@ -477,7 +482,7 @@ public class ManageProjectsActivity extends SyncLockedListActivity {
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(android.view.MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int element = info.position;
 
@@ -574,11 +579,11 @@ public class ManageProjectsActivity extends SyncLockedListActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
+    public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
+        MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.ab_activity_manage_projects, menu);
 
-        MenuItem menuItem = menu.getItem(1);
+        com.actionbarsherlock.view.MenuItem menuItem = menu.getItem(1);
         boolean hideFinished = Preferences.getDisplayProjectsHideFinished(ManageProjectsActivity.this);
         switchMenuItemFinishedProjects(menuItem, hideFinished);
 
@@ -588,7 +593,7 @@ public class ManageProjectsActivity extends SyncLockedListActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 IntentUtil.goHome(ManageProjectsActivity.this);

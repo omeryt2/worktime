@@ -92,7 +92,7 @@
 
         <activity android:name=".activities.HomeActivity"
                   android:label="@string/app_name"
-                  android:theme="@style/AppTheme">
+                  android:theme="@style/Theme.Worktime">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -100,33 +100,33 @@
         </activity>
         <!-- Project specific activities -->
         <activity android:name=".activities.projects.ManageProjectsActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.projects.AddEditProjectActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.projects.ProjectDetailsActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.projects.CopyProjectActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.projects.SelectProjectActivity"
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <!-- Task specific activities -->
         <activity android:name=".activities.tasks.AddEditTaskActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.tasks.SelectTaskActivity"
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <!-- TimeRegistration specific activities -->
         <activity android:name=".activities.timeregistrations.TimeRegistrationListActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.timeregistrations.TimeRegistrationDetailActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.timeregistrations.TimeRegistrationActionActivity"
                   android:theme="@style/Theme.Translucent"
@@ -156,47 +156,47 @@
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.timeregistrations.TimeRegistrationSplitActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.timeregistrations.TimeRegistrationAddActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <!-- Reporting -->
         <activity android:name=".activities.reporting.ReportingCriteriaActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.reporting.ReportingResultActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"
                   android:screenOrientation="landscape"/>
         <activity android:name=".activities.reporting.ReportingExportActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <!-- About specific activities -->
         <activity android:name=".activities.about.AboutActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <!-- Preferences specific activities -->
         <activity android:name=".activities.preferences.PreferencesActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.preferences.BackupPreferencesActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.preferences.DateTimePreferencesActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.preferences.NotificationsPreferencesActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.preferences.ProjectsAndTasksPreferencesActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.preferences.TimeRegistrationsPreferencesActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.preferences.AccountSyncPreferencesActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.preferences.ResetApplicationPreferencesActivity"
                   android:theme="@style/Theme.Translucent"
@@ -210,27 +210,27 @@
 
         <!-- Account activities -->
         <activity android:name=".activities.account.AccountProfileActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.account.AccountSyncHistoryActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.account.AccountLoginActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.account.AccountRegisterActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <service android:name=".activities.account.AccountSyncService"
                  android:exported="false"/>
         <activity android:name=".utils.view.actionbar.synclock.SyncLockingActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.account.AccountResetPasswordRequestActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.account.AccountResetPasswordActivity"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -315,7 +315,7 @@
 
         <!-- DirectoryPicker activity -->
         <activity android:name="eu.vranckaert.worktime.utils.file.DirectoryPicker"
-                  android:theme="@style/AppTheme"
+                  android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
 
         <!-- Donation -->

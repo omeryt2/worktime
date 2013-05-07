@@ -173,6 +173,7 @@
     <string name="now">Until now&#8230;</string>
     <string name="lbl_registrations_load_more">Tap to load more&#8230;</string>
     <string name="lbl_registrations_edit">Edit</string>
+    <string name="lbl_registrations_tab_host_day">Day</string>
     <!-- REGISTRATION DETAILS -->
     <string name="lbl_registration_details_title">Registration Details</string>
     <string name="time_registration_details_ab_menu_edit">Edit</string>

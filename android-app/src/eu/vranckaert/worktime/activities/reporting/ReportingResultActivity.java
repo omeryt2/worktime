@@ -20,11 +20,16 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.*;
+import android.view.Gravity;
+import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
+import com.google.inject.internal.Nullable;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.reporting.TimeRegistrationByProjectNameAscComparator;
 import eu.vranckaert.worktime.comparators.reporting.TimeRegistrationByProjectNameDescComparator;
@@ -53,11 +58,10 @@ import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-import com.google.inject.internal.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -68,7 +72,7 @@ import java.util.List;
  * Date: 24/09/11
  * Time: 20:03
  */
-public class ReportingResultActivity extends ActionBarGuiceActivity {
+public class ReportingResultActivity extends RoboSherlockActivity {
     private static final String LOG_TAG = ReportingResultActivity.class.getSimpleName();
 
     @Inject
@@ -115,7 +119,7 @@ public class ReportingResultActivity extends ActionBarGuiceActivity {
         setContentView(R.layout.activity_reporting_result);
 
         setTitle(R.string.lbl_reporting_result_title);
-        setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.REPORTING_RESULT_ACTIVITY);
@@ -417,7 +421,7 @@ public class ReportingResultActivity extends ActionBarGuiceActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
+        MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.ab_activity_reporting_result, menu);
 
         // Calling super after populating the menu is necessary here to ensure that the

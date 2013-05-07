@@ -26,7 +26,7 @@ import eu.vranckaert.worktime.model.SyncHistoryAction;
 import eu.vranckaert.worktime.model.SyncHistoryStatus;
 import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.utils.context.AsyncHelper;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 import roboguice.inject.InjectView;
 
 /**
@@ -34,7 +34,7 @@ import roboguice.inject.InjectView;
  * Date: 16/01/13
  * Time: 15:20
  */
-public class SyncLockingActivity extends ActionBarGuiceActivity {
+public class SyncLockingActivity extends RoboSherlockActivity {
     private AsyncTask syncCheck;
 
     @Inject private AccountService accountService;
@@ -48,7 +48,7 @@ public class SyncLockingActivity extends ActionBarGuiceActivity {
         setContentView(R.layout.activity_sync_locking);
 
         setTitle(R.string.lbl_sync_blocking_title);
-        setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     private class SyncCheck extends AsyncTask<Void, SyncHistoryAction, Void> {

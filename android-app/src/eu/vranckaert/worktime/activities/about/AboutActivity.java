@@ -19,10 +19,10 @@ package eu.vranckaert.worktime.activities.about;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import com.actionbarsherlock.view.MenuItem;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.about.listadapter.AboutListAdapter;
 import eu.vranckaert.worktime.constants.TrackerConstants;
@@ -32,7 +32,7 @@ import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.donations.DonationsActivity;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceListActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ import java.util.List;
  * Date: 05/02/11
  * Time: 19:06
  */
-public class AboutActivity extends ActionBarGuiceListActivity {
+public class AboutActivity extends RoboSherlockListActivity {
     private static final String LOG_TAG = AboutActivity.class.getSimpleName();
     
     private AnalyticsTracker tracker;
@@ -55,7 +55,7 @@ public class AboutActivity extends ActionBarGuiceListActivity {
         setContentView(R.layout.activity_about);
 
         setTitle(R.string.lbl_about_title);
-        setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.ABOUT_ACTIVITY);

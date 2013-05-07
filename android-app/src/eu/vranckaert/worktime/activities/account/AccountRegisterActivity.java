@@ -21,9 +21,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.text.method.TransformationMethod;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.preferences.AccountSyncPreferencesActivity;
@@ -39,7 +40,7 @@ import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.RegexValidator;
@@ -50,7 +51,7 @@ import roboguice.inject.InjectView;
  * Date: 12/12/12
  * Time: 10:04
  */
-public class AccountRegisterActivity extends ActionBarGuiceActivity {
+public class AccountRegisterActivity extends RoboSherlockActivity {
     private AnalyticsTracker tracker;
 
     @Inject private AccountService accountService;
@@ -66,11 +67,13 @@ public class AccountRegisterActivity extends ActionBarGuiceActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         setContentView(R.layout.activity_account_register);
+        setSupportProgressBarIndeterminateVisibility(false);
 
         setTitle(R.string.lbl_account_register_title);
-        setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.ACCOUNT_REGISTER_ACTIVITY);
@@ -181,7 +184,7 @@ public class AccountRegisterActivity extends ActionBarGuiceActivity {
             password.setEnabled(false);
             passwordConfirmation.setEnabled(false);
 
-            getActionBarHelper().setLoadingIndicator(true);
+            setSupportProgressBarIndeterminateVisibility(true);
         }
 
         @Override
@@ -214,7 +217,7 @@ public class AccountRegisterActivity extends ActionBarGuiceActivity {
 
         @Override
         protected void onPostExecute(Void o) {
-            getActionBarHelper().setLoadingIndicator(false);
+            setSupportProgressBarIndeterminateVisibility(false);
 
             registerButton.setEnabled(true);
             email.setEnabled(true);

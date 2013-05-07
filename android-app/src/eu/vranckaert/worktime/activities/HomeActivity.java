@@ -18,10 +18,10 @@ package eu.vranckaert.worktime.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.github.espiandev.showcaseview.ShowcaseView;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
@@ -42,14 +42,14 @@ import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 import eu.vranckaert.worktime.utils.view.showcase.ShowcaseViewElement;
 import eu.vranckaert.worktime.utils.view.showcase.ShowcaseViewUtility;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends ActionBarGuiceActivity implements ShowcaseViewUtility.OnShowcaseEndedListener {
+public class HomeActivity extends RoboSherlockActivity implements ShowcaseViewUtility.OnShowcaseEndedListener {
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
 
     @Inject
@@ -76,6 +76,8 @@ public class HomeActivity extends ActionBarGuiceActivity implements ShowcaseView
         setContentView(R.layout.activity_home);
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.HOME_ACTIVITY);
+
+        getSupportActionBar().setHomeButtonEnabled(false);
 
         initiateDatabase();
 
@@ -129,16 +131,12 @@ public class HomeActivity extends ActionBarGuiceActivity implements ShowcaseView
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
+        MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.ab_activity_home, menu);
 
         // Calling super after populating the menu is necessary here to ensure that the
         // action bar helpers have a chance to handle this event.
-        boolean r = super.onCreateOptionsMenu(menu);
-
-        // Disable click on home-button
-        getActionBarHelper().setHomeButtonEnabled(false);
-        return r;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

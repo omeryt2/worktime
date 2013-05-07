@@ -20,6 +20,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.inject.Inject;
+import com.google.inject.internal.Nullable;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.project.ProjectByNameComparator;
 import eu.vranckaert.worktime.constants.Constants;
@@ -48,12 +49,15 @@ public class SelectProjectActivity extends SyncLockedGuiceActivity {
     private WidgetService widgetService;
 
     @InjectExtra(value = Constants.Extras.WIDGET_ID, optional = true)
+    @Nullable
     private Integer widgetId;
 
     @InjectExtra(value = Constants.Extras.ONLY_SELECT, optional = true)
+    @Nullable
     private boolean onlySelect = false;
 
     @InjectExtra(value = Constants.Extras.UPDATE_WIDGET, optional = true)
+    @Nullable
     private boolean updateWidget = false;
 
     @Override
@@ -104,7 +108,7 @@ public class SelectProjectActivity extends SyncLockedGuiceActivity {
                                 if (!onlySelect && widgetId != null)
                                     projectService.setSelectedProject(widgetId, newSelectedProject);
 
-                                if (updateWidget)
+                                if (widgetId != null && updateWidget)
                                     widgetService.updateWidget(widgetId);
 
                                 Intent resultValue = new Intent();

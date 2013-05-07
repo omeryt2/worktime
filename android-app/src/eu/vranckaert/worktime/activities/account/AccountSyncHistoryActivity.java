@@ -16,7 +16,7 @@
 package eu.vranckaert.worktime.activities.account;
 
 import android.os.Bundle;
-import android.view.MenuItem;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.account.listadapter.SyncHistoryListAdapter;
@@ -41,7 +41,7 @@ public class AccountSyncHistoryActivity extends SyncLockedListActivity {
         setContentView(R.layout.activity_account_sync_history);
 
         setTitle(R.string.lbl_account_sync_history_title);
-        setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void refillListView(List<SyncHistory> syncHistories) {

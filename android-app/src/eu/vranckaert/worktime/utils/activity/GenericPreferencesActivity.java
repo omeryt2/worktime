@@ -17,8 +17,8 @@
 package eu.vranckaert.worktime.utils.activity;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.Window;
+import com.actionbarsherlock.view.MenuItem;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.OSContants;
@@ -26,14 +26,14 @@ import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuicePreferenceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockPreferenceActivity;
 
 /**
  * User: DIRK VRANCKAERT
  * Date: 31/01/12
  * Time: 9:21
  */
-public abstract class GenericPreferencesActivity extends ActionBarGuicePreferenceActivity {
+public abstract class GenericPreferencesActivity extends RoboSherlockPreferenceActivity {
     private AnalyticsTracker tracker;
 
     @Override
@@ -44,7 +44,7 @@ public abstract class GenericPreferencesActivity extends ActionBarGuicePreferenc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
 
-        setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         if (StringUtils.isNotBlank(getPageViewTrackerId())) {
@@ -69,6 +69,8 @@ public abstract class GenericPreferencesActivity extends ActionBarGuicePreferenc
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     protected void onDestroy() {

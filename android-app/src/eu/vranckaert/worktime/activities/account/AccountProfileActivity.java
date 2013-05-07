@@ -20,13 +20,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.preferences.AccountSyncPreferencesActivity;
@@ -80,11 +81,13 @@ public class AccountProfileActivity extends SyncLockedActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         setContentView(R.layout.activity_account_profile);
+        setSupportProgressBarIndeterminateVisibility(false);
 
         setTitle(R.string.lbl_account_profile_title);
-        setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.ACCOUNT_DETAILS_ACTIVITY);
@@ -104,7 +107,7 @@ public class AccountProfileActivity extends SyncLockedActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
+        MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.ab_activity_account_profile, menu);
 
         // Calling super after populating the menu is necessary here to ensure that the
@@ -112,7 +115,7 @@ public class AccountProfileActivity extends SyncLockedActivity {
         boolean r = super.onCreateOptionsMenu(menu);
 
         // Disable click on home-button
-        getActionBarHelper().setHomeButtonEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(false);
         return r;
     }
 
@@ -123,7 +126,7 @@ public class AccountProfileActivity extends SyncLockedActivity {
                 IntentUtil.goBack(this);
                 break;
             case R.id.menu_account_profile_activity_sync: {
-                getActionBarHelper().setRefreshActionItemState(true, R.id.menu_account_profile_activity_sync);
+                setSupportProgressBarIndeterminateVisibility(true);
 
                 Intent intent = new Intent(AccountProfileActivity.this, AccountSyncService.class);
                 startService(intent);
@@ -288,7 +291,7 @@ public class AccountProfileActivity extends SyncLockedActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        getActionBarHelper().setRefreshActionItemState(false, R.id.menu_account_profile_activity_sync);
+        setSupportProgressBarIndeterminateVisibility(false);
     }
 
     @Override

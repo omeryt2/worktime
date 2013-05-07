@@ -64,11 +64,6 @@ public class Constants {
         public static final int BACKUP_SEND_FILE_SEARCH_NOTHING_FOUND = 49;
         public static final int BACKUP_SEND_FILE_SEARCH_NO_SD = 50;
 	    public static final int REPORTING_EXPORT_ERROR = 51;
-        public static final int MANUAL_BACKUP_CONFIRMATION = 52;
-        public static final int MANUAL_RESTORE_CONFIRMATION = 53;
-        public static final int MANUAL_RESTORE_EXECUTING = 54;
-        public static final int MANUAL_RESTORE_SUCCESSFUL = 55;
-        public static final int MANUAL_RESTORE_ERROR = 56;
         public static final int TIME_REGISTRATION_ACTION_LOADING = 57;
         public static final int TIME_REGISTRATION_DELETE_LOADING = 58;
         public static final int REPORTING_BATCH_SHARE_NO_FILES_FOUND = 59;
@@ -83,8 +78,6 @@ public class Constants {
         public static final int DELETE_TASK_AT_LEAST_ONE_REQUIRED = 68;
         public static final int DELETE_ALL_TASKS_OF_PROJECT_YES_NO = 69;
         public static final int DELETE_ALL_TASKS_AND_TIME_REGISTRATIONS_OF_PROJECT_YES_NO = 70;
-        public static final int TIME_REGISTRATION_ADD_SELECT_PROJECT = 71;
-        public static final int TIME_REGISTRATION_ADD_SELECT_TASK = 72;
     }
     public class IntentRequestCodes {
         public static final int REGISTRATION_DETAILS = 1;

@@ -23,12 +23,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
-import android.view.MenuItem;
 import android.view.Window;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
-import eu.vranckaert.worktime.activities.account.AccountProfileActivity;
-import eu.vranckaert.worktime.activities.account.AccountLoginActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.OSContants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
@@ -39,15 +37,14 @@ import eu.vranckaert.worktime.utils.file.FileUtil;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuicePreferenceActivity;
-import roboguice.activity.RoboPreferenceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockPreferenceActivity;
 
 /**
  * User: DIRK VRANCKAERT
  * Date: 05/02/11
  * Time: 19:09
  */
-public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
+public class PreferencesActivity extends RoboSherlockPreferenceActivity {
     private static final String LOG_TAG = PreferencesActivity.class.getSimpleName();
 
     private AnalyticsTracker tracker;
@@ -63,8 +60,8 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
 
-        setTitle(R.string.lbl_preferences_title);
-        setDisplayHomeAsUpEnabled(true);
+//        setTitle(R.string.lbl_preferences_title);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.PREFERENCES_ACTIVITY);
@@ -84,11 +81,11 @@ public class PreferencesActivity extends ActionBarGuicePreferenceActivity {
         }
     }
 
-    private void configurePreferences(RoboPreferenceActivity ctx) {
+    private void configurePreferences(RoboSherlockPreferenceActivity ctx) {
         ctx.getPreferenceManager().setSharedPreferencesName(Constants.Preferences.PREFERENCES_NAME);
     }
 
-    private void createPreferences(RoboPreferenceActivity ctx) {
+    private void createPreferences(RoboSherlockPreferenceActivity ctx) {
         PreferenceScreen preferences = ctx.getPreferenceManager().createPreferenceScreen(ctx);
         setPreferenceScreen(preferences);
 

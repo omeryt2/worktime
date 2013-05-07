@@ -22,14 +22,14 @@ import com.google.inject.Inject;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.utils.context.AsyncHelper;
-import eu.vranckaert.worktime.utils.view.actionbar.ActionBarGuiceListActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockListActivity;
 
 /**
  * User: Dirk Vranckaert
  * Date: 16/01/13
  * Time: 15:18
  */
-public abstract class SyncLockedListActivity extends ActionBarGuiceListActivity {
+public abstract class SyncLockedListActivity extends RoboSherlockListActivity {
     private AsyncTask syncCheck;
     private boolean isLocking = false;
 

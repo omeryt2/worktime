@@ -22,11 +22,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.*;
+import android.view.ContextMenu;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.reporting.ReportingCriteriaActivity;
@@ -106,7 +111,7 @@ public class ProjectDetailsActivity extends SyncLockedListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_details);
 
-        setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.PROJECTS_DETAILS_ACTIVITY);
@@ -581,7 +586,7 @@ public class ProjectDetailsActivity extends SyncLockedListActivity {
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(android.view.MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int element = info.position;
 
@@ -788,7 +793,7 @@ public class ProjectDetailsActivity extends SyncLockedListActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
+        MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.ab_activity_project_details, menu);
 
         MenuItem menuItem = menu.getItem(3);

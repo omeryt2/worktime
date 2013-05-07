@@ -18,11 +18,16 @@ package eu.vranckaert.worktime.activities.timeregistrations;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.activities.projects.AddEditProjectActivity;
+import eu.vranckaert.worktime.activities.projects.SelectProjectActivity;
+import eu.vranckaert.worktime.activities.tasks.AddEditTaskActivity;
+import eu.vranckaert.worktime.activities.tasks.SelectTaskActivity;
 import eu.vranckaert.worktime.comparators.project.ProjectByNameComparator;
 import eu.vranckaert.worktime.comparators.task.TaskByNameComparator;
 import eu.vranckaert.worktime.constants.Constants;
@@ -432,95 +437,23 @@ public class TimeRegistrationAddActivity extends SyncLockedWizardActivity {
         addProjectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDialog(Constants.Dialog.TIME_REGISTRATION_ADD_SELECT_PROJECT);
+                Intent intent = new Intent(TimeRegistrationAddActivity.this, SelectProjectActivity.class);
+                intent.putExtra(Constants.Extras.ONLY_SELECT, false);
+                intent.putExtra(Constants.Extras.UPDATE_WIDGET, false);
+                startActivityForResult(intent, Constants.IntentRequestCodes.SELECT_PROJECT);
             }
         });
         addTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDialog(Constants.Dialog.TIME_REGISTRATION_ADD_SELECT_TASK);
+                Intent intent = new Intent(TimeRegistrationAddActivity.this, SelectTaskActivity.class);
+                intent.putExtra(Constants.Extras.PROJECT, TimeRegistrationAddActivity.this.project);
+                intent.putExtra(Constants.Extras.ONLY_SELECT, false);
+                intent.putExtra(Constants.Extras.ENABLE_SELECT_NONE_OPTION, false);
+                intent.putExtra(Constants.Extras.UPDATE_WIDGET, false);
+                startActivityForResult(intent, Constants.IntentRequestCodes.SELECT_TASK);
             }
         });
-    }
-
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        Dialog dialog = null;
-
-        switch (id) {
-            case Constants.Dialog.TIME_REGISTRATION_ADD_SELECT_PROJECT: {
-                List<Project> projectList = projectService.findAll();
-                Collections.sort(projectList, new ProjectByNameComparator());
-
-                final List<Project> availableProjects = projectList;
-                List<String> projects = new ArrayList<String>();
-                for (int i=0; i<availableProjects.size(); i++) {
-                    Project project = availableProjects.get(i);
-
-                    projects.add(project.getName());
-                }
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.lbl_reporting_criteria_project_dialog_title_select_project)
-                        .setSingleChoiceItems(
-                                StringUtils.convertListToArray(projects),
-                                -1,
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialogInterface, int index) {
-                                        TimeRegistrationAddActivity.this.project = availableProjects.get(index);
-                                        TimeRegistrationAddActivity.this.task = null;
-                                        initProjectAndTask(TimeRegistrationAddActivity.this.project, TimeRegistrationAddActivity.this.task);
-                                        removeDialog(Constants.Dialog.TIME_REGISTRATION_ADD_SELECT_PROJECT);
-                                    }
-                                }
-                        )
-                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            public void onCancel(DialogInterface dialogInterface) {
-                                removeDialog(Constants.Dialog.TIME_REGISTRATION_ADD_SELECT_PROJECT);
-                            }
-                        });
-                dialog = builder.create();
-                break;
-            }
-            case Constants.Dialog.TIME_REGISTRATION_ADD_SELECT_TASK: {
-                List<Task> taskList;
-                if (Preferences.getSelectTaskHideFinished(TimeRegistrationAddActivity.this)) {
-                    taskList = taskService.findTasksForProject(TimeRegistrationAddActivity.this.project);
-                } else {
-                    taskList = taskService.findNotFinishedTasksForProject(TimeRegistrationAddActivity.this.project);
-                }
-                Collections.sort(taskList, new TaskByNameComparator());
-                final List<Task> availableTasks = taskList;
-
-                List<String> tasks = new ArrayList<String>();
-                for (Task task : availableTasks) {
-                    tasks.add(task.getName());
-                }
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(TimeRegistrationAddActivity.this);
-                builder.setTitle(R.string.lbl_widget_title_select_task)
-                        .setSingleChoiceItems(
-                                StringUtils.convertListToArray(tasks),
-                                -1,
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialogInterface, int index) {
-                                        TimeRegistrationAddActivity.this.task = availableTasks.get(index);
-                                        initProjectAndTask(TimeRegistrationAddActivity.this.project, TimeRegistrationAddActivity.this.task);
-                                        removeDialog(Constants.Dialog.TIME_REGISTRATION_ADD_SELECT_TASK);
-                                    }
-                                }
-                        )
-                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            public void onCancel(DialogInterface dialogInterface) {
-                                removeDialog(Constants.Dialog.TIME_REGISTRATION_ADD_SELECT_TASK);
-                            }
-                        });
-                dialog = builder.create();
-                break;
-            }
-        }
-
-        return dialog;
     }
 
     /**
@@ -709,6 +642,21 @@ public class TimeRegistrationAddActivity extends SyncLockedWizardActivity {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.IntentRequestCodes.SELECT_TASK || requestCode == Constants.IntentRequestCodes.SELECT_PROJECT) {
+            if (requestCode == Constants.IntentRequestCodes.SELECT_TASK && resultCode == RESULT_OK) {
+                Task task = (Task) data.getExtras().get(Constants.Extras.TASK);
+                TimeRegistrationAddActivity.this.task = task;
+            } else if (requestCode == Constants.IntentRequestCodes.SELECT_PROJECT && resultCode == RESULT_OK) {
+                Project project = (Project) data.getExtras().get(Constants.Extras.PROJECT);
+                TimeRegistrationAddActivity.this.project = project;
+                TimeRegistrationAddActivity.this.task = null;
+            }
+            initProjectAndTask(TimeRegistrationAddActivity.this.project, TimeRegistrationAddActivity.this.task);
+        }
     }
 
     @Override

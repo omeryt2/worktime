@@ -18,9 +18,13 @@ package eu.vranckaert.worktime.activities.timeregistrations;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.*;
+import android.view.ContextMenu;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.reporting.ReportingCriteriaActivity;
@@ -78,7 +82,7 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
         setContentView(R.layout.activity_registrations);
 
         setTitle(R.string.lbl_registrations_title);
-        setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.TIME_REGISTRATIONS_ACTIVITY);
@@ -273,14 +277,21 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
         }
     }
 
+//    @Override
+//    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+//        MenuInflater inflater = getSupportMenuInflater();
+//        inflater.inflate(R.menu.time_registrations_list_menu, menu);
+//    }
+
+
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        MenuInflater inflater = getMenuInflater();
+    public void onCreateContextMenu(android.view.ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        android.view.MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.time_registrations_list_menu, menu);
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(android.view.MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int element = info.position;
         TimeRegistration timeRegistration = timeRegistrations.get(element);
@@ -302,7 +313,7 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
+        MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.ab_activity_time_registrations, menu);
 
         // Calling super after populating the menu is necessary here to ensure that the
