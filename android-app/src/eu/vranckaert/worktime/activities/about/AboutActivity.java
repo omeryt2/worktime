@@ -142,7 +142,7 @@ public class AboutActivity extends RoboSherlockListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                IntentUtil.goHome(AboutActivity.this);
+                IntentUtil.goBack(AboutActivity.this);
                 break;
         }
         return super.onOptionsItemSelected(item);

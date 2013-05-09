@@ -23,12 +23,11 @@ import android.content.Intent;
 import com.google.inject.Inject;
 import com.jakewharton.notificationcompat2.NotificationCompat2;
 import eu.vranckaert.worktime.R;
-import eu.vranckaert.worktime.activities.HomeActivity;
 import eu.vranckaert.worktime.activities.account.AccountSyncHistoryActivity;
 import eu.vranckaert.worktime.activities.notifcationbar.*;
+import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationListActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.enums.timeregistration.TimeRegistrationAction;
-import eu.vranckaert.worktime.enums.timeregistration.TimeRegistrationActionScope;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.model.notification.NotificationAction;
 import eu.vranckaert.worktime.service.ProjectService;
@@ -45,7 +44,6 @@ import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -109,7 +107,7 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
             String message = context.getString(R.string.lbl_notif_project_task_name, projectName, taskName);
             String ticker = null;
 
-            Intent intent = new Intent(context, HomeActivity.class);
+            Intent intent = new Intent(context, TimeRegistrationListActivity.class);
 
             if (registration.getId() == null) {
                 // creating...

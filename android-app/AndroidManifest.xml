@@ -90,9 +90,9 @@
                        android:resource="@xml/appwidget_2x1_project_task"/>
         </receiver>
 
-        <activity android:name=".activities.HomeActivity"
-                  android:label="@string/app_name"
-                  android:theme="@style/Theme.Worktime">
+        <activity android:name=".activities.timeregistrations.TimeRegistrationListActivity"
+                  android:theme="@style/Theme.Worktime"
+                  android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -122,9 +122,6 @@
                   android:theme="@style/Theme.Translucent"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <!-- TimeRegistration specific activities -->
-        <activity android:name=".activities.timeregistrations.TimeRegistrationListActivity"
-                  android:theme="@style/Theme.Worktime"
-                  android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.timeregistrations.TimeRegistrationDetailActivity"
                   android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>

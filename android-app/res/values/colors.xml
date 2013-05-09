@@ -42,4 +42,8 @@
     <color name="table_record_lvl_n_1">#ff3366ff</color>
     <color name="table_record_lvl_n_2">#ff7494f4</color>
     <color name="table_record_lvl_n_3">#ffffffff</color>
+
+    <!-- Slide in menu -->
+    <color name="slidein_bg_color">#ff303030</color>
+    <color name="slidein_txt_color">#ffffffff</color>
 </resources>

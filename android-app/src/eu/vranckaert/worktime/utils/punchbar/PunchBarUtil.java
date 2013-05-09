@@ -22,9 +22,9 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import eu.vranckaert.worktime.R;
-import eu.vranckaert.worktime.activities.HomeActivity;
 import eu.vranckaert.worktime.activities.punchbar.PunchBarClickListener;
 import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationActionActivity;
+import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationListActivity;
 import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationPunchInActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.enums.timeregistration.TimeRegistrationAction;
@@ -51,7 +51,7 @@ public class PunchBarUtil {
     public static void configurePunchBar(Activity ctx, TimeRegistrationService timeRegistrationService, TaskService taskService, ProjectService projectService) {
         View bar = ctx.findViewById(R.id.punch_bar_container);
         if (Preferences.getTimeRegistrationPunchBarEnabledFromHomeScreen(ctx) &&
-                (ctx.getClass().equals(HomeActivity.class) || Preferences.getTimeRegistrationPunchBarEnabledOnAllScreens(ctx))) {
+                (ctx.getClass().equals(TimeRegistrationListActivity.class) || Preferences.getTimeRegistrationPunchBarEnabledOnAllScreens(ctx))) {
             bar.setVisibility(View.VISIBLE);
         } else {
             bar.setVisibility(View.GONE);

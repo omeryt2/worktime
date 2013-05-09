@@ -38,9 +38,9 @@ public abstract class GenericPreferencesActivity extends RoboSherlockPreferenceA
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (ContextUtils.getAndroidApiVersion() < OSContants.API.HONEYCOMB_3_0) {
-            requestWindowFeature(Window.FEATURE_CUSTOM_TITLE); // For compatibility with the action-bar
-        }
+//        if (ContextUtils.getAndroidApiVersion() < OSContants.API.HONEYCOMB_3_0) {
+//            requestWindowFeature(Window.FEATURE_CUSTOM_TITLE); // For compatibility with the action-bar
+//        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
 

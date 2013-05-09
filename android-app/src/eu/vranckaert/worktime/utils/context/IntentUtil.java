@@ -20,7 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import eu.vranckaert.worktime.activities.HomeActivity;
+import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationListActivity;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 
 import java.io.File;
@@ -40,7 +40,7 @@ public class IntentUtil {
      * @param ctx The context.
      */
     public static void goHome(Context ctx) {
-        goBack(ctx, HomeActivity.class);
+        goBack(ctx, TimeRegistrationListActivity.class);
     }
 
     /**

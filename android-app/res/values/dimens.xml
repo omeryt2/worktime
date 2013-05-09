@@ -37,4 +37,7 @@
     <dimen name="widget_margin">8dp</dimen>
     <dimen name="widget_title">17sp</dimen>
     <dimen name="widget_btn_text">14dp</dimen>
+
+    <!-- Slide in menu -->
+    <dimen name="slidein_width">250dp</dimen>
 </resources>

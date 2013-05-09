@@ -26,8 +26,14 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.activities.about.AboutActivity;
+import eu.vranckaert.worktime.activities.account.AccountLoginActivity;
+import eu.vranckaert.worktime.activities.preferences.PreferencesActivity;
+import eu.vranckaert.worktime.activities.projects.ManageProjectsActivity;
 import eu.vranckaert.worktime.activities.reporting.ReportingCriteriaActivity;
+import eu.vranckaert.worktime.activities.timeregistrations.listadapter.SlideInMenuAdapter;
 import eu.vranckaert.worktime.activities.timeregistrations.listadapter.TimeRegistrationsListAdapter;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
@@ -38,7 +44,6 @@ import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.AsyncHelper;
-import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
@@ -70,6 +75,7 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
 
     private AnalyticsTracker tracker;
 
+    private SlidingMenu menu;
     private Long initialRecordCount = 0L;
     private int currentLowerLimit = 0;
     private final int maxRecordsToLoad = 10;
@@ -83,6 +89,37 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
 
         setTitle(R.string.lbl_registrations_title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Setup slide-in menu
+        menu = new SlidingMenu(this);
+        menu.setMode(SlidingMenu.LEFT);
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        menu.setBehindWidthRes(R.dimen.slidein_width);
+        menu.setFadeDegree(0.35f);
+        menu.attachToActivity(this, SlidingMenu.SLIDING_WINDOW);
+        menu.setMenu(R.layout.activity_time_registration_list_slidein_menu);
+
+        // Construct list of slide-in menu
+        ListView listView = (ListView) findViewById(R.id.activity_time_registration_list_slidein_menu);
+        List<SlideInMenuAdapter.SlideInMenuItem> menuItems = new ArrayList<SlideInMenuAdapter.SlideInMenuItem>();
+        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), ManageProjectsActivity.class, R.string.home_btn_projects, R.drawable.ic_collections_collection_dark));
+        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), AccountLoginActivity.class, R.string.home_ab_menu_account, R.drawable.ic_social_person_dark));
+        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), ReportingCriteriaActivity.class, R.string.home_btn_reporting, R.drawable.ic_collections_view_as_list_dark));
+        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), PreferencesActivity.class, R.string.home_btn_preferences, R.drawable.ic_action_settings_dark));
+        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), AboutActivity.class, R.string.home_ab_menu_about, R.drawable.ic_action_about_dark));
+        SlideInMenuAdapter menuAdapter = new SlideInMenuAdapter(TimeRegistrationListActivity.this, menuItems);
+        listView.setAdapter(menuAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SlideInMenuAdapter.SlideInMenuItem menuItem = (SlideInMenuAdapter.SlideInMenuItem) parent.getItemAtPosition(position);
+                if (menuItem.getRequestCode() == -1) {
+                    startActivity(menuItem.getIntent());
+                } else {
+                    startActivityForResult(menuItem.getIntent(), menuItem.getRequestCode());
+                }
+            }
+        });
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.TIME_REGISTRATIONS_ACTIVITY);
@@ -325,7 +362,12 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                IntentUtil.goBack(TimeRegistrationListActivity.this);
+//                IntentUtil.goBack(TimeRegistrationListActivity.this);
+                if (menu.isMenuShowing()) {
+                    menu.showContent();
+                } else {
+                    menu.showMenu();
+                }
                 break;
             case R.id.menu_time_registrations_activity_add:
                 Intent addIntent = new Intent(TimeRegistrationListActivity.this, TimeRegistrationAddActivity.class);

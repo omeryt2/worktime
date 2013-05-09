@@ -596,7 +596,7 @@ public class ManageProjectsActivity extends SyncLockedListActivity {
     public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                IntentUtil.goHome(ManageProjectsActivity.this);
+                IntentUtil.goBack(ManageProjectsActivity.this);
                 break;
             case R.id.menu_manage_projects_activity_new:
                 openAddProjectActivity();

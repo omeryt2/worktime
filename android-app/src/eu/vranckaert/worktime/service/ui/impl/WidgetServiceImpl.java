@@ -27,9 +27,9 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
-import eu.vranckaert.worktime.activities.HomeActivity;
 import eu.vranckaert.worktime.activities.projects.SelectProjectActivity;
 import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationActionActivity;
+import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationListActivity;
 import eu.vranckaert.worktime.activities.timeregistrations.TimeRegistrationPunchInActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.dao.WidgetConfigurationDao;
@@ -305,7 +305,7 @@ public class WidgetServiceImpl implements WidgetService {
      */
     private void enableWidgetOnClick(int resId) {
         Log.d(ctx, LOG_TAG, "Couple the widget background to an on click action. On click opens the home activity");
-        Intent homeAppIntent = new Intent(ctx, HomeActivity.class);
+        Intent homeAppIntent = new Intent(ctx, TimeRegistrationListActivity.class);
         PendingIntent homeAppPendingIntent = PendingIntent.getActivity(ctx, 0, homeAppIntent, 0);
         views.setOnClickPendingIntent(resId, homeAppPendingIntent);
     }

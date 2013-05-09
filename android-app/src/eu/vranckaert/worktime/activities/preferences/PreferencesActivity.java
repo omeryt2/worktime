@@ -54,13 +54,13 @@ public class PreferencesActivity extends RoboSherlockPreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (ContextUtils.getAndroidApiVersion() < OSContants.API.HONEYCOMB_3_0) {
-            requestWindowFeature(Window.FEATURE_CUSTOM_TITLE); // For compatibility with the action-bar
-        }
+//        if (ContextUtils.getAndroidApiVersion() < OSContants.API.HONEYCOMB_3_0) {
+//            requestWindowFeature(Window.FEATURE_CUSTOM_TITLE); // For compatibility with the action-bar
+//        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
 
-//        setTitle(R.string.lbl_preferences_title);
+        setTitle(R.string.lbl_preferences_title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
@@ -162,7 +162,7 @@ public class PreferencesActivity extends RoboSherlockPreferenceActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                IntentUtil.goHome(PreferencesActivity.this);
+                IntentUtil.goBack(PreferencesActivity.this);
                 break;
         }
         return super.onOptionsItemSelected(item);
