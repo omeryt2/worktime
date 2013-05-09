@@ -25,6 +25,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.github.espiandev.showcaseview.ShowcaseView;
 import com.google.inject.Inject;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import eu.vranckaert.worktime.R;
@@ -44,10 +45,14 @@ import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.AsyncHelper;
+import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.Log;
+import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedListActivity;
+import eu.vranckaert.worktime.utils.view.showcase.ShowcaseViewElement;
+import eu.vranckaert.worktime.utils.view.showcase.ShowcaseViewUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +62,7 @@ import java.util.List;
  * Date: 05/02/11
  * Time: 18:58
  */
-public class TimeRegistrationListActivity extends SyncLockedListActivity {
+public class TimeRegistrationListActivity extends SyncLockedListActivity implements ShowcaseViewUtility.OnShowcaseEndedListener {
     private static final String LOG_TAG = TimeRegistrationListActivity.class.getSimpleName();
 
     @Inject
@@ -158,6 +163,8 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
         });
 
         registerForContextMenu(getListView());
+
+        showShowcase();
     }
 
     /**
@@ -408,5 +415,39 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
     protected void onDestroy() {
         super.onDestroy();
         tracker.stopSession();
+    }
+
+    private void showShowcase() {
+        if (ContextUtils.getAndroidApiVersion() < 15) {
+            return;
+        }
+
+        // In case of new features for which the showcase must be shown again on the dashboard this check must include
+        // the new app version code.
+        if (Preferences.Showcase.getShowcaseLastShownForAppVersion(this) < 274) {
+            ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
+            co.hideOnClickOutside = false;
+            co.block = true;
+            co.noButton = false;
+            co.shotType = ShowcaseView.TYPE_NO_LIMIT;
+            co.insert = ShowcaseView.INSERT_TO_DECOR;
+            co.alignVertical = ShowcaseView.BOTTOM;
+            co.alignHorizontal = ShowcaseView.LEFT;
+
+            View view = findViewById(android.R.id.home);
+
+            List<ShowcaseViewElement> showcaseViewElements = new ArrayList<ShowcaseViewElement>();
+            showcaseViewElements.add(new ShowcaseViewElement(view, R.string.showcase_home_title, R.string.showcase_home_text, co));
+            View punchBarAction = findViewById(R.id.punchBarActionId);
+            if (punchBarAction != null) {
+                showcaseViewElements.add(new ShowcaseViewElement(punchBarAction, R.string.showcase_punchbar_title, R.string.showcase_punchbar_text, co));
+            }
+            ShowcaseViewUtility.start(showcaseViewElements, this).setOnShowcaseEndedListener(this);
+        }
+    }
+
+    @Override
+    public void onShowcaseEndedListener() {
+        Preferences.Showcase.setShowcaseLastShownForAppVersion(this, ContextUtils.getCurrentApplicationVersionCode(this));
     }
 }
