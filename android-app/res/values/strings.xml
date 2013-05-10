@@ -79,18 +79,16 @@
     <string name="showcase_punchbar_text">Quickly start and stop a time registration from the punch bar.</string>
 
     <!-- TODO remove other showcase text -->
-    <!--<string name="home_showcase_projects_title">Projects and Tasks</string>-->
-    <!--<string name="home_showcase_projects_text">Manage projects and tasks to which your time registrations will be linked</string>-->
-    <!--<string name="home_showcase_time_registrations_title">Time Registrations</string>-->
-    <!--<string name="home_showcase_time_registrations_text">Manage all your time registrations (create, delete, split,...)</string>-->
-    <!--<string name="home_showcase_reporting_title">Reporting</string>-->
-    <!--<string name="home_showcase_reporting_text">Generate reports of your registered data and export to Excel</string>-->
-    <!--<string name="home_showcase_preferences_title">Preferences</string>-->
-    <!--<string name="home_showcase_preferences_text">Manage all kinds of settings for time registrations, projects, date and time, account,...</string>-->
-    <!--<string name="home_showcase_account_title">Online Account</string>-->
-    <!--<string name="home_showcase_account_text">Create an online account and keep all your data backed up online</string>-->
-    <!--<string name="home_showcase_about_title">Donate</string>-->
-    <!--<string name="home_showcase_about_text">If you like the application you can donate to support the development.</string>-->
+    <string name="showcase_projects_title">Projects and Tasks</string>
+    <string name="showcase_projects_text">Manage projects and tasks to which your time registrations will be linked</string>
+    <string name="showcase_reporting_title">Reporting</string>
+    <string name="showcase_reporting_text">Generate reports of your registered data and export to Excel</string>
+    <string name="showcase_preferences_title">Preferences</string>
+    <string name="showcase_preferences_text">Manage all kinds of settings for time registrations, projects, date and time, account,...</string>
+    <string name="showcase_account_title">Online Account</string>
+    <string name="showcase_account_text">Create an online account and keep all your data backed up online</string>
+    <string name="showcase_about_title">Donate</string>
+    <string name="showcase_about_text">If you like the application you can donate to support the development.</string>
 
     <!-- MANAGE PROJECTS -->
     <string name="btn_manage_projects_title">Manage Projects</string>
@@ -172,7 +170,6 @@
     <!-- REGISTRATIONS -->
     <string name="lbl_registrations_title">Time Registrations</string>
     <string name="time_registrations_ab_menu_add">Add Time Registration</string>
-    <string name="time_registrations_ab_menu_report">Reporting</string>
     <string name="lbl_empty_registration_list">No time registrations available yet</string>
     <string name="now">Until now&#8230;</string>
     <string name="lbl_registrations_load_more">Tap to load more&#8230;</string>

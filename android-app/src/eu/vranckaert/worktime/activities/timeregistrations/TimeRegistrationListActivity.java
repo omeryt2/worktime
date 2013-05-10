@@ -62,7 +62,7 @@ import java.util.List;
  * Date: 05/02/11
  * Time: 18:58
  */
-public class TimeRegistrationListActivity extends SyncLockedListActivity implements ShowcaseViewUtility.OnShowcaseEndedListener {
+public class TimeRegistrationListActivity extends SyncLockedListActivity {
     private static final String LOG_TAG = TimeRegistrationListActivity.class.getSimpleName();
 
     @Inject
@@ -107,11 +107,11 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity impleme
         // Construct list of slide-in menu
         ListView listView = (ListView) findViewById(R.id.activity_time_registration_list_slidein_menu);
         List<SlideInMenuAdapter.SlideInMenuItem> menuItems = new ArrayList<SlideInMenuAdapter.SlideInMenuItem>();
-        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), ManageProjectsActivity.class, R.string.home_btn_projects, R.drawable.ic_collections_collection_dark));
-        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), AccountLoginActivity.class, R.string.home_ab_menu_account, R.drawable.ic_social_person_dark));
-        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), ReportingCriteriaActivity.class, R.string.home_btn_reporting, R.drawable.ic_collections_view_as_list_dark));
-        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), PreferencesActivity.class, R.string.home_btn_preferences, R.drawable.ic_action_settings_dark));
-        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), AboutActivity.class, R.string.home_ab_menu_about, R.drawable.ic_action_about_dark));
+        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), ManageProjectsActivity.class, R.string.home_btn_projects, R.drawable.ic_collections_collection_dark, R.id.menuItemProjects));
+        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), AccountLoginActivity.class, R.string.home_ab_menu_account, R.drawable.ic_social_person_dark, R.id.menuItemAccount));
+        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), ReportingCriteriaActivity.class, R.string.home_btn_reporting, R.drawable.ic_collections_view_as_list_dark, R.id.menuItemReporting));
+        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), PreferencesActivity.class, R.string.home_btn_preferences, R.drawable.ic_action_settings_dark, R.id.menuItemPreferences));
+        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), AboutActivity.class, R.string.home_ab_menu_about, R.drawable.ic_action_about_dark, R.id.menuItemAbout));
         SlideInMenuAdapter menuAdapter = new SlideInMenuAdapter(TimeRegistrationListActivity.this, menuItems);
         listView.setAdapter(menuAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -374,15 +374,12 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity impleme
                     menu.showContent();
                 } else {
                     menu.showMenu();
+                    showShowcaseForSlideMenu();
                 }
                 break;
             case R.id.menu_time_registrations_activity_add:
                 Intent addIntent = new Intent(TimeRegistrationListActivity.this, TimeRegistrationAddActivity.class);
                 startActivity(addIntent);
-                break;
-            case R.id.menu_time_registrations_activity_report:
-                Intent reportingIntent = new Intent(TimeRegistrationListActivity.this, ReportingCriteriaActivity.class);
-                startActivity(reportingIntent);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -418,13 +415,14 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity impleme
     }
 
     private void showShowcase() {
-        if (ContextUtils.getAndroidApiVersion() < 15) {
-            return;
-        }
+//        if (ContextUtils.getAndroidApiVersion() < 15) {
+//            return;
+//        }
 
         // In case of new features for which the showcase must be shown again on the dashboard this check must include
         // the new app version code.
-        if (Preferences.Showcase.getShowcaseLastShownForAppVersion(this) < 274) {
+        if (Preferences.Showcase.getShowcaseLastShownForAppVersion(this) < 275) {
+            getSupportActionBar().setHomeButtonEnabled(false);
             ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
             co.hideOnClickOutside = false;
             co.block = true;
@@ -434,20 +432,76 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity impleme
             co.alignVertical = ShowcaseView.BOTTOM;
             co.alignHorizontal = ShowcaseView.LEFT;
 
-            View view = findViewById(android.R.id.home);
-
             List<ShowcaseViewElement> showcaseViewElements = new ArrayList<ShowcaseViewElement>();
-            showcaseViewElements.add(new ShowcaseViewElement(view, R.string.showcase_home_title, R.string.showcase_home_text, co));
+            showcaseViewElements.add(new ShowcaseViewElement(android.R.id.home, R.string.showcase_home_title, R.string.showcase_home_text, co));
             View punchBarAction = findViewById(R.id.punchBarActionId);
             if (punchBarAction != null) {
                 showcaseViewElements.add(new ShowcaseViewElement(punchBarAction, R.string.showcase_punchbar_title, R.string.showcase_punchbar_text, co));
             }
-            ShowcaseViewUtility.start(showcaseViewElements, this).setOnShowcaseEndedListener(this);
+
+            ShowcaseViewUtility.start(showcaseViewElements, this).setOnShowcaseEndedListener(new ShowcaseViewUtility.OnShowcaseEndedListener() {
+                @Override
+                public void onShowcaseEndedListener() {
+                    getSupportActionBar().setHomeButtonEnabled(true);
+                    Preferences.Showcase.setShowcaseLastShownForAppVersion(TimeRegistrationListActivity.this, ContextUtils.getCurrentApplicationVersionCode(TimeRegistrationListActivity.this));
+                }
+            });
         }
     }
 
-    @Override
-    public void onShowcaseEndedListener() {
-        Preferences.Showcase.setShowcaseLastShownForAppVersion(this, ContextUtils.getCurrentApplicationVersionCode(this));
+    private void showShowcaseForSlideMenu() {
+//        if (ContextUtils.getAndroidApiVersion() < 15) {
+//            return;
+//        }
+
+        // In case of new features for which the showcase must be shown again on the dashboard this check must include
+        // the new app version code.
+        if (Preferences.Showcase.getShowcaseLastShownForSlideMenuForAppVersion(this) < 275) {
+            ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
+            co.hideOnClickOutside = false;
+            co.block = true;
+            co.noButton = false;
+            co.shotType = ShowcaseView.TYPE_NO_LIMIT;
+            co.insert = ShowcaseView.INSERT_TO_DECOR;
+            co.alignVertical = ShowcaseView.TOP;
+            co.alignHorizontal = ShowcaseView.RIGHT;
+
+            List<ShowcaseViewElement> showcaseViewElements = new ArrayList<ShowcaseViewElement>();
+
+            View menuItemProjects = findViewById(R.id.menuItemProjects);
+            View menuItemAccount = findViewById(R.id.menuItemAccount);
+            View menuItemReporting = findViewById(R.id.menuItemReporting);
+            View menuItemPreferences = findViewById(R.id.menuItemPreferences);
+            View menuItemAbout = findViewById(R.id.menuItemAbout);
+
+            showcaseViewElements.add(new ShowcaseViewElement(menuItemProjects, R.string.showcase_projects_title, R.string.showcase_projects_text, co));
+            showcaseViewElements.add(new ShowcaseViewElement(menuItemAccount, R.string.showcase_account_title, R.string.showcase_account_text, co));
+            showcaseViewElements.add(new ShowcaseViewElement(menuItemReporting, R.string.showcase_reporting_title, R.string.showcase_reporting_text, co));
+            showcaseViewElements.add(new ShowcaseViewElement(menuItemPreferences, R.string.showcase_preferences_title, R.string.showcase_preferences_text, co));
+            showcaseViewElements.add(new ShowcaseViewElement(menuItemAbout, R.string.showcase_about_title, R.string.showcase_about_text, co));
+
+            AsyncHelper.startWithParams(new WaitForSlideMenuToOpenTask(), new List[] {showcaseViewElements});
+        }
+    }
+
+    private class WaitForSlideMenuToOpenTask extends AsyncTask<List<ShowcaseViewElement>, Void, List<ShowcaseViewElement>> {
+        @Override
+        protected List<ShowcaseViewElement> doInBackground(List<ShowcaseViewElement>... params) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {}
+
+            return params[0];
+        }
+
+        @Override
+        protected void onPostExecute(List<ShowcaseViewElement> showcaseViewElements) {
+            ShowcaseViewUtility.start(showcaseViewElements, TimeRegistrationListActivity.this).setOnShowcaseEndedListener(new ShowcaseViewUtility.OnShowcaseEndedListener() {
+                @Override
+                public void onShowcaseEndedListener() {
+                    Preferences.Showcase.setShowcaseLastShownForSlideMenuForAppVersion(TimeRegistrationListActivity.this, ContextUtils.getCurrentApplicationVersionCode(TimeRegistrationListActivity.this));
+                }
+            });
+        }
     }
 }

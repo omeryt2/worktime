@@ -51,6 +51,9 @@ public class SlideInMenuAdapter extends ArrayAdapter<SlideInMenuAdapter.SlideInM
 
         label.setText(listItem.getLabelResId());
 
+        View imageParent = (View) image.getParent();
+        imageParent.setId(listItem.getContainerId());
+
         return row;
     }
 
@@ -59,20 +62,23 @@ public class SlideInMenuAdapter extends ArrayAdapter<SlideInMenuAdapter.SlideInM
         private int labelResId;
         private int imageResId = -1;
         private int requestCode = -1;
+        private int containerId;
 
-        public SlideInMenuItem(Context context, Class toClazz, int labelResId, int imageResId) {
+        public SlideInMenuItem(Context context, Class toClazz, int labelResId, int imageResId, int containerId) {
             Intent intent = new Intent(context, toClazz);
             this.intent = intent;
             this.labelResId = labelResId;
             this.imageResId = imageResId;
+            this.containerId = containerId;
         }
 
-        public SlideInMenuItem(Context context, Class toClazz, int labelResId, int imageResId, int requestCode) {
+        public SlideInMenuItem(Context context, Class toClazz, int labelResId, int imageResId, int requestCode, int containerId) {
             Intent intent = new Intent(context, toClazz);
             this.intent = intent;
             this.labelResId = labelResId;
             this.imageResId = imageResId;
             this.requestCode = requestCode;
+            this.containerId = containerId;
         }
 
         public Intent getIntent() {
@@ -105,6 +111,14 @@ public class SlideInMenuAdapter extends ArrayAdapter<SlideInMenuAdapter.SlideInM
 
         public void setRequestCode(int requestCode) {
             this.requestCode = requestCode;
+        }
+
+        public int getContainerId() {
+            return containerId;
+        }
+
+        public void setContainerId(int containerId) {
+            this.containerId = containerId;
         }
     }
 }

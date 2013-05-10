@@ -805,6 +805,19 @@ public class Preferences {
             editor.putInt(Constants.Preferences.Keys.SHOW_CASE_LAST_SHOWN_FOR_APP_VERSION, appVersion);
             editor.commit();
         }
+
+        public static int getShowcaseLastShownForSlideMenuForAppVersion(Context ctx) {
+            return getSharedPreferences(ctx).getInt(
+                    Constants.Preferences.Keys.SHOW_CASE_LAST_SHOWN_FOR_SLIDE_MENU_FOR_APP_VERSION,
+                    Constants.Preferences.SHOW_CASE_LAST_SHOWN_FOR_SLIDE_MENU_FOR_APP_VERSION_DEFAULT_VALUE
+            );
+        }
+
+        public static void setShowcaseLastShownForSlideMenuForAppVersion(Context ctx, int appVersion) {
+            SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+            editor.putInt(Constants.Preferences.Keys.SHOW_CASE_LAST_SHOWN_FOR_SLIDE_MENU_FOR_APP_VERSION, appVersion);
+            editor.commit();
+        }
     }
 
     public static class Notifications {

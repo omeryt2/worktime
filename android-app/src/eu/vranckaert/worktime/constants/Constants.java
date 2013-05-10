@@ -137,6 +137,7 @@ public class Constants {
         public static final boolean ACCOUNT_SYNC_RETRY_ON_ERROR_DEFAULT_VALUE = true;
         public static final String ACCOUNT_SYNC_ERROR_NOTIFICATION_CASES_DEFAULT_VALUE = "LoginCredentialsMismatchException|GeneralWebException|BackupException|SynchronizationFailedException";
         public static final int SHOW_CASE_LAST_SHOWN_FOR_APP_VERSION_DEFAULT_VALUE = -1;
+        public static final int SHOW_CASE_LAST_SHOWN_FOR_SLIDE_MENU_FOR_APP_VERSION_DEFAULT_VALUE = -1;
         public static final String DEFAULT_NOTIFICATION_ACTIONS_DEFAULT_VALUE = "PUNCH_OUT|SPLIT|OTHER_ACTIONS";
 
         public class Keys {
@@ -173,6 +174,7 @@ public class Constants {
             public static final String ACCOUNT_SYNC_ERROR_NOTIFICATIONS = "accountSyncErrorShowNotifications";
             public static final String ACCOUNT_SYNC_ERROR_NOTIFICATION_CASES = "accountSyncErrorShowNotificationCases";
             public static final String SHOW_CASE_LAST_SHOWN_FOR_APP_VERSION = "showCaseLastShownForAppVersion";
+            public static final String SHOW_CASE_LAST_SHOWN_FOR_SLIDE_MENU_FOR_APP_VERSION = "showCaseLastShownForSlideMenuForAppVersion";
             public static final String DEFAULT_NOTIFICATION_ACTIONS = "defaultNotificationActionsPreference";
         }
     }

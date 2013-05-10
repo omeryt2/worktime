@@ -1,5 +1,6 @@
 package eu.vranckaert.worktime.utils.view.showcase;
 
+import android.R;
 import android.app.Activity;
 import android.view.View;
 import com.github.espiandev.showcaseview.ShowcaseView;
@@ -86,6 +87,11 @@ public class ShowcaseViewElement {
 
     public ShowcaseView getShowcaseView(Activity activity) {
         if (actionBarItem) {
+            if (actionBarElementId == R.id.home) {
+                actionBarType = ShowcaseView.ITEM_ACTION_HOME;
+            } else {
+                actionBarType = ShowcaseView.ITEM_ACTION_ITEM;
+            }
             return ShowcaseView.insertShowcaseViewWithType(actionBarType, actionBarElementId, activity, title, text, options);
         } else {
             return ShowcaseView.insertShowcaseView(viewToShowcase, activity, title, text, options);

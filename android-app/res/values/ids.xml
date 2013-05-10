@@ -40,4 +40,11 @@
     <item type="id" name="wizard_navigation_container_finish" />
     <item type="id" name="wizard_content_container" />
     <item type="id" name="wizard_page_content_container" />
+
+    <!-- Showcase Ids -->
+    <item type="id" name="menuItemProjects"/>
+    <item type="id" name="menuItemAccount"/>
+    <item type="id" name="menuItemReporting"/>
+    <item type="id" name="menuItemPreferences"/>
+    <item type="id" name="menuItemAbout"/>
 </resources>
