@@ -236,6 +236,9 @@
                 <data android:scheme="https" android:host="worktime-web.appspot.com" android:pathPrefix="/resetPassword"/>
             </intent-filter>
         </activity>
+        <activity android:name=".activities.account.AccountChangePasswordActivity"
+                  android:theme="@style/Theme.Worktime"
+                  android:configChanges="orientation|keyboardHidden|screenSize"/>
 
         <!-- Widget activities -->
         <!-- Configuration -->
