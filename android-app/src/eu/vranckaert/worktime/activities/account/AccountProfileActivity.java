@@ -87,6 +87,7 @@ public class AccountProfileActivity extends SyncLockedActivity {
         setSupportProgressBarIndeterminateVisibility(false);
 
         setTitle(R.string.lbl_account_profile_title);
+        getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
@@ -112,11 +113,7 @@ public class AccountProfileActivity extends SyncLockedActivity {
 
         // Calling super after populating the menu is necessary here to ensure that the
         // action bar helpers have a chance to handle this event.
-        boolean r = super.onCreateOptionsMenu(menu);
-
-        // Disable click on home-button
-        getSupportActionBar().setHomeButtonEnabled(false);
-        return r;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
