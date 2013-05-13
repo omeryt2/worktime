@@ -49,13 +49,13 @@
 					<c:if test="${not pageFlow.isHomePage}">
 						<div class="clickableLogo">
 							<a href="/">
-								<img src="/webapp/img/logo.png" class="logo"/>
+								<img src="/webapp/img/logo_header.png" class="logo"/>
 							</a>
 						</div>
 					</c:if>
 					<c:if test="${pageFlow.isHomePage}">
 						<div class="nonClickableLogo">
-							<img src="/webapp/img/logo.png" class="logo"/>
+							<img src="/webapp/img/logo_header.png" class="logo"/>
 						</div>
 					</c:if>
 					
