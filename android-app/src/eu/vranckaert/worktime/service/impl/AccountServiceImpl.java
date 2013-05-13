@@ -870,6 +870,11 @@ public class AccountServiceImpl implements AccountService {
         workTimeWebDao.resetPassword(passwordResetRequestKey, newPassword);
     }
 
+    @Override
+    public void clearSyncHistory() {
+        syncHistoryDao.deleteAllButOngoing();
+    }
+
     private void clearUserAppData() {
         // Remove all the caching data...
         syncRemovalCacheDao.deleteAll();

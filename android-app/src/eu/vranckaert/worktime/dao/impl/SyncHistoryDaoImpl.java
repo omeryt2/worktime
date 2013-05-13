@@ -18,6 +18,7 @@ package eu.vranckaert.worktime.dao.impl;
 import android.content.Context;
 import android.util.Log;
 import com.google.inject.Inject;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import eu.vranckaert.worktime.dao.SyncHistoryDao;
@@ -117,5 +118,16 @@ public class SyncHistoryDaoImpl extends GenericDaoImpl<SyncHistory, Integer> imp
         }
 
         return syncHistories;
+    }
+
+    @Override
+    public void deleteAllButOngoing() {
+        DeleteBuilder<SyncHistory, Integer> deleteBuilder = dao.deleteBuilder();
+        try {
+            deleteBuilder.where().isNotNull("ended");
+            dao.delete(deleteBuilder.prepare());
+        } catch (SQLException e) {
+            throwFatalException(e);
+        }
     }
 }

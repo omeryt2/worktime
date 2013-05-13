@@ -168,4 +168,9 @@ public interface AccountService {
      * @throws PasswordResetKeyExpiredException Throw if the password reset key has expired (> 24 hours).
      */
     void resetPassword(String passwordResetRequestKey, String newPassword) throws PasswordResetKeyExpiredException, InvalidPasswordResetKeyException, PasswordLengthValidationException, GeneralWebException, PasswordResetKeyAlreadyUsedException, NoNetworkConnectionException;
+
+    /**
+     * Clears the entire synchronization history.
+     */
+    void clearSyncHistory();
 }

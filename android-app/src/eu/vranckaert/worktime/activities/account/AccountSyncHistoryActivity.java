@@ -15,7 +15,10 @@
 
 package eu.vranckaert.worktime.activities.account;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
@@ -57,13 +60,45 @@ public class AccountSyncHistoryActivity extends SyncLockedListActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getSupportMenuInflater().inflate(R.menu.ab_activity_account_sync_history, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 IntentUtil.goBack(this);
                 break;
+            case R.id.menu_account_sync_history_activity_clear:
+                clearSyncHistory();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void clearSyncHistory() {
+        AlertDialog dialog = new AlertDialog.Builder(AccountSyncHistoryActivity.this)
+                .setTitle(R.string.lbl_account_sync_history_clear_dialog_title)
+                .setMessage(R.string.lbl_account_sync_history_clear_dialog_message)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        accountService.clearSyncHistory();
+                        dialog.dismiss();
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        dialog.show();
     }
 
     @Override

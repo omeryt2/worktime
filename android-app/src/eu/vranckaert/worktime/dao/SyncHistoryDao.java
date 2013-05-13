@@ -48,4 +48,6 @@ public interface SyncHistoryDao extends GenericDao<SyncHistory, Integer> {
 
     @Override
     List<SyncHistory> findAll();
+
+    void deleteAllButOngoing();
 }
