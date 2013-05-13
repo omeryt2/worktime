@@ -23,4 +23,14 @@ public class DateUtil {
 		calendar.set(Calendar.MILLISECOND, calendar.getActualMaximum(Calendar.MILLISECOND));
 		return calendar.getTime();
 	}
+	
+	public static final long getSecondsFromMillis(Long millis) {
+		long seconds = millis / 1000;
+		return seconds;
+	}
+	
+	public static final long getMinutesFromMillis(Long millis) {
+		long minutes = getSecondsFromMillis(millis) / 60;
+		return minutes;
+	}
 }

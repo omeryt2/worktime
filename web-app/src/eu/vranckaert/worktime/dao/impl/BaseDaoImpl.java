@@ -123,4 +123,14 @@ public class BaseDaoImpl <T> implements BaseDao <T> {
 
 		return false;
 	}
+
+	@Override
+	public int countAll() {
+		return getDataStore().find().type(clazz).returnCount().now();
+	}
+
+	@Override
+	public int countForParent(Object parent) {
+		return getDataStore().find().type(clazz).ancestor(parent).returnCount().now();
+	}
 }

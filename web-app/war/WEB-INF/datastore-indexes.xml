@@ -1,4 +1,4 @@
-<datastore-indexes autoGenerate="false">
+<datastore-indexes autoGenerate="true">
 
     <!-- SyncHistoryDao - getOngoingSyncHistory(..) -->
     <datastore-index kind="syncHistory" ancestor="false" source="auto">
@@ -20,6 +20,12 @@
     <!-- TimeRegistrationDao - findAllModifiedAfter(..) -->
     <datastore-index kind="timeRegistration" ancestor="true" source="auto">
         <property name="lastUpdated" direction="asc"/>
+    </datastore-index>
+    
+    <!-- PasswordResetRequestDao - count methods -->
+    <datastore-index kind="passwordResetRequest" ancestor="false" source="auto">
+        <property name="used" direction="asc"/>
+        <property name="requestDate" direction="asc"/>
     </datastore-index>
 
 </datastore-indexes>

@@ -15,11 +15,10 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import eu.vranckaert.worktime.cron.reporting.ReportNewUsersServlet;
 import eu.vranckaert.worktime.model.User;
 
 public class EmailUtil {
-	private static final Logger log = Logger.getLogger(ReportNewUsersServlet.class.getName());
+	private static final Logger log = Logger.getLogger(EmailUtil.class.getName());
 	
 	public static final void sendEmail(String subject, Object body, String bodyType, List<User> recipients) {		
 		sendEmail(subject, body, bodyType, User.getTechnicalUser(), recipients);

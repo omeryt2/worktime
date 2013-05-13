@@ -12,4 +12,8 @@ public interface BaseDao <T> {
 	public void remove(T instance);
 	
 	T findById(Object id);
+	
+	int countAll();
+	
+	int countForParent(Object parent);
 }

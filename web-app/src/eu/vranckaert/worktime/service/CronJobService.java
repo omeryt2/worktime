@@ -14,4 +14,20 @@ public interface CronJobService {
 	List<User> findUsersRegisteredOnDay(Date date);
 
 	List<SyncHistory> findSyncsOnDay(Date time);
+
+	int countTimeRegistrations();
+
+	int countProjects();
+
+	int countTasks();
+
+	int countAllPasswordRequests();
+
+	int countAllPasswordRequestsForDay(Date time);
+
+	int countAllUsedPasswordRequests();
+
+	int countAllUsedPasswordRequestsForDay(Date time);
+
+	int countAllOpenPasswordRequests();
 }

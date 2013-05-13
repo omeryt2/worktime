@@ -18,6 +18,7 @@ import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.model.sync.SyncHistory;
 import eu.vranckaert.worktime.security.service.UserService;
 import eu.vranckaert.worktime.service.CronJobService;
+import eu.vranckaert.worktime.util.DateUtil;
 import eu.vranckaert.worktime.util.EmailUtil;
 
 public class ReportNewUsersServlet extends HttpServlet {
@@ -45,7 +46,39 @@ public class ReportNewUsersServlet extends HttpServlet {
 		int failure = 0;
 		int timeout = 0;
 		
+		int syncedTimeRegistrationsYesterday = 0;
+		int syncedTasksYesterday = 0;
+		int syncedProjectsYesterday = 0;
+		
+		long averageSyncTimeMillis = 0L;
+		long averageSyncTimeMillisYesterday = 0L;
+		
+		List<String> activeUsersBySync = new ArrayList<String>();
+		List<String> activeUsersBySyncYesterday = new ArrayList<String>();
+		
+		for (SyncHistory syncHistory : allSyncHistories) {
+			if (syncHistory.getEndTime() != null) {
+				averageSyncTimeMillis += (syncHistory.getEndTime().getTime() - syncHistory.getStartTime().getTime());
+				
+				if (!activeUsersBySync.contains(syncHistory.getUserEmail())) {
+					activeUsersBySync.add(syncHistory.getUserEmail());
+				}
+			}
+		}
+		
 		for (SyncHistory syncHistory : syncHistoriesYesterday) {
+			syncedTimeRegistrationsYesterday += syncHistory.getSyncedTimeRegistrations();
+			syncedTasksYesterday += syncHistory.getSyncedTasks();
+			syncedProjectsYesterday += syncHistory.getSyncedProjects();
+			
+			if (syncHistory.getEndTime() != null) {
+				averageSyncTimeMillisYesterday += (syncHistory.getEndTime().getTime() - syncHistory.getStartTime().getTime());
+			}
+			
+			if (!activeUsersBySyncYesterday.contains(syncHistory.getUserEmail())) {
+				activeUsersBySyncYesterday.add(syncHistory.getUserEmail());
+			}
+			
 			switch (syncHistory.getSyncResult()) {
 			case BUSY:
 				busy++;
@@ -65,12 +98,47 @@ public class ReportNewUsersServlet extends HttpServlet {
 			}
 		}
 		
-		String body = "Total number of users / Number of registrations yesterday: " + allUsers.size() + " / " + usersRegisteredYesterday.size() + "<br/>" +
-						"<br/>" +
-						"Number of syncs in total / Number of syncs yesterday: " + allSyncHistories.size() + " / " + syncHistoriesYesterday.size() + "<br/>" +
-						"<br/>" +
+		if (allSyncHistories.size() > 0) {
+			averageSyncTimeMillis = averageSyncTimeMillis / allSyncHistories.size();
+		}
+		if (syncHistoriesYesterday.size() > 0) {
+			averageSyncTimeMillisYesterday = averageSyncTimeMillisYesterday / syncHistoriesYesterday.size();
+		}
+		
+		int countTimeRegistrations = cronJobService.countTimeRegistrations();
+		int countTasks = cronJobService.countTasks();
+		int countProjects = cronJobService.countProjects();
+		
+		int totalCreatedPasswordRequests = cronJobService.countAllPasswordRequests();
+		int totalCreatedPasswordRequestsYesterday = cronJobService.countAllPasswordRequestsForDay(yesterday.getTime());
+		int totalUsedPasswordRequests = cronJobService.countAllUsedPasswordRequests();
+		int totalUsedPasswordRequestsYesterday = cronJobService.countAllUsedPasswordRequestsForDay(yesterday.getTime());
+		int totalOpenPasswordRequests = cronJobService.countAllOpenPasswordRequests();
+		
+		String html = "<html><head><style>" +
+					"table {" +
+						"border-collapse:collapse;" +
+					"}" +
+					"table, td, th {" +
+						"border:1px solid black;" +
+					"}" +
+				"</style></head><body>";
+		html += "<b><u>Data Count</u></b><br/>" +
+				"<br/>" +
+				"<table>" +
+					"<tr><th></th><th>Total</th><th>Yesterday</th></tr>" +
+					"<tr><td>Users</td><td>" + allUsers.size() + "</td><td>" + usersRegisteredYesterday.size() + "</td></tr>" +
+					"<tr><td>Active users (based on syncs)</td><td>" + activeUsersBySync.size() + "</td><td>" + activeUsersBySyncYesterday.size() + "</td></tr>" +
+					"<tr><td>Syncs</td><td>" + allSyncHistories.size() + "</td><td>" + syncHistoriesYesterday.size() + "</td></tr>" +
+					"<tr><td>Time Registrations</td><td>" + countTimeRegistrations + "</td><td>" + syncedTimeRegistrationsYesterday + "</td></tr>" +
+					"<tr><td>Tasks</td><td>" + countTasks + "</td><td>" + syncedTasksYesterday + "</td></tr>" +
+					"<tr><td>Projects</td><td>" + countProjects + "</td><td>" + syncedProjectsYesterday + "</td></tr>" +
+				"</table>" +
+				"<br/>" +
+				"<b><u>Yesterday Sync Result Overview</u></b><br/>" + 
+				"<br/>" +
 						"<table>" +
-						"	<th><td>Status</td><td>Result</td></th>" +
+						"	<tr><th>Status</th><th>Result</th></tr>" +
 						"	<tr><td>SUCCESS</td><td>"  + success + "</td></tr>" +
 						"	<tr><td>INTERRUPTED</td><td>"  + interrupted + "</td></tr>" +
 						"	<tr><td>FAILURE</td><td>"  + failure + "</td></tr>" +
@@ -78,8 +146,28 @@ public class ReportNewUsersServlet extends HttpServlet {
 						"	<tr><td>TIMEOUT</td><td>"  + timeout + "</td></tr>" +
 						"</table>" +
 						"<br/>" +
+						"<b><u>Average Sync Duration</u></b><br/>" + 
+						"<br/>" +
+						"<table>" +
+						"	<tr><th></th><th>Millis</th><th>Seconds</th><th>Minutes</th></tr>" +
+						"	<tr><td>Yesterday</td><td>"  + averageSyncTimeMillisYesterday + "</td><td>"  + DateUtil.getSecondsFromMillis(averageSyncTimeMillisYesterday) + "</td><td>"  + DateUtil.getMinutesFromMillis(averageSyncTimeMillisYesterday) + "</td></tr>" +
+						"	<tr><td>All Times</td><td>"  + averageSyncTimeMillis + "</td><td>"  + DateUtil.getSecondsFromMillis(averageSyncTimeMillis) + "</td><td>"  + DateUtil.getMinutesFromMillis(averageSyncTimeMillis) + "</td></tr>" +
+						"</table>" +
+						"<br/>" +
+						"<b><u>Password Reset Requests</u></b><br/>" +
+						"<br/>" +
+						"<table>" +
+							"<tr><th></th><th>Total</th><th>Yesterday</th></tr>" +
+							"<tr><td>Created</td><td>" + totalCreatedPasswordRequests + "</td><td>" + totalCreatedPasswordRequestsYesterday + "</td></tr>" +
+							"<tr><td>Used</td><td>" + totalUsedPasswordRequests + "</td><td>" + totalUsedPasswordRequestsYesterday + "</td></tr>" +
+							"<tr><td>Open</td><td>" + totalOpenPasswordRequests + "</td><td>N/A</td></tr>" +
+						"</table>" +
+						"<br/>" +
 						"Please do not reply to this mail as this is an auto generated message and you will never receive any response!";
+		html += "</body></html>";
 		
+		log.info("The message to be sent is:");
+		log.info(html);
 		
 		List<User> recipients = new ArrayList<User>();
 		User user = new User();
@@ -87,6 +175,6 @@ public class ReportNewUsersServlet extends HttpServlet {
 		user.setFirstName("Dirk");
 		user.setLastName("Vranckaert");
 		recipients.add(user);
-		EmailUtil.sendEmail("WorkTime Reporting - Users/New Users", body, "text/html", recipients);
+		EmailUtil.sendEmail("WorkTime Reporting", html, "text/html", recipients);
 	}
 }
