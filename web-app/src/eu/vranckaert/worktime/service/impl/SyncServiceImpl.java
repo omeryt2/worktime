@@ -293,7 +293,7 @@ public class SyncServiceImpl implements SyncService {
 				TimeRegistration ongoingSyncedTimeRegistration = null;
 				if (incomingTimeRegistrations != null && incomingTimeRegistrations.size() > 0) {
 					for (TimeRegistration timeRegistration : incomingTimeRegistrations) {
-						if (timeRegistration.getSyncKey().equals(ongoingTimeRegistration.getSyncKey())) {
+						if (StringUtils.isNotBlank(timeRegistration.getSyncKey()) && timeRegistration.getSyncKey().equals(ongoingTimeRegistration.getSyncKey())) {
 							log.info("Found the incoming TR that matches the ongoing TR... Syncing this TR first...");
 							ongoingSyncedTimeRegistration = timeRegistration;
 							
