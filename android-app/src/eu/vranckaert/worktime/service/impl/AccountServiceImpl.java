@@ -655,13 +655,15 @@ public class AccountServiceImpl implements AccountService {
         destination.setFlags(source.getFlags());
         destination.setLastUpdated(source.getLastUpdated());
         destination.setSyncKey(source.getSyncKey());
+        destination.setStartTime(source.getStartTime());
+        destination.setEndTime(source.getEndTime());
         Task task = taskDao.findBySyncKey(source.getTask().getSyncKey());
         if (task == null) {
             Project localProject = projectDao.findByName(source.getTask().getProject().getName());
             task = taskDao.findByName(source.getTask().getName(), localProject);
         }
         destination.setTask(task);
-        if (source.getId() != null)
+        if (destination.getId() != null)
             timeRegistrationDao.update(destination);
     }
 

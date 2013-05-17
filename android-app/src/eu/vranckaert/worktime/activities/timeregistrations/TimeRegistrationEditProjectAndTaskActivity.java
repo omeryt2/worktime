@@ -42,6 +42,7 @@ import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActiv
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -78,7 +79,7 @@ public class TimeRegistrationEditProjectAndTaskActivity extends SyncLockedGuiceA
     private Task newSelectedTask = null;
 
     private List<Project> availableProjects = null;
-    private List<Task> availableTasks = null;
+    private List<Task> availableTasks = new ArrayList<Task>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
