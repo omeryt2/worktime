@@ -1,5 +1,6 @@
 /*
  * Copyright 2013 Dirk Vranckaert
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,6 +26,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.widget.Toast;
 import com.google.inject.Inject;
+import com.google.inject.internal.Nullable;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.projects.SelectProjectActivity;
 import eu.vranckaert.worktime.activities.tasks.SelectTaskActivity;
@@ -48,7 +50,6 @@ import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActiv
 import org.joda.time.Duration;
 import roboguice.inject.InjectExtra;
 
-import com.google.inject.internal.Nullable;
 import java.util.Date;
 import java.util.List;
 

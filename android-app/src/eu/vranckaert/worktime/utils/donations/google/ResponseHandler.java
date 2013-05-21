@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright 2013 Dirk Vranckaert
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,15 +16,14 @@
 
 package eu.vranckaert.worktime.utils.donations.google;
 
-import eu.vranckaert.worktime.utils.donations.google.BillingService.RequestPurchase;
-import eu.vranckaert.worktime.utils.donations.google.BillingService.RestoreTransactions;
-import eu.vranckaert.worktime.utils.donations.google.Consts.PurchaseState;
-import eu.vranckaert.worktime.utils.donations.google.Consts.ResponseCode;
-
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import eu.vranckaert.worktime.utils.donations.google.BillingService.RequestPurchase;
+import eu.vranckaert.worktime.utils.donations.google.BillingService.RestoreTransactions;
+import eu.vranckaert.worktime.utils.donations.google.Consts.PurchaseState;
+import eu.vranckaert.worktime.utils.donations.google.Consts.ResponseCode;
 
 /**
  * This class contains the methods that handle responses from Android Market. The implementation of

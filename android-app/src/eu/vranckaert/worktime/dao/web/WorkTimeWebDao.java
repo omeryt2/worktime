@@ -1,5 +1,6 @@
 /*
  * Copyright 2013 Dirk Vranckaert
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +16,6 @@
 
 package eu.vranckaert.worktime.dao.web;
 
-import eu.vranckaert.worktime.dao.web.model.response.sync.WorkTimeSyncResponse;
 import eu.vranckaert.worktime.exceptions.network.NoNetworkConnectionException;
 import eu.vranckaert.worktime.exceptions.worktime.account.*;
 import eu.vranckaert.worktime.exceptions.worktime.sync.CorruptSyncDataException;

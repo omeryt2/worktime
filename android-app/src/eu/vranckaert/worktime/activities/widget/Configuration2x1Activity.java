@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
+ * Copyright 2013 Dirk Vranckaert
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package eu.vranckaert.worktime.activities.widget;
 
-import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,7 +24,6 @@ import eu.vranckaert.worktime.activities.projects.SelectProjectActivity;
 import eu.vranckaert.worktime.activities.tasks.SelectTaskActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.service.ui.WidgetService;
-import eu.vranckaert.worktime.service.ui.impl.WidgetServiceImpl;
 import roboguice.activity.RoboActivity;
 
 public class Configuration2x1Activity extends RoboActivity {

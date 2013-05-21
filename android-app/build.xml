@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright 2012 Dirk Vranckaert
+  ~ Copyright 2013 Dirk Vranckaert
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -45,6 +45,15 @@
         7) svn.repository.password => Your password on the SVN repository where the changes should be committed (only
            required for nightly or prod release)
     -->
+
+    <!-- Unzip all library projects -->
+    <mkdir dir="../libs"/>
+    <delete dir="../libs"/>
+    <unzip dest="../libs">
+        <fileset dir="./libraryprojects">
+            <include name="*.zip"/>
+        </fileset>
+    </unzip>
 
     <!-- Zutubi Android Ant library for automated versioning -->
     <taskdef uri="antlib:com.zutubi.android.ant"

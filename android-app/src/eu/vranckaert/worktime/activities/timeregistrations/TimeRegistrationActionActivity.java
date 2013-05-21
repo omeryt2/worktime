@@ -1,5 +1,6 @@
 /*
  * Copyright 2013 Dirk Vranckaert
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +16,6 @@
 
 package eu.vranckaert.worktime.activities.timeregistrations;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -26,14 +26,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TableLayout;
+import android.widget.*;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.timeregistrations.listadapter.TimeRegistrationActionListAdapter;
@@ -45,14 +38,8 @@ import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.service.CommentHistoryService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
-import eu.vranckaert.worktime.service.impl.CommentHistoryServiceImpl;
-import eu.vranckaert.worktime.service.impl.DatabaseFileBackupServiceImpl;
-import eu.vranckaert.worktime.service.impl.TaskServiceImpl;
-import eu.vranckaert.worktime.service.impl.TimeRegistrationServiceImpl;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
-import eu.vranckaert.worktime.service.ui.impl.StatusBarNotificationServiceImpl;
-import eu.vranckaert.worktime.service.ui.impl.WidgetServiceImpl;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateFormat;
@@ -61,13 +48,8 @@ import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
-import roboguice.activity.RoboActivity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * User: DIRK VRANCKAERT

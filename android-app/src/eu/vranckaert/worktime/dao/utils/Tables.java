@@ -1,5 +1,6 @@
 /*
  * Copyright 2013 Dirk Vranckaert
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +17,7 @@
 package eu.vranckaert.worktime.dao.utils;
 
 import eu.vranckaert.worktime.model.*;
+import eu.vranckaert.worktime.model.trigger.Geofence;
 
 /**
  * User: DIRK VRANCKAERT
@@ -30,7 +32,8 @@ public enum Tables {
     WIDGET_CONFIGURATION(WidgetConfiguration.class),
     USER(User.class),
     SYNC_HISTORY(SyncHistory.class),
-    SYNC_REMOVAL_CACHE(SyncRemovalCache.class);
+    SYNC_REMOVAL_CACHE(SyncRemovalCache.class),
+    GEO_FENCE(Geofence.class);
 
     Tables(Class tableClass) {
         this.tableClass = tableClass;

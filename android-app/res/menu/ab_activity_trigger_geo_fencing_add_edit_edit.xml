@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~ Copyright 2012 Dirk Vranckaert
+  ~ Copyright 2013 Dirk Vranckaert
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -17,15 +17,14 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_home_activity_account"
-          android:title="@string/home_ab_menu_account"
-          android:icon="@drawable/ic_social_person"
+    <item android:id="@+id/menu_trigger_geo_fencing_list_activity_add_edit_delete"
+          android:title="@string/trigger_geo_fencing_list_ab_menu_delete"
+          android:icon="@drawable/ic_content_discard"
           android:orderInCategory="1"
           android:showAsAction="ifRoom" />
-
-    <item android:id="@+id/menu_home_activity_about"
-          android:title="@string/home_ab_menu_about"
-          android:icon="@drawable/ic_action_about"
+    <item android:id="@+id/menu_trigger_geo_fencing_list_activity_add_edit_edit"
+          android:title="@string/trigger_geo_fencing_list_ab_menu_save"
+          android:icon="@drawable/ic_content_save"
           android:orderInCategory="2"
           android:showAsAction="ifRoom" />
 </menu>

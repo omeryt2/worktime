@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2011-2012 Dominik Schürmann <dominik@dominikschuermann.de>
+ * Copyright 2013 Dirk Vranckaert
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,23 +16,15 @@
 
 package eu.vranckaert.worktime.utils.donations;
 
-import eu.vranckaert.worktime.R;
-import eu.vranckaert.worktime.utils.donations.google.BillingService;
-import eu.vranckaert.worktime.utils.donations.google.Consts;
-import eu.vranckaert.worktime.utils.donations.google.PurchaseObserver;
-import eu.vranckaert.worktime.utils.donations.google.ResponseHandler;
-import eu.vranckaert.worktime.utils.donations.google.BillingService.RequestPurchase;
-import eu.vranckaert.worktime.utils.donations.google.BillingService.RestoreTransactions;
-import eu.vranckaert.worktime.utils.donations.google.Consts.PurchaseState;
-import eu.vranckaert.worktime.utils.donations.google.Consts.ResponseCode;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,16 +33,18 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.webkit.WebView.HitTestResult;
-import android.widget.FrameLayout;
-
-import android.content.DialogInterface;
-import android.os.Handler;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.webkit.WebViewClient;
+import android.widget.*;
+import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.utils.donations.google.BillingService;
+import eu.vranckaert.worktime.utils.donations.google.BillingService.RequestPurchase;
+import eu.vranckaert.worktime.utils.donations.google.BillingService.RestoreTransactions;
+import eu.vranckaert.worktime.utils.donations.google.Consts;
+import eu.vranckaert.worktime.utils.donations.google.Consts.PurchaseState;
+import eu.vranckaert.worktime.utils.donations.google.Consts.ResponseCode;
+import eu.vranckaert.worktime.utils.donations.google.PurchaseObserver;
+import eu.vranckaert.worktime.utils.donations.google.ResponseHandler;
 
 public class DonationsFragment extends Fragment {
     private DonatePurchaseObserver mDonatePurchaseObserver;

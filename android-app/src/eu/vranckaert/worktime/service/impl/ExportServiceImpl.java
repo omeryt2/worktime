@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
+ * Copyright 2013 Dirk Vranckaert
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,26 +31,12 @@ import jxl.Workbook;
 import jxl.WorkbookSettings;
 import jxl.biff.DisplayFormat;
 import jxl.format.Colour;
-import jxl.write.Formula;
-import jxl.write.Label;
-import jxl.write.WritableCell;
-import jxl.write.WritableCellFormat;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
-import jxl.write.WriteException;
+import jxl.write.*;
 import roboguice.inject.ContextSingleton;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
+import java.lang.Boolean;
 
 /**
  * @author Dirk Vranckaert

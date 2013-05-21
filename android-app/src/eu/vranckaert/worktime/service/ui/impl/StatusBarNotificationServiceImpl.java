@@ -1,5 +1,6 @@
 /*
  * Copyright 2013 Dirk Vranckaert
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -292,6 +293,11 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
         removeMessage(Constants.StatusBarNotificationIds.SYNC);
     }
 
+    @Override
+    public void addNotificationForGeofence(String title, String message) {
+        setStatusBarNotification(title, message, title, null, null, null, 698584, NotificationCompat2.PRIORITY_DEFAULT, null, false);
+    }
+
     /**
      * Get an instance of the Android {@link NotificationManager}.
      * @return An instance of the {@link NotificationManager}.
@@ -345,7 +351,10 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
         if (iconDrawable != null)
             icon = iconDrawable;
 
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        PendingIntent contentIntent = null;
+        if (intent != null) {
+            contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        }
 
         final NotificationManager mgr = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
 
@@ -363,11 +372,16 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
             builder.addAction(action.getDrawable(), action.getText(), PendingIntent.getActivity(context, action.getIntentRequestCode(), action.getIntent(), 0));
         }
 
-        NotificationCompat2.BigTextStyle bigTextStyle = new NotificationCompat2.BigTextStyle(builder).bigText(bigText);
-        if (bigContentTitle != null) {
-            bigTextStyle.setBigContentTitle(bigContentTitle);
+        Notification notification;
+        if (StringUtils.isNotBlank(bigText)) {
+            NotificationCompat2.BigTextStyle bigTextStyle = new NotificationCompat2.BigTextStyle(builder).bigText(bigText);
+            if (bigContentTitle != null) {
+                bigTextStyle.setBigContentTitle(bigContentTitle);
+            }
+            notification = bigTextStyle.build();
+        } else {
+            notification = builder.build();
         }
-        Notification notification = bigTextStyle.build();
         // Issue-230
         if (fixed)
             notification.flags |= Notification.FLAG_NO_CLEAR;

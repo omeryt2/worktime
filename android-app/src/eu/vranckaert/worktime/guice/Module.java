@@ -1,5 +1,6 @@
 /*
  * Copyright 2013 Dirk Vranckaert
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -50,6 +51,7 @@ public class Module extends AbstractModule {
         bind(AccountDao.class).to(AccountDaoImpl.class).asEagerSingleton();
         bind(SyncHistoryDao.class).to(SyncHistoryDaoImpl.class).asEagerSingleton();
         bind(SyncRemovalCacheDao.class).to(SyncRemovalCacheDaoImpl.class).asEagerSingleton();
+        bind(GeofenceDao.class).to(GeofenceDaoImpl.class).asEagerSingleton();
     }
 
     private void bindWebDaos() {
@@ -64,6 +66,7 @@ public class Module extends AbstractModule {
         bind(BackupService.class).to(DatabaseFileBackupServiceImpl.class).asEagerSingleton();
         bind(ExportService.class).to(ExportServiceImpl.class).asEagerSingleton();
         bind(AccountService.class).to(AccountServiceImpl.class).asEagerSingleton();
+        bind(GeofenceService.class).to(GeofenceServiceImpl.class).asEagerSingleton();
         //UI services
         bind(WidgetService.class).to(WidgetServiceImpl.class).asEagerSingleton();
         bind(StatusBarNotificationService.class).to(StatusBarNotificationServiceImpl.class).asEagerSingleton();

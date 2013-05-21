@@ -1,5 +1,6 @@
 /*
  * Copyright 2013 Dirk Vranckaert
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -59,4 +60,6 @@ public interface StatusBarNotificationService {
     void addStatusBarNotificationForSync(int titleResId, int smallMsgResId, int msgResId);
 
     void removeSyncNotifications();
+
+    void addNotificationForGeofence(String title, String message);
 }

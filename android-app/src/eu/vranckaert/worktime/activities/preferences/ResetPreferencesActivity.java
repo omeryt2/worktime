@@ -1,5 +1,6 @@
 /*
  * Copyright 2013 Dirk Vranckaert
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,7 +24,6 @@ import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
-import roboguice.activity.RoboActivity;
 
 public class ResetPreferencesActivity extends SyncLockedGuiceActivity {
 

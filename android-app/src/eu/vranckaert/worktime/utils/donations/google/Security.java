@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
+ * Copyright 2013 Dirk Vranckaert
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,9 @@
 
 package eu.vranckaert.worktime.utils.donations.google;
 
+import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
 import eu.vranckaert.worktime.utils.donations.DonationsUtils;
 import eu.vranckaert.worktime.utils.donations.google.Consts.PurchaseState;
 import eu.vranckaert.worktime.utils.donations.google.util.Base64;
@@ -24,17 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.text.TextUtils;
-import android.util.Log;
-
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.SecureRandom;
-import java.security.Signature;
-import java.security.SignatureException;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;

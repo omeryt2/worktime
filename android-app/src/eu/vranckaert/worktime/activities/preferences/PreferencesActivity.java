@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
+ * Copyright 2013 Dirk Vranckaert
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,15 +23,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
-import android.view.Window;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
-import eu.vranckaert.worktime.constants.OSContants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.service.AccountService;
-import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.file.FileUtil;
 import eu.vranckaert.worktime.utils.preferences.Preferences;

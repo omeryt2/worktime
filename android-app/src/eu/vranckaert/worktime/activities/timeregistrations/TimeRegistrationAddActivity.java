@@ -1,5 +1,6 @@
 /*
  * Copyright 2013 Dirk Vranckaert
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,21 +16,14 @@
 
 package eu.vranckaert.worktime.activities.timeregistrations;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
-import eu.vranckaert.worktime.activities.projects.AddEditProjectActivity;
 import eu.vranckaert.worktime.activities.projects.SelectProjectActivity;
-import eu.vranckaert.worktime.activities.tasks.AddEditTaskActivity;
 import eu.vranckaert.worktime.activities.tasks.SelectTaskActivity;
-import eu.vranckaert.worktime.comparators.project.ProjectByNameComparator;
-import eu.vranckaert.worktime.comparators.task.TaskByNameComparator;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.OSContants;
 import eu.vranckaert.worktime.constants.TextConstants;
@@ -51,7 +45,8 @@ import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedWizardActivity;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * User: DIRK VRANCKAERT

@@ -1,5 +1,6 @@
 /*
  * Copyright 2013 Dirk Vranckaert
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -110,6 +111,24 @@ public enum DatabaseUpgrade {
             "ALTER TABLE SyncHistory add column numIncomingProjectsRemoved " + DataTypes.INTEGER + ";",
             "ALTER TABLE SyncHistory add column numIncomingTasksRemoved " + DataTypes.INTEGER + ";",
             "ALTER TABLE SyncHistory add column numIncomingTimeRegistrationsRemoved " + DataTypes.INTEGER + ";"
+    }),
+    UPGRADE10(31, new String[] {
+            "CREATE TABLE Geofence " +
+                    "(" +
+                    "id " + DataTypes.INTEGER + " PRIMARY KEY, " +
+                    "geofenceRequestId " + DataTypes.VARCHAR + " UNIQUE NOT NULL, " +
+                    "name " + DataTypes.VARCHAR + " UNIQUE NOT NULL, " +
+                    "expirationDate " + DataTypes.VARCHAR + ", " +
+                    "latitude " + DataTypes.DOUBLE + " NOT NULL, " +
+                    "longitude " + DataTypes.DOUBLE + " NOT NULL, " +
+                    "radius " + DataTypes.DOUBLE + " NOT NULL" +
+                    ");"
+    }),
+    UPGRADE11(32, new String[] {
+            "ALTER TABLE Geofence add column taskId " + DataTypes.INTEGER + ";"
+    }),
+    UPGRADE12(33, new String[] {
+            "ALTER TABLE Geofence add column entered " + DataTypes.BOOLEAN + ";"
     })
     ;
 
@@ -144,5 +163,7 @@ public enum DatabaseUpgrade {
         private static final String BOOLEAN = "SMALLINT";
         private static final String TEXT = "TEXT";
         private static final String VARCHAR = "VARCHAR";
+        private static final String FLOAT = "FLOAT";
+        private static final String DOUBLE = "DOUBLE";
     }
 }

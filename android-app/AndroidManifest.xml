@@ -2,6 +2,7 @@
 
 <!--
   ~ Copyright 2013 Dirk Vranckaert
+  ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
   ~ You may obtain a copy of the License at
@@ -19,14 +20,21 @@
       package="eu.vranckaert.worktime"
       android:versionCode="279"
       android:versionName="1.1.16 - UNSTABLE">
+    <permission android:name="eu.vranckaert.worktime.permission.MAPS_RECEIVE"
+                android:protectionLevel="signature"/>
+    <uses-permission android:name="eu.vranckaert.worktime.permission.MAPS_RECEIVE"/>
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-
     <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
 
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="17"/>
 
@@ -35,6 +43,9 @@
         <!-- Backup service configuration -->
         <meta-data android:name="com.google.android.backup.api_key"
                    android:value="AEdPqrEAAAAIKBOIRHAdZEXSXtzuiIu5cs97amRuguwj7UtnfA" />
+        <!-- Maps configuration -->
+        <meta-data android:name="com.google.android.maps.v2.API_KEY"
+                   android:value="AIzaSyAw-BxAr1S_mwEhDMq6HnmJR97ur3eIzzw"/>
 
         <!-- Widget configuration -->
         <receiver android:name=".providers.WorkTimeWidgetProvider_2x2_Project" android:label="@string/lbl_widget_2x2_name">
@@ -240,6 +251,19 @@
                   android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
 
+        <!-- Triggers -->
+        <activity android:name=".activities.triggers.TriggerGeoFencingMapActivity"
+                  android:theme="@style/Theme.Worktime"
+                  android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <activity android:name=".activities.triggers.TriggerGeoFencingAddEditActivity"
+                  android:theme="@style/Theme.Worktime"
+                  android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <receiver android:name=".broadcastreceiver.GeofenceBroadcastReceiver" android:enabled="true" android:exported="false">
+            <intent-filter>
+                <action android:name="eu.vranckaert.worktime.geofence" />
+            </intent-filter>
+        </receiver>
+
         <!-- Widget activities -->
         <!-- Configuration -->
         <activity android:name=".activities.widget.Configuration2x1Activity"
@@ -323,7 +347,7 @@
                 android:name="eu.vranckaert.worktime.utils.donations.DonationsActivity"
                 android:excludeFromRecents="true"
                 android:launchMode="singleTask"
-                android:theme="@android:style/Theme.DeviceDefault.Dialog" />
+                android:theme="@android:style/Theme.Dialog" />
 
         <!-- - Google Play Store donations -->
         <service android:name="eu.vranckaert.worktime.utils.donations.google.BillingService" />

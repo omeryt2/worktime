@@ -1,5 +1,6 @@
 /*
  * Copyright 2013 Dirk Vranckaert
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -96,10 +97,13 @@ public class Constants {
         public static final int ACCOUNT_DETAILS = 14;
         public static final int ACCOUNT_REGISTER = 15;
         public static final int SYNC_BLOCKING_ACTIVITY = 16;
-
+        public static final int ADD_TRIGGER_GEO_FENCING = 17;
+        public static final int EDIT_TRIGGER_GEO_FENCING = 18;
 
         public static final int ALARM_SYNC_REPEAT = 9000;
         public static final int ALARM_SYNC_RETRY = 9001;
+
+        public static final int INSTALL_PLAY_SERVICES = 9999;
     }
     public class IntentResultCodes {
         public static final int RESULT_OK_SPLIT = 100;
@@ -203,6 +207,8 @@ public class Constants {
         public static final String DEFAULT_ACTION = "defaultAction";
         public static final String SKIP_DIALOG = "skipDialog";
         public static final String ONLY_ACTION = "onlyAction";
+        public static final String GEOFENCE = "geofence";
+        public static final String CURRENT_LOCATION = "currentLocation";
     }
     public class ContentMenuItemIds {
         public static final int PROJECT_DETAILS = 1;
@@ -241,5 +247,6 @@ public class Constants {
         public static final String TIME_REGISTRATION_DETAILS = "eu.vranckaert.worktime.time_registration_details";
         public static final String TIME_REGISTRATION_EDIT_START_TIME = "eu.vranckaert.worktime.time_registration_edit_start_time";
         public static final String TIME_REGISTRATION_EDIT_PROJECT_AND_TASK = "eu.vranckaert.worktime.time_registration_edit_project_and_task";
+        public static final String GEOFENCE_INTENT = "eu.vranckaert.worktime.geofence";
     }
 }

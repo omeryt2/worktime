@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Dirk Vranckaert
+ * Copyright 2013 Dirk Vranckaert
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,9 @@
 package eu.vranckaert.worktime.utils.activity;
 
 import android.os.Bundle;
-import android.view.Window;
 import com.actionbarsherlock.view.MenuItem;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
-import eu.vranckaert.worktime.constants.OSContants;
-import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;

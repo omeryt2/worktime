@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
+ * Copyright 2013 Dirk Vranckaert
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,29 +16,22 @@
 
 package eu.vranckaert.worktime.utils.donations.google;
 
-import com.android.vending.billing.IMarketBillingService;
-
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.ServiceConnection;
+import android.content.*;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
+import com.android.vending.billing.IMarketBillingService;
+import eu.vranckaert.worktime.utils.donations.google.Consts.ResponseCode;
+import eu.vranckaert.worktime.utils.donations.google.Security.VerifiedPurchase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-
-import eu.vranckaert.worktime.utils.donations.google.Consts.PurchaseState;
-import eu.vranckaert.worktime.utils.donations.google.Consts.ResponseCode;
-import eu.vranckaert.worktime.utils.donations.google.Security.VerifiedPurchase;
 
 /**
  * Extra fixes from here: http://code.google.com/p/marketbilling/issues/detail?id=25 to overcome:
