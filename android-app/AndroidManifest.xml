@@ -18,7 +18,7 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="eu.vranckaert.worktime"
-      android:versionCode="283"
+      android:versionCode="284"
       android:versionName="1.1.16 - UNSTABLE">
     <permission android:name="eu.vranckaert.worktime.permission.MAPS_RECEIVE"
                 android:protectionLevel="signature"/>
@@ -43,7 +43,7 @@
         <!-- Backup service configuration -->
         <meta-data android:name="com.google.android.backup.api_key" android:value="AEdPqrEAAAAIKBOIRHAdZEXSXtzuiIu5cs97amRuguwj7UtnfA" />
         <!-- Maps configuration -->
-        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyAw-BxAr1S_mwEhDMq6HnmJR97ur3eIzzw"/>
+        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCnf6OF1LzdnOFlup2sjGVRBLhDKh_DiP0"/>
 
         <!-- Widget configuration -->
         <receiver android:name=".providers.WorkTimeWidgetProvider_2x2_Project" android:label="@string/lbl_widget_2x2_name">
