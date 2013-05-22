@@ -146,6 +146,8 @@ public class TriggerGeoFencingMapActivity extends RoboSherlockFragmentActivity {
     }
 
     private void loadDataOnMap() {
+        // TODO if no geofenceTriggers are available, zoom to the last known location with a wide zoomlevel
+
         mGoogleMap.clear();
         LatLngBounds.Builder bounds = new LatLngBounds.Builder();
         List<GeofenceTrigger> geofenceTriggers = geofenceService.findAllNonExpired();

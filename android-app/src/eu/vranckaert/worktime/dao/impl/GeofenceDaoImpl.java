@@ -53,7 +53,7 @@ public class GeofenceDaoImpl extends GenericDaoImpl<GeofenceTrigger, Integer> im
         int rowCount = 0;
         List<String[]> results = null;
         try {
-            GenericRawResults rawResults = dao.queryRaw("select count(*) from GeofenceTrigger where name = '" + name + "'");
+            GenericRawResults rawResults = dao.queryRaw("select count(*) from Geofence where name = '" + name + "'");
             results = rawResults.getResults();
         } catch (SQLException e) {
             throwFatalException(e);
