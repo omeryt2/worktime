@@ -62,7 +62,13 @@ public interface TimeRegistrationService {
      * Create a new instance of {@link TimeRegistration}.
      * @param timeRegistration The instance to create.
      */
-    void create(TimeRegistration timeRegistration);
+    /**
+     * Creates a new instance of {@link TimeRegistration}.
+     * @param startTime The start time of the registration.
+     * @param task      The {@link Task} of the registration.
+     * @return The persisted {@link TimeRegistration}.
+     */
+    TimeRegistration create(Date startTime, Task task);
 
     /**
      * Update a time registration instance.
@@ -172,4 +178,11 @@ public interface TimeRegistrationService {
      * @return True is the time registration should be reloaded, false if not.
      */
     boolean checkReloadTimeRegistration(TimeRegistration timeRegistration);
+
+    /**
+     * Create a new {@link TimeRegistration}.
+     * @param timeRegistration The {@link TimeRegistration} to be saved.
+     * @return The persisted {@link TimeRegistration}.
+     */
+    TimeRegistration create(TimeRegistration timeRegistration);
 }

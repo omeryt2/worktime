@@ -72,7 +72,7 @@
     <string name="home_btn_projects">Projects</string>
     <string name="home_btn_preferences">Preferences</string>
     <string name="home_btn_reporting">Reporting</string>
-    <string name="home_btn_triggers_geofencing">Geofencing Test</string>
+    <string name="home_btn_triggers">Automatic Triggers</string>
     <string name="home_comp_start_stop_time_registration_no_ongoing">No ongoing time registration!</string>
     <!-- Showcase -->
     <string name="showcase_home_title">Application Menu</string>
@@ -785,6 +785,11 @@
     <string name="lbl_sync_blocking_title">Synchronizing</string>
 
     <!-- TRIGGERS-->
+    <string name="lbl_triggers_title">Automatic Triggers</string>
+    <string name="lbl_triggers_caution_message">Caution: Defining triggers to let the application decide when to start a new time registration might not work as expected, so using them is at your own risk! Press this message to know more about this!</string>
+    <string name="lbl_triggers_caution_message_dialog_message">Following cases might occur in which you might think the application is working incorrect but isn\'t: \n 1. You defined two so called overlapping triggers. For example two overlapping geo fences, or a geo fence that is activated at the same time as when you are connected to a certain wifi network.\n 2. A time registration has been started already by another trigger, then any other trigger will go off but do nothing as you cannot have two ongoing time registrations</string>
+    <string name="lbl_triggers_button_geo_fences">Geo Fence Triggers</string>
+    <string name="lbl_triggers_button_wifi_networks">Wifi Netowrk Triggers</string>
     <!-- GEO FENCING LIST -->
     <string name="lbl_trigger_geo_fencing_map_title">Geo Fencing</string>
     <string name="lbl_trigger_geo_fencing_map_play_services_required">The Google Play Services are required for this feature. Without this part of the application cannot be used.</string>
@@ -809,6 +814,21 @@
     <string name="lbl_trigger_geo_fencing_add_edit_error_updating_fence">Could not update the Geo Fence right now. Please try again or report a bug!</string>
     <string name="lbl_trigger_geo_fencing_delete_dialog_title">Delete Geo Fence</string>
     <string name="lbl_trigger_geo_fencing_delete_dialog_message">Are you sure you want to delete this Geo Fence?</string>
+    <!-- GEOFENCE BROADCAST -->
+    <string name="lbl_trigger_geo_fencing_entering">entering</string>
+    <string name="lbl_trigger_geo_fencing_leaving">leaving</string>
+    <string name="lbl_trigger_geo_fencing_broadcast_notification_error_ongoing_time_registration_title">Geo Fence not triggered</string>
+    <string name="lbl_trigger_geo_fencing_broadcast_notification_error_ongoing_time_registration_message_short">Could not start a new time registration for Geo Fence with name %1$s</string>
+    <string name="lbl_trigger_geo_fencing_broadcast_notification_error_ongoing_time_registration_message">Could not start a new time registration for Geo Fence with name %1$s because another time registration was still ongoing</string>
+    <string name="lbl_trigger_geo_fencing_broadcast_notification_warn_finished_task_project_title">Geo Fence Triggered</string>
+    <string name="lbl_trigger_geo_fencing_broadcast_notification_warn_finished_task_project_message_short">Warning: Task and project are already finished</string>
+    <string name="lbl_trigger_geo_fencing_broadcast_notification_warn_finished_task_project_message">Warning: A new time registration has been started for Geo Fence \'%1$s\' but the project \'%2$s\' and task \'%3$s\' are already marked finished!</string>
+    <string name="lbl_trigger_geo_fencing_broadcast_notification_warn_finished_task_message_short">Warning: Task is already finished</string>
+    <string name="lbl_trigger_geo_fencing_broadcast_notification_warn_finished_task_message">Warning: A new time registration has been started for Geo Fence \'%1$s\' but the task \'%2$s\' is already marked finished!</string>
+    <string name="lbl_trigger_geo_fencing_broadcast_notification_warn_finished_project_message_short">Warning: Project is already finished</string>
+    <string name="lbl_trigger_geo_fencing_broadcast_notification_warn_finished_project_message">Warning: A new time registration has been started for Geo Fence \'%1$s\' but the project \'%2$s\' is already marked finished!</string>
+    <string name="lbl_trigger_geo_fencing_broadcast_notification_error_not_handled_geofence_title">Geo Fence not triggered</string>
+    <string name="lbl_trigger_geo_fencing_broadcast_notification_error_not_handled_geofence_message_short">Could not handle %1$s of Geo Fence(s) %2$s...</string>
 
     <!-- ABOUT -->
     <string name="lbl_about_title">About</string>

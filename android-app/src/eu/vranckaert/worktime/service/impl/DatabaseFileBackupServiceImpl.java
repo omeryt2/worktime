@@ -18,10 +18,12 @@ package eu.vranckaert.worktime.service.impl;
 
 import android.content.Context;
 import com.google.inject.Inject;
+import eu.vranckaert.worktime.dao.GeofenceDao;
 import eu.vranckaert.worktime.dao.utils.DaoConstants;
 import eu.vranckaert.worktime.exceptions.SDCardUnavailableException;
 import eu.vranckaert.worktime.exceptions.backup.BackupFileCouldNotBeCreated;
 import eu.vranckaert.worktime.exceptions.backup.BackupFileCouldNotBeWritten;
+import eu.vranckaert.worktime.model.trigger.GeofenceTrigger;
 import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.Log;
@@ -52,7 +54,25 @@ public class DatabaseFileBackupServiceImpl implements BackupService {
     @ContextSingleton
     private Context ctx;
 
+    @Inject
+    private GeofenceDao geofenceDao;
+
+    private List<GeofenceTrigger> preBackup() {
+        List<GeofenceTrigger> geofenceTriggers = geofenceDao.findAll();
+        geofenceDao.deleteAll();
+        return geofenceTriggers;
+    }
+
+    private void postBackup(List<GeofenceTrigger> geofenceTriggers) {
+        for (GeofenceTrigger geofenceTrigger : geofenceTriggers) {
+            geofenceTrigger.setId(null);
+            geofenceDao.save(geofenceTrigger);
+        }
+    }
+
     public String backup(Context ctx) throws SDCardUnavailableException, BackupFileCouldNotBeCreated, BackupFileCouldNotBeWritten {
+        List<GeofenceTrigger> geofenceTriggers = preBackup();
+
         String fileName = BASE_FILE_NAME + DateUtils.DateTimeConverter.getUniqueTimestampString() + FILE_EXTENSION;
 
         if (!ContextUtils.isSdCardAvailable() || !ContextUtils.isSdCardWritable()) {
@@ -92,6 +112,8 @@ public class DatabaseFileBackupServiceImpl implements BackupService {
         }
 
         FileUtil.enableForMTP(ctx, backupFile);
+
+        postBackup(geofenceTriggers);
 
         return backupFile.getAbsolutePath();
     }

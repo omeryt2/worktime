@@ -43,11 +43,8 @@ import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.Log;
-import eu.vranckaert.worktime.utils.date.DateUtils;
-import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
 import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
-import org.joda.time.Duration;
 import roboguice.inject.InjectExtra;
 
 import java.util.Date;
@@ -152,40 +149,8 @@ public class TimeRegistrationPunchInActivity extends SyncLockedGuiceActivity {
 
                 Date startTime = new Date();
 
-                TimeRegistration newTr = new TimeRegistration();
-                newTr.setTask(selectedTask);
-                newTr.setStartTime(startTime);
-
-                /*
-                 * Issue 61
-                 * If the start time of registration, and the end time of the previous registration, have a difference
-                 * off less than 60 seconds, we start the time registration at the same time the previous one is ended.
-                 * This is to prevent gaps in the time registrations that should be modified manual. This is default
-                 * configured to happen (defined in the preferences).
-                 */
-                if (Preferences.getTimeRegistrationsAutoClose60sGap(TimeRegistrationPunchInActivity.this)) {
-                    Log.d(getApplicationContext(), LOG_TAG, "Check for gap between this new time registration and the previous one");
-                    TimeRegistration previousTimeRegistration = timeRegistrationService.getPreviousTimeRegistration(newTr);
-                    if (previousTimeRegistration != null) {
-                        Log.d(getApplicationContext(), LOG_TAG, "The previous time registrations ended on " + previousTimeRegistration.getEndTime());
-                        Log.d(getApplicationContext(), LOG_TAG, "The new time registration starts on " + newTr.getStartTime());
-                        Duration duration = DateUtils.TimeCalculator.calculateExactDuration(
-                                TimeRegistrationPunchInActivity.this,
-                                newTr.getStartTime(),
-                                previousTimeRegistration.getEndTime()
-                        );
-                        Log.d(getApplicationContext(), LOG_TAG, "The duration between the previous end time and the new start time is " + duration);
-                        long durationMillis = duration.getMillis();
-                        Log.d(getApplicationContext(), LOG_TAG, "The duration in milliseconds is " + durationMillis);
-                        if (durationMillis < 60000) {
-                            Log.d(getApplicationContext(), LOG_TAG, "Gap is less than 60 seconds, setting start time to end time of previous registration");
-                            newTr.setStartTime(previousTimeRegistration.getEndTime());
-                        }
-                    }
-                }
-
+                TimeRegistration newTr = timeRegistrationService.create(startTime, selectedTask);
                 statusBarNotificationService.addOrUpdateNotification(newTr);
-                timeRegistrationService.create(newTr);
 
                 tracker.trackEvent(
                         TrackerConstants.EventSources.START_TIME_REGISTRATION_ACTIVITY,

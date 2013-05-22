@@ -294,8 +294,8 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
     }
 
     @Override
-    public void addNotificationForGeofence(String title, String message) {
-        setStatusBarNotification(title, message, title, null, null, null, 698584, NotificationCompat2.PRIORITY_DEFAULT, null, false);
+    public void addNotificationForGeofence(String title, String message, String bigText) {
+        setStatusBarNotification(title, message, title, null, bigText, null, Constants.StatusBarNotificationIds.GEO_FENCE, NotificationCompat2.PRIORITY_DEFAULT, null, false);
     }
 
     /**

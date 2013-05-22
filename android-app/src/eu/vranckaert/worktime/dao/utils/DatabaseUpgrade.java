@@ -113,7 +113,7 @@ public enum DatabaseUpgrade {
             "ALTER TABLE SyncHistory add column numIncomingTimeRegistrationsRemoved " + DataTypes.INTEGER + ";"
     }),
     UPGRADE10(31, new String[] {
-            "CREATE TABLE Geofence " +
+            "CREATE TABLE GeofenceTrigger " +
                     "(" +
                     "id " + DataTypes.INTEGER + " PRIMARY KEY, " +
                     "geofenceRequestId " + DataTypes.VARCHAR + " UNIQUE NOT NULL, " +
@@ -125,10 +125,10 @@ public enum DatabaseUpgrade {
                     ");"
     }),
     UPGRADE11(32, new String[] {
-            "ALTER TABLE Geofence add column taskId " + DataTypes.INTEGER + ";"
+            "ALTER TABLE GeofenceTrigger add column taskId " + DataTypes.INTEGER + ";"
     }),
     UPGRADE12(33, new String[] {
-            "ALTER TABLE Geofence add column entered " + DataTypes.BOOLEAN + ";"
+            "ALTER TABLE GeofenceTrigger add column entered " + DataTypes.BOOLEAN + ";"
     })
     ;
 

@@ -17,7 +17,7 @@
 package eu.vranckaert.worktime.dao.utils;
 
 import eu.vranckaert.worktime.model.*;
-import eu.vranckaert.worktime.model.trigger.Geofence;
+import eu.vranckaert.worktime.model.trigger.GeofenceTrigger;
 
 /**
  * User: DIRK VRANCKAERT
@@ -33,7 +33,7 @@ public enum Tables {
     USER(User.class),
     SYNC_HISTORY(SyncHistory.class),
     SYNC_REMOVAL_CACHE(SyncRemovalCache.class),
-    GEO_FENCE(Geofence.class);
+    GEO_FENCE(GeofenceTrigger.class);
 
     Tables(Class tableClass) {
         this.tableClass = tableClass;

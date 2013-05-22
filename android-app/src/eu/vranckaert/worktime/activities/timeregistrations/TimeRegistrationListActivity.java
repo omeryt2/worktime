@@ -37,7 +37,7 @@ import eu.vranckaert.worktime.activities.projects.ManageProjectsActivity;
 import eu.vranckaert.worktime.activities.reporting.ReportingCriteriaActivity;
 import eu.vranckaert.worktime.activities.timeregistrations.listadapter.SlideInMenuAdapter;
 import eu.vranckaert.worktime.activities.timeregistrations.listadapter.TimeRegistrationsListAdapter;
-import eu.vranckaert.worktime.activities.triggers.TriggerGeoFencingMapActivity;
+import eu.vranckaert.worktime.activities.triggers.TriggersActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.model.TimeRegistration;
@@ -112,7 +112,7 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
         menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), ManageProjectsActivity.class, R.string.home_btn_projects, R.drawable.ic_collections_collection_dark, R.id.menuItemProjects));
         menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), AccountLoginActivity.class, R.string.home_ab_menu_account, R.drawable.ic_social_person_dark, R.id.menuItemAccount));
         menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), ReportingCriteriaActivity.class, R.string.home_btn_reporting, R.drawable.ic_collections_view_as_list_dark, R.id.menuItemReporting));
-        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), TriggerGeoFencingMapActivity.class, R.string.home_btn_triggers_geofencing, R.drawable.ic_collections_view_as_list_dark, R.id.menuItemTriggers));
+        menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), TriggersActivity.class, R.string.home_btn_triggers, R.drawable.ic_device_access_network_wifi, R.id.menuItemTriggers));
         menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), PreferencesActivity.class, R.string.home_btn_preferences, R.drawable.ic_action_settings_dark, R.id.menuItemPreferences));
         menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), AboutActivity.class, R.string.home_ab_menu_about, R.drawable.ic_action_about_dark, R.id.menuItemAbout));
         SlideInMenuAdapter menuAdapter = new SlideInMenuAdapter(TimeRegistrationListActivity.this, menuItems);

@@ -29,6 +29,7 @@ import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.model.WidgetConfiguration;
+import eu.vranckaert.worktime.service.GeofenceService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.utils.context.Log;
 import roboguice.inject.ContextSingleton;
@@ -58,6 +59,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Inject
     private TimeRegistrationDao timeRegistrationDao;
+
+    @Inject
+    private GeofenceService geofenceService;
 
     public TaskServiceImpl(Context ctx) {
         this.ctx = ctx;
@@ -113,10 +117,12 @@ public class TaskServiceImpl implements TaskService {
             if (numberOfTasks == 1) {
                 throw new AtLeastOneTaskRequiredException("The last task of a project cannot manually be deleted");
             } else if(force) {
-                Log.d(ctx, LOG_TAG, "Forcing to delete all timeregistrations linked to the tasj first!");
+                Log.d(ctx, LOG_TAG, "Forcing to delete all timeregistrations and geo fences linked to the task first!");
                 for (TimeRegistration treg : timeRegistrations) {
                     timeRegistrationDao.delete(treg);
                 }
+
+                geofenceService.checkGeoFencesOnTaskRemoval(task);
             }
         }
         dao.delete(task);

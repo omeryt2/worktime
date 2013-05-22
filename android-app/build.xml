@@ -60,7 +60,7 @@
              resource="com/zutubi/android/ant/antlib.xml"
              classpath="ant-libs/zutubi-android-ant-0.1.2.jar"/>
 
-    <target name="check-properties">
+    <target name="check-release-properties">
         <fail message="Don't try to release when no keystore is defined!" unless="key.store"/>
         <fail message="Don't try to release when no key alias is defined!" unless="key.alias"/>
         <fail message="Don't try to release when no keystore password is defined!" unless="key.store.password"/>
@@ -71,8 +71,16 @@
         <zaa:bumpversion bumpname="false"/>
     </target>
 
+    <target name="update-manifest">
+        <fail message="Don't try to release without a Maps API Key defined under 'maps.v2.api.key' !" unless="maps.v2.api.key"/>
+        <replaceregexp file="AndroidManifest.xml"
+                       match="&lt;meta-data android:name=&quot;com.google.android.maps.v2.API_KEY&quot; android:value=&quot;(.*)&quot;/&gt;"
+                       replace="&lt;meta-data android:name=&quot;com.google.android.maps.v2.API_KEY&quot; android:value=&quot;${maps.v2.api.key}&quot;/&gt;"
+                       byline="true"/>
+    </target>
+
     <!-- Change the name of the generated release APK-file to a name keeping in mind nightly naming conventions-->
-    <target name="nightly-release" depends="clean, check-properties, increment-version, release">
+    <target name="nightly-release" depends="clean, check-release-properties, update-manifest, increment-version, release">
         <xmlproperty file="AndroidManifest.xml" prefix="manifestFile" collapseAttributes="true"/>
         <property name="versionCode" value="${manifestFile.manifest.android:versionCode}"/>
         <property name="versionName" value="${manifestFile.manifest.android:versionName}"/>
@@ -95,8 +103,11 @@
     </target>
 
     <!-- Change the name of the generated release APK-file to a name keeping in mind production naming conventions-->
-    <target name="prod-release" depends="clean, check-properties">
+    <target name="prod-release" depends="clean, check-release-properties">
         <echo>Creating a new production release...</echo>
+
+        <!-- Set the correct maps api key in the manifest -->
+        <antcall target="update-manifest"/>
 
         <!-- Remove the ' - UNSTABLE' tag from the versionName and increment the versionCode with one. Then create a new
          APK file and commit the changes made to the AndroidManifest.xml. Finally a new branch is created. -->
@@ -297,24 +308,24 @@
 
     <!-- quick check on sdk.dir -->
     <fail
-            message="sdk.dir is missing. Make sure to generate local.properties using 'android update project' or to inject it through an env var"
-            unless="sdk.dir"
-    />
+        message="sdk.dir is missing. Make sure to generate local.properties using 'android update project' or to inject it through an env var"
+        unless="sdk.dir"
+        />
 
-<!-- extension targets. Uncomment the ones where you want to do custom work
-     in between standard targets -->
-<!--
-    <target name="-pre-build">
-    </target>
-    <target name="-pre-compile">
-    </target>
+    <!-- extension targets. Uncomment the ones where you want to do custom work
+         in between standard targets -->
+    <!--
+        <target name="-pre-build">
+        </target>
+        <target name="-pre-compile">
+        </target>
 
-    /* This is typically used for code obfuscation.
-       Compiled code location: ${out.classes.absolute.dir}
-       If this is not done in place, override ${out.dex.input.absolute.dir} */
-    <target name="-post-compile">
-    </target>
--->
+        /* This is typically used for code obfuscation.
+           Compiled code location: ${out.classes.absolute.dir}
+           If this is not done in place, override ${out.dex.input.absolute.dir} */
+        <target name="-post-compile">
+        </target>
+    -->
 
     <!-- Import the actual build file.
 

@@ -17,6 +17,7 @@
 package eu.vranckaert.worktime.service.impl;
 
 import android.content.Context;
+import android.util.Log;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.dao.ProjectDao;
 import eu.vranckaert.worktime.dao.TaskDao;
@@ -29,7 +30,9 @@ import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
-import eu.vranckaert.worktime.utils.context.Log;
+import eu.vranckaert.worktime.utils.date.DateUtils;
+import eu.vranckaert.worktime.utils.preferences.Preferences;
+import org.joda.time.Duration;
 import roboguice.inject.ContextSingleton;
 
 import java.util.ArrayList;
@@ -79,7 +82,7 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
     public List<TimeRegistration> findAll() {
         List<TimeRegistration> timeRegistrations = dao.findAll();
         for(TimeRegistration timeRegistration : timeRegistrations) {
-            Log.d(ctx, LOG_TAG, "Found timeregistration with ID: " + timeRegistration.getId() + " and according task with ID: " + timeRegistration.getTask().getId());
+            Log.d(LOG_TAG, "Found timeregistration with ID: " + timeRegistration.getId() + " and according task with ID: " + timeRegistration.getTask().getId());
             taskDao.refresh(timeRegistration.getTask());
             projectDao.refresh(timeRegistration.getTask().getProject());
         }
@@ -99,12 +102,12 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
     public List<TimeRegistration> getTimeRegistrations(Date startDate, Date endDate, Project project, Task task) {
         List<Task> tasks = new ArrayList<Task>();
         if (task != null) {
-            Log.d(ctx, LOG_TAG, "Querying for 1 specific task!");
+            Log.d(LOG_TAG, "Querying for 1 specific task!");
             tasks.add(task);
         } else if(project != null) {
-            Log.d(ctx, LOG_TAG, "Querying for a specific project!");
+            Log.d(LOG_TAG, "Querying for a specific project!");
             tasks = taskDao.findTasksForProject(project);
-            Log.d(ctx, LOG_TAG, "Number of tasks found for that project: " + tasks.size());
+            Log.d(LOG_TAG, "Number of tasks found for that project: " + tasks.size());
         }
 
         return dao.getTimeRegistrations(startDate, endDate, tasks);
@@ -113,8 +116,40 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
     /**
      * {@inheritDoc}
      */
-    public void create(TimeRegistration timeRegistration) {
-        dao.save(timeRegistration);
+    public TimeRegistration create(Date startTime, Task task) {
+        TimeRegistration timeRegistration = new TimeRegistration();
+        timeRegistration.setTask(task);
+        timeRegistration.setStartTime(startTime);
+
+                /*
+                 * Issue 61
+                 * If the start time of registration, and the end time of the previous registration, have a difference
+                 * off less than 60 seconds, we start the time registration at the same time the previous one is ended.
+                 * This is to prevent gaps in the time registrations that should be modified manual. This is default
+                 * configured to happen (defined in the preferences).
+                 */
+        if (Preferences.getTimeRegistrationsAutoClose60sGap(ctx)) {
+            Log.d(LOG_TAG, "Check for gap between this new time registration and the previous one");
+            TimeRegistration previousTimeRegistration = getPreviousTimeRegistration(timeRegistration);
+            if (previousTimeRegistration != null) {
+                Log.d(LOG_TAG, "The previous time registrations ended on " + previousTimeRegistration.getEndTime());
+                Log.d(LOG_TAG, "The new time registration starts on " + timeRegistration.getStartTime());
+                Duration duration = DateUtils.TimeCalculator.calculateExactDuration(
+                        ctx,
+                        timeRegistration.getStartTime(),
+                        previousTimeRegistration.getEndTime()
+                );
+                Log.d(LOG_TAG, "The duration between the previous end time and the new start time is " + duration);
+                long durationMillis = duration.getMillis();
+                Log.d(LOG_TAG, "The duration in milliseconds is " + durationMillis);
+                if (durationMillis < 60000) {
+                    Log.d(LOG_TAG, "Gap is less than 60 seconds, setting start time to end time of previous registration");
+                    timeRegistration.setStartTime(previousTimeRegistration.getEndTime());
+                }
+            }
+        }
+        timeRegistration = dao.save(timeRegistration);
+        return timeRegistration;
     }
 
     /**
@@ -149,7 +184,7 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
     public List<TimeRegistration> findAll(int lowerLimit, int maxRows) {
         List<TimeRegistration> timeRegistrations = dao.findAll(lowerLimit, maxRows);
         for(TimeRegistration timeRegistration : timeRegistrations) {
-            Log.d(ctx, LOG_TAG, "Found timeregistration with ID: " + timeRegistration.getId() + " and according task with ID: " + timeRegistration.getTask().getId());
+            Log.d(LOG_TAG, "Found timeregistration with ID: " + timeRegistration.getId() + " and according task with ID: " + timeRegistration.getTask().getId());
             taskDao.refresh(timeRegistration.getTask());
             projectDao.refresh(timeRegistration.getTask().getProject());
         }
@@ -221,5 +256,10 @@ public class TimeRegistrationServiceImpl implements TimeRegistrationService {
         }
 
         return false;
+    }
+
+    @Override
+    public TimeRegistration create(TimeRegistration timeRegistration) {
+        return dao.save(timeRegistration);
     }
 }

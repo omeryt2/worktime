@@ -30,6 +30,7 @@ import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.model.WidgetConfiguration;
+import eu.vranckaert.worktime.service.GeofenceService;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.utils.context.Log;
 import roboguice.inject.ContextSingleton;
@@ -60,6 +61,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Inject
     private WidgetConfigurationDao widgetConfigurationDao;
+
+    @Inject
+    private GeofenceService geofenceService;
 
     /**
      * Enables the use of this service outside of RoboGuice!
@@ -110,6 +114,8 @@ public class ProjectServiceImpl implements ProjectService {
                 throw new ProjectStillHasTasks("The project is still linked with " + taskCount + " tasks! Remove them first!", trsForProject.size()>0?true:false);
             }
             // Delete the project and all it's dependencies...
+            geofenceService.checkGeoFencesOnProjectRemoval(project);
+
             for (TimeRegistration tr : trsForProject) {
                 timeRegistrationDao.delete(tr);
             }

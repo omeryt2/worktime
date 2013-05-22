@@ -36,7 +36,7 @@ import com.google.android.gms.maps.model.*;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
-import eu.vranckaert.worktime.model.trigger.Geofence;
+import eu.vranckaert.worktime.model.trigger.GeofenceTrigger;
 import eu.vranckaert.worktime.service.GeofenceService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockFragmentActivity;
@@ -53,7 +53,7 @@ import java.util.Map;
 public class TriggerGeoFencingMapActivity extends RoboSherlockFragmentActivity {
     @Inject private GeofenceService geofenceService;
 
-    private Map<Marker, Geofence> mapMarkers = new HashMap<Marker, Geofence>();
+    private Map<Marker, GeofenceTrigger> mapMarkers = new HashMap<Marker, GeofenceTrigger>();
     private GoogleMap mGoogleMap;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -129,9 +129,9 @@ public class TriggerGeoFencingMapActivity extends RoboSherlockFragmentActivity {
             mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
                 public void onInfoWindowClick(Marker marker) {
-                    Geofence geofence = mapMarkers.get(marker);
+                    GeofenceTrigger geofenceTrigger = mapMarkers.get(marker);
                     Intent intent = new Intent(TriggerGeoFencingMapActivity.this, TriggerGeoFencingAddEditActivity.class);
-                    intent.putExtra(Constants.Extras.GEOFENCE, geofence);
+                    intent.putExtra(Constants.Extras.GEOFENCE, geofenceTrigger);
                     startActivityForResult(intent, Constants.IntentRequestCodes.EDIT_TRIGGER_GEO_FENCING);
                 }
             });
@@ -148,8 +148,8 @@ public class TriggerGeoFencingMapActivity extends RoboSherlockFragmentActivity {
     private void loadDataOnMap() {
         mGoogleMap.clear();
         LatLngBounds.Builder bounds = new LatLngBounds.Builder();
-        List<Geofence> geofences = geofenceService.findAllNonExpired();
-        for (Geofence geofence : geofences) {
+        List<GeofenceTrigger> geofenceTriggers = geofenceService.findAllNonExpired();
+        for (GeofenceTrigger geofence : geofenceTriggers) {
             LatLng latLng = new LatLng(geofence.getLatitude(), geofence.getLongitude());
             bounds.include(latLng);
 
@@ -160,7 +160,7 @@ public class TriggerGeoFencingMapActivity extends RoboSherlockFragmentActivity {
             mapMarkers.put(marker, geofence);
         }
 
-        if (geofences.size() > 0) {
+        if (geofenceTriggers.size() > 0) {
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 100));
         }
     }

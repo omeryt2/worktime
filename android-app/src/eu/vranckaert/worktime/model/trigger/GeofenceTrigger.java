@@ -32,7 +32,7 @@ import java.util.Date;
  * @author Dirk Vranckaert
  */
 @DatabaseTable
-public class Geofence implements Serializable {
+public class GeofenceTrigger implements Serializable {
     @DatabaseField(generatedId = true, columnName = "id")
     private Integer id;
     @DatabaseField(columnName = "geofenceRequestId", unique = true, canBeNull = false)
@@ -52,9 +52,9 @@ public class Geofence implements Serializable {
     @DatabaseField(foreign = true, columnName = "taskId", canBeNull = false)
     private Task task;
 
-    public Geofence() {}
+    public GeofenceTrigger() {}
 
-    public Geofence(String name, Date expirationDate, LatLng latLng, double radius, Task task) {
+    public GeofenceTrigger(String name, Date expirationDate, LatLng latLng, double radius, Task task) {
         this.name = name;
         this.expirationDate = expirationDate;
         this.latitude = latLng.latitude;

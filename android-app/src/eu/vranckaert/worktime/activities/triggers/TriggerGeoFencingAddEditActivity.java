@@ -44,6 +44,7 @@ import com.google.inject.internal.Nullable;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.exceptions.worktime.trigger.geofence.DuplicateGeofenceNameException;
+import eu.vranckaert.worktime.model.trigger.GeofenceTrigger;
 import eu.vranckaert.worktime.service.GeofenceService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.date.DateFormat;
@@ -72,7 +73,7 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
 
     @Inject private GeofenceService geofenceService;
 
-    @InjectExtra(value = Constants.Extras.GEOFENCE, optional = true) @Nullable private eu.vranckaert.worktime.model.trigger.Geofence geofence;
+    @InjectExtra(value = Constants.Extras.GEOFENCE, optional = true) @Nullable private GeofenceTrigger geofence;
 
     private ProjectTaskSelectionUtil projectTaskSelectionUtil;
     private GoogleMap mGoogleMap = null;
@@ -160,7 +161,7 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
         projectTaskSelectionUtil = ProjectTaskSelectionUtil.getInstance(this);
 
         if (savedInstanceState != null) {
-            geofence = (eu.vranckaert.worktime.model.trigger.Geofence) savedInstanceState.getSerializable(Constants.Extras.GEOFENCE);
+            geofence = (GeofenceTrigger) savedInstanceState.getSerializable(Constants.Extras.GEOFENCE);
             mCurrentLocation = savedInstanceState.getParcelable(Constants.Extras.CURRENT_LOCATION);
             loadEditData();
         } else {
@@ -424,7 +425,7 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
         if (!expires.isChecked()) {
             expirationDate = null;
         }
-        final eu.vranckaert.worktime.model.trigger.Geofence workTimeGeoFence = new eu.vranckaert.worktime.model.trigger.Geofence(
+        final GeofenceTrigger workTimeGeoFence = new GeofenceTrigger(
                 name.getText().toString(),
                 expirationDate,
                 mSelectedLocation,
@@ -517,7 +518,7 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (geofence == null) {
-            geofence = new eu.vranckaert.worktime.model.trigger.Geofence();
+            geofence = new GeofenceTrigger();
         }
         if (!expires.isSelected()) {
             expirationDate = null;

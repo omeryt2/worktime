@@ -234,6 +234,7 @@ public class Constants {
         public static final int RESTORE = 2;
         public static final int BACKUP = 3;
         public static final int SYNC = 4;
+        public static final int GEO_FENCE = 5;
     }
 
     public class Others {

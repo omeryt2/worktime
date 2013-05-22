@@ -107,29 +107,24 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
     }
 
     public Project findDefaultProject() {
-        List<Project> projects = null;
+        Project project = null;
 
         QueryBuilder<Project, Integer> qb = dao.queryBuilder();
         try {
             qb.where().eq("defaultValue", true);
             PreparedQuery<Project> pq = qb.prepare();
-            projects = dao.query(pq);
+            project = dao.queryForFirst(pq);
         } catch (SQLException e) {
             Log.e(getContext(), LOG_TAG, "Could not start the query... Returning null.", e);
             return null;
         }
 
-        if(projects == null || projects.size() == 0 || projects.size() > 1) {
-            String message = null;
-            if (projects == null || projects.size() == 0) {
-                message = "The project data is corrupt. No default project is found!";
-            } else {
-                message = "The project data is corrupt. More than one default project is found in the database!";
-            }
+        if(project == null) {
+            String message = "The project data is corrupt. No default project is found!";
             Log.e(getContext(), LOG_TAG, message);
             throw new CorruptProjectDataException(message);
         } else {
-            return projects.get(0);
+            return project;
         }
     }
 
