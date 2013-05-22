@@ -160,6 +160,8 @@ public class TriggerGeoFencingMapActivity extends RoboSherlockFragmentActivity {
             mapMarkers.put(marker, geofence);
         }
 
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 100));
+        if (geofences.size() > 0) {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 100));
+        }
     }
 }
