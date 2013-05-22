@@ -31,7 +31,7 @@ import java.util.Date;
  *
  * @author Dirk Vranckaert
  */
-@DatabaseTable
+@DatabaseTable(tableName = "geofence")
 public class GeofenceTrigger implements Serializable {
     @DatabaseField(generatedId = true, columnName = "id")
     private Integer id;
