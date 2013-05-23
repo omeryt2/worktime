@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2013 Dirk Vranckaert
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_triggers_category_geofence_title">
+        <CheckBoxPreference
+            android:key="doNotPunchOutOnLeavingGeoFence"
+            android:defaultValue="false"
+            android:title="@string/pref_triggers_category_geofence_do_not_punch_out_on_leave_title"
+            android:summaryOn="@string/pref_triggers_category_geofence_do_not_punch_out_on_leave_summary_on"
+            android:summaryOff="@string/pref_triggers_category_geofence_do_not_punch_out_on_leave_summary_off"/>
+        <CheckBoxPreference
+            android:key="showNotificationWhenNotPunchedOut"
+            android:defaultValue="true"
+            android:dependency="doNotPunchOutOnLeavingGeoFence"
+            android:title="@string/pref_triggers_category_geofence_show_notif_when_not_punched_out_title"
+            android:summaryOn="@string/pref_triggers_category_geofence_show_notif_when_not_punched_out_summary_on"
+            android:summaryOff="@string/pref_triggers_category_geofence_show_notif_when_not_punched_out_summary_off"/>
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -195,6 +195,9 @@
         <activity android:name=".activities.preferences.NotificationsPreferencesActivity"
                   android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <activity android:name=".activities.preferences.TriggersPreferencesActivity"
+                  android:theme="@style/Theme.Worktime"
+                  android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.preferences.ProjectsAndTasksPreferencesActivity"
                   android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
@@ -257,8 +260,7 @@
                   android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".activities.triggers.TriggerGeoFencingAddEditActivity"
-                  android:theme="@style/Theme.Worktime"
-                  android:configChanges="orientation|keyboardHidden|screenSize"/>
+                  android:theme="@style/Theme.Worktime"/>
         <receiver android:name=".broadcastreceiver.TriggerGeofenceBroadcastReceiver" android:enabled="true" android:exported="false">
             <intent-filter>
                 <action android:name="eu.vranckaert.worktime.geofence" />

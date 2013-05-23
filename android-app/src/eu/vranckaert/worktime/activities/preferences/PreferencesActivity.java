@@ -98,6 +98,9 @@ public class PreferencesActivity extends RoboSherlockPreferenceActivity {
         //Category NOTIFICATIONS
         createCategoryButton(ctx, preferences, R.string.pref_stat_bar_notifs_category_title, NotificationsPreferencesActivity.class);
 
+        //Category TRIGGERS
+        createCategoryButton(ctx, preferences, R.string.pref_triggers_category_title, TriggersPreferencesActivity.class);
+
         //Category ACCOUNT SYNC
         Preference accountSyncPref = createCategoryButton(ctx, preferences, R.string.pref_account_sync_category_title, AccountSyncPreferencesActivity.class);
         if (!accountService.isUserLoggedIn()){

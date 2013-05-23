@@ -40,6 +40,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.activities.preferences.TriggersPreferencesActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.model.trigger.GeofenceTrigger;
 import eu.vranckaert.worktime.service.GeofenceService;
@@ -85,6 +86,10 @@ public class TriggerGeoFencingMapActivity extends RoboSherlockFragmentActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 IntentUtil.goBack(TriggerGeoFencingMapActivity.this);
+                break;
+            case R.id.menu_trigger_geo_fencing_map_settings:
+                Intent preferenceIntent = new Intent(this, TriggersPreferencesActivity.class);
+                startActivity(preferenceIntent);
                 break;
             case R.id.menu_trigger_geo_fencing_map_activity_add:
                 Intent intent = new Intent(TriggerGeoFencingMapActivity.this, TriggerGeoFencingAddEditActivity.class);

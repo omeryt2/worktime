@@ -177,6 +177,7 @@ public class GeofenceServiceImpl implements GeofenceService {
             return true;
         } else if (transition == Geofence.GEOFENCE_TRANSITION_EXIT) {
             Log.d(LOG_TAG, "Leaving geo fence '" + geofenceTrigger.getName() + "'");
+            // TODO handle preferences...
             // Leaving a geo fence...
             if (ongoingTimeRegistration == null) {
                 Log.d(LOG_TAG, "GEOFENCE_TRIGGER: No action (There are no ongoing time registration so nothing should be stopped) - " + geofenceTrigger.getName());

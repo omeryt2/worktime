@@ -487,6 +487,14 @@
     <string name="pref_rest_application_confirmation_message">This operation will delete all your data and cannot be undone! Preferences are not reset. Are you sure you want to continue with the reset?</string>
     <string name="pref_rest_application_loading_dialog_message">Resetting application...</string>
     <string name="pref_stat_bar_notifs_category_title">Notifications</string>
+    <string name="pref_triggers_category_title">Automatic Triggers</string>
+    <string name="pref_triggers_category_geofence_title">Geo Fences</string>
+    <string name="pref_triggers_category_geofence_do_not_punch_out_on_leave_title">Don\'t punch out when leaving a Geo Fence?</string>
+    <string name="pref_triggers_category_geofence_do_not_punch_out_on_leave_summary_on">When you leave a geo fence the ongoing time registration will not be punched out.</string>
+    <string name="pref_triggers_category_geofence_do_not_punch_out_on_leave_summary_off">Time registrations that have been started by a geo fence will be punched out when leaving that geo fence.</string>
+    <string name="pref_triggers_category_geofence_show_notif_when_not_punched_out_title">Show notification if not punched out</string>
+    <string name="pref_triggers_category_geofence_show_notif_when_not_punched_out_summary_on">Show a notification when you leave a geo fence and the ongoing time registration is not punched out.</string>
+    <string name="pref_triggers_category_geofence_show_notif_when_not_punched_out_summary_off">Do not show a notification when you leave a geo fence and the ongoing time registration is not punched out.</string>
     <string name="pref_stat_bar_notifs_ask_for_comment_title">Show status bar notifications?</string>
     <string name="pref_stat_bar_notifs_ask_for_comment_summary_on">Notifications will be shown in the status bar.</string>
     <string name="pref_stat_bar_notifs_ask_for_comment_summary_off">No notifications will be shown in the status bar.</string>
@@ -792,6 +800,7 @@
     <string name="lbl_trigger_geo_fencing_map_title">Geo Fencing</string>
     <string name="lbl_trigger_geo_fencing_map_play_services_required">The Google Play Services are required for this feature. Without this part of the application cannot be used.</string>
     <string name="trigger_geo_fencing_map_ab_menu_add">Add new Geo Fence</string>
+    <string name="trigger_geo_fencing_map_ab_menu_settings">Settings</string>
     <!-- ADD/EDIT GEO FENCING -->
     <string name="lbl_trigger_geo_fencing_add_edit_title">Add Geo Fence</string>
     <string name="lbl_trigger_geo_fencing_add_edit_edit_title">Edit Geo Fence</string>

@@ -209,6 +209,7 @@ public class Constants {
         public static final String ONLY_ACTION = "onlyAction";
         public static final String GEOFENCE = "geofence";
         public static final String CURRENT_LOCATION = "currentLocation";
+        public static final String GEOFENCE_LOCATION_SELECTED = "geofenceLocationSelected";
     }
     public class ContentMenuItemIds {
         public static final int PROJECT_DETAILS = 1;

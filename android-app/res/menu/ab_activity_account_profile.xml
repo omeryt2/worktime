@@ -17,14 +17,14 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_account_profile_activity_sync"
-          android:title="@string/account_profile_ab_menu_sync_now"
-          android:icon="@drawable/ic_navigation_refresh"
-          android:orderInCategory="1"
-          android:showAsAction="ifRoom" />
     <item android:id="@+id/menu_account_profile_activity_settings"
           android:title="@string/account_profile_ab_menu_settings"
           android:icon="@drawable/ic_action_settings"
+          android:orderInCategory="1"
+          android:showAsAction="ifRoom" />
+    <item android:id="@+id/menu_account_profile_activity_sync"
+          android:title="@string/account_profile_ab_menu_sync_now"
+          android:icon="@drawable/ic_navigation_refresh"
           android:orderInCategory="2"
           android:showAsAction="ifRoom" />
     <item android:id="@+id/menu_account_profile_activity_logout"

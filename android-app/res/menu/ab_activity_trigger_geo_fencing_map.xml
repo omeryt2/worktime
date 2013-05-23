@@ -17,9 +17,14 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_trigger_geo_fencing_map_settings"
+          android:title="@string/trigger_geo_fencing_map_ab_menu_settings"
+          android:icon="@drawable/ic_action_settings"
+          android:orderInCategory="1"
+          android:showAsAction="ifRoom" />
     <item android:id="@+id/menu_trigger_geo_fencing_map_activity_add"
           android:title="@string/trigger_geo_fencing_map_ab_menu_add"
           android:icon="@drawable/ic_content_new"
-          android:orderInCategory="1"
+          android:orderInCategory="2"
           android:showAsAction="ifRoom" />
 </menu>

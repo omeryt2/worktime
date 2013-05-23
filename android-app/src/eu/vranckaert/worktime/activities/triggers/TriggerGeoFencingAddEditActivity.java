@@ -161,14 +161,22 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
             }
         });
 
-        projectTaskSelectionUtil = ProjectTaskSelectionUtil.getInstance(this);
-
+        setupMap();
         if (savedInstanceState != null) {
             geofence = (GeofenceTrigger) savedInstanceState.getSerializable(Constants.Extras.GEOFENCE);
             mCurrentLocation = savedInstanceState.getParcelable(Constants.Extras.CURRENT_LOCATION);
-            loadEditData();
+            boolean locationSelected = savedInstanceState.getBoolean(Constants.Extras.GEOFENCE_LOCATION_SELECTED);
+            loadEditData(locationSelected);
+            if (geofence != null) {
+                projectTaskSelectionUtil = ProjectTaskSelectionUtil.getInstance(this, geofence.getTask()); // TODO when the second project and it's second or third task are selected, goes wrong...
+            }
         } else {
-            setupMap();
+            setCurrentLocationOnMap();
+            if (geofence == null) {
+                projectTaskSelectionUtil = ProjectTaskSelectionUtil.getInstance(this);
+            } else {
+                projectTaskSelectionUtil = ProjectTaskSelectionUtil.getInstance(this, geofence.getTask());
+            }
         }
     }
 
@@ -177,12 +185,6 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
         mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
         mGoogleMap.getUiSettings().setZoomGesturesEnabled(true);
 
-        // Show the progress dialog to block the ui...
-        final ProgressDialog loadingDialog = new ProgressDialog(TriggerGeoFencingAddEditActivity.this);
-        loadingDialog.setMessage(getText(R.string.lbl_trigger_geo_fencing_add_edit_map_loading_location_message));
-        loadingDialog.setCancelable(false);
-        loadingDialog.show();
-
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
@@ -190,6 +192,14 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
                 initMapWithDefaultMarkersAndCustomLocation();
             }
         });
+    }
+
+    private void setCurrentLocationOnMap() {
+        // Show the progress dialog to block the ui...
+        final ProgressDialog loadingDialog = new ProgressDialog(TriggerGeoFencingAddEditActivity.this);
+        loadingDialog.setMessage(getText(R.string.lbl_trigger_geo_fencing_add_edit_map_loading_location_message));
+        loadingDialog.setCancelable(false);
+        loadingDialog.show();
 
         // Create a location client...
         mLocationClient = new LocationClient(TriggerGeoFencingAddEditActivity.this, new GooglePlayServicesClient.ConnectionCallbacks() {
@@ -206,26 +216,26 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
 
                         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLocation, 17.0f));
                         loadingDialog.dismiss();
-                        loadEditData();
+                        loadEditData(true);
                     }
                 });
             }
             @Override
             public void onDisconnected() {
                 loadingDialog.dismiss();
-                loadEditData();
+                loadEditData(true);
             }
         }, new GooglePlayServicesClient.OnConnectionFailedListener() {
             @Override
             public void onConnectionFailed(ConnectionResult connectionResult) {
                 loadingDialog.dismiss();
-                loadEditData();
+                loadEditData(true);
             }
         });
         mLocationClient.connect();
     }
 
-    private void loadEditData() {
+    private void loadEditData(boolean locationSelected) {
         if (geofence != null) {
             name.setText(geofence.getName());
             radius.setProgress(((Double)geofence.getRadius()).intValue());
@@ -239,8 +249,11 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
                 expirationDateButton.setVisibility(View.GONE);
                 expirationDate = null;
             }
-            projectTaskSelectionUtil.setSelectedTask(geofence.getTask());
-            mSelectedLocation = new LatLng(geofence.getLatitude(), geofence.getLongitude());
+            if (locationSelected) {
+                mSelectedLocation = new LatLng(geofence.getLatitude(), geofence.getLongitude());
+            } else {
+                mSelectedLocation = null;
+            }
             initMapWithDefaultMarkersAndCustomLocation();
 
             final View mapView = getSupportFragmentManager().findFragmentById(R.id.map).getView();
@@ -528,7 +541,7 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
         if (geofence == null) {
             geofence = new GeofenceTrigger();
         }
-        if (!expires.isSelected()) {
+        if (!expires.isChecked()) {
             expirationDate = null;
         }
         geofence.setName(name.getText().toString());
@@ -536,6 +549,9 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
         if (mSelectedLocation != null) {
             geofence.setLatitude(mSelectedLocation.latitude);
             geofence.setLongitude(mSelectedLocation.longitude);
+            outState.putBoolean(Constants.Extras.GEOFENCE_LOCATION_SELECTED, true);
+        } else {
+            outState.putBoolean(Constants.Extras.GEOFENCE_LOCATION_SELECTED, false);
         }
         geofence.setRadius(radius.getProgress());
         geofence.setTask(projectTaskSelectionUtil.getSelectedTask());

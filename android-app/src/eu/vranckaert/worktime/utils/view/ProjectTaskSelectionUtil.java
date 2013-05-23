@@ -52,9 +52,18 @@ public class ProjectTaskSelectionUtil {
     private Project selectedProject;
     private Task selectedTask;
 
+    private List<Project> availableProjects;
+    private List<Task> availableTasks;
+    private Task initialTask = null;
+    private boolean projectTaskTriggerEnabled = true;
+
     private ProjectTaskSelectionUtil() {}
 
     public static ProjectTaskSelectionUtil getInstance(Activity activity) {
+        return getInstance(activity, null);
+    }
+
+    public static ProjectTaskSelectionUtil getInstance(Activity activity, Task task) {
         ProjectTaskSelectionUtil util = new ProjectTaskSelectionUtil();
 
         util.activity = activity;
@@ -65,9 +74,18 @@ public class ProjectTaskSelectionUtil {
         util.taskSpinner = (Spinner) activity.findViewById(R.id.task_selection);
         util.taskSpinner.setEnabled(false);
 
-        List<Project> projects = util.setupProjectTaskSelection(null);
-        List<Task> tasks = util.setupTaskSelection(util.selectedProject, null);
-        util.setupSelectionListeners(projects, tasks);
+        Project project = null;
+        if (task != null) {
+            util.taskService.refresh(task);
+            util.projectService.refresh(task.getProject());
+            project = task.getProject();
+        }
+
+        util.projectTaskTriggerEnabled = false;
+        util.initialTask = task;
+        List<Project> projects = util.setupProjectTaskSelection(project);
+        List<Task> tasks = util.setupTaskSelection(util.selectedProject, task);
+        util.setupSelectionListeners();
 
         return util;
     }
@@ -80,7 +98,7 @@ public class ProjectTaskSelectionUtil {
         } else {
             selectableProjects = projectService.findAll();
         }
-        final List<Project> availableProjects = selectableProjects;
+        availableProjects = selectableProjects;
         Collections.sort(availableProjects, new ProjectByNameComparator());
         int selectedProjectIndex = -1;
         for (Project mProject : availableProjects) {
@@ -114,7 +132,7 @@ public class ProjectTaskSelectionUtil {
         } else {
             selectableTasks = taskService.findTasksForProject(project);
         }
-        final List<Task> availableTasks = selectableTasks;
+        availableTasks = selectableTasks;
         Collections.sort(availableTasks, new TaskByNameComparator());
         int selectedTaskIndex = -1;
         for (Task mTask : availableTasks) {
@@ -138,12 +156,14 @@ public class ProjectTaskSelectionUtil {
         return availableTasks;
     }
 
-    private void setupSelectionListeners(final List<Project> availableProjects, final List<Task> availableTasks) {
+    private void setupSelectionListeners() {
         projectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedProject = availableProjects.get(position);
-                setupTaskSelection(selectedProject, null);
+                if (projectTaskTriggerEnabled) {
+                    List<Task> tasks = setupTaskSelection(selectedProject, null);
+                }
             }
 
             @Override
@@ -154,6 +174,11 @@ public class ProjectTaskSelectionUtil {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedTask = availableTasks.get(position);
+                if (initialTask != null && selectedTask.getId().equals(initialTask.getId())) {
+                    projectTaskTriggerEnabled = true;
+                } else if (initialTask == null) {
+                    projectTaskTriggerEnabled = true;
+                }
             }
 
             @Override
@@ -167,14 +192,5 @@ public class ProjectTaskSelectionUtil {
 
     public Task getSelectedTask() {
         return selectedTask;
-    }
-
-    public void setSelectedTask(Task task) {
-        taskService.refresh(task);
-        projectService.refresh(task.getProject());
-
-        List<Project> projects = setupProjectTaskSelection(task.getProject());
-        List<Task> tasks = setupTaskSelection(task.getProject(), task);
-        setupSelectionListeners(projects, tasks);
     }
 }
