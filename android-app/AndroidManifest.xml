@@ -261,7 +261,7 @@
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
         <receiver android:name=".broadcastreceiver.TriggerGeofenceBroadcastReceiver" android:enabled="true" android:exported="false">
             <intent-filter>
-                <action android:name="eu.vranckaert.worktime.geofenceTrigger" />
+                <action android:name="eu.vranckaert.worktime.geofence" />
             </intent-filter>
         </receiver>
 

@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.*;
@@ -63,6 +64,8 @@ import java.util.*;
  * Time: 8:25
  */
 public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivity {
+    private static final String LOG_TAG = TriggerGeoFencingAddEditActivity.class.getSimpleName();
+
     @InjectView(R.id.trigger_geo_fencing_add_edit_name) private TextView name;
     @InjectView(R.id.trigger_geo_fencing_add_edit_radius) private SeekBar radius;
     @InjectView(R.id.trigger_geo_fencing_add_edit_expires) private CheckBox expires;
@@ -442,10 +445,14 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
         mLocationClient = new LocationClient(TriggerGeoFencingAddEditActivity.this, new GooglePlayServicesClient.ConnectionCallbacks() {
             @Override
             public void onConnected(Bundle bundle) {
+                long expirationDuration = Geofence.NEVER_EXPIRE;
+                if (expirationDate != null) {
+                    expirationDuration = expirationDate.getTime() - new Date().getTime();
+                }
                 Geofence geofence = new Geofence.Builder().setRequestId(workTimeGeoFence.getGeofenceRequestId())
                         .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
                         .setCircularRegion(mSelectedLocation.latitude, mSelectedLocation.longitude, radius.getProgress())
-                        .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                        .setExpirationDuration(expirationDuration)
                         .build();
 
                 List<Geofence> geofences = new ArrayList<Geofence>();
@@ -457,6 +464,7 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
                 mLocationClient.addGeofences(geofences, pendingIntent, new LocationClient.OnAddGeofencesResultListener() {
                     @Override
                     public void onAddGeofencesResult(int i, String[] strings) {
+                        Log.d(LOG_TAG, "Geofence has been created!");
                         IntentUtil.goBack(TriggerGeoFencingAddEditActivity.this);
                     }
                 });

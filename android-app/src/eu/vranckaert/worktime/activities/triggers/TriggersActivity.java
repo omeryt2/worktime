@@ -17,8 +17,6 @@
 package eu.vranckaert.worktime.activities.triggers;
 
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import com.actionbarsherlock.view.MenuItem;
@@ -48,9 +46,6 @@ public class TriggersActivity extends RoboSherlockActivity {
     }
 
     public void wifiNetworksClicked(View view) {
-        // TODO
-        ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
     }
 
     @Override

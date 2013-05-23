@@ -123,7 +123,7 @@ public class GeofenceServiceImpl implements GeofenceService {
     @Override
     public Boolean geofenceTriggered(Geofence geofence, GeofenceTrigger geofenceTrigger, int transition) {
         TimeRegistration ongoingTimeRegistration = timeRegistrationService.getLatestTimeRegistration();
-        if (!ongoingTimeRegistration.isOngoingTimeRegistration()) {
+        if (ongoingTimeRegistration != null && !ongoingTimeRegistration.isOngoingTimeRegistration()) {
             ongoingTimeRegistration = null;
         }
 

@@ -65,7 +65,9 @@ public class ProjectTaskSelectionUtil {
         util.taskSpinner = (Spinner) activity.findViewById(R.id.task_selection);
         util.taskSpinner.setEnabled(false);
 
-        util.setupProjectTaskSelection(null);
+        List<Project> projects = util.setupProjectTaskSelection(null);
+        List<Task> tasks = util.setupTaskSelection(util.selectedProject, null);
+        util.setupSelectionListeners(projects, tasks);
 
         return util;
     }
@@ -80,26 +82,23 @@ public class ProjectTaskSelectionUtil {
         }
         final List<Project> availableProjects = selectableProjects;
         Collections.sort(availableProjects, new ProjectByNameComparator());
+        int selectedProjectIndex = -1;
         for (Project mProject : availableProjects) {
             projectNames.add(mProject.getName());
+            if (project != null && mProject.getId().equals(project.getId())) {
+                selectedProjectIndex = availableProjects.indexOf(mProject);
+            }
         }
         ArrayAdapter<String> projectAdapter = new ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, projectNames);
         projectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         projectSpinner.setAdapter(projectAdapter);
-        projectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedProject = availableProjects.get(position);
-                setupTaskSelection(selectedProject, null);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
 
         if (project != null) {
-            projectSpinner.setSelection(availableProjects.indexOf(project));
+            projectSpinner.setSelection(selectedProjectIndex);
             selectedProject = project;
+        } else if (availableProjects.size() > 0) {
+            projectSpinner.setSelection(0);
+            selectedProject = availableProjects.get(0);
         }
 
         return availableProjects;
@@ -117,12 +116,40 @@ public class ProjectTaskSelectionUtil {
         }
         final List<Task> availableTasks = selectableTasks;
         Collections.sort(availableTasks, new TaskByNameComparator());
+        int selectedTaskIndex = -1;
         for (Task mTask : availableTasks) {
             taskNames.add(mTask.getName());
+            if (task != null && mTask.getId().equals(task.getId())) {
+                selectedTaskIndex = availableTasks.indexOf(mTask);
+            }
         }
         ArrayAdapter<String> taskAdapter = new ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, taskNames);
         taskAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         taskSpinner.setAdapter(taskAdapter);
+
+        if (task != null) {
+            taskSpinner.setSelection(selectedTaskIndex);
+            selectedTask = task;
+        } else if (availableTasks.size() > 0) {
+            taskSpinner.setSelection(0);
+            selectedTask = availableTasks.get(0);
+        }
+
+        return availableTasks;
+    }
+
+    private void setupSelectionListeners(final List<Project> availableProjects, final List<Task> availableTasks) {
+        projectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedProject = availableProjects.get(position);
+                setupTaskSelection(selectedProject, null);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
         taskSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -132,13 +159,6 @@ public class ProjectTaskSelectionUtil {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
-
-        if (task != null) {
-            taskSpinner.setSelection(availableTasks.indexOf(task));
-            selectedTask = task;
-        }
-
-        return availableTasks;
     }
 
     public Project getSelectedProject() {
@@ -153,7 +173,8 @@ public class ProjectTaskSelectionUtil {
         taskService.refresh(task);
         projectService.refresh(task.getProject());
 
-        setupProjectTaskSelection(task.getProject());
-        setupTaskSelection(task.getProject(), task);
+        List<Project> projects = setupProjectTaskSelection(task.getProject());
+        List<Task> tasks = setupTaskSelection(task.getProject(), task);
+        setupSelectionListeners(projects, tasks);
     }
 }

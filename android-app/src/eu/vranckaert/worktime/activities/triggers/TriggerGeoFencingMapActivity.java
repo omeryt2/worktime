@@ -19,6 +19,7 @@ package eu.vranckaert.worktime.activities.triggers;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -28,7 +29,11 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -55,6 +60,7 @@ public class TriggerGeoFencingMapActivity extends RoboSherlockFragmentActivity {
 
     private Map<Marker, GeofenceTrigger> mapMarkers = new HashMap<Marker, GeofenceTrigger>();
     private GoogleMap mGoogleMap;
+    private LocationClient mLocationClient;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,8 +152,6 @@ public class TriggerGeoFencingMapActivity extends RoboSherlockFragmentActivity {
     }
 
     private void loadDataOnMap() {
-        // TODO if no geofenceTriggers are available, zoom to the last known location with a wide zoomlevel
-
         mGoogleMap.clear();
         LatLngBounds.Builder bounds = new LatLngBounds.Builder();
         List<GeofenceTrigger> geofenceTriggers = geofenceService.findAllNonExpired();
@@ -164,6 +168,28 @@ public class TriggerGeoFencingMapActivity extends RoboSherlockFragmentActivity {
 
         if (geofenceTriggers.size() > 0) {
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 100));
+        } else {
+            // Create a location client...
+            mLocationClient = new LocationClient(TriggerGeoFencingMapActivity.this, new GooglePlayServicesClient.ConnectionCallbacks() {
+                @Override
+                public void onConnected(Bundle bundle) {
+                    // Create the location request...
+                    LocationRequest locationRequest = LocationRequest.create().setInterval(5000).setPriority(LocationRequest.PRIORITY_NO_POWER);
+                    mLocationClient.requestLocationUpdates(locationRequest, new LocationListener() {
+                        @Override
+                        public void onLocationChanged(Location location) {
+                            LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 12.0f));
+                        }
+                    });
+                }
+                @Override
+                public void onDisconnected() {}
+            }, new GooglePlayServicesClient.OnConnectionFailedListener() {
+                @Override
+                public void onConnectionFailed(ConnectionResult connectionResult) {    }
+            });
+            mLocationClient.connect();
         }
     }
 }

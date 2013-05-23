@@ -79,8 +79,6 @@
     <string name="showcase_home_text">Open the application menu by clicking the home button</string>
     <string name="showcase_punchbar_title">Punch Bar</string>
     <string name="showcase_punchbar_text">Quickly start and stop a time registration from the punch bar.</string>
-
-    <!-- TODO remove other showcase text -->
     <string name="showcase_projects_title">Projects and Tasks</string>
     <string name="showcase_projects_text">Manage projects and tasks to which your time registrations will be linked</string>
     <string name="showcase_reporting_title">Reporting</string>
@@ -807,6 +805,9 @@
     <string name="lbl_trigger_geo_fencing_add_edit_expires_checkbox">Expires</string>
     <string name="lbl_trigger_geo_fencing_add_edit_select_date_checkbox">Select expiration date</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_required">This is required</string>
+    <string name="lbl_trigger_geo_fencing_add_edit_error_required_name">The name is required</string>
+    <string name="lbl_trigger_geo_fencing_add_edit_error_required_task">A task is required</string>
+    <string name="lbl_trigger_geo_fencing_add_edit_error_required_location">You need to select a location</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_expiration_date_future">The expiration date should be in the future</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_general_message">Could not create a Geo Fence due to a validation error</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_duplicate_names">Another Geo Fence with the same name already exists</string>
