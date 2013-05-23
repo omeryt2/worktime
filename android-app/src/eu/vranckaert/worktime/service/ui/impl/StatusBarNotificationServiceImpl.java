@@ -47,6 +47,7 @@ import eu.vranckaert.worktime.utils.string.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class StatusBarNotificationServiceImpl implements StatusBarNotificationService {
     private static final String LOG_TAG = StatusBarNotificationServiceImpl.class.getSimpleName();
@@ -296,6 +297,11 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
     @Override
     public void addNotificationForGeofence(String title, String message, String bigText) {
         setStatusBarNotification(title, message, title, null, bigText, null, Constants.StatusBarNotificationIds.GEO_FENCE, NotificationCompat2.PRIORITY_DEFAULT, null, false);
+    }
+
+    @Override
+    public void addDebugNotification(String title, String message, String bigText) {
+        setStatusBarNotification(title, message, title, null, bigText, null, (new Random().nextInt()) * 10000, NotificationCompat2.PRIORITY_MAX, null, false);
     }
 
     /**

@@ -18,6 +18,7 @@ package eu.vranckaert.worktime.broadcastreceiver;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationClient;
 import com.google.inject.Inject;
@@ -36,6 +37,8 @@ import java.util.List;
  * Time: 15:12
  */
 public class TriggerGeofenceBroadcastReceiver extends RoboBroadcastReceiver {
+    private static final String LOG_TAG = TriggerGeofenceBroadcastReceiver.class.getSimpleName();
+
     @Inject private StatusBarNotificationService statusBarNotificationService;
     @Inject private WidgetService widgetService;
     @Inject private GeofenceService geofenceService;
@@ -43,7 +46,16 @@ public class TriggerGeofenceBroadcastReceiver extends RoboBroadcastReceiver {
     @Override
     protected void handleReceive(Context context, Intent intent) {
         int transition = LocationClient.getGeofenceTransition(intent);
+
         List<Geofence> crossedGeofences = LocationClient.getTriggeringGeofences(intent);
+
+        Log.d(LOG_TAG, (transition == Geofence.GEOFENCE_TRANSITION_ENTER ? "Entered" : "Left") + " geofence, number of geofences crossed: " + crossedGeofences.size());
+        // TODO debug notifications should be removed!
+        if (transition == Geofence.GEOFENCE_TRANSITION_ENTER) {
+            statusBarNotificationService.addDebugNotification("WorkTime - GeoFence", "Entered geofence, " + crossedGeofences.size() + " geofence(s) crossed!", null);
+        } else if (transition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+            statusBarNotificationService.addDebugNotification("WorkTime - GeoFence", "Left geofence, " + crossedGeofences.size() + " geofence(s) crossed!", null);
+        }
 
         String geofenceNames = "";
         Boolean result = null;

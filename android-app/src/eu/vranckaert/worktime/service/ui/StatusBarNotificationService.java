@@ -62,4 +62,6 @@ public interface StatusBarNotificationService {
     void removeSyncNotifications();
 
     void addNotificationForGeofence(String title, String message, String bigText);
+
+    void addDebugNotification(String title, String message, String bigText);
 }
