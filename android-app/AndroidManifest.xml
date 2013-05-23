@@ -18,7 +18,7 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="eu.vranckaert.worktime"
-      android:versionCode="286"
+      android:versionCode="287"
       android:versionName="1.1.16 - UNSTABLE">
     <permission android:name="eu.vranckaert.worktime.permission.MAPS_RECEIVE"
                 android:protectionLevel="signature"/>
