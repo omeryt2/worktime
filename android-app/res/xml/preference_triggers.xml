@@ -20,13 +20,13 @@
     <PreferenceCategory android:title="@string/pref_triggers_category_geofence_title">
         <CheckBoxPreference
             android:key="doNotPunchOutOnLeavingGeoFence"
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:title="@string/pref_triggers_category_geofence_do_not_punch_out_on_leave_title"
             android:summaryOn="@string/pref_triggers_category_geofence_do_not_punch_out_on_leave_summary_on"
             android:summaryOff="@string/pref_triggers_category_geofence_do_not_punch_out_on_leave_summary_off"/>
         <CheckBoxPreference
             android:key="showNotificationWhenNotPunchedOut"
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:dependency="doNotPunchOutOnLeavingGeoFence"
             android:title="@string/pref_triggers_category_geofence_show_notif_when_not_punched_out_title"
             android:summaryOn="@string/pref_triggers_category_geofence_show_notif_when_not_punched_out_summary_on"

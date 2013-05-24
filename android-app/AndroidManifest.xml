@@ -53,6 +53,8 @@
 			<meta-data android:name="android.appwidget.provider"
 					   android:resource="@xml/appwidget_2x2_project"/>
 		</receiver>
+
+        <!-- Broadcast Receivers -->
         <receiver android:name=".broadcastreceiver.AlarmSyncInitBroadcastReceiver" android:enabled="true" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
@@ -88,6 +90,11 @@
         <receiver android:name=".broadcastreceiver.EditProjectAndTaskBroadCastReceiver" android:enabled="true" android:exported="false">
             <intent-filter>
                 <action android:name="eu.vranckaert.worktime.time_registration_edit_project_and_task" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".broadcastreceiver.WifiTestBroadCastReceiver" android:enabled="true" android:exported="false">
+            <intent-filter>
+                <action android:name="android.net.wifi.STATE_CHANGE"/>
             </intent-filter>
         </receiver>
 

@@ -813,12 +813,13 @@
     <string name="lbl_trigger_geo_fencing_add_edit_expires">Expires?</string>
     <string name="lbl_trigger_geo_fencing_add_edit_expires_checkbox">Expires</string>
     <string name="lbl_trigger_geo_fencing_add_edit_select_date_checkbox">Select expiration date</string>
-    <string name="lbl_trigger_geo_fencing_add_edit_error_required">This is required</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_required_name">The name is required</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_required_task">A task is required</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_required_location">You need to select a location</string>
+    <string name="lbl_trigger_geo_fencing_add_edit_error_required_expiration_date">You need to set an expiration date</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_expiration_date_future">The expiration date should be in the future</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_general_message">Could not create a Geo Fence due to a validation error</string>
+    <string name="lbl_trigger_geo_fencing_add_edit_error_detailed_message">Validation error</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_duplicate_names">Another Geo Fence with the same name already exists</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_creating_fence">Could not create the Geo Fence right now. Please try again or report a bug!</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_updating_fence">Could not update the Geo Fence right now. Please try again or report a bug!</string>
@@ -839,6 +840,9 @@
     <string name="lbl_trigger_geo_fencing_broadcast_notification_warn_finished_project_message">Warning: A new time registration has been started for Geo Fence \'%1$s\' but the project \'%2$s\' is already marked finished!</string>
     <string name="lbl_trigger_geo_fencing_broadcast_notification_error_not_handled_geofence_title">Geo Fence not triggered</string>
     <string name="lbl_trigger_geo_fencing_broadcast_notification_error_not_handled_geofence_message_short">Could not handle %1$s of Geo Fence(s) %2$s...</string>
+
+    <string name="lbl_trigger_geo_fencing_broadcast_notification_warn_time_registration_not_ended_title">Time Registration still ongoing</string>
+    <string name="lbl_trigger_geo_fencing_broadcast_notification_warn_time_registration_not_ended_message_short">You have left the geo fence %1$s but the time registration has not been ended</string>
 
     <!-- ABOUT -->
     <string name="lbl_about_title">About</string>

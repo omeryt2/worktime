@@ -84,9 +84,6 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
     public void addOrUpdateNotification(TimeRegistration registration) {
         Log.d(context, LOG_TAG, "Handling status bar notifications...");
 
-        boolean showStatusBarNotifications = Preferences.getShowStatusBarNotificationsPreference(context);
-        Log.d(context, LOG_TAG, "Status bar notifications enabled? " + (showStatusBarNotifications?"Yes":"No"));
-
         if (registration == null) {
             registration = timeRegistrationService.getLatestTimeRegistration();
             if (registration == null) {
@@ -95,7 +92,7 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
             }
         }
 
-        if (showStatusBarNotifications && registration != null && registration.isOngoingTimeRegistration()) {
+        if (registration != null && registration.isOngoingTimeRegistration()) {
             //Create the status bar notifications
             Log.d(context, LOG_TAG, "Ongoing time registration... Refreshing the task and project...");
             taskService.refresh(registration.getTask());
@@ -202,12 +199,6 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
 
     @Override
     public void addStatusBarNotificationForBackup(String backupLocation, boolean success, String text, String bigText) {
-        boolean showStatusBarNotifications = Preferences.getShowStatusBarNotificationsPreference(context);
-
-        if (!showStatusBarNotifications) {
-            return;
-        }
-
         String ticker = null;
         String title = null;
         String message = null;
@@ -238,12 +229,6 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
 
     @Override
     public void addStatusBarNotificationForRestore(boolean success, String text, String bigText) {
-        boolean showStatusBarNotifications = Preferences.getShowStatusBarNotificationsPreference(context);
-
-        if (!showStatusBarNotifications) {
-            return;
-        }
-
         String ticker = null;
         String title = null;
         String message = null;
@@ -353,6 +338,12 @@ public class StatusBarNotificationServiceImpl implements StatusBarNotificationSe
      *                           notification. The actions will only be used on 4.1 and up OS versions.
      */
     private void setStatusBarNotification(String title, String message, String ticker, Intent intent, String bigText, String bigContentTitle, int notificationId, int priority, Integer iconDrawable, boolean fixed, NotificationAction... actions) {
+        boolean showStatusBarNotifications = Preferences.getShowStatusBarNotificationsPreference(context);
+        Log.d(context, LOG_TAG, "Status bar notifications enabled? " + (showStatusBarNotifications?"Yes":"No"));
+        if (!showStatusBarNotifications) {
+            return;
+        }
+
         int icon = R.drawable.logo_notif_bar;
         if (iconDrawable != null)
             icon = iconDrawable;

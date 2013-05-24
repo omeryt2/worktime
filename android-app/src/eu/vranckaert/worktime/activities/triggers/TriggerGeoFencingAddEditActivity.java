@@ -23,6 +23,8 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -42,6 +44,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 import com.google.inject.Inject;
 import com.google.inject.internal.Nullable;
+import com.mobsandgeeks.saripaar.Rule;
+import com.mobsandgeeks.saripaar.Rules;
+import com.mobsandgeeks.saripaar.Validator;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.exceptions.worktime.trigger.geofence.DuplicateGeofenceNameException;
@@ -50,7 +55,6 @@ import eu.vranckaert.worktime.service.GeofenceService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
-import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.view.ProjectTaskSelectionUtil;
 import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockFragmentActivity;
 import roboguice.inject.InjectExtra;
@@ -66,7 +70,7 @@ import java.util.*;
 public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivity {
     private static final String LOG_TAG = TriggerGeoFencingAddEditActivity.class.getSimpleName();
 
-    @InjectView(R.id.trigger_geo_fencing_add_edit_name) private TextView name;
+    @InjectView(R.id.trigger_geo_fencing_add_edit_name) private EditText name;
     @InjectView(R.id.trigger_geo_fencing_add_edit_radius) private SeekBar radius;
     @InjectView(R.id.trigger_geo_fencing_add_edit_expires) private CheckBox expires;
     @InjectView(R.id.trigger_geo_fencing_add_edit_expiration_date) private Button expirationDateButton;
@@ -168,7 +172,7 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
             boolean locationSelected = savedInstanceState.getBoolean(Constants.Extras.GEOFENCE_LOCATION_SELECTED);
             loadEditData(locationSelected);
             if (geofence != null) {
-                projectTaskSelectionUtil = ProjectTaskSelectionUtil.getInstance(this, geofence.getTask()); // TODO when the second project and it's second or third task are selected, goes wrong...
+                projectTaskSelectionUtil = ProjectTaskSelectionUtil.getInstance(this, geofence.getTask());
             }
         } else {
             setCurrentLocationOnMap();
@@ -335,10 +339,10 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
                 IntentUtil.goBack(TriggerGeoFencingAddEditActivity.this);
                 break;
             case R.id.menu_trigger_geo_fencing_list_activity_add_edit:
-                save();
+                validateInput();
                 break;
             case R.id.menu_trigger_geo_fencing_list_activity_add_edit_edit:
-                update();
+                validateInput();
                 break;
             case R.id.menu_trigger_geo_fencing_list_activity_add_edit_delete:
                 delete();
@@ -370,10 +374,6 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
     }
 
     private void update() {
-        if (!validateInput()) {
-            return;
-        }
-
         if (!expires.isChecked()) {
             expirationDate = null;
         }
@@ -434,10 +434,6 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
     }
 
     private void save() {
-        if (!validateInput()) {
-            return;
-        }
-
         if (!expires.isChecked()) {
             expirationDate = null;
         }
@@ -494,18 +490,11 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
         mLocationClient.connect();
     }
 
-    private boolean validateInput() {
-        // TODO make this validation better and easier...
-        boolean valid = true;
-
-        if (StringUtils.isBlank(name.getText().toString())) {
-            name.setError(getText(R.string.lbl_trigger_geo_fencing_add_edit_error_required));
-            valid = false;
-        }
-        if (expires.isChecked() && expirationDate == null) {
-            expirationDateButton.setError(getText(R.string.lbl_trigger_geo_fencing_add_edit_error_required));
-            valid = false;
-        } else if (expires.isChecked()) {
+    private void validateInput() {
+        Validator validator = new Validator(this);
+        validator.put(name, Rules.required(getString(R.string.lbl_trigger_geo_fencing_add_edit_error_required_name), true));
+        if (expires.isChecked()) {
+            validator.put(expirationDateButton, WorkTimeRules.objectRequired(getString(R.string.lbl_trigger_geo_fencing_add_edit_error_required_expiration_date), expirationDate));
             Calendar tomorrow = Calendar.getInstance();
             tomorrow.setTime(new Date());
             tomorrow.add(Calendar.DAY_OF_MONTH, 1);
@@ -513,27 +502,61 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
             tomorrow.set(Calendar.MINUTE, 0);
             tomorrow.set(Calendar.SECOND, 0);
             tomorrow.set(Calendar.MILLISECOND, 0);
-            if ( expirationDate.before(tomorrow.getTime())) {
-                expirationDateButton.setError(getText(R.string.lbl_trigger_geo_fencing_add_edit_error_expiration_date_future));
-                valid = false;
+            validator.put(expirationDateButton, WorkTimeRules.mustBeAfter(getString(R.string.lbl_trigger_geo_fencing_add_edit_error_expiration_date_future), expirationDate, tomorrow.getTime(), true));
+        }
+        validator.put(findViewById(R.id.task_selection), WorkTimeRules.objectRequired(getString(R.string.lbl_trigger_geo_fencing_add_edit_error_required_task), projectTaskSelectionUtil.getSelectedTask()));
+        validator.put(null, WorkTimeRules.objectRequired(getString(R.string.lbl_trigger_geo_fencing_add_edit_error_required_location), mSelectedLocation));
+
+        validator.setValidationListener(new Validator.ValidationListener() {
+            @Override
+            public void preValidation() {
+                validationErrorContainer.setVisibility(View.GONE);
             }
-        }
-        if (projectTaskSelectionUtil.getSelectedTask() == null) {
-            valid = false;
-        }
 
-        if (mSelectedLocation == null) {
-            valid = false;
-        }
+            @Override
+            public void onSuccess() {
+                if (geofence != null && geofence.getId() != null) {
+                    update();
+                } else {
+                    save();
+                }
+            }
 
-        if (!valid) {
-            validationErrorTextView.setText(R.string.lbl_trigger_geo_fencing_add_edit_error_general_message);
-            validationErrorContainer.setVisibility(View.VISIBLE);
-        } else {
-            validationErrorContainer.setVisibility(View.GONE);
-        }
+            @Override
+            public void onFailure(View failedView, Rule<?> failedRule) {
+                if (failedView instanceof TextView || failedView instanceof EditText) {
+                    validationErrorTextView.setText(R.string.lbl_trigger_geo_fencing_add_edit_error_general_message);
+                    if (failedView instanceof EditText) {
+                        final EditText failedViewEditText = (EditText) failedView;
+                        failedViewEditText.setError(failedRule.getFailureMessage());
+                        failedViewEditText.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-        return valid;
+                            @Override
+                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                failedViewEditText.setError(null);
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable s) {}
+                        });
+                    }
+                }
+
+                validationErrorTextView.setText(getString(R.string.lbl_trigger_geo_fencing_add_edit_error_detailed_message) + ": " + failedRule.getFailureMessage());
+
+                if (failedView != null) {
+                    failedView.requestFocus();
+                }
+
+                validationErrorContainer.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onValidationCancelled() {}
+        });
+        validator.validate();
     }
 
     @Override

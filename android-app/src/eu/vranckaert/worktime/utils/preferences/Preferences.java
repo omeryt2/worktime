@@ -843,4 +843,20 @@ public class Preferences {
             editor.commit();
         }
     }
+
+    public static class TriggersGeofence {
+        public static boolean doNotPunchOutOnLeavingGeofence(Context ctx) {
+            return getSharedPreferences(ctx).getBoolean(
+                    Constants.Preferences.Keys.DO_NOT_PUNCH_OUT_ON_LEAVING_GEOFENCE,
+                    Constants.Preferences.DO_NOT_PUNCH_OUT_ON_LEAVING_GEOFENCE_DEFAULT_VALUE
+            );
+        }
+
+        public static boolean showNotificationWhenNotPunchedOut(Context ctx) {
+            return getSharedPreferences(ctx).getBoolean(
+                    Constants.Preferences.Keys.SHOW_NOTIFICATION_WHEN_NOT_PUNCHED_OUT,
+                    Constants.Preferences.SHOW_NOTIFICATION_WHEN_NOT_PUNCHED_OUT_DEFAULT_VALUE
+            );
+        }
+    }
 }

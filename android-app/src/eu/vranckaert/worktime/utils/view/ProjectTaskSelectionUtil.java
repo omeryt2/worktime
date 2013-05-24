@@ -54,8 +54,6 @@ public class ProjectTaskSelectionUtil {
 
     private List<Project> availableProjects;
     private List<Task> availableTasks;
-    private Task initialTask = null;
-    private boolean projectTaskTriggerEnabled = true;
 
     private ProjectTaskSelectionUtil() {}
 
@@ -81,8 +79,6 @@ public class ProjectTaskSelectionUtil {
             project = task.getProject();
         }
 
-        util.projectTaskTriggerEnabled = false;
-        util.initialTask = task;
         List<Project> projects = util.setupProjectTaskSelection(project);
         List<Task> tasks = util.setupTaskSelection(util.selectedProject, task);
         util.setupSelectionListeners();
@@ -157,32 +153,33 @@ public class ProjectTaskSelectionUtil {
     }
 
     private void setupSelectionListeners() {
-        projectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedProject = availableProjects.get(position);
-                if (projectTaskTriggerEnabled) {
-                    List<Task> tasks = setupTaskSelection(selectedProject, null);
-                }
-            }
+        projectSpinner.post(new Runnable() {
+            public void run() {
+                projectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        selectedProject = availableProjects.get(position);
+                        List<Task> tasks = setupTaskSelection(selectedProject, null);
+                    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {}
+                });
+            }
         });
 
-        taskSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedTask = availableTasks.get(position);
-                if (initialTask != null && selectedTask.getId().equals(initialTask.getId())) {
-                    projectTaskTriggerEnabled = true;
-                } else if (initialTask == null) {
-                    projectTaskTriggerEnabled = true;
-                }
-            }
+        taskSpinner.post(new Runnable() {
+            public void run() {
+                taskSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        selectedTask = availableTasks.get(position);
+                    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {}
+                });
+            }
         });
     }
 

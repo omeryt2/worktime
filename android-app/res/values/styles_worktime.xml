@@ -27,8 +27,6 @@
         <item name="actionModeBackground">@drawable/cab_background_top_worktime</item>
         <item name="actionModeSplitBackground">@drawable/cab_background_bottom_worktime</item>
         <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Worktime</item>
-
-        
     </style>
 
     <style name="ActionBar.Solid.Worktime" parent="@style/Widget.Sherlock.Light.ActionBar.Solid">

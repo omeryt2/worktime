@@ -37,6 +37,7 @@ import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
+import eu.vranckaert.worktime.utils.preferences.Preferences;
 import roboguice.inject.ContextSingleton;
 
 import java.util.*;
@@ -177,17 +178,29 @@ public class GeofenceServiceImpl implements GeofenceService {
             return true;
         } else if (transition == Geofence.GEOFENCE_TRANSITION_EXIT) {
             Log.d(LOG_TAG, "Leaving geo fence '" + geofenceTrigger.getName() + "'");
-            // TODO handle preferences...
             // Leaving a geo fence...
             if (ongoingTimeRegistration == null) {
                 Log.d(LOG_TAG, "GEOFENCE_TRIGGER: No action (There are no ongoing time registration so nothing should be stopped) - " + geofenceTrigger.getName());
                 return null;
             } else if (geofenceTrigger.isEntered()) {
-                ongoingTimeRegistration.setEndTime(new Date());
-                timeRegistrationService.update(ongoingTimeRegistration);
+                if (!Preferences.TriggersGeofence.doNotPunchOutOnLeavingGeofence(context)) {
+                    ongoingTimeRegistration.setEndTime(new Date());
+                    timeRegistrationService.update(ongoingTimeRegistration);
+                } else  if(Preferences.TriggersGeofence.showNotificationWhenNotPunchedOut(context)) {
+                    statusBarNotificationService.addNotificationForGeofence(
+                            context.getString(R.string.lbl_trigger_geo_fencing_broadcast_notification_warn_time_registration_not_ended_title),
+                            context.getString(R.string.lbl_trigger_geo_fencing_broadcast_notification_warn_time_registration_not_ended_message_short, geofenceTrigger.getName()),
+                            null
+                    );
+                }
+                return true;
             } else {
-                Log.d(LOG_TAG, "GEOFENCE_TRIGGER: Invalid GeoFenceTrigger (Cannot stop a time registration because this geo fence has not been entered...) - " + geofenceTrigger.getName());
-                return false;
+                if (!Preferences.TriggersGeofence.doNotPunchOutOnLeavingGeofence(context)) {
+                    Log.d(LOG_TAG, "GEOFENCE_TRIGGER: Invalid GeoFenceTrigger (Cannot stop a time registration because this geo fence has not been entered...) - " + geofenceTrigger.getName());
+                    return false;
+                } else {
+                    return true;
+                }
             }
         }
 
