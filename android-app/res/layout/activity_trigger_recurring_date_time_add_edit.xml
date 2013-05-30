@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2013 Dirk Vranckaert
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".activities.triggers.TriggerRecurringDateTimeAddEditActivity">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+        <include layout="@layout/custom_validation"/>
+        <!-- General Recurrency Settings and time registrations -->
+        <TableLayout android:layout_width="match_parent"
+                     android:layout_height="match_parent"
+                     android:stretchColumns="1">
+            <TableRow android:gravity="center_vertical">
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="Recurrence"
+                    />
+                <Spinner android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:id="@+id/activity_trigger_recurring_date_time_recurrence"/>
+            </TableRow>
+            <TableRow android:gravity="center_vertical">
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="Start Time"/>
+                <Button android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/activity_trigger_recurring_date_time_tr_start_time"/>
+            </TableRow>
+            <TableRow android:gravity="center_vertical">
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="End Time"/>
+                <Button android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Select time"
+                        android:id="@+id/activity_trigger_recurring_date_time_tr_end_time"/>
+            </TableRow>
+        </TableLayout>
+
+        <include layout="@layout/custom_project_task_selection"/>
+
+        <!-- Daily Settings -->
+        <TableLayout android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:stretchColumns="1"
+                     android:id="@+id/activity_trigger_recurring_date_time_daily_container">
+            <TableRow android:gravity="center_vertical">
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="Only weekdays"/>
+                <CheckBox android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:checked="true"
+                          android:id="@+id/activity_trigger_recurring_date_time_daily_only_weekdays"/>
+            </TableRow>
+        </TableLayout>
+
+        <!-- Weekly Settings -->
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      android:id="@+id/activity_trigger_recurring_date_time_weekly_container">
+            <TableLayout android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:stretchColumns="1">
+                <TableRow android:gravity="center_vertical">
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="Pattern"/>
+                    <Spinner android:layout_width="match_parent"
+                             android:layout_height="wrap_content"
+                             android:id="@+id/activity_trigger_recurring_date_time_weekly_pattern"/>
+                </TableRow>
+            </TableLayout>
+            <TableLayout android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:stretchColumns="*">
+                <TableRow>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="Ma"
+                              android:gravity="center_horizontal"
+                              android:id="@+id/activity_trigger_recurring_date_time_weekly_week_selection_textview_0"/>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="Di"
+                              android:gravity="center_horizontal"
+                              android:id="@+id/activity_trigger_recurring_date_time_weekly_week_selection_textview_1"/>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="Wo"
+                              android:gravity="center_horizontal"
+                              android:id="@+id/activity_trigger_recurring_date_time_weekly_week_selection_textview_2"/>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="Do"
+                              android:gravity="center_horizontal"
+                              android:id="@+id/activity_trigger_recurring_date_time_weekly_week_selection_textview_3"/>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="Vr"
+                              android:gravity="center_horizontal"
+                              android:id="@+id/activity_trigger_recurring_date_time_weekly_week_selection_textview_4"/>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="Za"
+                              android:gravity="center_horizontal"
+                              android:id="@+id/activity_trigger_recurring_date_time_weekly_week_selection_textview_5"/>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="Zo"
+                              android:gravity="center_horizontal"
+                              android:id="@+id/activity_trigger_recurring_date_time_weekly_week_selection_textview_6"/>
+                </TableRow>
+                <TableRow>
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="horizontal"
+                                  android:gravity="center_horizontal">
+                        <CheckBox android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:checked="true"
+                                  android:id="@+id/activity_trigger_recurring_date_time_weekly_week_selection_checkbox_0"/>
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="horizontal"
+                                  android:gravity="center_horizontal">
+                        <CheckBox android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:checked="true"
+                                  android:id="@+id/activity_trigger_recurring_date_time_weekly_week_selection_checkbox_1"/>
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="horizontal"
+                                  android:gravity="center_horizontal">
+                        <CheckBox android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:checked="true"
+                                  android:id="@+id/activity_trigger_recurring_date_time_weekly_week_selection_checkbox_2"/>
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="horizontal"
+                                  android:gravity="center_horizontal">
+                        <CheckBox android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:checked="true"
+                                  android:id="@+id/activity_trigger_recurring_date_time_weekly_week_selection_checkbox_3"/>
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="horizontal"
+                                  android:gravity="center_horizontal">
+                        <CheckBox android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:checked="true"
+                                  android:id="@+id/activity_trigger_recurring_date_time_weekly_week_selection_checkbox_4"/>
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="horizontal"
+                                  android:gravity="center_horizontal">
+                        <CheckBox android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:checked="true"
+                                  android:id="@+id/activity_trigger_recurring_date_time_weekly_week_selection_checkbox_5"/>
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="horizontal"
+                                  android:gravity="center_horizontal">
+                        <CheckBox android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:checked="true"
+                                  android:id="@+id/activity_trigger_recurring_date_time_weekly_week_selection_checkbox_6"/>
+                    </LinearLayout>
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
+
+        <!-- Recurrency Range Settings -->
+        <TableLayout android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:stretchColumns="1">
+            <TableRow android:gravity="center_vertical">
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="Starts on"/>
+                <Button android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Select date"
+                        android:id="@+id/activity_trigger_recurring_date_time_starts_on_date_button"/>
+            </TableRow>
+            <TableRow android:layout_height="wrap_content"
+                      android:layout_width="match_parent"
+                      android:gravity="center_vertical">
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="Ends on"/>
+                <Spinner android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:id="@+id/activity_trigger_recurring_date_time_ends_on"/>
+            </TableRow>
+            <TableRow android:gravity="center_vertical"
+                      android:id="@+id/activity_trigger_recurring_date_time_ends_on_times">
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text=""/>
+                <EditText android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:inputType="number"
+                          android:id="@+id/activity_trigger_recurring_date_time_ends_on_times_edit_text"/>
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="times"/>
+            </TableRow>
+            <TableRow android:gravity="center_vertical"
+                      android:id="@+id/activity_trigger_recurring_date_time_ends_on_date">
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text=""/>
+                <Button android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Select date"
+                        android:id="@+id/activity_trigger_recurring_date_time_ends_on_date_button"/>
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+</ScrollView>

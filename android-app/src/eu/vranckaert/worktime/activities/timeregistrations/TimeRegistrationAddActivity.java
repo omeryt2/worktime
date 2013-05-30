@@ -452,118 +452,118 @@ public class TimeRegistrationAddActivity extends SyncLockedWizardActivity {
     }
 
     /**
-     * Validate a certain time against a certain limit. The validation formula is: time > limit.
+     * Validate a certain time against a certain limit. The custom_validation formula is: time > limit.
      * @param time The time to be validated.
      * @param limit The limit to which the time should be validated. This is an optional parameter. If null the
-     * validation will always succeed.
-     * @return {@link Boolean#TRUE} if valid against the validation formula, {@link Boolean#FALSE} if not.
+     * custom_validation will always succeed.
+     * @return {@link Boolean#TRUE} if valid against the custom_validation formula, {@link Boolean#FALSE} if not.
      */
     private boolean validateGreaterThan(final Calendar time, final Calendar limit) {
         Log.d(getApplicationContext(), LOG_TAG, "About to start validating time > limit");
 
         if (limit == null) {
             //No limit is defined so the time can be anything!
-            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so validation is ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so custom_validation is ok!");
             return true;
         }
 
         if (time.after(limit)) {
-            Log.d(getApplicationContext(), LOG_TAG, "The time is greater than the limit, validation ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "The time is greater than the limit, custom_validation ok!");
             return true;
         }
 
-        Log.d(getApplicationContext(), LOG_TAG, "The time is not greater than the limit, validation NOT ok!");
+        Log.d(getApplicationContext(), LOG_TAG, "The time is not greater than the limit, custom_validation NOT ok!");
         return false;
     }
 
     /**
-     * Validate a certain time against a certain limit. The validation formula is: time >= limit.
+     * Validate a certain time against a certain limit. The custom_validation formula is: time >= limit.
      * @param time The time to be validated.
      * @param limit The limit to which the time should be validated. This is an optional parameter. If null the
-     * validation will always succeed.
-     * @return {@link Boolean#TRUE} if valid against the validation formula, {@link Boolean#FALSE} if not.
+     * custom_validation will always succeed.
+     * @return {@link Boolean#TRUE} if valid against the custom_validation formula, {@link Boolean#FALSE} if not.
      */
     private boolean validateGreaterThanOrEqualsTo(final Calendar time, final Calendar limit) {
         Log.d(getApplicationContext(), LOG_TAG, "About to start validating time >= limit");
 
         if (limit == null) {
             //No limit is defined so the time can be anything!
-            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so validation is ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so custom_validation is ok!");
             return true;
         }
 
         if (validateGreaterThan(time, limit) || validateEqualTo(time, limit)) {
-            Log.d(getApplicationContext(), LOG_TAG, "The time is greater than or equal to the limit, validation ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "The time is greater than or equal to the limit, custom_validation ok!");
             return true;
         }
 
-        Log.d(getApplicationContext(), LOG_TAG, "The time is not greater than or equal to the limit, validation NOT ok!");
+        Log.d(getApplicationContext(), LOG_TAG, "The time is not greater than or equal to the limit, custom_validation NOT ok!");
         return false;
     }
 
     /**
-     * Validate a certain time against a certain limit. The validation formula is: time < limit.
+     * Validate a certain time against a certain limit. The custom_validation formula is: time < limit.
      * @param time The time to be validated.
      * @param limit The limit to which the time should be validated. This is an optional parameter. If null the
-     * validation will always succeed.
-     * @return {@link Boolean#TRUE} if valid against the validation formula, {@link Boolean#FALSE} if not.
+     * custom_validation will always succeed.
+     * @return {@link Boolean#TRUE} if valid against the custom_validation formula, {@link Boolean#FALSE} if not.
      */
     private boolean validateLowerThan(final Calendar time, final Calendar limit) {
         Log.d(getApplicationContext(), LOG_TAG, "About to start validating time < limit");
 
         if (limit == null) {
             //No limit is defined so the time can be anything!
-            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so validation is ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so custom_validation is ok!");
             return true;
         }
 
         if (time.before(limit)) {
-            Log.d(getApplicationContext(), LOG_TAG, "The time is lower than the limit, validation ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "The time is lower than the limit, custom_validation ok!");
             return true;
         }
 
-        Log.d(getApplicationContext(), LOG_TAG, "The time is not lower than the limit, validation NOT ok!");
+        Log.d(getApplicationContext(), LOG_TAG, "The time is not lower than the limit, custom_validation NOT ok!");
         return false;
     }
 
     /**
-     * Validate a certain time against a certain limit. The validation formula is: time <= limit.
+     * Validate a certain time against a certain limit. The custom_validation formula is: time <= limit.
      * @param time The time to be validated.
      * @param limit The limit to which the time should be validated. This is an optional parameter. If null the
-     * validation will always succeed.
-     * @return {@link Boolean#TRUE} if valid against the validation formula, {@link Boolean#FALSE} if not.
+     * custom_validation will always succeed.
+     * @return {@link Boolean#TRUE} if valid against the custom_validation formula, {@link Boolean#FALSE} if not.
      */
     private boolean validateLowerThanOrEqualsTo(final Calendar time, final Calendar limit) {
         Log.d(getApplicationContext(), LOG_TAG, "About to start validating time <= limit");
 
         if (limit == null) {
             //No limit is defined so the time can be anything!
-            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so validation is ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so custom_validation is ok!");
             return true;
         }
 
         if (validateLowerThan(time, limit) || validateEqualTo(time, limit)) {
-            Log.d(getApplicationContext(), LOG_TAG, "The time is lower than or equal to the limit, validation ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "The time is lower than or equal to the limit, custom_validation ok!");
             return true;
         }
 
-        Log.d(getApplicationContext(), LOG_TAG, "The time is not lower than or equal to the limit, validation NOT ok!");
+        Log.d(getApplicationContext(), LOG_TAG, "The time is not lower than or equal to the limit, custom_validation NOT ok!");
         return false;
     }
 
     /**
-     * Validate a certain time against a certain limit. The validation formula is: time = limit.
+     * Validate a certain time against a certain limit. The custom_validation formula is: time = limit.
      * @param time The time to be validated.
      * @param limit The limit to which the time should be validated. This is an optional parameter. If null the
-     * validation will always succeed.
-     * @return {@link Boolean#TRUE} if valid against the validation formula, {@link Boolean#FALSE} if not.
+     * custom_validation will always succeed.
+     * @return {@link Boolean#TRUE} if valid against the custom_validation formula, {@link Boolean#FALSE} if not.
      */
     private boolean validateEqualTo(final Calendar time, final Calendar limit) {
         Log.d(getApplicationContext(), LOG_TAG, "About to start validating time = limit");
 
         if (limit == null) {
             //No limit is defined so the time can be anything!
-            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so validation is ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so custom_validation is ok!");
             return true;
         }
 
@@ -579,11 +579,11 @@ public class TimeRegistrationAddActivity extends SyncLockedWizardActivity {
         calendarLimit.set(Calendar.MILLISECOND, 0);
         calendarLimit.set(Calendar.SECOND, 0);
         if (calendarTime.getTimeInMillis() == calendarLimit.getTimeInMillis()) {
-            Log.d(getApplicationContext(), LOG_TAG, "The time is equal to the limit, validation ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "The time is equal to the limit, custom_validation ok!");
             return true;
         }
 
-        Log.d(getApplicationContext(), LOG_TAG, "The time is not equal to the limit, validation NOT ok!");
+        Log.d(getApplicationContext(), LOG_TAG, "The time is not equal to the limit, custom_validation NOT ok!");
         return false;
     }
     /**

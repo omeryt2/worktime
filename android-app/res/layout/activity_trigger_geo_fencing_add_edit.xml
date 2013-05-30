@@ -22,26 +22,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               tools:context=".activities.triggers.TriggerGeoFencingAddEditActivity">
-    <LinearLayout android:layout_width="fill_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="horizontal"
-                  android:gravity="center"
-                  android:visibility="gone"
-                  android:id="@+id/validation_error_container"
-                  android:padding="5dp">
-        <ImageView android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:src="@drawable/ic_alerts_and_states_warning"
-                   android:id="@+id/validation_error_image_view"/>
-        <View android:layout_width="1dp"
-              android:layout_height="match_parent"
-              android:background="#d2d2d2"
-              android:padding="5dp"/>
-        <TextView android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:paddingLeft="5dp"
-                  android:id="@+id/validation_error_text_view"/>
-    </LinearLayout>
+    <include layout="@layout/custom_validation"/>
 
     <TableLayout android:layout_width="match_parent"
                  android:layout_height="wrap_content"
@@ -89,24 +70,7 @@
                     android:id="@+id/trigger_geo_fencing_add_edit_expiration_date"
                     android:visibility="gone"/>
         </TableRow>
-        <TableRow>
-            <TextView android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:text="Project"
-                      android:paddingRight="10dp"/>
-            <Spinner android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:id="@+id/project_selection"/>
-        </TableRow>
-        <TableRow>
-            <TextView android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:text="Task"
-                      android:paddingRight="10dp"/>
-            <Spinner android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:id="@+id/task_selection"/>
-        </TableRow>
+        <include layout="@layout/custom_project_task_selection"/>
     </TableLayout>
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/map"

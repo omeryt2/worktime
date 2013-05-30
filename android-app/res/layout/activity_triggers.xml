@@ -37,4 +37,8 @@
             android:layout_height="wrap_content"
             android:text="@string/lbl_triggers_button_wifi_networks"
             android:onClick="wifiNetworksClicked"/>
+    <Button android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_triggers_button_recurring"
+            android:onClick="recurringClicked"/>
 </LinearLayout>

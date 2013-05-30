@@ -23,8 +23,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -44,9 +42,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 import com.google.inject.Inject;
 import com.google.inject.internal.Nullable;
-import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Rules;
-import com.mobsandgeeks.saripaar.Validator;
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.exceptions.worktime.trigger.geofence.DuplicateGeofenceNameException;
@@ -57,6 +53,8 @@ import eu.vranckaert.worktime.utils.date.DateFormat;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.view.ProjectTaskSelectionUtil;
 import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockFragmentActivity;
+import eu.vranckaert.worktime.utils.view.validation.WorkTimeRules;
+import eu.vranckaert.worktime.utils.view.validation.WorkTimeValidator;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
@@ -491,7 +489,7 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
     }
 
     private void validateInput() {
-        Validator validator = new Validator(this);
+        WorkTimeValidator validator = new WorkTimeValidator(this);
         validator.put(name, Rules.required(getString(R.string.lbl_trigger_geo_fencing_add_edit_error_required_name), true));
         if (expires.isChecked()) {
             validator.put(expirationDateButton, WorkTimeRules.objectRequired(getString(R.string.lbl_trigger_geo_fencing_add_edit_error_required_expiration_date), expirationDate));
@@ -506,56 +504,6 @@ public class TriggerGeoFencingAddEditActivity extends RoboSherlockFragmentActivi
         }
         validator.put(findViewById(R.id.task_selection), WorkTimeRules.objectRequired(getString(R.string.lbl_trigger_geo_fencing_add_edit_error_required_task), projectTaskSelectionUtil.getSelectedTask()));
         validator.put(null, WorkTimeRules.objectRequired(getString(R.string.lbl_trigger_geo_fencing_add_edit_error_required_location), mSelectedLocation));
-
-        validator.setValidationListener(new Validator.ValidationListener() {
-            @Override
-            public void preValidation() {
-                validationErrorContainer.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onSuccess() {
-                if (geofence != null && geofence.getId() != null) {
-                    update();
-                } else {
-                    save();
-                }
-            }
-
-            @Override
-            public void onFailure(View failedView, Rule<?> failedRule) {
-                if (failedView instanceof TextView || failedView instanceof EditText) {
-                    validationErrorTextView.setText(R.string.lbl_trigger_geo_fencing_add_edit_error_general_message);
-                    if (failedView instanceof EditText) {
-                        final EditText failedViewEditText = (EditText) failedView;
-                        failedViewEditText.setError(failedRule.getFailureMessage());
-                        failedViewEditText.addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-                            @Override
-                            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                failedViewEditText.setError(null);
-                            }
-
-                            @Override
-                            public void afterTextChanged(Editable s) {}
-                        });
-                    }
-                }
-
-                validationErrorTextView.setText(getString(R.string.lbl_trigger_geo_fencing_add_edit_error_detailed_message) + ": " + failedRule.getFailureMessage());
-
-                if (failedView != null) {
-                    failedView.requestFocus();
-                }
-
-                validationErrorContainer.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onValidationCancelled() {}
-        });
         validator.validate();
     }
 

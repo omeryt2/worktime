@@ -48,6 +48,11 @@ public class TriggersActivity extends RoboSherlockActivity {
     public void wifiNetworksClicked(View view) {
     }
 
+    public void recurringClicked(View view) {
+        Intent intent = new Intent(TriggersActivity.this, TriggerRecurringAddEditActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

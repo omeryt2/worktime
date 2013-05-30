@@ -197,7 +197,7 @@ public class AddEditProjectActivity extends SyncLockedActivity {
     }
 
     /**
-     * Hide all the validation errors.
+     * Hide all the custom_validation errors.
      */
     private void hideValidationErrors() {
         projectnameRequired.setVisibility(View.GONE);

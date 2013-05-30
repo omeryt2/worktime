@@ -237,7 +237,7 @@ public class TimeRegistrationEditEndTimeActivity extends SyncLockedGuiceActivity
             Log.d(getApplicationContext(), LOG_TAG, "The new start time is not lower than or equals to the higherLimit!");
             showDialog(Constants.Dialog.VALIDATION_DATE_HIGHER_LIMIT);
         } else {
-            Log.d(getApplicationContext(), LOG_TAG, "No validation errors...");
+            Log.d(getApplicationContext(), LOG_TAG, "No custom_validation errors...");
             updateTimeRegistration();
         }
 
@@ -248,29 +248,29 @@ public class TimeRegistrationEditEndTimeActivity extends SyncLockedGuiceActivity
 //            Log.d(getApplicationContext(), LOG_TAG, "The new start time is not before the higherLimit!");
 //            showDialog(Constants.Dialog.VALIDATION_DATE_HIGHER_LIMIT);
 //        } else {
-//            Log.d(getApplicationContext(), LOG_TAG, "No validation errors...");
+//            Log.d(getApplicationContext(), LOG_TAG, "No custom_validation errors...");
 //            updateTimeRegistration();
 //        }
     }
 
     /**
-     * Validate a certain time against a certain limit. The validation formula is: time > limit.
+     * Validate a certain time against a certain limit. The custom_validation formula is: time > limit.
      * @param time The time to be validated.
      * @param limit The limit to which the time should be validated. This is an optional parameter. If null the
-     * validation will always succeed.
-     * @return {@link Boolean#TRUE} if valid against the validation formula, {@link Boolean#FALSE} if not.
+     * custom_validation will always succeed.
+     * @return {@link Boolean#TRUE} if valid against the custom_validation formula, {@link Boolean#FALSE} if not.
      */
     private boolean validateAgainstLowerLimit(Calendar time, Calendar limit) {
         Log.d(getApplicationContext(), LOG_TAG, "About to start validating time > limit");
 
         if (limit == null) {
             //No limit is defined so the time can be anything!
-            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so validation is ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so custom_validation is ok!");
             return true;
         }
 
         if(time.getTime().after(limit.getTime())) {
-            Log.d(getApplicationContext(), LOG_TAG, "The new time is greater than the limit, validation ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "The new time is greater than the limit, custom_validation ok!");
             return true;
         }
 
@@ -280,18 +280,18 @@ public class TimeRegistrationEditEndTimeActivity extends SyncLockedGuiceActivity
     }
 
     /**
-     * Validate a certain time against a certain limit. The validation formula is: time <= limit.
+     * Validate a certain time against a certain limit. The custom_validation formula is: time <= limit.
      * @param time The time to be validated.
      * @param limit The limit to which the time should be validated. This is an optional parameter. If null the
-     * validation will always succeed.
-     * @return {@link Boolean#TRUE} if valid against the validation formula, {@link Boolean#FALSE} if not.
+     * custom_validation will always succeed.
+     * @return {@link Boolean#TRUE} if valid against the custom_validation formula, {@link Boolean#FALSE} if not.
      */
     private boolean validateAgainstHigherLimit(Calendar time, Calendar limit) {
         Log.d(getApplicationContext(), LOG_TAG, "About to start validating time <= limit");
 
         if (limit == null) {
             //No limit is defined so the time can be anything!
-            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so validation is ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "No limitations defined so custom_validation is ok!");
             return true;
         }
 
@@ -301,7 +301,7 @@ public class TimeRegistrationEditEndTimeActivity extends SyncLockedGuiceActivity
         //First check if the time is after the limit, if so everything is ok!
         //=> checks the greater than part
         if (time.getTime().before(limit.getTime())) {
-            Log.d(getApplicationContext(), LOG_TAG, "The new time is less than or equal to the limit, validation ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "The new time is less than or equal to the limit, custom_validation ok!");
             return true;
         }
 
@@ -317,7 +317,7 @@ public class TimeRegistrationEditEndTimeActivity extends SyncLockedGuiceActivity
         limitSameMinuteCheck.set(Calendar.MILLISECOND, 0);
         limitSameMinuteCheck.set(Calendar.SECOND, 0);
         if (timeSameMinuteCheck.getTimeInMillis() == limitSameMinuteCheck.getTimeInMillis()) {
-            Log.d(getApplicationContext(), LOG_TAG, "The new time is equal to the limit, validation ok!");
+            Log.d(getApplicationContext(), LOG_TAG, "The new time is equal to the limit, custom_validation ok!");
             Log.d(getApplicationContext(), LOG_TAG, "New time is updated with the seconds and milliseconds of the limit!");
             time.set(Calendar.MILLISECOND, limit.get(Calendar.MILLISECOND));
             time.set(Calendar.SECOND, limit.get(Calendar.SECOND));

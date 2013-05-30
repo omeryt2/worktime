@@ -113,7 +113,7 @@ public enum DatabaseUpgrade {
             "ALTER TABLE SyncHistory add column numIncomingTimeRegistrationsRemoved " + DataTypes.INTEGER + ";"
     }),
     UPGRADE10(31, new String[] {
-            "CREATE TABLE GeofenceTrigger " +
+            "CREATE TABLE geofence " +
                     "(" +
                     "id " + DataTypes.INTEGER + " PRIMARY KEY, " +
                     "geofenceRequestId " + DataTypes.VARCHAR + " UNIQUE NOT NULL, " +
@@ -125,10 +125,32 @@ public enum DatabaseUpgrade {
                     ");"
     }),
     UPGRADE11(32, new String[] {
-            "ALTER TABLE GeofenceTrigger add column taskId " + DataTypes.INTEGER + ";"
+            "ALTER TABLE geofence add column taskId " + DataTypes.INTEGER + ";"
     }),
     UPGRADE12(33, new String[] {
-            "ALTER TABLE GeofenceTrigger add column entered " + DataTypes.BOOLEAN + ";"
+            "ALTER TABLE geofence add column entered " + DataTypes.BOOLEAN + ";"
+    }),
+    UPGRADE13(34, new String[] {
+            "CREATE TABLE recurrence " +
+                    "(" +
+                    "id " + DataTypes.INTEGER + " PRIMARY KEY, " +
+                    "timeRegistrationStartTime " + DataTypes.VARCHAR + " NOT NULL, " +
+                    "timeRegistrationEndTime " + DataTypes.VARCHAR + " NOT NULL, " +
+                    "taskId " + DataTypes.INTEGER + " NOT NULL, " +
+                    "recurrence " + DataTypes.VARCHAR + " NOT NULL, " +
+                    "monday " + DataTypes.BOOLEAN + ", " +
+                    "tuesday " + DataTypes.BOOLEAN + ", " +
+                    "wednesday " + DataTypes.BOOLEAN + ", " +
+                    "thursday " + DataTypes.BOOLEAN + ", " +
+                    "friday " + DataTypes.BOOLEAN + ", " +
+                    "saturday " + DataTypes.BOOLEAN + ", " +
+                    "sunday " + DataTypes.BOOLEAN + ", " +
+                    "triggerStartDate " + DataTypes.VARCHAR + " NOT NULL, " +
+                    "triggerEndDate " + DataTypes.VARCHAR + ", " +
+                    "triggerEndTimes " + DataTypes.INTEGER + ", " +
+                    "timesTriggered " + DataTypes.INTEGER + ", " +
+                    "active " + DataTypes.BOOLEAN +
+                    ");"
     })
     ;
 

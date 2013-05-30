@@ -237,6 +237,38 @@ public class DateUtils {
             String result = df.format(date);
             return result;
         }
+
+        public static Date convertToTimeOnly(Date date, boolean maximumValues) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            if (maximumValues) {
+                calendar.set(Calendar.YEAR, calendar.getActualMaximum(Calendar.YEAR));
+                calendar.set(Calendar.MONTH, calendar.getActualMaximum(Calendar.MONTH));
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+            } else {
+                calendar.set(Calendar.YEAR, calendar.getActualMinimum(Calendar.YEAR));
+                calendar.set(Calendar.MONTH, calendar.getActualMinimum(Calendar.MONTH));
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+            }
+            return calendar.getTime();
+        }
+
+        public static Date convertToDateOnly(Date date, boolean maximumValues) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            if (maximumValues) {
+                calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMaximum(Calendar.HOUR_OF_DAY));
+                calendar.set(Calendar.MINUTE, calendar.getActualMaximum(Calendar.MINUTE));
+                calendar.set(Calendar.SECOND, calendar.getActualMaximum(Calendar.SECOND));
+                calendar.set(Calendar.MILLISECOND, calendar.getActualMaximum(Calendar.MILLISECOND));
+            } else {
+                calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMinimum(Calendar.HOUR_OF_DAY));
+                calendar.set(Calendar.MINUTE, calendar.getActualMinimum(Calendar.MINUTE));
+                calendar.set(Calendar.SECOND, calendar.getActualMinimum(Calendar.SECOND));
+                calendar.set(Calendar.MILLISECOND, calendar.getActualMinimum(Calendar.MILLISECOND));
+            }
+            return calendar.getTime();
+        }
     }
 
     /**

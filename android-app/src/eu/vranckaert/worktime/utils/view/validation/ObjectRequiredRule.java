@@ -14,43 +14,26 @@
  * limitations under the License.
  */
 
-package eu.vranckaert.worktime.activities.triggers;
+package eu.vranckaert.worktime.utils.view.validation;
 
 import android.view.View;
 import com.mobsandgeeks.saripaar.Rule;
 
-import java.util.Date;
-
 /**
  * User: DIRK VRANCKAERT
  * Date: 24/05/13
- * Time: 13:43
+ * Time: 13:30
  */
-public class MustBeAfterRule extends Rule<View> {
-    private Date date;
-    private Date limit;
-    private boolean greaterThanOrEqual;
-    /**
-     * Creates a new validation Rule.
-     *
-     * @param failureMessage The failure message associated with the Rule.
-     */
-    public MustBeAfterRule(String failureMessage, Date date, Date limit, boolean greaterThanOrEqual) {
+public class ObjectRequiredRule extends Rule<View> {
+    private Object object;
+
+    public ObjectRequiredRule(String failureMessage, Object object) {
         super(failureMessage);
-        this.date = date;
-        this.limit = limit;
-        this.greaterThanOrEqual = greaterThanOrEqual;
+        this.object = object;
     }
 
     @Override
     public boolean isValid(View view) {
-        boolean greaterThan = date.after(limit);
-        boolean equals = date.equals(limit);
-
-        if (greaterThanOrEqual) {
-            return greaterThan || equals;
-        } else {
-            return greaterThan;
-        }
+        return object == null ? false : true;
     }
 }

@@ -263,6 +263,7 @@
         <activity android:name=".activities.triggers.TriggersActivity"
                   android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <!-- Geo Fence -->
         <activity android:name=".activities.triggers.TriggerGeoFencingMapActivity"
                   android:theme="@style/Theme.Worktime"
                   android:configChanges="orientation|keyboardHidden|screenSize"/>
@@ -273,6 +274,11 @@
                 <action android:name="eu.vranckaert.worktime.geofence" />
             </intent-filter>
         </receiver>
+        <!-- Wifi -->
+        <!-- Recurring Date Time -->
+        <activity android:name=".activities.triggers.TriggerRecurringAddEditActivity"
+                  android:theme="@style/Theme.Worktime"
+                  android:configChanges="orientation|keyboardHidden|screenSize"/>
 
         <!-- Widget activities -->
         <!-- Configuration -->

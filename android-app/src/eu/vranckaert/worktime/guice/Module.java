@@ -52,6 +52,7 @@ public class Module extends AbstractModule {
         bind(SyncHistoryDao.class).to(SyncHistoryDaoImpl.class).asEagerSingleton();
         bind(SyncRemovalCacheDao.class).to(SyncRemovalCacheDaoImpl.class).asEagerSingleton();
         bind(GeofenceDao.class).to(GeofenceDaoImpl.class).asEagerSingleton();
+        bind(RecurrenceDao.class).to(RecurrenceDaoImpl.class).asEagerSingleton();
     }
 
     private void bindWebDaos() {
@@ -67,6 +68,7 @@ public class Module extends AbstractModule {
         bind(ExportService.class).to(ExportServiceImpl.class).asEagerSingleton();
         bind(AccountService.class).to(AccountServiceImpl.class).asEagerSingleton();
         bind(GeofenceService.class).to(GeofenceServiceImpl.class).asEagerSingleton();
+        bind(RecurrenceService.class).to(RecurrenceServiceImpl.class).asEagerSingleton();
         //UI services
         bind(WidgetService.class).to(WidgetServiceImpl.class).asEagerSingleton();
         bind(StatusBarNotificationService.class).to(StatusBarNotificationServiceImpl.class).asEagerSingleton();

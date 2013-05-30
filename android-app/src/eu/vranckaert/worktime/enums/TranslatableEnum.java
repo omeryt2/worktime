@@ -14,26 +14,15 @@
  * limitations under the License.
  */
 
-package eu.vranckaert.worktime.activities.triggers;
+package eu.vranckaert.worktime.enums;
 
-import android.view.View;
-import com.mobsandgeeks.saripaar.Rule;
+import android.content.Context;
 
 /**
  * User: DIRK VRANCKAERT
- * Date: 24/05/13
- * Time: 13:30
+ * Date: 27/05/13
+ * Time: 9:36
  */
-public class ObjectRequiredRule extends Rule<View> {
-    private Object object;
-
-    public ObjectRequiredRule(String failureMessage, Object object) {
-        super(failureMessage);
-        this.object = object;
-    }
-
-    @Override
-    public boolean isValid(View view) {
-        return object == null ? false : true;
-    }
+public interface TranslatableEnum {
+    String getStringValue(Context context);
 }

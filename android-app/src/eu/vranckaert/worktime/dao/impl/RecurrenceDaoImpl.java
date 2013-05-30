@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-package eu.vranckaert.worktime.dao.utils;
+package eu.vranckaert.worktime.dao.impl;
+
+import android.content.Context;
+import com.google.inject.Inject;
+import eu.vranckaert.worktime.dao.RecurrenceDao;
+import eu.vranckaert.worktime.dao.generic.GenericDaoImpl;
+import eu.vranckaert.worktime.model.trigger.RecurrenceTrigger;
 
 /**
- * @author Dirk Vranckaert
- *         Date: 29-sep-2010
- *         Time: 19:02:51
+ * User: DIRK VRANCKAERT
+ * Date: 30/05/13
+ * Time: 11:11
  */
-public interface DaoConstants {
-    public static final String DATABASE = "worktime.db";
-    public static final int VERSION = 34;
+public class RecurrenceDaoImpl extends GenericDaoImpl<RecurrenceTrigger, Integer> implements RecurrenceDao {
+    @Inject
+    public RecurrenceDaoImpl(final Context context) {
+        super(RecurrenceTrigger.class, context);
+    }
 }

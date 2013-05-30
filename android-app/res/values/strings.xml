@@ -39,6 +39,13 @@
     <string name="hoursShort">h</string>
     <string name="minutesShort">m</string>
     <string name="secondsShort">s</string>
+    <string name="dayMondayShort">Mon</string>
+    <string name="dayTuesdayShort">Tue</string>
+    <string name="dayWednesdayShort">Wed</string>
+    <string name="dayThursdayShort">Thu</string>
+    <string name="dayFridayShort">Fri</string>
+    <string name="daySaturdayShort">Sat</string>
+    <string name="daySundayShort">Sun</string>
     <!-- GENERAL - OTHERS -->
     <string name="lbl_delete_all">Delete all</string>
     <string name="lbl_do_nothing">Do nothing</string>
@@ -56,8 +63,32 @@
     <!-- GENERAL ERRORS -->
     <string name="error_general_web_exception">Something went wrong while connecting to the web. Please try again. Possibly the server may be down. If you keep seeing this error please report a bug.</string>
     <string name="error_no_network_connection">Your device seems to be offline. Please make sure an internet connection is active and try again.</string>
-    <!-- GENERAL VALIDATION ERRORS -->
-    <string name="error_general_required_field">This is requried</string>
+
+    <!-- ENUMS -->
+    <!-- RECURRENCE -->
+    <string name="enum_recurrence_daily">Daily</string>
+    <string name="enum_recurrence_weekly">Weekly</string>
+    <!-- WEEKLY RECURRENCE PATTERN -->
+    <string name="enum_weekly_recurrence_pattern_every_day">Every Day</string>
+    <string name="enum_weekly_recurrence_pattern_weekend">Weekend</string>
+    <string name="enum_weekly_recurrence_pattern_weekdays">Weekdays</string>
+    <string name="enum_weekly_recurrence_pattern_custom">Custom</string>
+    <!-- RECURRENCE END -->
+    <string name="enum_weekly_recurrence_end_doesnt_end">Doesn\'t End</string>
+    <string name="enum_weekly_recurrence_end_after_times">After certain times</string>
+    <string name="enum_weekly_recurrence_end_after_date">After certain date</string>
+
+    <!-- VALIDATION -->
+    <!-- BASIC MESSAGES -->
+    <string name="validation_basic_message">Validation error</string>
+    <string name="validation_basic_big_message">A validation error has occurred</string>
+    <!-- DEFAULT VALIDATION -->
+    <string name="error_general_required_field">This field is required</string>
+
+    <!-- DATE TIME SELECTION BUTTON -->
+    <!-- BUTTON TEXT -->
+    <string name="date_time_selection_button_text_date">Select a date</string>
+    <string name="date_time_selection_button_text_time">Select a time</string>
 
     <!-- DEFUALT VALUES DB -->
     <string name="default_project_name">Default Project</string>
@@ -796,6 +827,7 @@
     <string name="lbl_triggers_caution_message_dialog_message">Following cases might occur in which you might think the application is working incorrect but isn\'t: \n 1. You defined two so called overlapping triggers. For example two overlapping geo fences, or a geo fence that is activated at the same time as when you are connected to a certain wifi network.\n 2. A time registration has been started already by another trigger, then any other trigger will go off but do nothing as you cannot have two ongoing time registrations</string>
     <string name="lbl_triggers_button_geo_fences">Geo Fence Triggers</string>
     <string name="lbl_triggers_button_wifi_networks">Wifi Netowrk Triggers</string>
+    <string name="lbl_triggers_button_recurring">Recurring Time Registrations</string>
     <!-- GEO FENCING LIST -->
     <string name="lbl_trigger_geo_fencing_map_title">Geo Fencing</string>
     <string name="lbl_trigger_geo_fencing_map_play_services_required">The Google Play Services are required for this feature. Without this part of the application cannot be used.</string>
@@ -819,7 +851,6 @@
     <string name="lbl_trigger_geo_fencing_add_edit_error_required_expiration_date">You need to set an expiration date</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_expiration_date_future">The expiration date should be in the future</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_general_message">Could not create a Geo Fence due to a validation error</string>
-    <string name="lbl_trigger_geo_fencing_add_edit_error_detailed_message">Validation error</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_duplicate_names">Another Geo Fence with the same name already exists</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_creating_fence">Could not create the Geo Fence right now. Please try again or report a bug!</string>
     <string name="lbl_trigger_geo_fencing_add_edit_error_updating_fence">Could not update the Geo Fence right now. Please try again or report a bug!</string>
@@ -840,9 +871,21 @@
     <string name="lbl_trigger_geo_fencing_broadcast_notification_warn_finished_project_message">Warning: A new time registration has been started for Geo Fence \'%1$s\' but the project \'%2$s\' is already marked finished!</string>
     <string name="lbl_trigger_geo_fencing_broadcast_notification_error_not_handled_geofence_title">Geo Fence not triggered</string>
     <string name="lbl_trigger_geo_fencing_broadcast_notification_error_not_handled_geofence_message_short">Could not handle %1$s of Geo Fence(s) %2$s...</string>
-
     <string name="lbl_trigger_geo_fencing_broadcast_notification_warn_time_registration_not_ended_title">Time Registration still ongoing</string>
     <string name="lbl_trigger_geo_fencing_broadcast_notification_warn_time_registration_not_ended_message_short">You have left the geo fence %1$s but the time registration has not been ended</string>
+    <!-- ADD/EDIT RECURRING -->
+    <string name="lbl_trigger_recurring_add_edit_add_title">Add Recurring</string>
+    <string name="trigger_recurring_add_edit_ab_menu_save">Save</string>
+
+    <string name="lbl_trigger_recurring_add_edit_error_required_start_time">The time registration start time is required</string>
+    <string name="lbl_trigger_recurring_add_edit_error_required_end_time">The time registration end time is required</string>
+    <string name="lbl_trigger_recurring_add_edit_error_end_after_start">The end time must be after the start time</string>
+    <string name="lbl_trigger_recurring_add_edit_error_required_at_least_one_week_day">At least one day needs to be selected</string>
+    <string name="lbl_trigger_recurring_add_edit_error_required_task">You need to select a task</string>
+    <string name="lbl_trigger_recurring_add_edit_error_required_start_date">The start date of the recurrence is required</string>
+    <string name="lbl_trigger_recurring_add_edit_error_required_end_date">An end date of the recurrence is required</string>
+    <string name="lbl_trigger_recurring_add_edit_error_range_end_date_after_range_start_date">The end date of the recurrence must be after the start date</string>
+    <string name="lbl_trigger_recurring_add_edit_error_required_end_after_times">You must specify after how many times the recurrence should stop</string>
 
     <!-- ABOUT -->
     <string name="lbl_about_title">About</string>

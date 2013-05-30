@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package eu.vranckaert.worktime.activities.triggers;
+package eu.vranckaert.worktime.service.impl;
 
-import android.view.View;
-import com.mobsandgeeks.saripaar.Rule;
-
-import java.util.Date;
+import com.google.inject.Inject;
+import eu.vranckaert.worktime.dao.RecurrenceDao;
+import eu.vranckaert.worktime.model.trigger.RecurrenceTrigger;
+import eu.vranckaert.worktime.service.RecurrenceService;
 
 /**
  * User: DIRK VRANCKAERT
- * Date: 24/05/13
- * Time: 13:34
+ * Date: 30/05/13
+ * Time: 18:07
  */
-public class WorkTimeRules {
-    public static Rule<View> objectRequired(final String failureMessage, final Object object) {
-        return new ObjectRequiredRule(failureMessage, object);
-    }
+public class RecurrenceServiceImpl implements RecurrenceService {
+    @Inject
+    private RecurrenceDao recurrenceDao;
 
-    public static Rule<View> mustBeAfter(String failureMessage, Date date, Date limit, boolean greaterThanOrEqual) {
-        return new MustBeAfterRule(failureMessage, date, limit, greaterThanOrEqual);
+    @Override
+    public RecurrenceTrigger save(RecurrenceTrigger trigger) {
+        return recurrenceDao.save(trigger);
     }
 }

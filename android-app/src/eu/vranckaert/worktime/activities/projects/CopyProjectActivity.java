@@ -138,7 +138,7 @@ public class CopyProjectActivity extends SyncLockedWizardActivity {
     }
 
     /**
-     * Hide the validation errors.
+     * Hide the custom_validation errors.
      * @param projectnameRequired A textview representing an error.
      * @param projectnameUnique A textview representing an error.
      */
@@ -148,7 +148,7 @@ public class CopyProjectActivity extends SyncLockedWizardActivity {
     }
 
     /**
-     * Shows a specific validation error.
+     * Shows a specific custom_validation error.
      * @param errorTextView The TextView representing the error.
      */
     private void showValidationError(TextView errorTextView) {

@@ -294,7 +294,7 @@ public class ReportingExportActivity extends SyncLockedActivity {
 
     /**
      * Validates the user-input.
-     * @return If validation failed this method will return {@link Boolean#FALSE}. Otherwise always
+     * @return If custom_validation failed this method will return {@link Boolean#FALSE}. Otherwise always
      * {@link Boolean#TRUE}.
      */
     private boolean validate() {

@@ -359,7 +359,7 @@ public abstract class WizardActivity extends RoboSherlockActivity {
      * @param view The view that is currently loaded (so the view of the page you are coming from).
      * @return If this method returns {@link Boolean#TRUE} execution will continue and the next page will be loaded. If
      * it returns {@link Boolean#FALSE} execution of the page change will be stopped and so the view will not change (in
-     * case of a validation error for example).
+     * case of a custom_validation error for example).
      */
     public abstract boolean beforePageChange(int currentViewIndex, int nextViewIndex, View view);
 
@@ -387,7 +387,7 @@ public abstract class WizardActivity extends RoboSherlockActivity {
      * @param view The view that is current loaded.
      * @param button The "finish" button.
      * @return If this method returns {@link Boolean#TRUE} the activity will be closed. If it returns
-     * {@link Boolean#FALSE} the activity will remain open (in case of a validation error for example).
+     * {@link Boolean#FALSE} the activity will remain open (in case of a custom_validation error for example).
      */
     protected abstract boolean onFinish(View view, View button);
 
