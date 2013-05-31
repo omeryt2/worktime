@@ -49,12 +49,12 @@ public class CronJobServiceImpl implements CronJobService {
 	
 	@Override
 	public int countProjects() {
-		return timeRegistrationDao.countAll();
+		return projectDao.countAll();
 	}
 	
 	@Override
 	public int countTasks() {
-		return timeRegistrationDao.countAll();
+		return taskDao.countAll();
 	}
 
 	@Override
