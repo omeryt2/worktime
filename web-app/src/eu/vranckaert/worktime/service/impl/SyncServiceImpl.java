@@ -863,6 +863,17 @@ public class SyncServiceImpl implements SyncService {
 		}
 		
 		for (TimeRegistration timeRegistration : timeRegistrations) {
+			if (timeRegistration.getTask() == null || timeRegistration.getTask().getProject() == null) {
+				if (timeRegistration.getSyncKey() != null) {
+					log.info("Trying to recover time registation with id " + timeRegistration.getKey() + " by sync key " + timeRegistration.getSyncKey());
+					timeRegistration = timeRegistrationDao.findBySyncKey(timeRegistration.getSyncKey(), user);
+					log.info("Time registration recovered...");
+					log.info("Found time registation with task " + timeRegistration.getTask().getName());
+				} else {
+					log.info("Cannot recover time registration because sync key is missing");
+				}
+			}
+			
 			if (timeRegistration.getSyncKey() == null) {
 				timeRegistration.setSyncKey(generateSyncKeyForTimeRegistration(user));
 				timeRegistrationDao.update(timeRegistration);
@@ -1004,9 +1015,6 @@ public class SyncServiceImpl implements SyncService {
 	}
 	
 	private void obscureData(TimeRegistration timeRegistration) {
-		log.info("Obscuring data for time registration with key " + timeRegistration.getKey());
-		log.info("Time registation has task " + timeRegistration.getTask().getName() + " and key " + timeRegistration.getTask().getKey());
-		log.info("Time registation has project " + timeRegistration.getTask().getProject().getName() + " and key " + timeRegistration.getTask().getProject().getKey());
 		timeRegistration.getTask().getProject().setUser(null);
 		timeRegistration.getTask().getProject().setKey(null);
 		timeRegistration.getTask().setKey(null);
@@ -1014,14 +1022,11 @@ public class SyncServiceImpl implements SyncService {
 	}
 	
 	private void obscureData(Project project) {
-		log.info("Obscuring data for project " + project.getName() + " and key " + project.getKey());
 		project.setUser(null);
 		project.setKey(null);
 	}
 	
 	private void obscureData(Task task) {
-		log.info("Obscuring data for task " + task.getName() + " and key " + task.getKey());
-		log.info("Task has project " + task.getProject().getName() + " and key " + task.getProject().getKey());
 		task.getProject().setUser(null);
 		task.getProject().setKey(null);
 		task.setKey(null);
