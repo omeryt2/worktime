@@ -1,5 +1,6 @@
 package eu.vranckaert.worktime.json.endpoint.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -101,5 +102,37 @@ public class SetupEndpoint {
 		}
 		
 		return "Done!";
+	}
+	
+	@GET
+	@Path("exportUsers")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String exportUsers(@QueryParam("serviceKey") String serviceKey) {
+		final String format = "yyyy-MM-dd hh:mm:ss.SSS";
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		
+		RegisteredServiceRequest request = new RegisteredServiceRequest() {};
+		request.setServiceKey(serviceKey);
+		
+		try {
+			securityChecker.checkService(request);
+		} catch (ServiceNotAllowedException e) {
+			return "Cannot export...";
+		}
+		
+		String export = "";
+		List<User> users = userDao.findAll();
+		for (User user : users) {
+			export += "insert into user(email, firstName, lastName, lastLoginDate, passwordHash, registrationDate, role) values('" 
+						+ user.getEmail() + "', '" 
+					    + user.getFirstName() + "', '" 
+						+ user.getLastName() + "', '" 
+					    + sdf.format(user.getLastLoginDate()) + "', '"
+						+ user.getPasswordHash() + "', '"
+						+ sdf.format(user.getRegistrationDate()) + "', '"
+						+ user.getRole().toString() + "')\n";
+		}
+		
+		return export;
 	}
 }
