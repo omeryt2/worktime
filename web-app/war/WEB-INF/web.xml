@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 	<!-- SiteMesh -->
+	<!-- 
 	<filter>
 		<filter-name>sitemesh</filter-name>
 		<filter-class>com.opensymphony.sitemesh.webapp.SiteMeshFilter</filter-class>
@@ -9,6 +10,7 @@
 		<filter-name>sitemesh</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	 -->
 
    	<listener>
 		<listener-class>eu.vranckaert.worktime.guice.GuiceConfig</listener-class>
@@ -54,6 +56,7 @@
     </security-constraint>
     
     <!-- Make sure the cron-urls are secured and not publicly accessible -->
+     <!-- 
     <security-constraint>
         <web-resource-collection>
             <url-pattern>/cron/*</url-pattern>
@@ -62,6 +65,7 @@
             <role-name>admin</role-name>
         </auth-constraint>
     </security-constraint>
+     -->
     
     <error-page>
     	<error-code>404</error-code>
