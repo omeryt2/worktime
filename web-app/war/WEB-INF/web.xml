@@ -81,4 +81,22 @@
 	 	<servlet-name>SystemServiceServlet</servlet-name>
 	 	<url-pattern>/_ah/spi/*</url-pattern>
 	</servlet-mapping>
+	
+	<!-- GOBO (https://code.google.com/p/gobo-tools/wiki/HowToInstall) -->
+	<servlet>
+        <servlet-name>GoboServlet</servlet-name>
+        <servlet-class>gobo.GoboServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GoboServlet</servlet-name>
+        <url-pattern>*.gobo</url-pattern>
+    </servlet-mapping>
+    <security-constraint>
+        <web-resource-collection>
+            <url-pattern>*.gobo</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
 </web-app>
