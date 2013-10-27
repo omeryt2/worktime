@@ -1,33 +1,4 @@
-<!-- Indices written at Mon, 13 May 2013 10:24:44 UTC -->
+<!-- Indices written at Sun, 27 Oct 2013 15:39:32 CET -->
 
-<datastore-indexes>
+<datastore-indexes/>
 
-    <!-- Used 1 time in query history -->
-    <datastore-index kind="passwordResetRequest" ancestor="false" source="auto">
-        <property name="used" direction="asc"/>
-        <property name="requestDate" direction="asc"/>
-    </datastore-index>
-
-    <!-- Used 1 time in query history -->
-    <datastore-index kind="syncHistory" ancestor="false" source="auto">
-        <property name="syncResult" direction="asc"/>
-        <property name="userEmail" direction="asc"/>
-        <property name="startTime" direction="desc"/>
-    </datastore-index>
-
-    <!-- Used 1 time in query history -->
-    <datastore-index kind="project" ancestor="true" source="auto">
-        <property name="lastUpdated" direction="asc"/>
-    </datastore-index>
-
-    <!-- Used 1 time in query history -->
-    <datastore-index kind="task" ancestor="true" source="auto">
-        <property name="lastUpdated" direction="asc"/>
-    </datastore-index>
-
-    <!-- Used 1 time in query history -->
-    <datastore-index kind="timeRegistration" ancestor="true" source="auto">
-        <property name="lastUpdated" direction="asc"/>
-    </datastore-index>
-
-</datastore-indexes>
