@@ -70,6 +70,27 @@ public class SyncHistoryDaoImpl extends GenericDaoImpl<SyncHistory, Integer> imp
         QueryBuilder<SyncHistory, Integer> qb = dao.queryBuilder();
         try {
             qb.where().eq("status", SyncHistoryStatus.SUCCESSFUL);
+            qb.orderBy("endedLocally", false);
+            PreparedQuery<SyncHistory> pq = qb.prepare();
+            syncHistories = dao.query(pq);
+        } catch (SQLException e) {
+            Log.e(LOG_TAG, "Could not start the query... Returning null.", e);
+            return null;
+        }
+
+        if(syncHistories == null || syncHistories.size() == 0) {
+            return null;
+        } else {
+            return syncHistories.get(0).getEndedLocally();
+        }
+    }
+
+    @Override
+    public Date getLastSuccessfulServerSyncDate() {
+        List<SyncHistory> syncHistories;
+        QueryBuilder<SyncHistory, Integer> qb = dao.queryBuilder();
+        try {
+            qb.where().eq("status", SyncHistoryStatus.SUCCESSFUL);
             qb.orderBy("ended", false);
             PreparedQuery<SyncHistory> pq = qb.prepare();
             syncHistories = dao.query(pq);

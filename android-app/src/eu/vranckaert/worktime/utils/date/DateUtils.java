@@ -777,6 +777,19 @@ public class DateUtils {
             Date middleDate = new Date(middle);
             return middleDate;
         }
+
+        /**
+         * Add a certain amount of time (in millis) to a date.
+         * @param date The {@link Date} instance to which a certain amount of time should be added.
+         * @param millis The amount of time in milliseconds that should be added to the date.
+         * @return The date with the amount of time added.
+         */
+        public static Date addMillisToDate(Date date, int millis) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.MILLISECOND, millis);
+            return calendar.getTime();
+        }
     }
 
     /**

@@ -58,7 +58,7 @@ public class WorkTimeWebDaoImpl extends JsonWebServiceImpl implements WorkTimeWe
     private static final String LOG_TAG = WorkTimeWebDaoImpl.class.getSimpleName();
 
     private static final String ENDPOINT_BASE_URL = EnvironmentConstants.WorkTimeWeb.ENDPOINT_URL;
-    private static final String ENDPOINT_TEST = "";
+    private static final String ENDPOINT_TEST = ENDPOINT_BASE_URL + "rest/test/sayHello";
     private static final String ENDPOINT_REST = "rest/";
     private static final String ENDPOINT_METHOD_LOGIN = "user/login";
     private static final String ENDPOINT_METHOD_REGISTER = "user/register";
@@ -78,8 +78,8 @@ public class WorkTimeWebDaoImpl extends JsonWebServiceImpl implements WorkTimeWe
     }
 
     private void checkNetworkConnection() throws NoNetworkConnectionException {
-        if (!NetworkUtil.canSurf(context, ENDPOINT_BASE_URL + ENDPOINT_TEST)) {
-            Log.w(LOG_TAG, "Cannot reach endpoint (" + ENDPOINT_BASE_URL + ENDPOINT_TEST + "), device seems to be offline!");
+        if (!NetworkUtil.canSurf(context, ENDPOINT_TEST)) {
+            Log.w(LOG_TAG, "Cannot reach endpoint (" + ENDPOINT_TEST + "), device seems to be offline!");
             throw new NoNetworkConnectionException();
         }
     }

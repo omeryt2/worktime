@@ -18,7 +18,9 @@ package eu.vranckaert.worktime.service.impl;
 
 import android.content.Context;
 import android.util.Log;
+
 import com.google.inject.Inject;
+
 import eu.vranckaert.worktime.dao.*;
 import eu.vranckaert.worktime.dao.impl.*;
 import eu.vranckaert.worktime.dao.web.WorkTimeWebDao;
@@ -38,6 +40,8 @@ import eu.vranckaert.worktime.guice.Application;
 import eu.vranckaert.worktime.model.*;
 import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.service.BackupService;
+import eu.vranckaert.worktime.utils.alarm.AlarmUtil;
+import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.network.NetworkUtil;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
@@ -215,6 +219,7 @@ public class AccountServiceImpl implements AccountService {
 
             // Get the last successful sync date
             Date lastSuccessfulSyncDate = syncHistoryDao.getLastSuccessfulSyncDate();
+            Date lastSuccessfulServerSyncDate = syncHistoryDao.getLastSuccessfulServerSyncDate();
 
             // Retrieve all time projects, tasks and registrations to be synced
             // If no sync has been done before all entities will be synced. Otherwise only those that have changed
@@ -237,6 +242,8 @@ public class AccountServiceImpl implements AccountService {
                 timeRegistrations = timeRegistrationDao.findAll();
             }
 
+            synchronizeLastUpdatedTimestamps(projects, tasks, timeRegistrations, lastSuccessfulSyncDate, lastSuccessfulServerSyncDate);
+
             // Make sure all relations are correctly loaded into memory...
             for (Task task : tasks) {
                 projectDao.refresh(task.getProject());
@@ -254,7 +261,7 @@ public class AccountServiceImpl implements AccountService {
             List<Object> result;
             try {
                 // Execute the sync on the server
-                result = workTimeWebDao.sync(user, conflictConfiguration, lastSuccessfulSyncDate, projects, tasks, timeRegistrations, syncRemovalMap);
+                result = workTimeWebDao.sync(user, conflictConfiguration, lastSuccessfulServerSyncDate, projects, tasks, timeRegistrations, syncRemovalMap);
             } catch (UserNotLoggedInException e) {
                 markSyncAsFailed(e);
                 throw e;
@@ -292,7 +299,8 @@ public class AccountServiceImpl implements AccountService {
 
             syncHistory = syncHistoryDao.getOngoingSyncHistory();
             if (syncHistory != null) {
-                syncHistory.setEnded(new Date());
+                syncHistory.setEndedLocally(new Date());
+                syncHistory.setEnded(entitySyncResult.getSyncFinishedTime());
 
                 if (entitySyncResult.getSyncResult().equals(SyncResult.INTERRUPTED)) {
                     syncHistory.setStatus(SyncHistoryStatus.INTERRUPTED);
@@ -335,6 +343,31 @@ public class AccountServiceImpl implements AccountService {
         } catch (RuntimeException e) {
             markSyncAsFailed(e);
             throw e;
+        }
+    }
+
+    private void synchronizeLastUpdatedTimestamps(List<Project> projects, List<Task> tasks, List<TimeRegistration> timeRegistrations, Date lastSuccessfulSyncDate, Date lastSuccessfulServerSyncDate) {
+        if (lastSuccessfulSyncDate == null || lastSuccessfulServerSyncDate == null)
+            return;
+
+        int differenceBetweenClientAndServer = Math.round(lastSuccessfulServerSyncDate.getTime() - lastSuccessfulSyncDate.getTime());
+        for (Project project : projects) {
+            if (project.getLastUpdated() != null) {
+                Date newLastUpdatedTimestamp = DateUtils.TimeCalculator.addMillisToDate(project.getLastUpdated(), differenceBetweenClientAndServer);
+                project.setLastUpdated(newLastUpdatedTimestamp);
+            }
+        }
+        for (Task task : tasks) {
+            if (task.getLastUpdated() != null) {
+                Date newLastUpdatedTimestamp = DateUtils.TimeCalculator.addMillisToDate(task.getLastUpdated(), differenceBetweenClientAndServer);
+                task.setLastUpdated(newLastUpdatedTimestamp);
+            }
+        }
+        for (TimeRegistration timeRegistration : timeRegistrations) {
+            if (timeRegistration.getLastUpdated() != null) {
+                Date newLastUpdatedTimestamp = DateUtils.TimeCalculator.addMillisToDate(timeRegistration.getLastUpdated(), differenceBetweenClientAndServer);
+                timeRegistration.setLastUpdated(newLastUpdatedTimestamp);
+            }
         }
     }
 
@@ -891,6 +924,6 @@ public class AccountServiceImpl implements AccountService {
             workTimeWebDao.logout(user);
             accountDao.delete(user);
         }
-
+        AlarmUtil.removeAllSyncAlarms(context);
     }
 }

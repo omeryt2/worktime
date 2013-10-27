@@ -178,7 +178,6 @@ public class AccountProfileActivity extends SyncLockedActivity {
 
     private void logout() {
         AsyncHelper.start(new LogoutTask());
-        AlarmUtil.removeAllSyncAlarms(AccountProfileActivity.this);
         setResult(Constants.IntentResultCodes.RESULT_LOGOUT);
         finish();
     }

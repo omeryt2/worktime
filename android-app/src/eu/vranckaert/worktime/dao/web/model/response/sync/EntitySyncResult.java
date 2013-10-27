@@ -21,6 +21,7 @@ import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,6 +39,12 @@ public class EntitySyncResult {
     private List<TimeRegistration> nonSyncedTimeRegistrations = new ArrayList<TimeRegistration>();
 
     private SyncResult syncResult;
+
+    private int projectsSynced;
+    private int tasksSynced;
+    private int timeRegistrationsSynced;
+    private boolean syncInterrupted;
+    private Date syncFinishedTime;
 
     public List<ProjectSyncResult> getProjectSyncResults() {
         return projectSyncResults;
@@ -93,5 +100,45 @@ public class EntitySyncResult {
 
     public void setSyncResult(SyncResult syncResult) {
         this.syncResult = syncResult;
+    }
+
+    public int getProjectsSynced() {
+        return projectsSynced;
+    }
+
+    public void setProjectsSynced(int projectsSynced) {
+        this.projectsSynced = projectsSynced;
+    }
+
+    public int getTasksSynced() {
+        return tasksSynced;
+    }
+
+    public void setTasksSynced(int tasksSynced) {
+        this.tasksSynced = tasksSynced;
+    }
+
+    public int getTimeRegistrationsSynced() {
+        return timeRegistrationsSynced;
+    }
+
+    public void setTimeRegistrationsSynced(int timeRegistrationsSynced) {
+        this.timeRegistrationsSynced = timeRegistrationsSynced;
+    }
+
+    public boolean isSyncInterrupted() {
+        return syncInterrupted;
+    }
+
+    public void setSyncInterrupted(boolean syncInterrupted) {
+        this.syncInterrupted = syncInterrupted;
+    }
+
+    public Date getSyncFinishedTime() {
+        return syncFinishedTime;
+    }
+
+    public void setSyncFinishedTime(Date syncFinishedTime) {
+        this.syncFinishedTime = syncFinishedTime;
     }
 }

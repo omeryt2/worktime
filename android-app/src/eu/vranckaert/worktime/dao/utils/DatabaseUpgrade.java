@@ -151,6 +151,10 @@ public enum DatabaseUpgrade {
                     "timesTriggered " + DataTypes.INTEGER + ", " +
                     "active " + DataTypes.BOOLEAN +
                     ");"
+    }),
+    UPGRADE14(35, new String[] {
+        "ALTER TABLE SyncHistory add column endedLocally " + DataTypes.VARCHAR + ";",
+        "UPDATE SyncHistory SET endedLocally = ended;"
     })
     ;
 

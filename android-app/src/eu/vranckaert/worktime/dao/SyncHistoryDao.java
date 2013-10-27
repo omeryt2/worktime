@@ -42,6 +42,12 @@ public interface SyncHistoryDao extends GenericDao<SyncHistory, Integer> {
     Date getLastSuccessfulSyncDate();
 
     /**
+     * Get the server-date of the latest successful synchronization.
+     * @return The {@link Date} of the last successful sync or null if none.
+     */
+    Date getLastSuccessfulServerSyncDate();
+
+    /**
      * Get the latest sync history object.
      * @return The latest {@link SyncHistory} object or null if none.
      */

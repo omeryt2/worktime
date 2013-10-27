@@ -35,6 +35,8 @@ public class SyncHistory {
     private Date started;
     @DatabaseField(dataType = DataType.DATE_STRING)
     private Date ended;
+    @DatabaseField(dataType = DataType.DATE_STRING)
+    private Date endedLocally;
     @DatabaseField(dataType = DataType.ENUM_STRING)
     private SyncHistoryStatus status;
     @DatabaseField(dataType = DataType.ENUM_STRING)
@@ -305,5 +307,13 @@ public class SyncHistory {
 
     public void setNumIncomingTimeRegistrationsRemoved(Integer numIncomingTimeRegistrationsRemoved) {
         this.numIncomingTimeRegistrationsRemoved = numIncomingTimeRegistrationsRemoved;
+    }
+
+    public Date getEndedLocally() {
+        return endedLocally;
+    }
+
+    public void setEndedLocally(Date endedLocally) {
+        this.endedLocally = endedLocally;
     }
 }
