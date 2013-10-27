@@ -150,15 +150,24 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public User loadUserData() throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException {
+    public User loadUserData(boolean retryWhenNotLoggedIn) throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException {
         User user = accountDao.getLoggedInUser();
 
         User updatedUser = null;
         try {
             updatedUser = workTimeWebDao.loadProfile(user);
         } catch (UserNotLoggedInException e) {
-            accountDao.delete(user);
-            throw e;
+            if (retryWhenNotLoggedIn) {
+                logout();
+                try {
+                    login(user.getEmail(), user.getPassword());
+                } catch (LoginCredentialsMismatchException e1) {
+                    throw e;
+                }
+                return loadUserData(false);
+            } else {
+                throw e;
+            }
         }
 
         if (updatedUser != null) {
@@ -175,7 +184,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void sync() throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException, WifiConnectionRequiredException, BackupException, SyncAlreadyBusyException, SynchronizationFailedException {
+    public void sync(boolean retryWhenNotLoggedIn) throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException, WifiConnectionRequiredException, BackupException, SyncAlreadyBusyException, SynchronizationFailedException {
         Log.i(LOG_TAG, "Starting synchronization...");
         if (isSyncBusy()) {
             throw new SyncAlreadyBusyException();
@@ -264,7 +273,18 @@ public class AccountServiceImpl implements AccountService {
                 result = workTimeWebDao.sync(user, conflictConfiguration, lastSuccessfulServerSyncDate, projects, tasks, timeRegistrations, syncRemovalMap);
             } catch (UserNotLoggedInException e) {
                 markSyncAsFailed(e);
-                throw e;
+                if (retryWhenNotLoggedIn) {
+                    logout();
+                    try {
+                        login(user.getEmail(), user.getPassword());
+                    } catch (LoginCredentialsMismatchException e1) {
+                        throw e;
+                    }
+                    sync(false);
+                    return;
+                } else {
+                    throw e;
+                }
             } catch (SynchronizationFailedException e) {
                 markSyncAsFailed(e);
                 throw e;

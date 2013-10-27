@@ -197,7 +197,7 @@ public class AccountProfileActivity extends SyncLockedActivity {
         @Override
         protected User doInBackground(Void... params) {
             try {
-                return accountService.loadUserData();
+                return accountService.loadUserData(true);
             } catch (UserNotLoggedInException e) {
                 errorMsg = AccountProfileActivity.this.getString(R.string.lbl_account_profile_error_user_not_logged_in);
                 logout = true;

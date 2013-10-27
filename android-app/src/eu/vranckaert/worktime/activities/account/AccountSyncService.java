@@ -67,9 +67,7 @@ public class AccountSyncService extends RoboIntentService {
     }
 
     /**
-     * Execute synchronization. If anything goes wrong the synchronization will be ended. If the user doesn't seem to be
-     * logged in we will try to lookup the user-credentials and log him in again once. If it that doesn't work again
-     * the synchronization will end.
+     * Execute synchronization.
      */
     private Exception sync() {
         // First off all remove all sync-notifications for both success or errors
@@ -79,22 +77,9 @@ public class AccountSyncService extends RoboIntentService {
 
         syncTries++;
         try {
-            accountService.sync();
+            accountService.sync(true);
         } catch (UserNotLoggedInException e) {
-            if (syncTries < 2) { // Only tries to start the sync twice...
-                try {
-                    User user = accountService.getOfflineUserDate();
-                    accountService.logout();
-                    accountService.login(user.getEmail(), user.getPassword());
-                    return sync();
-                } catch (GeneralWebException e1) {
-                    exception = e1;
-                } catch (NoNetworkConnectionException e1) {
-                    exception = e1;
-                } catch (LoginCredentialsMismatchException e1) {
-                    exception = e1;
-                }
-            }
+            exception = e;
         } catch (GeneralWebException e) {
             exception = e;
         } catch (NoNetworkConnectionException e) {
@@ -118,7 +103,7 @@ public class AccountSyncService extends RoboIntentService {
             widgetService.updateAllWidgets();
             notificationService.addOrUpdateNotification(null);
         } else {
-            if (e instanceof LoginCredentialsMismatchException) {
+            if (e instanceof UserNotLoggedInException) {
                 showMessageError(R.string.lbl_sync_service_error_title, R.string.lbl_sync_service_error_message, R.string.lbl_sync_service_error_user_not_logged_in, e);
                 accountService.logout();
                 Intent intent = new Intent(AccountSyncService.this, AccountLoginActivity.class);

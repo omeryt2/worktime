@@ -89,7 +89,7 @@ public interface AccountService {
      * @throws GeneralWebException Some kind of exception occurred during the web request.
      * @throws eu.vranckaert.worktime.exceptions.worktime.account.UserNotLoggedInException The user is not logged in, authentication failed...
      */
-    User loadUserData() throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException;
+    User loadUserData(boolean retryWhenNotLoggedIn) throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException;
 
     /**
      * Sync all application data (or at least the application data that has changed since the last synchronization, if
@@ -112,7 +112,7 @@ public interface AccountService {
      * @throws SynchronizationFailedException This exception is throw if the synchronization failed for some reason on
      * the remote server.
      */
-    void sync() throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException, WifiConnectionRequiredException, BackupException, SyncAlreadyBusyException, SynchronizationFailedException;
+    void sync(boolean retryWhenNotLoggedIn) throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException, WifiConnectionRequiredException, BackupException, SyncAlreadyBusyException, SynchronizationFailedException;
 
     /**
      * Checks if a synchronisation is going on or not. It also checks for the timeout to be reached or not.
