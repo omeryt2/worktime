@@ -17,18 +17,22 @@
 package eu.vranckaert.worktime.activities.timeregistrations;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.ContextMenu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.github.espiandev.showcaseview.ShowcaseView;
 import com.google.inject.Inject;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.about.AboutActivity;
 import eu.vranckaert.worktime.activities.account.AccountLoginActivity;
@@ -82,12 +86,15 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
 
     private AnalyticsTracker tracker;
 
-    private SlidingMenu menu;
     private Long initialRecordCount = 0L;
     private int currentLowerLimit = 0;
     private final int maxRecordsToLoad = 10;
     public TimeRegistration loadExtraTimeRegistration = null;
     private boolean initialLoad = true;
+
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,18 +103,31 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
 
         setTitle(R.string.lbl_registrations_title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         // Setup slide-in menu
-        menu = new SlidingMenu(this);
-        menu.setMode(SlidingMenu.LEFT);
-        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-        menu.setBehindWidthRes(R.dimen.slidein_width);
-        menu.setFadeDegree(0.35f);
-        menu.attachToActivity(this, SlidingMenu.SLIDING_WINDOW);
-        menu.setMenu(R.layout.activity_time_registration_list_slidein_menu);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                R.drawable.ic_navigation_drawer, R.string.drawer_open, R.string.drawer_close) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                getActionBar().setTitle(R.string.lbl_registrations_title);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                getActionBar().setTitle(R.string.app_name);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         // Construct list of slide-in menu
-        ListView listView = (ListView) findViewById(R.id.activity_time_registration_list_slidein_menu);
         List<SlideInMenuAdapter.SlideInMenuItem> menuItems = new ArrayList<SlideInMenuAdapter.SlideInMenuItem>();
         menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), ManageProjectsActivity.class, R.string.home_btn_projects, R.drawable.ic_collections_collection_dark, R.id.menuItemProjects));
         menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), AccountLoginActivity.class, R.string.home_ab_menu_account, R.drawable.ic_social_person_dark, R.id.menuItemAccount));
@@ -116,8 +136,8 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
         menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), PreferencesActivity.class, R.string.home_btn_preferences, R.drawable.ic_action_settings_dark, R.id.menuItemPreferences));
         menuItems.add(new SlideInMenuAdapter.SlideInMenuItem(getApplicationContext(), AboutActivity.class, R.string.home_ab_menu_about, R.drawable.ic_action_about_dark, R.id.menuItemAbout));
         SlideInMenuAdapter menuAdapter = new SlideInMenuAdapter(TimeRegistrationListActivity.this, menuItems);
-        listView.setAdapter(menuAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mDrawerList.setAdapter(menuAdapter);
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SlideInMenuAdapter.SlideInMenuItem menuItem = (SlideInMenuAdapter.SlideInMenuItem) parent.getItemAtPosition(position);
@@ -126,6 +146,7 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
                 } else {
                     startActivityForResult(menuItem.getIntent(), menuItem.getRequestCode());
                 }
+                mDrawerLayout.closeDrawer(mDrawerList);
             }
         });
 
@@ -369,15 +390,21 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // If the nav drawer is open, hide action items related to the content view
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        menu.findItem(R.id.menu_time_registrations_activity_add).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-//                IntentUtil.goBack(TimeRegistrationListActivity.this);
-                if (menu.isMenuShowing()) {
-                    menu.showContent();
+                if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
+                    mDrawerLayout.closeDrawer(mDrawerList);
                 } else {
-                    menu.showMenu();
-                    showShowcaseForSlideMenu();
+                    mDrawerLayout.openDrawer(mDrawerList);
                 }
                 break;
             case R.id.menu_time_registrations_activity_add:
@@ -417,6 +444,19 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
         tracker.stopSession();
     }
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
     private void showShowcase() {
 //        if (ContextUtils.getAndroidApiVersion() < 15) {
 //            return;
@@ -447,62 +487,6 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
                 public void onShowcaseEndedListener() {
                     getSupportActionBar().setHomeButtonEnabled(true);
                     Preferences.Showcase.setShowcaseLastShownForAppVersion(TimeRegistrationListActivity.this, ContextUtils.getCurrentApplicationVersionCode(TimeRegistrationListActivity.this));
-                }
-            });
-        }
-    }
-
-    private void showShowcaseForSlideMenu() {
-//        if (ContextUtils.getAndroidApiVersion() < 15) {
-//            return;
-//        }
-
-        // In case of new features for which the showcase must be shown again on the dashboard this check must include
-        // the new app version code.
-        if (Preferences.Showcase.getShowcaseLastShownForSlideMenuForAppVersion(this) < 275) {
-            ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
-            co.hideOnClickOutside = false;
-            co.block = true;
-            co.noButton = false;
-            co.shotType = ShowcaseView.TYPE_NO_LIMIT;
-            co.insert = ShowcaseView.INSERT_TO_DECOR;
-            co.alignVertical = ShowcaseView.TOP;
-            co.alignHorizontal = ShowcaseView.RIGHT;
-
-            List<ShowcaseViewElement> showcaseViewElements = new ArrayList<ShowcaseViewElement>();
-
-            View menuItemProjects = findViewById(R.id.menuItemProjects);
-            View menuItemAccount = findViewById(R.id.menuItemAccount);
-            View menuItemReporting = findViewById(R.id.menuItemReporting);
-            View menuItemPreferences = findViewById(R.id.menuItemPreferences);
-            View menuItemAbout = findViewById(R.id.menuItemAbout);
-
-            showcaseViewElements.add(new ShowcaseViewElement(menuItemProjects, R.string.showcase_projects_title, R.string.showcase_projects_text, co));
-            showcaseViewElements.add(new ShowcaseViewElement(menuItemAccount, R.string.showcase_account_title, R.string.showcase_account_text, co));
-            showcaseViewElements.add(new ShowcaseViewElement(menuItemReporting, R.string.showcase_reporting_title, R.string.showcase_reporting_text, co));
-            showcaseViewElements.add(new ShowcaseViewElement(menuItemPreferences, R.string.showcase_preferences_title, R.string.showcase_preferences_text, co));
-            showcaseViewElements.add(new ShowcaseViewElement(menuItemAbout, R.string.showcase_about_title, R.string.showcase_about_text, co));
-
-            AsyncHelper.startWithParams(new WaitForSlideMenuToOpenTask(), new List[] {showcaseViewElements});
-        }
-    }
-
-    private class WaitForSlideMenuToOpenTask extends AsyncTask<List<ShowcaseViewElement>, Void, List<ShowcaseViewElement>> {
-        @Override
-        protected List<ShowcaseViewElement> doInBackground(List<ShowcaseViewElement>... params) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {}
-
-            return params[0];
-        }
-
-        @Override
-        protected void onPostExecute(List<ShowcaseViewElement> showcaseViewElements) {
-            ShowcaseViewUtility.start(showcaseViewElements, TimeRegistrationListActivity.this).setOnShowcaseEndedListener(new ShowcaseViewUtility.OnShowcaseEndedListener() {
-                @Override
-                public void onShowcaseEndedListener() {
-                    Preferences.Showcase.setShowcaseLastShownForSlideMenuForAppVersion(TimeRegistrationListActivity.this, ContextUtils.getCurrentApplicationVersionCode(TimeRegistrationListActivity.this));
                 }
             });
         }

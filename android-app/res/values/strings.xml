@@ -29,6 +29,8 @@
     <string name="save">Save</string>
     <string name="add">Add</string>
     <string name="none">None</string>
+    <string name="drawer_open">Open menu</string>
+    <string name="drawer_close">Close menu</string>
     <!-- GENERAL TIME -->
     <string name="hours">hours</string>
     <string name="minutes">minutes</string>
