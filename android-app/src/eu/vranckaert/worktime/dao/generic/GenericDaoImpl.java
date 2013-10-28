@@ -92,12 +92,6 @@ public abstract class GenericDaoImpl<T, ID> implements GenericDao<T, ID> {
         return databaseHelper;
     }
 
-    @Override
-    public void insertDefaultData() {
-        DatabaseHelper<T, ID> databaseHelper = getDatabaseHelper();
-        databaseHelper.insertDefaultData(databaseHelper.getWritableDatabase());
-    }
-
     /**
      * @Override
      */

@@ -23,7 +23,6 @@ import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
 import eu.vranckaert.worktime.dao.WidgetConfigurationDao;
 import eu.vranckaert.worktime.dao.impl.*;
-import eu.vranckaert.worktime.exceptions.AtLeastOneProjectRequiredException;
 import eu.vranckaert.worktime.exceptions.ProjectHasOngoingTimeRegistration;
 import eu.vranckaert.worktime.exceptions.ProjectStillHasTasks;
 import eu.vranckaert.worktime.model.Project;
@@ -99,37 +98,33 @@ public class ProjectServiceImpl implements ProjectService {
     /**
      * {@inheritDoc}
      */
-    public void remove(Project project, boolean force) throws AtLeastOneProjectRequiredException, ProjectStillHasTasks, ProjectHasOngoingTimeRegistration {
-        if (dao.count() > 1L || force) {
-            int taskCount = taskDao.countTasksForProject(project);
-            List<Task> tasksForProject = taskDao.findTasksForProject(project);
-            List<TimeRegistration> trsForProject = timeRegistrationDao.findTimeRegistrationsForTaks(tasksForProject);
-            if (taskCount > 0 && !force) {
-                for (TimeRegistration tr : trsForProject) {
-                    if (tr.isOngoingTimeRegistration()) {
-                        throw new ProjectHasOngoingTimeRegistration("The project has an ongoing time registration and thus cannot be removed.");
-                    }
-                }
-
-                throw new ProjectStillHasTasks("The project is still linked with " + taskCount + " tasks! Remove them first!", trsForProject.size()>0?true:false);
-            }
-            // Delete the project and all it's dependencies...
-            geofenceService.checkGeoFencesOnProjectRemoval(project);
-
+    public void remove(Project project, boolean force) throws ProjectStillHasTasks, ProjectHasOngoingTimeRegistration {
+        int taskCount = taskDao.countTasksForProject(project);
+        List<Task> tasksForProject = taskDao.findTasksForProject(project);
+        List<TimeRegistration> trsForProject = timeRegistrationDao.findTimeRegistrationsForTaks(tasksForProject);
+        if (taskCount > 0 && !force) {
             for (TimeRegistration tr : trsForProject) {
-                timeRegistrationDao.delete(tr);
+                if (tr.isOngoingTimeRegistration()) {
+                    throw new ProjectHasOngoingTimeRegistration("The project has an ongoing time registration and thus cannot be removed.");
+                }
             }
-            for (Task task : tasksForProject) {
-                taskDao.delete(task);
-            }
-            dao.delete(project);
-            if (project.isDefaultValue()) {
-                changeDefaultProjectUponProjectRemoval(project);
-            }
-            checkSelectedProjectUponProjectRemoval(project);
-        } else {
-            throw new AtLeastOneProjectRequiredException("At least on project is required so this project cannot be removed");
+
+            throw new ProjectStillHasTasks("The project is still linked with " + taskCount + " tasks! Remove them first!", trsForProject.size()>0?true:false);
         }
+        // Delete the project and all it's dependencies...
+        geofenceService.checkGeoFencesOnProjectRemoval(project);
+
+        for (TimeRegistration tr : trsForProject) {
+            timeRegistrationDao.delete(tr);
+        }
+        for (Task task : tasksForProject) {
+            taskDao.delete(task);
+        }
+        dao.delete(project);
+        if (project.isDefaultValue()) {
+            changeDefaultProjectUponProjectRemoval(project);
+        }
+        checkSelectedProjectUponProjectRemoval(project);
     }
 
     /**
@@ -199,11 +194,12 @@ public class ProjectServiceImpl implements ProjectService {
             Log.w(ctx, LOG_TAG, "No widget configuration is found for widget with id " + widgetId + ". One will be created with the default project");
 
             wc = new WidgetConfiguration(widgetId);
-            Project defaultProject = dao.findDefaultProject();
-            wc.setProject(defaultProject);
-            widgetConfigurationDao.save(wc);
-
-            return defaultProject;
+            Project project = dao.findDefaultProject();
+            if (project != null) {
+                wc.setProject(project);
+                widgetConfigurationDao.save(wc);
+            }
+            return project;
         }
 
         Project project = null;
@@ -218,9 +214,11 @@ public class ProjectServiceImpl implements ProjectService {
         if (project == null) {
             Log.w(ctx, LOG_TAG, "No project is found for widget with id " + widgetId + ", updating the widget configuration to use the default project!");
             project = dao.findDefaultProject();
-            wc.setProject(project);
-            Log.w(ctx, LOG_TAG, "The default project is now used as selected project for widget " + widgetId + " and has id " + project.getId() + " and name " + project.getName());
-            widgetConfigurationDao.update(wc);
+            if (project != null) {
+                wc.setProject(project);
+                Log.w(ctx, LOG_TAG, "The default project is now used as selected project for widget " + widgetId + " and has id " + project.getId() + " and name " + project.getName());
+                widgetConfigurationDao.update(wc);
+            }
         }
 
         return project;
@@ -306,11 +304,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void removeAll() {
         dao.deleteAll();
-    }
-
-    @Override
-    public void insertDefaultProjectAndTaskData() {
-        dao.insertDefaultData();
     }
 
     @Override

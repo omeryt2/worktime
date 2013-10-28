@@ -20,11 +20,6 @@ import java.util.List;
 
 public interface GenericDao<T, ID> {
     /**
-     * Inserts the default data into the database.
-     */
-    void insertDefaultData();
-
-    /**
      * Find an entity by it identifier.
      * @param id The identifier.
      * @return The entity.

@@ -16,7 +16,6 @@
 
 package eu.vranckaert.worktime.service;
 
-import eu.vranckaert.worktime.exceptions.AtLeastOneTaskRequiredException;
 import eu.vranckaert.worktime.exceptions.TaskStillInUseException;
 import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
@@ -67,10 +66,8 @@ public interface TaskService {
      * happen.
      * @throws TaskStillInUseException If the task is coupled to time registrations and the force-option is not
      * used this exception is thrown.
-     * @throws AtLeastOneTaskRequiredException If the task to be deleted is the only tasks that is still related to it's
-     * {@link Project} it cannot be removed.
      */
-    void remove(Task task, boolean force) throws TaskStillInUseException, AtLeastOneTaskRequiredException;
+    void remove(Task task, boolean force) throws TaskStillInUseException;
 
     /**
      * Refreshes the task status.

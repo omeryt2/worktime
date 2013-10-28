@@ -23,7 +23,6 @@ import eu.vranckaert.worktime.dao.TaskDao;
 import eu.vranckaert.worktime.dao.TimeRegistrationDao;
 import eu.vranckaert.worktime.dao.WidgetConfigurationDao;
 import eu.vranckaert.worktime.dao.impl.*;
-import eu.vranckaert.worktime.exceptions.AtLeastOneTaskRequiredException;
 import eu.vranckaert.worktime.exceptions.TaskStillInUseException;
 import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
@@ -107,21 +106,17 @@ public class TaskServiceImpl implements TaskService {
     /**
      * {@inheritDoc}
      */
-    public void remove(Task task, boolean force) throws TaskStillInUseException, AtLeastOneTaskRequiredException {
+    public void remove(Task task, boolean force) throws TaskStillInUseException {
         List<TimeRegistration> timeRegistrations = timeRegistrationDao.findTimeRegistrationsForTask(task);
         Log.d(ctx, LOG_TAG, timeRegistrations.size() + " timeregistrations found coupled to the project to delete");
         if(!timeRegistrations.isEmpty() && !force) {
             throw new TaskStillInUseException("The task is linked to existing time registrations!");
         } else {
-            int numberOfTasks = dao.findTasksForProject(task.getProject()).size();
-            if (numberOfTasks == 1) {
-                throw new AtLeastOneTaskRequiredException("The last task of a project cannot manually be deleted");
-            } else if(force) {
+            if(force) {
                 Log.d(ctx, LOG_TAG, "Forcing to delete all timeregistrations and geo fences linked to the task first!");
                 for (TimeRegistration treg : timeRegistrations) {
                     timeRegistrationDao.delete(treg);
                 }
-
                 geofenceService.checkGeoFencesOnTaskRemoval(task);
             }
         }
@@ -147,17 +142,17 @@ public class TaskServiceImpl implements TaskService {
             Log.w(ctx, LOG_TAG, "No widget configuration is found for widget with id " + widgetId + ". One will be created with the default project");
 
             wc = new WidgetConfiguration(widgetId);
-            Project defaultProject = projectDao.findDefaultProject();
-            List<Task> defaultTasks = dao.findTasksForProject(defaultProject);
-            if (!defaultTasks.isEmpty()) {
-                Task defaultTask = defaultTasks.get(0);
-                wc.setTask(defaultTask);
-                widgetConfigurationDao.save(wc);
-                return defaultTask;
-            } else {
-                String errorMsg = "The task data is corrupt! No task found for the widget with id " + widgetId + " because at least one task should be available for the default project!";
-                Log.e(ctx, LOG_TAG, errorMsg);
-                throw new RuntimeException(errorMsg);
+            Project project = projectDao.findDefaultProject();
+            if (project != null) {
+                List<Task> tasks = dao.findTasksForProject(project);
+                if (tasks != null && !tasks.isEmpty()) {
+                    Task task = tasks.get(0);
+                    wc.setTask(task);
+                    widgetConfigurationDao.save(wc);
+                    return task;
+                } else {
+                    return null;
+                }
             }
         }
 
@@ -173,16 +168,14 @@ public class TaskServiceImpl implements TaskService {
         if (task == null) {
             Log.w(ctx, LOG_TAG, "No task is found for widget with id " + widgetId + ", updating the widget configuration to use a task of the default project!");
             Project project = projectDao.findDefaultProject();
-            List<Task> defaultTasks = dao.findTasksForProject(project);
-            if (!defaultTasks.isEmpty()) {
-                task = defaultTasks.get(0);
-                wc.setTask(task);
-                Log.w(ctx, LOG_TAG, "The first task of the default project is now used as selected task for widget " + widgetId + " and has id " + task.getId() + " and name " + task.getName());
-                widgetConfigurationDao.update(wc);
-            } else {
-                String errorMsg = "The task data is corrupt! No task found for the widget with id " + widgetId + " because at least one task should be available for the default project!";
-                Log.e(ctx, LOG_TAG, errorMsg);
-                throw new RuntimeException(errorMsg);
+            if (project != null) {
+                List<Task> tasks = dao.findTasksForProject(project);
+                if (tasks != null && !tasks.isEmpty()) {
+                    task = tasks.get(0);
+                    wc.setTask(task);
+                    Log.w(ctx, LOG_TAG, "The first task of the default project is now used as selected task for widget " + widgetId + " and has id " + task.getId() + " and name " + task.getName());
+                    widgetConfigurationDao.update(wc);
+                }
             }
         }
 

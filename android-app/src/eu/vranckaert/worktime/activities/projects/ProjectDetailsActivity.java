@@ -313,8 +313,6 @@ public class ProjectDetailsActivity extends SyncLockedListActivity {
                     taskToRemove = task;
                     showDialog(Constants.Dialog.DELETE_TIME_REGISTRATIONS_OF_TASK_YES_NO);
                 }
-            } catch (AtLeastOneTaskRequiredException e) {
-                showDialog(Constants.Dialog.DELETE_TASK_AT_LEAST_ONE_REQUIRED);
             }
         }
     }
@@ -463,25 +461,6 @@ public class ProjectDetailsActivity extends SyncLockedListActivity {
                                }
                            });
 				dialog = warnTaskNotFinishedOngoingTr.create();
-                break;
-            }
-            case Constants.Dialog.DELETE_TASK_AT_LEAST_ONE_REQUIRED: {
-                AlertDialog.Builder deleteTaskDialog = new AlertDialog.Builder(this);
-                deleteTaskDialog
-                        .setMessage(R.string.msg_delete_task_unavailable_one_required_per_project)
-                        .setCancelable(true)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                removeDialog(Constants.Dialog.DELETE_TASK_AT_LEAST_ONE_REQUIRED);
-                            }
-                        })
-                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialogInterface) {
-                                removeDialog(Constants.Dialog.DELETE_TASK_AT_LEAST_ONE_REQUIRED);
-                            }
-                        });
-                dialog = deleteTaskDialog.create();
                 break;
             }
         };
@@ -713,8 +692,6 @@ public class ProjectDetailsActivity extends SyncLockedListActivity {
                 widgetService.updateAllWidgets();
 
                 finish();
-            } catch (AtLeastOneProjectRequiredException e) {
-                Toast.makeText(ProjectDetailsActivity.this, R.string.msg_delete_project_at_least_one_required,  Toast.LENGTH_LONG).show();
             } catch (ProjectStillHasTasks e) {
                 if (e.hasTimeRegistrations()) {
                     showDialog(Constants.Dialog.DELETE_ALL_TASKS_AND_TIME_REGISTRATIONS_OF_PROJECT_YES_NO);

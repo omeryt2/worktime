@@ -120,8 +120,6 @@ public class ResetApplicationPreferencesActivity extends SyncLockedGuiceActivity
             projectService.removeAll();
             accountService.removeAll();
 
-            projectService.insertDefaultProjectAndTaskData();
-
             return null;
         }
 

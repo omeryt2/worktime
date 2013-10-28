@@ -16,7 +16,6 @@
 
 package eu.vranckaert.worktime.service;
 
-import eu.vranckaert.worktime.exceptions.AtLeastOneProjectRequiredException;
 import eu.vranckaert.worktime.exceptions.ProjectHasOngoingTimeRegistration;
 import eu.vranckaert.worktime.exceptions.ProjectStillHasTasks;
 import eu.vranckaert.worktime.model.Project;
@@ -46,14 +45,12 @@ public interface ProjectService {
      * Remove a project.
      * @param project The project to remove.
      * @param force If set to true all possible exception will be ignored and the project will be removed anyway.
-     * @throws AtLeastOneProjectRequiredException If this project is the last project available this exception is
-     * thrown.
      * @throws ProjectStillHasTasks If this project is linked with tasks (and possibly with time registrations) this
      * exception is thrown.
      * @throws ProjectHasOngoingTimeRegistration If the project is linked with ongoing time registrations (via it's
      * tasks).
      */
-    void remove(Project project, boolean force) throws AtLeastOneProjectRequiredException, ProjectStillHasTasks, ProjectHasOngoingTimeRegistration;
+    void remove(Project project, boolean force) throws ProjectStillHasTasks, ProjectHasOngoingTimeRegistration;
 
     /**
      * Checks if a certain name for a project is already in use.
@@ -130,11 +127,6 @@ public interface ProjectService {
      * Removes all items.
      */
     void removeAll();
-
-    /**
-     * Inserts the default data in the database!
-     */
-    void insertDefaultProjectAndTaskData();
 
     /**
      * Checks if a provided project does exist or not based on a search on it's identifier. This mainly should be used

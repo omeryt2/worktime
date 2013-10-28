@@ -33,7 +33,6 @@ import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.project.ProjectByNameComparator;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
-import eu.vranckaert.worktime.exceptions.AtLeastOneProjectRequiredException;
 import eu.vranckaert.worktime.exceptions.ProjectHasOngoingTimeRegistration;
 import eu.vranckaert.worktime.exceptions.ProjectStillHasTasks;
 import eu.vranckaert.worktime.model.Project;
@@ -165,8 +164,6 @@ public class ManageProjectsActivity extends SyncLockedListActivity {
                 projectToRemove = null;
 
                 widgetService.updateAllWidgets();
-            } catch (AtLeastOneProjectRequiredException e) {
-                Toast.makeText(ManageProjectsActivity.this, R.string.msg_delete_project_at_least_one_required,  Toast.LENGTH_LONG).show();
             } catch (ProjectStillHasTasks e) {
                 if (e.hasTimeRegistrations()) {
                     showDialog(Constants.Dialog.DELETE_ALL_TASKS_AND_TIME_REGISTRATIONS_OF_PROJECT_YES_NO);
@@ -450,13 +447,11 @@ public class ManageProjectsActivity extends SyncLockedListActivity {
                     Menu.NONE,
                     R.string.lbl_projects_menu_copy
             );
-            if (projects.size() > 1) {
-                menu.add(Menu.NONE,
-                        Constants.ContentMenuItemIds.PROJECT_DELETE,
-                        Menu.NONE,
-                        R.string.lbl_projects_menu_delete
-                );
-            }
+            menu.add(Menu.NONE,
+                    Constants.ContentMenuItemIds.PROJECT_DELETE,
+                    Menu.NONE,
+                    R.string.lbl_projects_menu_delete
+            );
 
             if (!projectForContext.isFinished()) {
                 if (unfinishedProjects.size() > 1) {

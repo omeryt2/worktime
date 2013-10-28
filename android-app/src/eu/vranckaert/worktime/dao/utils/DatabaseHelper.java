@@ -88,35 +88,10 @@ public class DatabaseHelper<T, ID> extends OrmLiteSqliteOpenHelper {
             for(Tables table : Tables.values()) {
                 TableUtils.createTable(connectionSource, table.getTableClass());
             }
-
-            insertDefaultData(database);
         } catch (SQLException e) {
             Log.e(LOG_TAG, "Excpetion while creating the database", e);
             throw new RuntimeException("Excpetion while creating the database", e);
         }
-    }
-
-    public void insertDefaultData(SQLiteDatabase database) {
-        int defaultProjectId = 1;
-
-        Log.d(LOG_TAG, "Inserting default project");
-        ContentValues projectValues = new ContentValues();
-        projectValues.put("id", defaultProjectId);
-        projectValues.put("name", context.getString(R.string.default_project_name));
-        projectValues.put("comment", context.getString(R.string.default_project_comment));
-        projectValues.put("defaultValue", true);
-        projectValues.put("finished", false);
-        projectValues.put("flags", "");
-        database.insert("project", null, projectValues);
-
-        Log.d(LOG_TAG, "Inserting default task for default project");
-        ContentValues taskValues = new ContentValues();
-        taskValues.put("name", context.getString(R.string.default_task_name));
-        taskValues.put("comment", context.getString(R.string.default_task_comment));
-        taskValues.put("projectId", defaultProjectId);
-        taskValues.put("finished", false);
-        taskValues.put("flags", "");
-        database.insert("task", null, taskValues);
     }
 
     @Override

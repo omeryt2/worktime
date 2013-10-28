@@ -135,12 +135,6 @@ public class AddEditProjectActivity extends SyncLockedActivity {
 
                         if (!inUpdateMode()) {
                             project = projectService.save(project);
-                            // Create a default task for the project
-                            Task defaultTask = new Task();
-                            defaultTask.setName(getString(R.string.default_task_name));
-                            defaultTask.setComment(getString(R.string.default_task_comment));
-                            defaultTask.setProject(project);
-                            taskService.save(defaultTask);
                             tracker.trackEvent(
                                     TrackerConstants.EventSources.ADD_EDIT_PROJECT_ACTIVITY,
                                     TrackerConstants.EventActions.ADD_PROJECT

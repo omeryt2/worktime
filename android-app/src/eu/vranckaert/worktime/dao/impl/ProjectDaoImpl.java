@@ -46,6 +46,10 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
     @Override
     public Project save(Project entity) {
         entity.setLastUpdated(new Date());
+        Project defaultProject = findDefaultProject();
+        if (defaultProject == null) {
+            entity.setDefaultValue(true);
+        }
         return super.save(entity);
     }
 
@@ -119,13 +123,7 @@ public class ProjectDaoImpl extends GenericDaoImpl<Project, Integer> implements 
             return null;
         }
 
-        if(project == null) {
-            String message = "The project data is corrupt. No default project is found!";
-            Log.e(getContext(), LOG_TAG, message);
-            throw new CorruptProjectDataException(message);
-        } else {
-            return project;
-        }
+        return project;
     }
 
     @Override
