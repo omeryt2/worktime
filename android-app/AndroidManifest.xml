@@ -371,10 +371,8 @@
                 android:excludeFromRecents="true"
                 android:launchMode="singleTask"
                 android:theme="@android:style/Theme.Dialog" />
-
         <!-- - Google Play Store donations -->
         <service android:name="eu.vranckaert.worktime.utils.donations.google.BillingService" />
-
         <receiver android:name="eu.vranckaert.worktime.utils.donations.google.BillingReceiver" >
             <intent-filter>
                 <action android:name="com.android.vending.billing.IN_APP_NOTIFY" />
@@ -382,5 +380,16 @@
                 <action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />
             </intent-filter>
         </receiver>
+
+        <!-- GCM -->
+        <receiver
+            android:name="eu.vranckaert.worktime.utils.gcm.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="eu.vranckaert.worktime" />
+            </intent-filter>
+        </receiver>
+        <service android:name="eu.vranckaert.worktime.utils.gcm.GcmIntentService" />
     </application>
 </manifest>
