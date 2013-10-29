@@ -41,6 +41,8 @@ import roboguice.service.RoboIntentService;
  * Time: 07:50
  */
 public class AccountSyncService extends RoboIntentService {
+    public static final String EXTRA_SYNC_TRIGGERED_FROM_OTHER_DEVICE = "syncTriggeredFromOtherDevice";
+
     @Inject private AccountService accountService;
     @Inject private WidgetService widgetService;
     @Inject private StatusBarNotificationService notificationService;
@@ -59,23 +61,24 @@ public class AccountSyncService extends RoboIntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        boolean triggeredFromOtherDevice = intent.getBooleanExtra(EXTRA_SYNC_TRIGGERED_FROM_OTHER_DEVICE, false);
         try {
             gcmService.updateGCMConfiguration();
         } catch (GooglePlayServiceRequiredException e) {
             // Should not be handled here...
         }
-        startSync();
+        startSync(triggeredFromOtherDevice);
     }
 
-    public void startSync() {
-        Exception exception = sync();
+    public void startSync(boolean triggeredFromOtherDevice) {
+        Exception exception = sync(triggeredFromOtherDevice);
         handleResult(exception);
     }
 
     /**
      * Execute synchronization.
      */
-    private Exception sync() {
+    private Exception sync(boolean triggeredFromOtherDevice) {
         // First off all remove all sync-notifications for both success or errors
         notificationService.removeSyncNotifications();
 
@@ -83,7 +86,7 @@ public class AccountSyncService extends RoboIntentService {
 
         syncTries++;
         try {
-            accountService.sync(true);
+            accountService.sync(true, triggeredFromOtherDevice);
         } catch (UserNotLoggedInException e) {
             exception = e;
         } catch (GeneralWebException e) {

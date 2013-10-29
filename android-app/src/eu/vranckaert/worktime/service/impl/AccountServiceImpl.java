@@ -188,7 +188,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void sync(boolean retryWhenNotLoggedIn) throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException, WifiConnectionRequiredException, BackupException, SyncAlreadyBusyException, SynchronizationFailedException {
+    public void sync(boolean retryWhenNotLoggedIn, boolean triggeredFromOtherDevice) throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException, WifiConnectionRequiredException, BackupException, SyncAlreadyBusyException, SynchronizationFailedException {
         Log.i(LOG_TAG, "Starting synchronization...");
         if (isSyncBusy()) {
             throw new SyncAlreadyBusyException();
@@ -274,7 +274,7 @@ public class AccountServiceImpl implements AccountService {
             List<Object> result;
             try {
                 // Execute the sync on the server
-                result = workTimeWebDao.sync(user, conflictConfiguration, lastSuccessfulServerSyncDate, projects, tasks, timeRegistrations, syncRemovalMap);
+                result = workTimeWebDao.sync(user, conflictConfiguration, lastSuccessfulServerSyncDate, projects, tasks, timeRegistrations, syncRemovalMap, triggeredFromOtherDevice);
             } catch (UserNotLoggedInException e) {
                 markSyncAsFailed(e);
                 if (retryWhenNotLoggedIn) {
@@ -284,7 +284,7 @@ public class AccountServiceImpl implements AccountService {
                     } catch (LoginCredentialsMismatchException e1) {
                         throw e;
                     }
-                    sync(false);
+                    sync(false, triggeredFromOtherDevice);
                     return;
                 } else {
                     throw e;
