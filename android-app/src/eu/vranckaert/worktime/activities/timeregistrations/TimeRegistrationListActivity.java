@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.ContextMenu;
@@ -31,6 +32,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.github.espiandev.showcaseview.ShowcaseView;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.inject.Inject;
 
 import eu.vranckaert.worktime.R;
@@ -44,7 +46,10 @@ import eu.vranckaert.worktime.activities.timeregistrations.listadapter.TimeRegis
 import eu.vranckaert.worktime.activities.triggers.TriggersActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
+import eu.vranckaert.worktime.enums.timeregistration.TimeRegistrationAction;
+import eu.vranckaert.worktime.exceptions.GooglePlayServiceRequiredException;
 import eu.vranckaert.worktime.model.TimeRegistration;
+import eu.vranckaert.worktime.service.GCMService;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.TimeRegistrationService;
@@ -81,6 +86,8 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
     private WidgetService widgetService;
     @Inject
     private StatusBarNotificationService statusBarNotificationService;
+    @Inject
+    private GCMService gcmService;
 
     List<TimeRegistration> timeRegistrations;
 
@@ -418,6 +425,28 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        AsyncTask<Void, Void, GooglePlayServiceRequiredException> asyncTask = new AsyncTask<Void, Void, GooglePlayServiceRequiredException>() {
+            @Override
+            protected GooglePlayServiceRequiredException doInBackground(Void... params) {
+                try {
+                    gcmService.updateGCMConfiguration();
+                } catch (GooglePlayServiceRequiredException e) {
+                    return e;
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(GooglePlayServiceRequiredException e) {
+                if (e != null) {
+                    Preferences.GCM.setCanShowUpdateDialog(TimeRegistrationListActivity.this, false);
+                    GooglePlayServicesUtil.getErrorDialog(e.getResultCode(), TimeRegistrationListActivity.this, 9999).show();
+                }
+            }
+        };
+        AsyncHelper.start(asyncTask);
 
         PunchBarUtil.configurePunchBar(TimeRegistrationListActivity.this, timeRegistrationService, taskService, projectService);
         

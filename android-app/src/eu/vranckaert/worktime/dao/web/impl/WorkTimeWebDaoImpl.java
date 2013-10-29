@@ -26,6 +26,7 @@ import eu.vranckaert.worktime.dao.web.model.request.sync.WorkTimeSyncRequest;
 import eu.vranckaert.worktime.dao.web.model.request.user.ResetPasswordRequest;
 import eu.vranckaert.worktime.dao.web.model.request.user.UserLoginRequest;
 import eu.vranckaert.worktime.dao.web.model.request.user.UserRegistrationRequest;
+import eu.vranckaert.worktime.dao.web.model.response.gcm.GCMResponse;
 import eu.vranckaert.worktime.dao.web.model.response.sync.WorkTimeSyncResponse;
 import eu.vranckaert.worktime.dao.web.model.response.user.AuthenticationResponse;
 import eu.vranckaert.worktime.dao.web.model.response.user.ResetPasswordResponse;
@@ -41,6 +42,7 @@ import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.utils.network.NetworkUtil;
+import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.web.json.JsonWebServiceImpl;
 import eu.vranckaert.worktime.web.json.exception.CommunicationException;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
@@ -68,6 +70,8 @@ public class WorkTimeWebDaoImpl extends JsonWebServiceImpl implements WorkTimeWe
     private static final String ENDPOINT_METHOD_SYNC = "sync/all";
     private static final String ENDPOINT_METHOD_RESET_PASSWORD_REQUEST = "user/resetPasswordRequest";
     private static final String ENDPOINT_METHOD_RESET_PASSWORD = "user/resetPassword";
+    private static final String ENDPOINT_METHOD_REGISTER_ANDROID_DEVICE = "push/registerAndroidDevice";
+    private static final String ENDPOINT_METHOD_REPLACE_ANDROID_DEVICE = "push/replaceAndroidDevice";
 
     private Context context;
 
@@ -266,6 +270,7 @@ public class WorkTimeWebDaoImpl extends JsonWebServiceImpl implements WorkTimeWe
         request.setTasks(tasks);
         request.setTimeRegistrations(timeRegistrations);
         request.setSyncRemovalMap(syncRemovalMap);
+        request.setAndroidPushRegistrationId(Preferences.GCM.getRegistrationId(context));
 
         JsonResult result = null;
         try {
@@ -390,5 +395,76 @@ public class WorkTimeWebDaoImpl extends JsonWebServiceImpl implements WorkTimeWe
                 throw  new RuntimeException("Something went wrong...");
             }
         }
+    }
+
+    @Override
+    public boolean registerGCMDevice(User user, String registrationId) {
+        try {
+            checkNetworkConnection();
+        } catch (NoNetworkConnectionException e) {
+            return false;
+        }
+
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("serviceKey", EnvironmentConstants.WorkTimeWeb.SERVICE_KEY);
+        parameters.put("email", user.getEmail());
+        parameters.put("sessionKey", user.getSessionKey());
+        parameters.put("registrationId", registrationId);
+
+        JsonResult result = null;
+        try {
+            result = webInvokeGet(ENDPOINT_BASE_URL + ENDPOINT_REST, ENDPOINT_METHOD_REGISTER_ANDROID_DEVICE, null, parameters);
+        } catch (WebException e) {
+            String msg = "Cannot register a GCM device due to a web exception... Exception is: " + e.getMessage();
+            Log.e(LOG_TAG, msg, e);
+            return false;
+        } catch (CommunicationException e) {
+            String msg = "Cannot register a GCM device due to a communication exception... Exception is: " + e.getMessage();
+            Log.e(LOG_TAG, msg, e);
+            return false;
+        }
+
+        if (result == null) {
+            return false;
+        }
+
+        GCMResponse response = result.getSingleResult(GCMResponse.class);
+        return response.isResultOk();
+    }
+
+    @Override
+    public boolean replaceGCMDevice(User user, String oldRegistrationId, String newRegistrationId) {
+        try {
+            checkNetworkConnection();
+        } catch (NoNetworkConnectionException e) {
+            return false;
+        }
+
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("serviceKey", EnvironmentConstants.WorkTimeWeb.SERVICE_KEY);
+        parameters.put("email", user.getEmail());
+        parameters.put("sessionKey", user.getSessionKey());
+        parameters.put("oldRegistrationId", oldRegistrationId);
+        parameters.put("newRegistrationId", newRegistrationId);
+
+        JsonResult result = null;
+        try {
+            result = webInvokeGet(ENDPOINT_BASE_URL + ENDPOINT_REST, ENDPOINT_METHOD_REPLACE_ANDROID_DEVICE, null, parameters);
+        } catch (WebException e) {
+            String msg = "Cannot replace a GCM device due to a web exception... Exception is: " + e.getMessage();
+            Log.e(LOG_TAG, msg, e);
+            return false;
+        } catch (CommunicationException e) {
+            String msg = "Cannot replace a GCM device due to a communication exception... Exception is: " + e.getMessage();
+            Log.e(LOG_TAG, msg, e);
+            return false;
+        }
+
+        if (result == null) {
+            return false;
+        }
+
+        GCMResponse response = result.getSingleResult(GCMResponse.class);
+        return response.isResultOk();
     }
 }

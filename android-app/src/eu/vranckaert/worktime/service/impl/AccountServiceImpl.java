@@ -40,6 +40,7 @@ import eu.vranckaert.worktime.guice.Application;
 import eu.vranckaert.worktime.model.*;
 import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.service.BackupService;
+import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.utils.alarm.AlarmUtil;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.network.NetworkUtil;
@@ -79,6 +80,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Inject
     private BackupService backupService;
+
+    @Inject
+    private StatusBarNotificationService statusBarNotificationService;
 
     @Inject
     private Context context;
@@ -140,9 +144,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public User getOfflineUserDate() {
+    public User getOfflineUserData() {
         User user = accountDao.getLoggedInUser();
-        if (user.isProfileComplete()) {
+        if (user != null && user.isProfileComplete()) {
             return user;
         } else {
             return null;
@@ -354,12 +358,12 @@ public class AccountServiceImpl implements AccountService {
 
                 for (TimeRegistration timeRegistration : entitySyncResult.getNonSyncedTimeRegistrations()) {
                     Project project = projectDao.findByName(timeRegistration.getTask().getProject().getName());
-                    Task task = taskDao.findByName(timeRegistration.getTask().getName(), project);
                     TimeRegistration localTimeRegistration = timeRegistrationDao.findByDates(timeRegistration.getStartTime(), timeRegistration.getEndTime());
                     localTimeRegistration.setLastUpdated(new Date());
                     timeRegistrationDao.update(localTimeRegistration);
                 }
             }
+            statusBarNotificationService.addOrUpdateNotification(null);
         } catch (RuntimeException e) {
             markSyncAsFailed(e);
             throw e;

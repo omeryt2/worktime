@@ -153,4 +153,23 @@ public interface WorkTimeWebDao extends JsonWebService {
      * @throws PasswordResetKeyExpiredException Throw if the password reset key has expired (> 24 hours).
      */
     void resetPassword(String passwordResetRequestKey, String newPassword) throws NoNetworkConnectionException, GeneralWebException, PasswordLengthValidationException, InvalidPasswordResetKeyException, PasswordResetKeyAlreadyUsedException, PasswordResetKeyExpiredException;
+
+    /**
+     * Register a device at the backend server to be known as a GCM device.
+     * @param user           The {@link User} for which a device should be registered.
+     * @param registrationId The registration identifier as retrieved from GCM.
+     * @return Returns {@link java.lang.Boolean#TRUE} is the call is handled, {@link java.lang.Boolean#FALSE} if
+     * something went wrong.
+     */
+    boolean registerGCMDevice(User user, String registrationId);
+
+    /**
+     * Replace an existing GCM device so the server knows which is the actual device.
+     * @param user              The {@link User} for which a device should be registered.
+     * @param oldRegistrationId The previous identifier that has once been retrieved from GCM.
+     * @param newRegistrationId The registration identifier as retrieved from GCM.
+     * @return Returns {@link java.lang.Boolean#TRUE} is the call is handled, {@link java.lang.Boolean#FALSE} if
+     * something went wrong.
+     */
+    boolean replaceGCMDevice(User user, String oldRegistrationId, String newRegistrationId);
 }

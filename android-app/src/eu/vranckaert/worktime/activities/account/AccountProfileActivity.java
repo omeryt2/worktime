@@ -39,7 +39,6 @@ import eu.vranckaert.worktime.exceptions.worktime.account.UserNotLoggedInExcepti
 import eu.vranckaert.worktime.model.SyncHistory;
 import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.service.AccountService;
-import eu.vranckaert.worktime.utils.alarm.AlarmUtil;
 import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.date.DateFormat;
@@ -94,7 +93,7 @@ public class AccountProfileActivity extends SyncLockedActivity {
         tracker = AnalyticsTracker.getInstance(getApplicationContext());
         tracker.trackPageView(TrackerConstants.PageView.ACCOUNT_DETAILS_ACTIVITY);
 
-        User user = accountService.getOfflineUserDate();
+        User user = accountService.getOfflineUserData();
         if (user != null)
             updateUI(user);
 

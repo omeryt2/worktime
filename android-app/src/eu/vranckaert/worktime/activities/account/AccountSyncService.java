@@ -19,6 +19,7 @@ package eu.vranckaert.worktime.activities.account;
 import android.content.Intent;
 import com.google.inject.Inject;
 import eu.vranckaert.worktime.R;
+import eu.vranckaert.worktime.exceptions.GooglePlayServiceRequiredException;
 import eu.vranckaert.worktime.exceptions.backup.BackupException;
 import eu.vranckaert.worktime.exceptions.network.NoNetworkConnectionException;
 import eu.vranckaert.worktime.exceptions.network.WifiConnectionRequiredException;
@@ -28,6 +29,7 @@ import eu.vranckaert.worktime.exceptions.worktime.sync.SyncAlreadyBusyException;
 import eu.vranckaert.worktime.exceptions.worktime.sync.SynchronizationFailedException;
 import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.service.AccountService;
+import eu.vranckaert.worktime.service.GCMService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.alarm.AlarmUtil;
@@ -44,6 +46,7 @@ public class AccountSyncService extends RoboIntentService {
     @Inject private AccountService accountService;
     @Inject private WidgetService widgetService;
     @Inject private StatusBarNotificationService notificationService;
+    @Inject private GCMService gcmService;
 
     private int syncTries = 0;
 
@@ -58,6 +61,11 @@ public class AccountSyncService extends RoboIntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        try {
+            gcmService.updateGCMConfiguration();
+        } catch (GooglePlayServiceRequiredException e) {
+            // Should not be handled here...
+        }
         startSync();
     }
 

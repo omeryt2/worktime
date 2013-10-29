@@ -144,6 +144,8 @@ public class Constants {
         public static final String DEFAULT_NOTIFICATION_ACTIONS_DEFAULT_VALUE = "PUNCH_OUT|SPLIT|OTHER_ACTIONS";
         public static final boolean DO_NOT_PUNCH_OUT_ON_LEAVING_GEOFENCE_DEFAULT_VALUE = true;
         public static final boolean SHOW_NOTIFICATION_WHEN_NOT_PUNCHED_OUT_DEFAULT_VALUE = false;
+        public static final boolean GCM_CAN_SHOW_UPDATE_DIALOG_DEFAULT_VALUE = true;
+        public static final int GCM_PREVIOUS_APP_VERSION_DEFAULT_VALUE = -1;
 
         public class Keys {
             public static final String WIDGET_ASK_FOR_TASK_SELECTION_IF_ONLY_ONE = "askForTaskSelectionIfOnlyOne";
@@ -183,6 +185,9 @@ public class Constants {
             public static final String DEFAULT_NOTIFICATION_ACTIONS = "defaultNotificationActionsPreference";
             public static final String DO_NOT_PUNCH_OUT_ON_LEAVING_GEOFENCE = "doNotPunchOutOnLeavingGeoFence";
             public static final String SHOW_NOTIFICATION_WHEN_NOT_PUNCHED_OUT = "showNotificationWhenNotPunchedOut";
+            public static final String GCM_CAN_SHOW_UPDATE_DIALOG = "gcmCanShowUpdateDialog";
+            public static final String GCM_REGISTRATION_ID = "gcmRegistrationId";
+            public static final String GCM_PREVIOUS_APP_VERSION = "gcmPreviousAppVersion";
         }
     }
     public class Disk {

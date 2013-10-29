@@ -859,4 +859,45 @@ public class Preferences {
             );
         }
     }
+
+    public static class GCM {
+        public static boolean canShowUpdateDialog(Context ctx) {
+            return getSharedPreferences(ctx).getBoolean(
+                    Constants.Preferences.Keys.GCM_CAN_SHOW_UPDATE_DIALOG,
+                    Constants.Preferences.GCM_CAN_SHOW_UPDATE_DIALOG_DEFAULT_VALUE
+            );
+        }
+
+        public static void setCanShowUpdateDialog(Context ctx, boolean value) {
+            SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+            editor.putBoolean(Constants.Preferences.Keys.GCM_CAN_SHOW_UPDATE_DIALOG, value);
+            editor.commit();
+        }
+
+        public static String getRegistrationId(Context ctx) {
+            return getSharedPreferences(ctx).getString(
+                    Constants.Preferences.Keys.GCM_REGISTRATION_ID,
+                    ""
+            );
+        }
+
+        public static void setRegistrationId(Context ctx, String value) {
+            SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+            editor.putString(Constants.Preferences.Keys.GCM_REGISTRATION_ID, value);
+            editor.commit();
+        }
+
+        public static int getPreviousGCMAppVersion(Context ctx) {
+            return getSharedPreferences(ctx).getInt(
+                    Constants.Preferences.Keys.GCM_PREVIOUS_APP_VERSION,
+                    Constants.Preferences.GCM_PREVIOUS_APP_VERSION_DEFAULT_VALUE
+            );
+        }
+
+        public static void setPreviousGCMAppVersion(Context ctx, int value) {
+            SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+            editor.putInt(Constants.Preferences.Keys.GCM_PREVIOUS_APP_VERSION, value);
+            editor.commit();
+        }
+    }
 }

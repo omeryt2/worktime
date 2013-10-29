@@ -44,6 +44,8 @@ public class WorkTimeSyncRequest extends AuthenticatedUserRequest {
     private List<TimeRegistration> timeRegistrations;
     @Expose
     private Map<String, String> syncRemovalMap;
+    @Expose
+    private String androidPushRegistrationId;
 
     public Date getLastSuccessfulSyncDate() {
         return lastSuccessfulSyncDate;
@@ -91,5 +93,13 @@ public class WorkTimeSyncRequest extends AuthenticatedUserRequest {
 
     public void setSyncRemovalMap(Map<String, String> syncRemovalMap) {
         this.syncRemovalMap = syncRemovalMap;
+    }
+
+    public String getAndroidPushRegistrationId() {
+        return androidPushRegistrationId;
+    }
+
+    public void setAndroidPushRegistrationId(String androidPushRegistrationId) {
+        this.androidPushRegistrationId = androidPushRegistrationId;
     }
 }

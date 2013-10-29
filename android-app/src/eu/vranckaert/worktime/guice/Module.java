@@ -69,6 +69,7 @@ public class Module extends AbstractModule {
         bind(AccountService.class).to(AccountServiceImpl.class).asEagerSingleton();
         bind(GeofenceService.class).to(GeofenceServiceImpl.class).asEagerSingleton();
         bind(RecurrenceService.class).to(RecurrenceServiceImpl.class).asEagerSingleton();
+        bind(GCMService.class).to(GCMServiceImpl.class).asEagerSingleton();
         //UI services
         bind(WidgetService.class).to(WidgetServiceImpl.class).asEagerSingleton();
         bind(StatusBarNotificationService.class).to(StatusBarNotificationServiceImpl.class).asEagerSingleton();

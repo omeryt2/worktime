@@ -80,7 +80,7 @@ public interface AccountService {
      * since date, logged in since date or role) this method will return null.
      * @return The {@link User} object or null.
      */
-    User getOfflineUserDate();
+    User getOfflineUserData();
 
     /**
      * Loads the user data (full profile) from the database and updates it with information from the webservice.
