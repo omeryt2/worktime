@@ -363,6 +363,7 @@ public class AccountServiceImpl implements AccountService {
                     timeRegistrationDao.update(localTimeRegistration);
                 }
             }
+            statusBarNotificationService.removeOngoingTimeRegistrationNotification();
             statusBarNotificationService.addOrUpdateNotification(null);
         } catch (RuntimeException e) {
             markSyncAsFailed(e);
