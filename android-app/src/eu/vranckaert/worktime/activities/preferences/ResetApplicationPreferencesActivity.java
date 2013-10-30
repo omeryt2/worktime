@@ -79,12 +79,14 @@ public class ResetApplicationPreferencesActivity extends RoboSherlockActivity {
                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                                @Override
                                public void onClick(DialogInterface dialogInterface, int i) {
+                                   setResult(RESULT_CANCELED);
                                    finish();
                                }
                            })
                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
                                @Override
                                public void onCancel(DialogInterface dialogInterface) {
+                                   setResult(RESULT_CANCELED);
                                    finish();
                                }
                            });

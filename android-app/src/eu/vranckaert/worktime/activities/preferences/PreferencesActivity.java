@@ -185,8 +185,10 @@ public class PreferencesActivity extends RoboSherlockPreferenceActivity {
 
         switch(requestCode) {
             case Constants.IntentRequestCodes.RESET_APPLICATION:
-                getPreferenceScreen().removeAll();
-                createPreferences(PreferencesActivity.this);
+                if (resultCode == RESULT_OK) {
+                    getPreferenceScreen().removeAll();
+                    createPreferences(PreferencesActivity.this);
+                }
                 break;
         }
     }
