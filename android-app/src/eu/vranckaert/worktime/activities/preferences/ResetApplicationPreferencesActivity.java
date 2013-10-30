@@ -58,7 +58,6 @@ public class ResetApplicationPreferencesActivity extends RoboSherlockActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         showDialog(Constants.Dialog.RESET_APPLICATION_CONFIRMATION);
     }
 
@@ -130,8 +129,10 @@ public class ResetApplicationPreferencesActivity extends RoboSherlockActivity {
             removeDialog(Constants.Dialog.LOADING_RESET_APPLICATION);
 
             widgetService.updateAllWidgets();
-            notificationService.addOrUpdateNotification(null);
+            notificationService.removeOngoingTimeRegistrationNotification();
+            notificationService.removeSyncNotifications();
 
+            setResult(RESULT_OK);
             finish();
         }
     }

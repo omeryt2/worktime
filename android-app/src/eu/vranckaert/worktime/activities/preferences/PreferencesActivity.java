@@ -122,7 +122,7 @@ public class PreferencesActivity extends RoboSherlockPreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent intent = new Intent(PreferencesActivity.this, ResetApplicationPreferencesActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, Constants.IntentRequestCodes.RESET_APPLICATION);
                 return true;
             }
         });
@@ -177,5 +177,17 @@ public class PreferencesActivity extends RoboSherlockPreferenceActivity {
     protected void onDestroy() {
         super.onDestroy();
         tracker.stopSession();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode) {
+            case Constants.IntentRequestCodes.RESET_APPLICATION:
+                getPreferenceScreen().removeAll();
+                createPreferences(PreferencesActivity.this);
+                break;
+        }
     }
 }

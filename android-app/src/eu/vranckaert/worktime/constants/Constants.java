@@ -97,6 +97,7 @@ public class Constants {
         public static final int ACCOUNT_REGISTER = 15;
         public static final int ADD_TRIGGER_GEO_FENCING = 17;
         public static final int EDIT_TRIGGER_GEO_FENCING = 18;
+        public static final int RESET_APPLICATION = 19;
 
         public static final int ALARM_SYNC_REPEAT = 9000;
         public static final int ALARM_SYNC_RETRY = 9001;
