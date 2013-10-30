@@ -170,6 +170,11 @@ public class TimeRegistrationDetailActivity extends RoboSherlockActivity impleme
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Constants.IntentResultCodes.GHOST_RECORD) {
+            setResult(Constants.IntentResultCodes.GHOST_RECORD);
+            finish();
+        }
+
         switch (requestCode) {
             case Constants.IntentRequestCodes.TIME_REGISTRATION_ACTION: {
                 if (resultCode == RESULT_OK) {

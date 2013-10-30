@@ -206,6 +206,8 @@ public class SelectTaskActivity extends RoboSherlockActivity implements SyncDele
                         showTaskSelectionDialog(loadSelectableTasks());
                     }
                 } else {
+                    if (dialog != null)
+                        dialog.dismiss();
                     setResult(Constants.IntentResultCodes.GHOST_RECORD);
                     finish();
                 }

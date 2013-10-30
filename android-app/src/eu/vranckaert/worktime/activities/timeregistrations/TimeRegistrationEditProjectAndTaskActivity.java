@@ -21,9 +21,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-
 import com.google.inject.Inject;
-
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.projects.AddEditProjectActivity;
 import eu.vranckaert.worktime.activities.tasks.AddEditTaskActivity;
@@ -42,6 +40,7 @@ import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.SyncDelegateListener;
 import roboguice.inject.InjectExtra;
 
 import java.util.ArrayList;
@@ -53,7 +52,7 @@ import java.util.List;
  * Date: 28/04/11
  * Time: 13:48
  */
-public class TimeRegistrationEditProjectAndTaskActivity extends RoboSherlockActivity {
+public class TimeRegistrationEditProjectAndTaskActivity extends RoboSherlockActivity implements SyncDelegateListener {
     private static final String LOG_TAG = TimeRegistrationEditProjectAndTaskActivity.class.getSimpleName();
 
     @InjectExtra(Constants.Extras.TIME_REGISTRATION)
@@ -123,9 +122,12 @@ public class TimeRegistrationEditProjectAndTaskActivity extends RoboSherlockActi
         return availableTasks;
     }
 
+    private int currentDialogId = -1;
+
     @Override
     protected Dialog onCreateDialog(int id) {
         Dialog dialog = null;
+        currentDialogId = id;
 
         switch (id) {
             case Constants.Dialog.CHOOSE_SELECTED_PROJECT: {
@@ -261,6 +263,44 @@ public class TimeRegistrationEditProjectAndTaskActivity extends RoboSherlockActi
             availableTasks = loadAllTasks();
 
             showDialog(Constants.Dialog.CHOOSE_TASK);
+        }
+    }
+
+    @Override
+    public void onSyncCompleted(boolean success) {
+        if (success) {
+            if (timeRegistrationService.checkTimeRegistrationExisting(timeRegistration)) {
+                if (timeRegistrationService.checkReloadTimeRegistration(timeRegistration)) {
+                    timeRegistrationService.refresh(timeRegistration);
+                }
+
+                if (currentDialogId == Constants.Dialog.CHOOSE_SELECTED_PROJECT) {
+                    removeDialog(Constants.Dialog.CHOOSE_SELECTED_PROJECT);
+                    availableProjects = loadAllProjects();
+                    showDialog(Constants.Dialog.CHOOSE_SELECTED_PROJECT);
+                } else if (currentDialogId == Constants.Dialog.CHOOSE_TASK) {
+                    if (newSelectedProject != null) {
+                        if (projectService.checkProjectExisting(newSelectedProject)) {
+                            if (projectService.checkReloadProject(newSelectedProject)) {
+                                removeDialog(Constants.Dialog.CHOOSE_TASK);
+                                availableProjects = loadAllProjects();
+                                showDialog(Constants.Dialog.CHOOSE_SELECTED_PROJECT);
+                            } else {
+                                removeDialog(Constants.Dialog.CHOOSE_TASK);
+                                availableTasks = loadAllTasks();
+                                showDialog(Constants.Dialog.CHOOSE_TASK);
+                            }
+                        } else {
+                            removeDialog(Constants.Dialog.CHOOSE_TASK);
+                            availableProjects = loadAllProjects();
+                            showDialog(Constants.Dialog.CHOOSE_SELECTED_PROJECT);
+                        }
+                    }
+                }
+            } else {
+                setResult(Constants.IntentResultCodes.GHOST_RECORD);
+                finish();
+            }
         }
     }
 }

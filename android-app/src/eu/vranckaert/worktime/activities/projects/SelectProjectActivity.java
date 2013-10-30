@@ -149,9 +149,11 @@ public class SelectProjectActivity extends RoboSherlockActivity implements SyncD
 
     @Override
     public void onSyncCompleted(boolean success) {
-        if (dialog != null) {
-            dialog.dismiss();
+        if (success) {
+            if (dialog != null) {
+                dialog.dismiss();
+            }
+            showSelectionDialog();
         }
-        showSelectionDialog();
     }
 }
