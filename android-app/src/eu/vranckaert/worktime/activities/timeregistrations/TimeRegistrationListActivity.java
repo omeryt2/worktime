@@ -20,7 +20,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.ContextMenu;
@@ -46,7 +45,6 @@ import eu.vranckaert.worktime.activities.timeregistrations.listadapter.TimeRegis
 import eu.vranckaert.worktime.activities.triggers.TriggersActivity;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
-import eu.vranckaert.worktime.enums.timeregistration.TimeRegistrationAction;
 import eu.vranckaert.worktime.exceptions.GooglePlayServiceRequiredException;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.GCMService;
@@ -61,7 +59,8 @@ import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedListActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockListActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.SyncDelegateListener;
 import eu.vranckaert.worktime.utils.view.showcase.ShowcaseViewElement;
 import eu.vranckaert.worktime.utils.view.showcase.ShowcaseViewUtility;
 
@@ -73,7 +72,7 @@ import java.util.List;
  * Date: 05/02/11
  * Time: 18:58
  */
-public class TimeRegistrationListActivity extends SyncLockedListActivity {
+public class TimeRegistrationListActivity extends RoboSherlockListActivity implements SyncDelegateListener {
     private static final String LOG_TAG = TimeRegistrationListActivity.class.getSimpleName();
 
     @Inject
@@ -448,16 +447,20 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
         };
         AsyncHelper.start(asyncTask);
 
+        setupTimeRegistrations();
+    }
+
+    private void setupTimeRegistrations() {
         PunchBarUtil.configurePunchBar(TimeRegistrationListActivity.this, timeRegistrationService, taskService, projectService);
-        
+
         if (initialLoad) {
             initialLoad = false;
             return;
         }
-        
+
         Long recordCount = timeRegistrationService.count();
         int recordCountDiff = recordCount.intValue() - initialRecordCount.intValue();
-        
+
         if (recordCountDiff > 0) {
             for (int i=0; i<recordCountDiff; i++) {
                 timeRegistrations.add(0, new TimeRegistration());
@@ -519,5 +522,11 @@ public class TimeRegistrationListActivity extends SyncLockedListActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public void onSyncCompleted(boolean success) {
+        if (success)
+            setupTimeRegistrations();
     }
 }

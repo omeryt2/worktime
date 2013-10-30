@@ -42,7 +42,6 @@ public class GcmIntentService extends RoboIntentService {
                 switch (type) {
                     case 100:
                         Intent syncIntent = new Intent(context, AccountSyncService.class);
-                        syncIntent.putExtra(AccountSyncService.EXTRA_SYNC_TRIGGERED_FROM_OTHER_DEVICE, true);
                         startService(syncIntent);
                         break;
                     case 200:

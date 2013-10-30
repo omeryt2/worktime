@@ -17,11 +17,14 @@
 package eu.vranckaert.worktime.activities.projects;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
 import com.google.inject.Inject;
 import com.google.inject.internal.Nullable;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.project.ProjectByNameComparator;
 import eu.vranckaert.worktime.constants.Constants;
@@ -30,7 +33,8 @@ import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.SyncDelegateListener;
 import roboguice.inject.InjectExtra;
 
 import java.util.ArrayList;
@@ -42,7 +46,7 @@ import java.util.List;
  * Date: 02/03/11
  * Time: 20:56
  */
-public class SelectProjectActivity extends SyncLockedGuiceActivity {
+public class SelectProjectActivity extends RoboSherlockActivity implements SyncDelegateListener {
     @Inject
     private ProjectService projectService;
 
@@ -60,6 +64,8 @@ public class SelectProjectActivity extends SyncLockedGuiceActivity {
     @InjectExtra(value = Constants.Extras.UPDATE_WIDGET, optional = true)
     @Nullable
     private boolean updateWidget = false;
+
+    private Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +136,8 @@ public class SelectProjectActivity extends SyncLockedGuiceActivity {
                         finish();
                     }
                 });
-        builder.create().show();
+        dialog = builder.create();
+        dialog.show();
     }
 
     @Override
@@ -138,5 +145,13 @@ public class SelectProjectActivity extends SyncLockedGuiceActivity {
         if (requestCode == Constants.IntentRequestCodes.ADD_PROJECT && resultCode == RESULT_OK) {
             showSelectionDialog();
         }
+    }
+
+    @Override
+    public void onSyncCompleted(boolean success) {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+        showSelectionDialog();
     }
 }

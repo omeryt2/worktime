@@ -22,7 +22,9 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
 import com.google.inject.Inject;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.OSContants;
@@ -37,7 +39,9 @@ import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.HourPreference12Or24;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedWizardActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboWizardActivity;
+
+import eu.vranckaert.worktime.utils.view.actionbar.SyncDelegateListener;
 import org.joda.time.Duration;
 
 import java.util.Calendar;
@@ -48,7 +52,7 @@ import java.util.Date;
  * Date: 07/12/11
  * Time: 07:17
  */
-public class TimeRegistrationSplitActivity extends SyncLockedWizardActivity {
+public class TimeRegistrationSplitActivity extends RoboWizardActivity {
     private static final String LOG_TAG = TimeRegistrationSplitActivity.class.getSimpleName();
 
     @Inject

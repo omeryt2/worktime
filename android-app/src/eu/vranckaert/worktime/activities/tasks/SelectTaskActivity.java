@@ -17,11 +17,14 @@
 package eu.vranckaert.worktime.activities.tasks;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
 import com.google.inject.Inject;
 import com.google.inject.internal.Nullable;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.task.TaskByNameComparator;
 import eu.vranckaert.worktime.constants.Constants;
@@ -32,7 +35,8 @@ import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.SyncDelegateListener;
 import roboguice.inject.InjectExtra;
 
 import java.util.ArrayList;
@@ -44,7 +48,7 @@ import java.util.List;
  * Date: 02/03/11
  * Time: 20:56
  */
-public class SelectTaskActivity extends SyncLockedGuiceActivity {
+public class SelectTaskActivity extends RoboSherlockActivity implements SyncDelegateListener {
     @Inject
     private ProjectService projectService;
 
@@ -70,6 +74,8 @@ public class SelectTaskActivity extends SyncLockedGuiceActivity {
 
     @InjectExtra(value = Constants.Extras.UPDATE_WIDGET, optional = true)
     private boolean updateWidget = false;
+
+    private Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,13 +181,35 @@ public class SelectTaskActivity extends SyncLockedGuiceActivity {
                 }
             });
         }
-        builder.create().show();
+        dialog = builder.create();
+        dialog.show();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.IntentRequestCodes.ADD_TASK && resultCode == RESULT_OK) {
             showTaskSelectionDialog(loadSelectableTasks());
+        }
+    }
+
+    @Override
+    public void onSyncCompleted(boolean success) {
+        if (success) {
+            if (project != null) {
+                if (projectService.checkProjectExisting(project)) {
+                    if (projectService.checkReloadProject(project)) {
+                        setResult(Constants.IntentResultCodes.GHOST_RECORD);
+                        finish();
+                    } else {
+                        if (dialog != null)
+                            dialog.dismiss();
+                        showTaskSelectionDialog(loadSelectableTasks());
+                    }
+                } else {
+                    setResult(Constants.IntentResultCodes.GHOST_RECORD);
+                    finish();
+                }
+            }
         }
     }
 }

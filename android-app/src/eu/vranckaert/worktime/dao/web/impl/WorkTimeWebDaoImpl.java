@@ -258,7 +258,7 @@ public class WorkTimeWebDaoImpl extends JsonWebServiceImpl implements WorkTimeWe
     }
 
     @Override
-    public List<Object> sync(User user, String conflictConfiguration, Date lastSuccessfulSyncDate, List<Project> projects, List<Task> tasks, List<TimeRegistration> timeRegistrations, Map<String, String> syncRemovalMap, boolean triggeredFromOtherDevice) throws NoNetworkConnectionException, GeneralWebException, UserNotLoggedInException, SynchronizationFailedException, SyncAlreadyBusyException, CorruptSyncDataException {
+    public List<Object> sync(User user, String conflictConfiguration, Date lastSuccessfulSyncDate, List<Project> projects, List<Task> tasks, List<TimeRegistration> timeRegistrations, Map<String, String> syncRemovalMap) throws NoNetworkConnectionException, GeneralWebException, UserNotLoggedInException, SynchronizationFailedException, SyncAlreadyBusyException, CorruptSyncDataException {
         checkNetworkConnection();
 
         WorkTimeSyncRequest request = new WorkTimeSyncRequest();
@@ -270,7 +270,6 @@ public class WorkTimeWebDaoImpl extends JsonWebServiceImpl implements WorkTimeWe
         request.setTasks(tasks);
         request.setTimeRegistrations(timeRegistrations);
         request.setSyncRemovalMap(syncRemovalMap);
-        request.setTriggerSyncOnOtherDevices(!triggeredFromOtherDevice);
         request.setAndroidPushRegistrationId(Preferences.GCM.getRegistrationId(context));
 
         JsonResult result = null;

@@ -120,7 +120,7 @@ public interface WorkTimeWebDao extends JsonWebService {
      * @throws CorruptSyncDataException Thrown if the data sent to the server (projects, tasks and time registrations)
      * is corrupt.
      */
-    List<Object> sync(User user, String conflictConfiguration, Date lastSuccessfulSyncDate, List<Project> projects, List<Task> tasks, List<TimeRegistration> timeRegistrations, Map<String, String> syncRemovalMap, boolean triggeredFromOtherDevice) throws NoNetworkConnectionException, GeneralWebException, UserNotLoggedInException, SynchronizationFailedException, SyncAlreadyBusyException, CorruptSyncDataException;
+    List<Object> sync(User user, String conflictConfiguration, Date lastSuccessfulSyncDate, List<Project> projects, List<Task> tasks, List<TimeRegistration> timeRegistrations, Map<String, String> syncRemovalMap) throws NoNetworkConnectionException, GeneralWebException, UserNotLoggedInException, SynchronizationFailedException, SyncAlreadyBusyException, CorruptSyncDataException;
 
     /**
      * Logout the currently logged in user using the email and session key provided in the {@link User object}.

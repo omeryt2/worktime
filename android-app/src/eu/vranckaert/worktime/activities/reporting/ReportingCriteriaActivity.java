@@ -25,11 +25,13 @@ import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.*;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
 import com.google.inject.internal.Nullable;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.project.ProjectByNameComparator;
 import eu.vranckaert.worktime.comparators.task.TaskByNameComparator;
@@ -54,7 +56,7 @@ import eu.vranckaert.worktime.utils.file.FileUtil;
 import eu.vranckaert.worktime.utils.file.XlsFilenameFilter;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
@@ -66,7 +68,7 @@ import java.util.*;
  * Date: 15/09/11
  * Time: 20:28
  */
-public class ReportingCriteriaActivity extends SyncLockedActivity {
+public class ReportingCriteriaActivity extends RoboSherlockActivity {
     private static final String LOG_TAG = ReportingCriteriaActivity.class.getSimpleName();
 
     private List<ReportingDateRange> dateRanges;

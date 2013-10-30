@@ -27,7 +27,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
 import com.google.inject.Inject;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.timeregistrations.listadapter.TimeRegistrationActionListAdapter;
 import eu.vranckaert.worktime.constants.Constants;
@@ -47,7 +49,7 @@ import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 
 import java.util.*;
 
@@ -56,7 +58,7 @@ import java.util.*;
  * Date: 09/02/11
  * Time: 23:25
  */
-public class TimeRegistrationActionActivity extends SyncLockedGuiceActivity {
+public class TimeRegistrationActionActivity extends RoboSherlockActivity {
     /**
      * LOG_TAG for logging
      */

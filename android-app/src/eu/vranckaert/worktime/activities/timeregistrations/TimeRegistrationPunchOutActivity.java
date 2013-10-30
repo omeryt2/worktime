@@ -25,7 +25,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.widget.Toast;
+
 import com.google.inject.Inject;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
@@ -41,7 +43,7 @@ import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 import roboguice.inject.InjectExtra;
 
 import java.util.Date;
@@ -57,7 +59,7 @@ import java.util.Date;
  * parameter is used together with the first extra-bundle parameter
  * {@link Constants.Extras#TIME_REGISTRATION_CONTINUE_WITH_NEW} to start the {@link TimeRegistrationPunchInActivity}.
  */
-public class TimeRegistrationPunchOutActivity extends SyncLockedGuiceActivity {
+public class TimeRegistrationPunchOutActivity extends RoboSherlockActivity {
     /**
      * LOG_TAG for logging
      */

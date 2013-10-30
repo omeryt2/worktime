@@ -19,15 +19,18 @@ package eu.vranckaert.worktime.activities.account;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.account.listadapter.SyncHistoryListAdapter;
 import eu.vranckaert.worktime.model.SyncHistory;
 import eu.vranckaert.worktime.service.AccountService;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedListActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockListActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.SyncDelegateListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +40,7 @@ import java.util.List;
  * Date: 11/02/13
  * Time: 13:22
  */
-public class AccountSyncHistoryActivity extends SyncLockedListActivity {
+public class AccountSyncHistoryActivity extends RoboSherlockListActivity implements SyncDelegateListener {
     @Inject private AccountService accountService;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,8 @@ public class AccountSyncHistoryActivity extends SyncLockedListActivity {
 
         setTitle(R.string.lbl_account_sync_history_title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        refillListView(accountService.findAllSyncHistories());
     }
 
     private void refillListView(List<SyncHistory> syncHistories) {
@@ -103,9 +108,7 @@ public class AccountSyncHistoryActivity extends SyncLockedListActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
+    public void onSyncCompleted(boolean success) {
         refillListView(accountService.findAllSyncHistories());
     }
 }

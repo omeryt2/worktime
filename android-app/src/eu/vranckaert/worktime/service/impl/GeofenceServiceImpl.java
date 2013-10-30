@@ -236,6 +236,9 @@ public class GeofenceServiceImpl implements GeofenceService {
 
     @Override
     public void deleteGeofences(final List<String> requestIds) {
+        if (requestIds == null || requestIds.isEmpty())
+            return;
+
         mLocationClient = new LocationClient(context, new GooglePlayServicesClient.ConnectionCallbacks() {
             @Override
             public void onConnected(Bundle bundle) {

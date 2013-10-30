@@ -22,16 +22,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.google.inject.Inject;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.model.Project;
-import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.service.ProjectService;
 import eu.vranckaert.worktime.service.TaskService;
@@ -43,7 +44,8 @@ import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.SyncDelegateListener;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
@@ -52,7 +54,7 @@ import roboguice.inject.InjectView;
  * Date: 06/02/11
  * Time: 03:51
  */
-public class AddEditProjectActivity extends SyncLockedActivity {
+public class AddEditProjectActivity extends RoboSherlockActivity implements SyncDelegateListener {
     private static final String LOG_TAG = AddEditProjectActivity.class.getSimpleName();
 
     @InjectView(R.id.projectname) private EditText projectNameInput;
@@ -239,8 +241,8 @@ public class AddEditProjectActivity extends SyncLockedActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (inUpdateMode() && requestCode == Constants.IntentRequestCodes.SYNC_BLOCKING_ACTIVITY) {
+    public void onSyncCompleted(boolean success) {
+        if (inUpdateMode() && success) {
             if (projectService.checkProjectExisting(editProject)) {
                 if (projectService.checkReloadProject(editProject)) {
                     projectService.refresh(editProject);

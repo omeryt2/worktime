@@ -32,7 +32,7 @@ import roboguice.util.RoboContext;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RoboSherlockFragmentActivity extends SherlockFragmentActivity implements RoboContext {
+public abstract class RoboSherlockFragmentActivity extends SherlockFragmentActivity implements RoboContext {
     protected EventManager eventManager;
     protected HashMap<Key<?>, Object> scopedObjects = new HashMap<Key<?>, Object>();
 
@@ -63,12 +63,14 @@ public class RoboSherlockFragmentActivity extends SherlockFragmentActivity imple
     @Override
     protected void onResume() {
         super.onResume();
+        SyncDelegate.get().registerDelegate(this);
         eventManager.fire(new OnResumeEvent());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        SyncDelegate.get().unregisterDelegate(this);
         eventManager.fire(new OnPauseEvent());
     }
 

@@ -29,11 +29,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.reporting.ReportingCriteriaActivity;
 import eu.vranckaert.worktime.activities.tasks.AddEditTaskActivity;
@@ -42,7 +43,9 @@ import eu.vranckaert.worktime.comparators.task.TaskByNameComparator;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
 import eu.vranckaert.worktime.enums.reporting.ReportingDisplayDuration;
-import eu.vranckaert.worktime.exceptions.*;
+import eu.vranckaert.worktime.exceptions.ProjectHasOngoingTimeRegistration;
+import eu.vranckaert.worktime.exceptions.ProjectStillHasTasks;
+import eu.vranckaert.worktime.exceptions.TaskStillInUseException;
 import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
@@ -58,7 +61,8 @@ import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedListActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockListActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.SyncDelegateListener;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
@@ -71,7 +75,7 @@ import java.util.List;
  * Date: 28/03/11
  * Time: 18:26
  */
-public class ProjectDetailsActivity extends SyncLockedListActivity {
+public class ProjectDetailsActivity extends RoboSherlockListActivity implements SyncDelegateListener {
     private static final String LOG_TAG = ProjectDetailsActivity.class.getSimpleName();
 
     @InjectView(R.id.projectComment)
@@ -194,6 +198,21 @@ public class ProjectDetailsActivity extends SyncLockedListActivity {
             }
         };
         AsyncHelper.start(asyncTask);
+    }
+
+    @Override
+    public void onSyncCompleted(boolean success) {
+        if (success) {
+            if (projectService.checkProjectExisting(project)) {
+                if (projectService.checkReloadProject(project)) {
+                    projectService.refresh(project);
+                    buildUI();
+                }
+            } else {
+                setResult(RESULT_OK);
+                finish();
+            }
+        }
     }
 
     private class ManageTasksListAdapter extends ArrayAdapter<Task> {
@@ -494,17 +513,6 @@ public class ProjectDetailsActivity extends SyncLockedListActivity {
                 break;
             case Constants.IntentRequestCodes.END_TIME_REGISTRATION:
                 PunchBarUtil.configurePunchBar(ProjectDetailsActivity.this, timeRegistrationService, taskService, projectService);
-                break;
-            case Constants.IntentRequestCodes.SYNC_BLOCKING_ACTIVITY:
-                if (projectService.checkProjectExisting(project)) {
-                    if (projectService.checkReloadProject(project)) {
-                        projectService.refresh(project);
-                        buildUI();
-                    }
-                } else {
-                    setResult(RESULT_OK);
-                    finish();
-                }
                 break;
         }
     }

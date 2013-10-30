@@ -21,7 +21,9 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
 import com.google.inject.Inject;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.projects.AddEditProjectActivity;
 import eu.vranckaert.worktime.activities.tasks.AddEditTaskActivity;
@@ -39,7 +41,7 @@ import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 import roboguice.inject.InjectExtra;
 
 import java.util.ArrayList;
@@ -51,7 +53,7 @@ import java.util.List;
  * Date: 28/04/11
  * Time: 13:48
  */
-public class TimeRegistrationEditProjectAndTaskActivity extends SyncLockedGuiceActivity {
+public class TimeRegistrationEditProjectAndTaskActivity extends RoboSherlockActivity {
     private static final String LOG_TAG = TimeRegistrationEditProjectAndTaskActivity.class.getSimpleName();
 
     @InjectExtra(Constants.Extras.TIME_REGISTRATION)

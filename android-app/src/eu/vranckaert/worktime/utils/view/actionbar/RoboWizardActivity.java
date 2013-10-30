@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package eu.vranckaert.worktime.utils.wizard;
+package eu.vranckaert.worktime.utils.view.actionbar;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -30,7 +30,6 @@ import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.utils.context.ContextUtils;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,50 +46,50 @@ import java.util.List;
  * <li>Previous and Next</li>
  * <li>Previous and Finish</li>
  * <br/>
- * To create a wizard activity, simply extend your activity from this {@link WizardActivity} and. override the
- * {@link WizardActivity#onCreate(android.os.Bundle)}. As in any other activity, the first call in this method should be
+ * To create a wizard activity, simply extend your activity from this {@link RoboWizardActivity} and. override the
+ * {@link RoboWizardActivity#onCreate(android.os.Bundle)}. As in any other activity, the first call in this method should be
  * "super.onCreate(savedInstanceState);". Next the layouts to be loaded in the wizard (the different pages) should be
- * specified using {@link WizardActivity#setContentViews(int...)}. Pay attention that the order in which you
+ * specified using {@link RoboWizardActivity#setContentViews(int...)}. Pay attention that the order in which you
  * specified the layouts will be the order they will be displayed in the activity!<br/>
  * It's possible to disable the cancel and/or previous button when setting the content views using the method
- * {@link WizardActivity#setContentViews(boolean, boolean, int...)}. <b>CAUTION: When disabling 'cancel' it disables
+ * {@link RoboWizardActivity#setContentViews(boolean, boolean, int...)}. <b>CAUTION: When disabling 'cancel' it disables
  * both the cancel button and the back-button of the device which can cause a strange experience for the user.</b><br/>
  * <br/>
  * It is also possible to change the text on the cancel, previous, next and/or finish button. To achieve this you use
  * one of the appropriate methods (with a {@link String} value or an {@link Integer} resource id value:<br/>
- * <li>{@link WizardActivity#setCancelButtonText(String)}</li>
- * <li>{@link WizardActivity#setCancelButtonText(int)}</li>
- * <li>{@link WizardActivity#setPreviousButtonText(String)}</li>
- * <li>{@link WizardActivity#setPreviousButtonText(int)}</li>
- * <li>{@link WizardActivity#setNextButtonText(String)} </li>
- * <li>{@link WizardActivity#setNextButtonText(int)} </li>
- * <li>{@link WizardActivity#setFinishButtonText(String)}</li>
- * <li>{@link WizardActivity#setFinishButtonText(int)}</li>
+ * <li>{@link RoboWizardActivity#setCancelButtonText(String)}</li>
+ * <li>{@link RoboWizardActivity#setCancelButtonText(int)}</li>
+ * <li>{@link RoboWizardActivity#setPreviousButtonText(String)}</li>
+ * <li>{@link RoboWizardActivity#setPreviousButtonText(int)}</li>
+ * <li>{@link RoboWizardActivity#setNextButtonText(String)} </li>
+ * <li>{@link RoboWizardActivity#setNextButtonText(int)} </li>
+ * <li>{@link RoboWizardActivity#setFinishButtonText(String)}</li>
+ * <li>{@link RoboWizardActivity#setFinishButtonText(int)}</li>
  * <br/>
- * If cancel is enabled you can use the {@link WizardActivity#setCancelDialog(String, String)} method to enable a dialog
+ * If cancel is enabled you can use the {@link RoboWizardActivity#setCancelDialog(String, String)} method to enable a dialog
  * that will be popped up when canceling. The dialog always has a YES-NO option. 'YES' will start a cancel and so
  * leave the wizard, 'NO' will remove the dialog and stay in the wizard. There are also two variants of this method,
  * with the resource id and/or without title.<br/>
  * <br/>
  * A certain number of methods should be implemented in your activity to gain control over the wizard:<br/>
- * <li>{@link WizardActivity#initialize(android.view.View)}: When the activity is created the first wizard page is
+ * <li>{@link RoboWizardActivity#initialize(android.view.View)}: When the activity is created the first wizard page is
  * loaded immediately. Here you can set certain values after initialization of the activity and/or change the UI based
  * on the provided view which maps on the first layout resource you provided.</li>
- * <li>{@link WizardActivity#beforePageChange(int, int, android.view.View)}: This method is executed when next is
+ * <li>{@link RoboWizardActivity#beforePageChange(int, int, android.view.View)}: This method is executed when next is
  * pressed, just before the next layout is loaded. Here you should get variables from the UI and save them for later
  * use. What you don't save here is lost!</li>
- * <li>{@link WizardActivity#afterPageChange(int, int, android.view.View)}: This method let you set intial values on
+ * <li>{@link RoboWizardActivity#afterPageChange(int, int, android.view.View)}: This method let you set intial values on
  * the next loaded view or restore a view (if you go back one page for example you need to restore what the user has set
  * on it before).</li>
- * <li>{@link WizardActivity#onCancel(android.view.View, android.view.View)}: If you want to do something when the
+ * <li>{@link RoboWizardActivity#onCancel(android.view.View, android.view.View)}: If you want to do something when the
  * activity is canceled (using the back button or the cancel button) this code should go here.</li>
- * <li>{@link WizardActivity#onFinish(android.view.View, android.view.View)}: If you want to do something when the
+ * <li>{@link RoboWizardActivity#onFinish(android.view.View, android.view.View)}: If you want to do something when the
  * activity is finished, this code should go here. Typically here you will save some data.</li>
  * If you want to put EXTRA-parameters or a result on the intent when canceling or finishing the wizard, you should
- * override the methods {@link WizardActivity#closeOnCancel(View view)} or {@link WizardActivity#closeOnFinish()}.<br/>
+ * override the methods {@link RoboWizardActivity#closeOnCancel(View view)} or {@link RoboWizardActivity#closeOnFinish()}.<br/>
  * <br/>
  * <b><u>Example:</u></b><br/>
- * public class MyWizardActivity extends WizardActivity {
+ * public class MyWizardActivity extends RoboWizardActivity {
  *   @Override
  *   protected void onCreate(Bundle savedInstanceState) {
  *      super.onCreate(savedInstanceState);
@@ -118,8 +117,8 @@ import java.util.List;
  *   }
  * }
  */
-public abstract class WizardActivity extends RoboSherlockActivity {
-    private static final String LOG_TAG = WizardActivity.class.getSimpleName();
+public abstract class RoboWizardActivity extends RoboSherlockActivity {
+    private static final String LOG_TAG = RoboWizardActivity.class.getSimpleName();
 
     private View cancelButton;
     private View finishButton;
@@ -148,7 +147,7 @@ public abstract class WizardActivity extends RoboSherlockActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        layoutInflater = (LayoutInflater) WizardActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        layoutInflater = (LayoutInflater) RoboWizardActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     /**
@@ -185,7 +184,7 @@ public abstract class WizardActivity extends RoboSherlockActivity {
     }
 
     /**
-     * Initializes the {@link WizardActivity}.
+     * Initializes the {@link RoboWizardActivity}.
      */
     private void init() {
         contentContainer = (ViewGroup) findViewById(R.id.wizard_page_content_container);
@@ -373,7 +372,7 @@ public abstract class WizardActivity extends RoboSherlockActivity {
 
     /**
      * This block of code is executed when the "cancel" button is pressed. If you want to end this activity with a
-     * certain result you should override the {@link WizardActivity#closeOnCancel(View view)} method.
+     * certain result you should override the {@link RoboWizardActivity#closeOnCancel(View view)} method.
      * @param view The view that is current loaded.
      * @param button The "cancel" button.
      * @return If this method returns {@link Boolean#TRUE} the activity will be closed. If it returns
@@ -383,7 +382,7 @@ public abstract class WizardActivity extends RoboSherlockActivity {
 
     /**
      * This block of code is executed when the "finish" button is pressed. If you want to end this activity with a
-     * certain result you should override the {@link WizardActivity#closeOnFinish()} method.
+     * certain result you should override the {@link RoboWizardActivity#closeOnFinish()} method.
      * @param view The view that is current loaded.
      * @param button The "finish" button.
      * @return If this method returns {@link Boolean#TRUE} the activity will be closed. If it returns
@@ -534,19 +533,19 @@ public abstract class WizardActivity extends RoboSherlockActivity {
     @Override
     @Deprecated
     public void setContentView(int layoutResID) {
-        Log.w(getApplicationContext(), LOG_TAG, "The content view cannot be changed. This method is deprecated for the WizardActivity!");
+        Log.w(getApplicationContext(), LOG_TAG, "The content view cannot be changed. This method is deprecated for the RoboWizardActivity!");
     }
 
     @Override
     @Deprecated
     public void setContentView(View view) {
-        Log.w(getApplicationContext(), LOG_TAG, "The content view cannot be changed. This method is deprecated for the WizardActivity!");
+        Log.w(getApplicationContext(), LOG_TAG, "The content view cannot be changed. This method is deprecated for the RoboWizardActivity!");
     }
 
     @Override
     @Deprecated
     public void setContentView(View view, ViewGroup.LayoutParams params) {
-        Log.w(getApplicationContext(), LOG_TAG, "The content view cannot be changed. This method is deprecated for the WizardActivity!");
+        Log.w(getApplicationContext(), LOG_TAG, "The content view cannot be changed. This method is deprecated for the RoboWizardActivity!");
     }
 
     /**

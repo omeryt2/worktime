@@ -20,12 +20,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 
-public class ResetPreferencesActivity extends SyncLockedGuiceActivity {
+public class ResetPreferencesActivity extends RoboSherlockActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

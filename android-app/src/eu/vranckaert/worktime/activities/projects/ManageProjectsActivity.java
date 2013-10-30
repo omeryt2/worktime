@@ -24,11 +24,16 @@ import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.project.ProjectByNameComparator;
 import eu.vranckaert.worktime.constants.Constants;
@@ -47,7 +52,8 @@ import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedListActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockListActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.SyncDelegateListener;
 import eu.vranckaert.worktime.utils.widget.WidgetUtil;
 
 import java.util.ArrayList;
@@ -59,7 +65,7 @@ import java.util.List;
  * Date: 05/02/11
  * Time: 18:19
  */
-public class ManageProjectsActivity extends SyncLockedListActivity {
+public class ManageProjectsActivity extends RoboSherlockListActivity implements SyncDelegateListener {
     private static final String LOG_TAG = ManageProjectsActivity.class.getSimpleName();
 
     private List<Project> projects;
@@ -369,7 +375,11 @@ public class ManageProjectsActivity extends SyncLockedListActivity {
                 || requestCode == Constants.IntentRequestCodes.END_TIME_REGISTRATION) {
             PunchBarUtil.configurePunchBar(ManageProjectsActivity.this, timeRegistrationService, taskService, projectService);
         }
-        if (requestCode == Constants.IntentRequestCodes.SYNC_BLOCKING_ACTIVITY) {
+    }
+
+    @Override
+    public void onSyncCompleted(boolean success) {
+        if (success) {
             Log.d(getApplicationContext(), LOG_TAG, "Synchronization completed so reloading the list of projects!");
             loadProjects();
         }

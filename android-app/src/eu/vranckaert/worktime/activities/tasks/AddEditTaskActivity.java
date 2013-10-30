@@ -21,11 +21,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.google.inject.Inject;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TextConstants;
@@ -41,7 +43,8 @@ import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.IntentUtil;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.SyncDelegateListener;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
@@ -50,7 +53,7 @@ import roboguice.inject.InjectView;
  * Date: 30/03/11
  * Time: 00:19
  */
-public class AddEditTaskActivity extends SyncLockedActivity {
+public class AddEditTaskActivity extends RoboSherlockActivity implements SyncDelegateListener {
     private static final String LOG_TAG = AddEditTaskActivity.class.getSimpleName();
 
     @InjectView(R.id.project_name)
@@ -223,8 +226,8 @@ public class AddEditTaskActivity extends SyncLockedActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (inUpdateMode() && requestCode == Constants.IntentRequestCodes.SYNC_BLOCKING_ACTIVITY) {
+    public void onSyncCompleted(boolean success) {
+        if (inUpdateMode() && success) {
             if (taskService.checkTaskExisting(editTask)) {
                 if (taskService.checkReloadTask(editTask)) {
                     taskService.refresh(editTask);

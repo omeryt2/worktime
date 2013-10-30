@@ -25,8 +25,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.widget.Toast;
+
 import com.google.inject.Inject;
 import com.google.inject.internal.Nullable;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.projects.SelectProjectActivity;
 import eu.vranckaert.worktime.activities.tasks.SelectTaskActivity;
@@ -44,7 +46,7 @@ import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 import roboguice.inject.InjectExtra;
 
 import java.util.Date;
@@ -55,7 +57,7 @@ import java.util.List;
  * Date: 09/02/11
  * Time: 23:25
  */
-public class TimeRegistrationPunchInActivity extends SyncLockedGuiceActivity {
+public class TimeRegistrationPunchInActivity extends RoboSherlockActivity {
     private static final String LOG_TAG = TimeRegistrationPunchInActivity.class.getSimpleName();
 
     @Inject

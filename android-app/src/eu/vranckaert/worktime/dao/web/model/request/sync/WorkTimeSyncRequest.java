@@ -46,8 +46,6 @@ public class WorkTimeSyncRequest extends AuthenticatedUserRequest {
     private Map<String, String> syncRemovalMap;
     @Expose
     private String androidPushRegistrationId;
-    @Expose
-    private boolean triggerSyncOnOtherDevices;
 
     public Date getLastSuccessfulSyncDate() {
         return lastSuccessfulSyncDate;
@@ -103,13 +101,5 @@ public class WorkTimeSyncRequest extends AuthenticatedUserRequest {
 
     public void setAndroidPushRegistrationId(String androidPushRegistrationId) {
         this.androidPushRegistrationId = androidPushRegistrationId;
-    }
-
-    public boolean isTriggerSyncOnOtherDevices() {
-        return triggerSyncOnOtherDevices;
-    }
-
-    public void setTriggerSyncOnOtherDevices(boolean triggerSyncOnOtherDevices) {
-        this.triggerSyncOnOtherDevices = triggerSyncOnOtherDevices;
     }
 }

@@ -45,6 +45,7 @@ import eu.vranckaert.worktime.utils.alarm.AlarmUtil;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.network.NetworkUtil;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
+import eu.vranckaert.worktime.utils.view.actionbar.SyncDelegate;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
 
 import java.util.*;
@@ -188,7 +189,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void sync(boolean retryWhenNotLoggedIn, boolean triggeredFromOtherDevice) throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException, WifiConnectionRequiredException, BackupException, SyncAlreadyBusyException, SynchronizationFailedException {
+    public void sync(boolean retryWhenNotLoggedIn) throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException, WifiConnectionRequiredException, BackupException, SyncAlreadyBusyException, SynchronizationFailedException {
         Log.i(LOG_TAG, "Starting synchronization...");
         if (isSyncBusy()) {
             throw new SyncAlreadyBusyException();
@@ -274,7 +275,7 @@ public class AccountServiceImpl implements AccountService {
             List<Object> result;
             try {
                 // Execute the sync on the server
-                result = workTimeWebDao.sync(user, conflictConfiguration, lastSuccessfulServerSyncDate, projects, tasks, timeRegistrations, syncRemovalMap, triggeredFromOtherDevice);
+                result = workTimeWebDao.sync(user, conflictConfiguration, lastSuccessfulServerSyncDate, projects, tasks, timeRegistrations, syncRemovalMap);
             } catch (UserNotLoggedInException e) {
                 markSyncAsFailed(e);
                 if (retryWhenNotLoggedIn) {
@@ -284,7 +285,7 @@ public class AccountServiceImpl implements AccountService {
                     } catch (LoginCredentialsMismatchException e1) {
                         throw e;
                     }
-                    sync(false, triggeredFromOtherDevice);
+                    sync(false);
                     return;
                 } else {
                     throw e;
@@ -365,8 +366,10 @@ public class AccountServiceImpl implements AccountService {
             }
             statusBarNotificationService.removeOngoingTimeRegistrationNotification();
             statusBarNotificationService.addOrUpdateNotification(null);
+            SyncDelegate.get().delegateEndOfSync(true);
         } catch (RuntimeException e) {
             markSyncAsFailed(e);
+            SyncDelegate.get().delegateEndOfSync(false);
             throw e;
         }
     }
@@ -593,6 +596,42 @@ public class AccountServiceImpl implements AccountService {
      */
     private void checkServerEntities(List<Project> projects, List<Task> tasks, List<TimeRegistration> timeRegistrations) {
         Log.d(LOG_TAG, "Check for the entities on the server that have changed since the last update to be persisted locally or use to update local information...");
+
+        Log.d(LOG_TAG, "Make sure every project, task and time registration gets updated if needed");
+        for (Task task : tasks) {
+            boolean projectFound = false;
+            for (Project project : projects) {
+                if (project.getName().equals(task.getProject().getName())) {
+                    projectFound = true;
+                    break;
+                }
+            }
+            if (!projectFound) {
+                projects.add(task.getProject());
+            }
+        }
+        for (TimeRegistration timeRegistration : timeRegistrations) {
+            boolean taskFound = false;
+            for (Task task : tasks) {
+                if (task.getName().equals(timeRegistration.getTask().getName())) {
+                    taskFound = true;
+                    break;
+                }
+            }
+            if (!taskFound) {
+                tasks.add(timeRegistration.getTask());
+            }
+            boolean projectFound = false;
+            for (Project project : projects) {
+                if (project.getName().equals(timeRegistration.getTask().getProject().getName())) {
+                    projectFound = true;
+                    break;
+                }
+            }
+            if (!projectFound) {
+                projects.add(timeRegistration.getTask().getProject());
+            }
+        }
 
         Log.d(LOG_TAG, "Checking the server-projects...");
         for (Project project : projects) {

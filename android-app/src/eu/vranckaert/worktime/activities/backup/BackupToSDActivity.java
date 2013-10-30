@@ -22,7 +22,9 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
 import com.google.inject.Inject;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.exceptions.SDCardUnavailableException;
@@ -32,14 +34,14 @@ import eu.vranckaert.worktime.service.BackupService;
 import eu.vranckaert.worktime.service.ui.StatusBarNotificationService;
 import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 
 /**
  * User: DIRK VRANCKAERT
  * Date: 11/09/11
  * Time: 11:49
  */
-public class BackupToSDActivity extends SyncLockedGuiceActivity {
+public class BackupToSDActivity extends RoboSherlockActivity {
     private static final String LOG_TAG = BackupToSDActivity.class.getSimpleName();
 
     @Inject

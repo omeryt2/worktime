@@ -22,6 +22,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.model.Project;
@@ -31,7 +32,7 @@ import eu.vranckaert.worktime.service.TaskService;
 import eu.vranckaert.worktime.service.impl.ProjectServiceImpl;
 import eu.vranckaert.worktime.service.impl.TaskServiceImpl;
 import eu.vranckaert.worktime.utils.context.Log;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedWizardActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboWizardActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,7 @@ import java.util.List;
  * Date: 7/03/12
  * Time: 7:47
  */
-public class CopyProjectActivity extends SyncLockedWizardActivity {
+public class CopyProjectActivity extends RoboWizardActivity {
     private static final String LOG_TAG = CopyProjectActivity.class.getSimpleName();
     
     private TaskService taskService;

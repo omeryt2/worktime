@@ -20,11 +20,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
 import com.google.inject.internal.Nullable;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TextConstants;
@@ -43,7 +45,8 @@ import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.punchbar.PunchBarUtil;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.SyncDelegateListener;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
@@ -52,7 +55,7 @@ import roboguice.inject.InjectView;
  * Date: 27/04/11
  * Time: 15:59
  */
-public class TimeRegistrationDetailActivity extends SyncLockedActivity {
+public class TimeRegistrationDetailActivity extends RoboSherlockActivity implements SyncDelegateListener {
     private static final String LOG_TAG = TimeRegistrationDetailActivity.class.getSimpleName();
 
     @InjectView(R.id.start)
@@ -197,18 +200,6 @@ public class TimeRegistrationDetailActivity extends SyncLockedActivity {
                 PunchBarUtil.configurePunchBar(TimeRegistrationDetailActivity.this, timeRegistrationService, taskService, projectService);
                 break;
             }
-            case Constants.IntentRequestCodes.SYNC_BLOCKING_ACTIVITY: {
-                if (timeRegistrationService.checkTimeRegistrationExisting(registration)) {
-                    if (timeRegistrationService.checkReloadTimeRegistration(registration)) {
-                        timeRegistrationService.refresh(registration);
-                        updateView();
-                    }
-                } else {
-                    setResult(Constants.IntentResultCodes.GHOST_RECORD);
-                    finish();
-                }
-                break;
-            }
         }
 
         if (resultCode == Constants.IntentResultCodes.RESULT_DELETED) {
@@ -277,5 +268,20 @@ public class TimeRegistrationDetailActivity extends SyncLockedActivity {
     protected void onDestroy() {
         super.onDestroy();
         tracker.stopSession();
+    }
+
+    @Override
+    public void onSyncCompleted(boolean success) {
+        if (success) {
+            if (timeRegistrationService.checkTimeRegistrationExisting(registration)) {
+                if (timeRegistrationService.checkReloadTimeRegistration(registration)) {
+                    timeRegistrationService.refresh(registration);
+                    updateView();
+                }
+            } else {
+                setResult(Constants.IntentResultCodes.GHOST_RECORD);
+                finish();
+            }
+        }
     }
 }

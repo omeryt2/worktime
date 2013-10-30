@@ -36,7 +36,7 @@ import java.util.Map;
  * An example of how to make your own Robo-enabled Sherlock activity. Feel free
  * to do with with any of the other Sherlock activity types!
  */
-public class RoboSherlockActivity extends SherlockActivity implements RoboContext {
+public abstract class RoboSherlockActivity extends SherlockActivity implements RoboContext {
     protected EventManager eventManager;
     protected HashMap<Key<?>,Object> scopedObjects = new HashMap<Key<?>,Object>();
 
@@ -67,12 +67,14 @@ public class RoboSherlockActivity extends SherlockActivity implements RoboContex
     @Override
     protected void onResume() {
         super.onResume();
+        SyncDelegate.get().registerDelegate(this);
         eventManager.fire(new OnResumeEvent());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        SyncDelegate.get().unregisterDelegate(this);
         eventManager.fire(new OnPauseEvent());
     }
 

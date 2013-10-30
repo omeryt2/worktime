@@ -23,7 +23,9 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
+
 import com.google.inject.Inject;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.comparators.preferences.DatabaseBackupFileComparator;
 import eu.vranckaert.worktime.constants.Constants;
@@ -35,7 +37,7 @@ import eu.vranckaert.worktime.service.ui.WidgetService;
 import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ import java.util.List;
  * Date: 11/09/11
  * Time: 11:49
  */
-public class RestoreFromSDActivity extends SyncLockedGuiceActivity {
+public class RestoreFromSDActivity extends RoboSherlockActivity {
     private static final String LOG_TAG = RestoreFromSDActivity.class.getSimpleName();
     @Inject
     private BackupService backupService;

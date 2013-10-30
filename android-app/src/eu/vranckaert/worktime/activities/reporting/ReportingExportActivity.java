@@ -26,10 +26,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.enums.export.ExportCsvSeparator;
@@ -52,9 +54,11 @@ import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 import jxl.biff.DisplayFormat;
+
 import org.joda.time.Period;
+
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
@@ -66,7 +70,7 @@ import java.util.*;
  * Date: 15/02/11
  * Time: 00:15
  */
-public class ReportingExportActivity extends SyncLockedActivity {
+public class ReportingExportActivity extends RoboSherlockActivity {
     private static final String LOG_TAG = ReportingExportActivity.class.getSimpleName();
 
     @InjectView(R.id.reporting_export_type)

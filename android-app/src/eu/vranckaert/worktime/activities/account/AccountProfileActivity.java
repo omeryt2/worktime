@@ -25,11 +25,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.google.inject.Inject;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.preferences.AccountSyncPreferencesActivity;
 import eu.vranckaert.worktime.constants.Constants;
@@ -46,9 +48,12 @@ import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.string.StringUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.SyncDelegateListener;
 import eu.vranckaert.worktime.web.json.exception.GeneralWebException;
+
 import org.joda.time.PeriodType;
+
 import roboguice.inject.InjectView;
 
 import java.util.Date;
@@ -58,10 +63,11 @@ import java.util.Date;
  * Date: 12/12/12
  * Time: 10:04
  */
-public class AccountProfileActivity extends SyncLockedActivity {
+public class AccountProfileActivity extends RoboSherlockActivity implements SyncDelegateListener {
     private static final String LOG_TAG = AccountProfileActivity.class.getSimpleName();
 
     private AnalyticsTracker tracker;
+    private boolean syncInProgress = false;
 
     @Inject private AccountService accountService;
 
@@ -84,7 +90,6 @@ public class AccountProfileActivity extends SyncLockedActivity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         setContentView(R.layout.activity_account_profile);
-        setSupportProgressBarIndeterminateVisibility(false);
 
         setTitle(R.string.lbl_account_profile_title);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -106,10 +111,30 @@ public class AccountProfileActivity extends SyncLockedActivity {
         });
     }
 
+    private void showData() {
+        if (!accountService.isSyncBusy()) {
+            syncInProgress = false;
+            invalidateOptionsMenu();
+            setSupportProgressBarIndeterminateVisibility(false);
+            AsyncHelper.start(new LoadProfileTask());
+        } else {
+            syncInProgress = true;
+            invalidateOptionsMenu();
+            setSupportProgressBarIndeterminateVisibility(true);
+        }
+
+        SyncHistory syncHistory = accountService.getLastSyncHistory();
+        updateUI(syncHistory);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getSupportMenuInflater();
-        menuInflater.inflate(R.menu.ab_activity_account_profile, menu);
+        if (syncInProgress) {
+            menu.clear();
+        } else {
+            MenuInflater menuInflater = getSupportMenuInflater();
+            menuInflater.inflate(R.menu.ab_activity_account_profile, menu);
+        }
 
         // Calling super after populating the menu is necessary here to ensure that the
         // action bar helpers have a chance to handle this event.
@@ -123,6 +148,8 @@ public class AccountProfileActivity extends SyncLockedActivity {
                 IntentUtil.goBack(this);
                 break;
             case R.id.menu_account_profile_activity_sync: {
+                syncInProgress = true;
+                invalidateOptionsMenu();
                 setSupportProgressBarIndeterminateVisibility(true);
 
                 Intent intent = new Intent(AccountProfileActivity.this, AccountSyncService.class);
@@ -179,6 +206,17 @@ public class AccountProfileActivity extends SyncLockedActivity {
         AsyncHelper.start(new LogoutTask());
         setResult(Constants.IntentResultCodes.RESULT_LOGOUT);
         finish();
+    }
+
+    @Override
+    public void onSyncCompleted(boolean success) {
+        showData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showData();
     }
 
     private class LogoutTask extends AsyncTask<Void, Void, Void> {
@@ -282,23 +320,5 @@ public class AccountProfileActivity extends SyncLockedActivity {
                 syncHistoryResolution.setText(R.string.lbl_account_sync_resolution_busy);
                 break;
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        setSupportProgressBarIndeterminateVisibility(false);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (!accountService.isSyncBusy()) {
-            AsyncHelper.start(new LoadProfileTask());
-        }
-
-        SyncHistory syncHistory = accountService.getLastSyncHistory();
-        updateUI(syncHistory);
     }
 }

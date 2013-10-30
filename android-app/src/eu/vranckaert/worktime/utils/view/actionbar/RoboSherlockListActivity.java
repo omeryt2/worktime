@@ -67,12 +67,14 @@ public class RoboSherlockListActivity extends SherlockListActivity implements Ro
     @Override
     protected void onResume() {
         super.onResume();
+        SyncDelegate.get().registerDelegate(this);
         eventManager.fire(new OnResumeEvent());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        SyncDelegate.get().unregisterDelegate(this);
         eventManager.fire(new OnPauseEvent());
     }
 

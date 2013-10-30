@@ -112,7 +112,7 @@ public interface AccountService {
      * @throws SynchronizationFailedException This exception is throw if the synchronization failed for some reason on
      * the remote server.
      */
-    void sync(boolean retryWhenNotLoggedIn, boolean triggeredFromOtherDevice) throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException, WifiConnectionRequiredException, BackupException, SyncAlreadyBusyException, SynchronizationFailedException;
+    void sync(boolean retryWhenNotLoggedIn) throws UserNotLoggedInException, GeneralWebException, NoNetworkConnectionException, WifiConnectionRequiredException, BackupException, SyncAlreadyBusyException, SynchronizationFailedException;
 
     /**
      * Checks if a synchronisation is going on or not. It also checks for the timeout to be reached or not.

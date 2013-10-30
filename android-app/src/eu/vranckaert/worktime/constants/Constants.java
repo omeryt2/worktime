@@ -95,7 +95,6 @@ public class Constants {
         public static final int SELECT_TASK = 13;
         public static final int ACCOUNT_DETAILS = 14;
         public static final int ACCOUNT_REGISTER = 15;
-        public static final int SYNC_BLOCKING_ACTIVITY = 16;
         public static final int ADD_TRIGGER_GEO_FENCING = 17;
         public static final int EDIT_TRIGGER_GEO_FENCING = 18;
 
@@ -108,8 +107,6 @@ public class Constants {
         public static final int RESULT_OK_SPLIT = 100;
         public static final int RESULT_DELETED = 200;
         public static final int RESULT_LOGOUT = 300;
-        public static final int SYNC_COMPLETED_ERROR = 400;
-        public static final int SYNC_COMPLETED_SUCCESS = 500;
         public static final int GHOST_RECORD = 666;
     }
     public class Preferences {

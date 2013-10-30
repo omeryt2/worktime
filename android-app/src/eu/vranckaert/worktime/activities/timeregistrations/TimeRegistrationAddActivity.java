@@ -16,11 +16,15 @@
 
 package eu.vranckaert.worktime.activities.timeregistrations;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
+
 import com.google.inject.Inject;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.activities.projects.SelectProjectActivity;
 import eu.vranckaert.worktime.activities.tasks.SelectTaskActivity;
@@ -43,7 +47,7 @@ import eu.vranckaert.worktime.utils.date.HourPreference12Or24;
 import eu.vranckaert.worktime.utils.date.TimeFormat;
 import eu.vranckaert.worktime.utils.preferences.Preferences;
 import eu.vranckaert.worktime.utils.string.StringUtils;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedWizardActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboWizardActivity;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -53,7 +57,7 @@ import java.util.Date;
  * Date: 03/12/12
  * Time: 19:22
  */
-public class TimeRegistrationAddActivity extends SyncLockedWizardActivity {
+public class TimeRegistrationAddActivity extends RoboWizardActivity implements View.OnClickListener {
     private static final String LOG_TAG = TimeRegistrationAddActivity.class.getSimpleName();
 
     private static final int PAGE_INFO = 0;
@@ -95,6 +99,9 @@ public class TimeRegistrationAddActivity extends SyncLockedWizardActivity {
     private Project project;
     private Task task;
     private String comment;
+
+    private Button addProjectButton;
+    private Button addTaskButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -382,8 +389,8 @@ public class TimeRegistrationAddActivity extends SyncLockedWizardActivity {
     }
 
     private void initProjectAndTask(Project project, Task task) {
-        Button addProjectButton = (Button) getActiveView().findViewById(R.id.registration_add_part_three_project);
-        Button addTaskButton = (Button) getActiveView().findViewById(R.id.registration_add_part_three_task);
+        addProjectButton = (Button) getActiveView().findViewById(R.id.registration_add_part_three_project);
+        addTaskButton = (Button) getActiveView().findViewById(R.id.registration_add_part_three_task);
 
         ImageView deleteProjectButton = (ImageView) getActiveView().findViewById(R.id.btn_delete_project);
         ImageView deleteTaskButton = (ImageView) getActiveView().findViewById(R.id.btn_delete_task);
@@ -429,26 +436,8 @@ public class TimeRegistrationAddActivity extends SyncLockedWizardActivity {
             }
         }
 
-        addProjectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(TimeRegistrationAddActivity.this, SelectProjectActivity.class);
-                intent.putExtra(Constants.Extras.ONLY_SELECT, false);
-                intent.putExtra(Constants.Extras.UPDATE_WIDGET, false);
-                startActivityForResult(intent, Constants.IntentRequestCodes.SELECT_PROJECT);
-            }
-        });
-        addTaskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(TimeRegistrationAddActivity.this, SelectTaskActivity.class);
-                intent.putExtra(Constants.Extras.PROJECT, TimeRegistrationAddActivity.this.project);
-                intent.putExtra(Constants.Extras.ONLY_SELECT, false);
-                intent.putExtra(Constants.Extras.ENABLE_SELECT_NONE_OPTION, false);
-                intent.putExtra(Constants.Extras.UPDATE_WIDGET, false);
-                startActivityForResult(intent, Constants.IntentRequestCodes.SELECT_TASK);
-            }
-        });
+        addProjectButton.setOnClickListener(this);
+        addTaskButton.setOnClickListener(this);
     }
 
     /**
@@ -592,12 +581,13 @@ public class TimeRegistrationAddActivity extends SyncLockedWizardActivity {
      * @param datePickerId The resource id referencing an {@link DatePicker}.
      * @param timePickerId The resource id referencing an {@link TimePicker}.
      */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void initDateTimePicker(Calendar part, int datePickerId, int timePickerId) {
         DatePicker datePicker = (DatePicker) findViewById(datePickerId);
         TimePicker timePicker = (TimePicker) findViewById(timePickerId);
 
         datePicker.init(part.get(Calendar.YEAR), part.get(Calendar.MONTH), part.get(Calendar.DAY_OF_MONTH), null);
-        if (ContextUtils.getAndroidApiVersion() >= OSContants.API.HONEYCOMB_3_2) {
+        if (ContextUtils.getAndroidApiVersion() >= OSContants.API.HONEYCOMB_3_1) {
             datePicker.setMaxDate((new Date()).getTime());
             datePicker.setCalendarViewShown(false);
             datePicker.setSpinnersShown(true);
@@ -641,16 +631,28 @@ public class TimeRegistrationAddActivity extends SyncLockedWizardActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.IntentRequestCodes.SELECT_TASK || requestCode == Constants.IntentRequestCodes.SELECT_PROJECT) {
-            if (requestCode == Constants.IntentRequestCodes.SELECT_TASK && resultCode == RESULT_OK) {
-                Task task = (Task) data.getExtras().get(Constants.Extras.TASK);
-                TimeRegistrationAddActivity.this.task = task;
-            } else if (requestCode == Constants.IntentRequestCodes.SELECT_PROJECT && resultCode == RESULT_OK) {
-                Project project = (Project) data.getExtras().get(Constants.Extras.PROJECT);
-                TimeRegistrationAddActivity.this.project = project;
-                TimeRegistrationAddActivity.this.task = null;
-            }
-            initProjectAndTask(TimeRegistrationAddActivity.this.project, TimeRegistrationAddActivity.this.task);
+        switch (requestCode) {
+            case Constants.IntentRequestCodes.SELECT_TASK:
+                if (resultCode == RESULT_OK) {
+                    Task task = (Task) data.getExtras().get(Constants.Extras.TASK);
+                    TimeRegistrationAddActivity.this.task = task;
+                    initProjectAndTask(TimeRegistrationAddActivity.this.project, TimeRegistrationAddActivity.this.task);
+                } else if (resultCode == Constants.IntentResultCodes.GHOST_RECORD) {
+                    TimeRegistrationAddActivity.this.project = null;
+                    TimeRegistrationAddActivity.this.task = null;
+                    initProjectAndTask(TimeRegistrationAddActivity.this.project, TimeRegistrationAddActivity.this.task);
+                    onClick(addProjectButton);
+                    Toast.makeText(this, R.string.lbl_registration_add_part_three_projects_changed_while_selecting_task, Toast.LENGTH_LONG).show();
+                }
+                break;
+            case Constants.IntentRequestCodes.SELECT_PROJECT:
+                if (resultCode == RESULT_OK) {
+                    Project project = (Project) data.getExtras().get(Constants.Extras.PROJECT);
+                    TimeRegistrationAddActivity.this.project = project;
+                    TimeRegistrationAddActivity.this.task = null;
+                    initProjectAndTask(TimeRegistrationAddActivity.this.project, TimeRegistrationAddActivity.this.task);
+                }
+                break;
         }
     }
 
@@ -693,5 +695,27 @@ public class TimeRegistrationAddActivity extends SyncLockedWizardActivity {
     public void closeOnFinish() {
         setResult(RESULT_OK);
         super.closeOnFinish();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.registration_add_part_three_project: {
+                Intent intent = new Intent(TimeRegistrationAddActivity.this, SelectProjectActivity.class);
+                intent.putExtra(Constants.Extras.ONLY_SELECT, false);
+                intent.putExtra(Constants.Extras.UPDATE_WIDGET, false);
+                startActivityForResult(intent, Constants.IntentRequestCodes.SELECT_PROJECT);
+                break;
+            }
+            case R.id.registration_add_part_three_task: {
+                Intent intent = new Intent(TimeRegistrationAddActivity.this, SelectTaskActivity.class);
+                intent.putExtra(Constants.Extras.PROJECT, TimeRegistrationAddActivity.this.project);
+                intent.putExtra(Constants.Extras.ONLY_SELECT, false);
+                intent.putExtra(Constants.Extras.ENABLE_SELECT_NONE_OPTION, false);
+                intent.putExtra(Constants.Extras.UPDATE_WIDGET, false);
+                startActivityForResult(intent, Constants.IntentRequestCodes.SELECT_TASK);
+                break;
+            }
+        }
     }
 }

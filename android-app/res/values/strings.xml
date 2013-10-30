@@ -326,6 +326,7 @@
     <string name="lbl_registration_add_part_three_task_label">Task</string>
     <string name="lbl_registration_add_part_three_project_none_selected">Select Project</string>
     <string name="lbl_registration_add_part_three_task_none_selected">Select Task</string>
+    <string name="lbl_registration_add_part_three_projects_changed_while_selecting_task">The list of projects has changed. You should select a project again before continuing.</string>
     <string name="lbl_registration_add_part_five_start">Start: </string>
     <string name="lbl_registration_add_part_five_end">End: </string>
     <string name="lbl_registration_add_part_five_duration">Duration: </string>

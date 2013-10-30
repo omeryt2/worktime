@@ -23,7 +23,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.widget.Toast;
+
 import com.google.inject.Inject;
+
 import eu.vranckaert.worktime.R;
 import eu.vranckaert.worktime.constants.Constants;
 import eu.vranckaert.worktime.constants.TrackerConstants;
@@ -35,7 +37,7 @@ import eu.vranckaert.worktime.utils.context.AsyncHelper;
 import eu.vranckaert.worktime.utils.context.Log;
 import eu.vranckaert.worktime.utils.date.DateUtils;
 import eu.vranckaert.worktime.utils.tracker.AnalyticsTracker;
-import eu.vranckaert.worktime.utils.view.actionbar.synclock.SyncLockedGuiceActivity;
+import eu.vranckaert.worktime.utils.view.actionbar.RoboSherlockActivity;
 import roboguice.inject.InjectExtra;
 
 import java.util.Date;
@@ -50,7 +52,7 @@ import java.util.Date;
  * is null all registrations starting from the min-boundary will be removed.<br/>
  * All widgets will be updated when removing one or more {@link TimeRegistration}s.
  */
-public class TimeRegistrationDeleteActivity extends SyncLockedGuiceActivity {
+public class TimeRegistrationDeleteActivity extends RoboSherlockActivity {
     /**
      * LOG_TAG for logging
      */
