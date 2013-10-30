@@ -102,6 +102,46 @@
         <antcall target="svn-update"/>
     </target>
 
+    <!-- Change the name of the generated release APK-file to a name keeping in mind nightly naming conventions-->
+    <target name="beta-release" depends="clean, check-release-properties, update-manifest">
+        <!-- Remove the ' - UNSTABLE' tag from the versionName and increment the versionCode with one. Then create a new
+         APK file and commit the changes made to the AndroidManifest.xml. Finally a new branch is created. -->
+        <!-- Get the current versionCode and versionName -->
+        <xmlproperty file="AndroidManifest.xml" prefix="oldManifestFile" collapseAttributes="true"/>
+        <property name="oldVersionCode" value="${oldManifestFile.manifest.android:versionCode}"/>
+        <property name="oldVersionName" value="${oldManifestFile.manifest.android:versionName}"/>
+
+        <antcall target="increment-version"/>
+
+        <!-- Remove the ' - UNSTABLE' tag from the versionName -->
+        <echo>Updating the versionName in AndroidManifest.xml for production release</echo>
+        <replace file="AndroidManifest.xml" token=" - UNSTABLE" value=" - BETA"/>
+
+        <!-- Get the versionCode and versionName for which a release will be done -->
+        <xmlproperty file="AndroidManifest.xml" prefix="manifestFile" collapseAttributes="true"/>
+        <property name="betaVersionCode" value="${manifestFile.manifest.android:versionCode}"/>
+        <property name="betaVersionName" value="${manifestFile.manifest.android:versionName}"/>
+
+        <echo>Ready to create a new production release with versionCode and versionName set to</echo>
+        <echo>versionCode: ${betaVersionCode}</echo>
+        <echo>versionName: ${betaVersionName}</echo>
+
+        <echo>Renaming beta build APK file</echo>
+        <mkdir dir="./bin/release"/>
+        <copy file="./bin/${ant.project.name}-release.apk" tofile="./bin/release/${app.name}-${versionName} - Build${versionCode}.apk"/>
+
+        <!-- Revert the version name back -->
+        <replace file="AndroidManifest.xml" token="${betaVersionName}" value="${oldVersionName}"/>
+
+        <echo>Ready to commit all changes made to the AndroidManifest.xml</echo>
+        <antcall target="svn-commit">
+            <param name="file" value="AndroidManifest.xml"/>
+            <param name="message" value="Auto commit for AndroidManifest.xml while releasing a new Nightly Build"/>
+        </antcall>
+
+        <antcall target="svn-update"/>
+    </target>
+
     <!-- Change the name of the generated release APK-file to a name keeping in mind production naming conventions-->
     <target name="prod-release" depends="clean, check-release-properties">
         <echo>Creating a new production release...</echo>
