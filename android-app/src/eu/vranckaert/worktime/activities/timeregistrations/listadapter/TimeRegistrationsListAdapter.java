@@ -111,7 +111,7 @@ public class TimeRegistrationsListAdapter extends ArrayAdapter<TimeRegistration>
     }
 
     private String getMonthAndYear(Date day) {
-        SimpleDateFormat sdf = new SimpleDateFormat("MMMMM yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy");
         return sdf.format(day);
     }
 
