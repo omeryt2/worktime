@@ -255,16 +255,17 @@ public class SetupEndpoint {
 		List<TimeRegistration> timeRegistrations = timeRegistrationDao.findAll();
 		for (int i=startAt; i<timeRegistrations.size(); i++) {
 			TimeRegistration timeRegistration = timeRegistrations.get(i);
-			/*exportTasks += "insert into task(name, comment, finished, flags, taskOrder, syncKey, lastUpdated, projectId) select "
-					+ "'" + timeRegistration.getName() + "', "
-					+ "'" + timeRegistration.getComment() + "', "	
-					+ "" + (timeRegistration.isFinished() ? 1 : 0) + ", "
-					+ "'" + timeRegistration.getFlags() + "', "
-					+ "" + timeRegistration.getOrder() + ", "
-					+ "'" + timeRegistration.getSyncKey() + "', "
-					+ "'" + sdf.format(timeRegistration.getLastUpdated()) + "', "
-					+ "select p.project_id from project where p.name='" + timeRegistration.getProject().getName() + "'"
-					+ ";\n";*/
+			if (timeRegistration != null && timeRegistration.getTask() != null && timeRegistration.getTask().getProject() != null && !getIgnoredAccounts().contains(timeRegistration.getTask().getProject().getUser().getEmail())) {
+				exportTasks += "insert into timeRegistration(startTime, endTime, comment, flags, syncKey, lastUpdated, taskId) select ";
+				exportTasks += "'" + sdf.format(timeRegistration.getStartTime()) + "', ";
+				exportTasks += "'" + (timeRegistration.getEndTime() != null ? sdf.format(timeRegistration.getEndTime()) : "") + "', ";
+				exportTasks += "'" + (StringUtils.isNotBlank(timeRegistration.getComment()) ? timeRegistration.getComment().replaceAll("'", "\\'") : "") + "', ";
+				exportTasks += "'" + (StringUtils.isNotBlank(timeRegistration.getFlags()) ? timeRegistration.getFlags().replaceAll("'", "\\'") : "") + "', ";
+				exportTasks += "'" + (StringUtils.isNotBlank(timeRegistration.getSyncKey()) ? timeRegistration.getSyncKey().replaceAll("'", "\\'") : "") + "', ";
+				exportTasks += "'" + sdf.format(timeRegistration.getLastUpdated()) + "', ";
+				exportTasks += "t.task_id from task t, project p where t.projectId = p.project_id and t.name like " + timeRegistration.getTask().getName() + " COLLATE utf8_bin and p.name like " + timeRegistration.getTask().getProject().getName() + " COLLATE utf8_bin and p.userId='" + timeRegistration.getTask().getProject().getUser().getEmail() + "'";
+				exportTasks += ";\n";
+			}
 			
 			if (isOperationRunningForTooLong(startTime)) {
 				endAt = i;
