@@ -202,11 +202,11 @@ public class SetupEndpoint {
 			if (task != null && task.getProject() != null) {
 				exportTasks += "insert into task(name, comment, finished, flags, taskOrder, syncKey, lastUpdated, projectId) select "
 						+ "'" + task.getName().replaceAll("'", "") + "', "
-						+ "'" + task.getComment().replaceAll("'", "") + "', "	
+						+ "'" + task.getComment() != null ? task.getComment().replaceAll("'", "") : "" + "', "	
 						+ "" + (task.isFinished() ? 1 : 0) + ", "
-						+ "'" + task.getFlags().replaceAll("'", "") + "', "
+						+ "'" + task.getFlags() != null ? task.getFlags().replaceAll("'", "") : "" + "', "
 						+ "" + task.getOrder() + ", "
-						+ "'" + task.getSyncKey().replaceAll("'", "") + "', "
+						+ "'" + task.getSyncKey() != null ? task.getSyncKey().replaceAll("'", "") : "" + "', "
 						+ "'" + sdf.format(task.getLastUpdated()) + "', "
 						+ "p.project_id from project p where p.name='" + task.getProject().getName() + "' and p.userId='" + task.getProject().getUser().getEmail() + "'"
 						+ ";\n";
