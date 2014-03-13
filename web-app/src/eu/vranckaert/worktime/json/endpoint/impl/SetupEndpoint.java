@@ -199,16 +199,18 @@ public class SetupEndpoint {
 		List<Task> tasks = taskDao.findAll();
 		for (int i=startAt; i<tasks.size(); i++) {
 			Task task = tasks.get(i);
-			exportTasks += "insert into task(name, comment, finished, flags, taskOrder, syncKey, lastUpdated, projectId) select "
-					+ "'" + task.getName() + "', "
-					+ "'" + task.getComment() + "', "	
-					+ "" + (task.isFinished() ? 1 : 0) + ", "
-					+ "'" + task.getFlags() + "', "
-					+ "" + task.getOrder() + ", "
-					+ "'" + task.getSyncKey() + "', "
-					+ "'" + sdf.format(task.getLastUpdated()) + "', "
-					+ "select p.project_id from project where p.name='" + task.getProject().getName() + "'"
-					+ ";\n";
+			if (task != null && task.getProject() != null) {
+				exportTasks += "insert into task(name, comment, finished, flags, taskOrder, syncKey, lastUpdated, projectId) select "
+						+ "'" + task.getName() + "', "
+						+ "'" + task.getComment() + "', "	
+						+ "" + (task.isFinished() ? 1 : 0) + ", "
+						+ "'" + task.getFlags() + "', "
+						+ "" + task.getOrder() + ", "
+						+ "'" + task.getSyncKey() + "', "
+						+ "'" + sdf.format(task.getLastUpdated()) + "', "
+						+ "select p.project_id from project where p.name='" + task.getProject().getName() + "'"
+						+ ";\n";
+			}
 			
 			if (isOperationRunningForTooLong(startTime)) {
 				endAt = i;
@@ -221,6 +223,55 @@ public class SetupEndpoint {
 		}
 		
 		return "# Tasks Export\n (Start at " + startAt + ", ended at " + endAt + ", all done? " + allDone +")" + exportTasks;
+	}
+	
+	@GET
+	@Path("exportTimeRegistrations")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String exportTimeRegistrations(@QueryParam("serviceKey") String serviceKey, @QueryParam("startAt") int startAt) {
+		long startTime = new Date().getTime();
+		
+		final String format = "yyyy-MM-dd hh:mm:ss.SSS";
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		
+		RegisteredServiceRequest request = new RegisteredServiceRequest() {};
+		request.setServiceKey(serviceKey);
+		
+		try {
+			securityChecker.checkService(request);
+		} catch (ServiceNotAllowedException e) {
+			return "Cannot export...";
+		}
+
+		String exportTasks = "";
+		int endAt = startAt;
+		boolean allDone = false;
+		
+		List<TimeRegistration> timeRegistrations = timeRegistrationDao.findAll();
+		for (int i=startAt; i<timeRegistrations.size(); i++) {
+			TimeRegistration timeRegistration = timeRegistrations.get(i);
+			/*exportTasks += "insert into task(name, comment, finished, flags, taskOrder, syncKey, lastUpdated, projectId) select "
+					+ "'" + timeRegistration.getName() + "', "
+					+ "'" + timeRegistration.getComment() + "', "	
+					+ "" + (timeRegistration.isFinished() ? 1 : 0) + ", "
+					+ "'" + timeRegistration.getFlags() + "', "
+					+ "" + timeRegistration.getOrder() + ", "
+					+ "'" + timeRegistration.getSyncKey() + "', "
+					+ "'" + sdf.format(timeRegistration.getLastUpdated()) + "', "
+					+ "select p.project_id from project where p.name='" + timeRegistration.getProject().getName() + "'"
+					+ ";\n";*/
+			
+			if (isOperationRunningForTooLong(startTime)) {
+				endAt = i;
+				break;
+			}
+			
+			if (i==(timeRegistrations.size()-1)) {
+				allDone = true;
+			}
+		}
+		
+		return "# Time Registrations Export\n (Start at " + startAt + ", ended at " + endAt + ", all done? " + allDone +")" + exportTasks;
 	}
 	
 	private boolean isOperationRunningForTooLong(long startTime) {
