@@ -137,9 +137,9 @@ public class SetupEndpoint {
 	}
 	
 	@GET
-	@Path("exportProjectsAndTAsks")
+	@Path("exportProjects")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String exportProjectsAndTasks(@QueryParam("serviceKey") String serviceKey) {
+	public String exportProjects(@QueryParam("serviceKey") String serviceKey) {
 		final String format = "yyyy-MM-dd hh:mm:ss.SSS";
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		
@@ -152,39 +152,58 @@ public class SetupEndpoint {
 			return "Cannot export...";
 		}
 
-		String exportTasks = "";
-		String exportProjects = "";
-		List<User> users = userDao.findAll();
-		for (User user : users) {
-			List<Project> projects = projectDao.findAll(user);
-			for (Project project : projects) {
-				exportProjects = "insert into project(name, comment, defaultValue, finished, flags, projectOrder, syncKey, lastUpdated, userId) values("
-						+ "'" + project.getName() + "', "
-						+ "'" + project.getComment() + "', "
-						+ "" + (project.isDefaultValue() ? 1 : 0) + ", "	
-						+ "" + (project.isFinished() ? 1 : 0) + ", "
-						+ "'" + project.getFlags() + "', "
-						+ "" + project.getOrder() + ", "
-						+ "'" + project.getSyncKey() + "', "
-						+ "'" + sdf.format(project.getLastUpdated()) + "', "
-						+ "'" + project.getUser().getEmail() + "'"
-						+ ");";
-			}
-			List<Task> tasks = taskDao.findAll(user);
-			for (Task task : tasks) {
-				exportTasks = "insert into task(name, comment, finished, flags, taskOrder, syncKey, lastUpdated, projectId) select "
-						+ "'" + task.getName() + "', "
-						+ "'" + task.getComment() + "', "	
-						+ "" + (task.isFinished() ? 1 : 0) + ", "
-						+ "'" + task.getFlags() + "', "
-						+ "" + task.getOrder() + ", "
-						+ "'" + task.getSyncKey() + "', "
-						+ "'" + sdf.format(task.getLastUpdated()) + "', "
-						+ "select p.project_id from project where p.name='" + task.getProject().getName() + "'"
-						+ ";";				
-			}
+		String exportProjects = "";	
+		
+		List<Project> projects = projectDao.findAll();
+		for (Project project : projects) {
+			exportProjects += "insert into project(name, comment, defaultValue, finished, flags, projectOrder, syncKey, lastUpdated, userId) values("
+					+ "'" + project.getName() + "', "
+					+ "'" + project.getComment() + "', "
+					+ "" + (project.isDefaultValue() ? 1 : 0) + ", "	
+					+ "" + (project.isFinished() ? 1 : 0) + ", "
+					+ "'" + project.getFlags() + "', "
+					+ "" + project.getOrder() + ", "
+					+ "'" + project.getSyncKey() + "', "
+					+ "'" + sdf.format(project.getLastUpdated()) + "', "
+					+ "'" + project.getUser().getEmail() + "'"
+					+ ");\n";
 		}
 		
-		return "# Projects Export\n" + exportProjects + "\n\n# Tasks Export\n" + exportTasks;
+		return "# Projects Export\n" + exportProjects;
+	}
+	
+	@GET
+	@Path("exportTasks")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String exportTasks(@QueryParam("serviceKey") String serviceKey) {
+		final String format = "yyyy-MM-dd hh:mm:ss.SSS";
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		
+		RegisteredServiceRequest request = new RegisteredServiceRequest() {};
+		request.setServiceKey(serviceKey);
+		
+		try {
+			securityChecker.checkService(request);
+		} catch (ServiceNotAllowedException e) {
+			return "Cannot export...";
+		}
+
+		String exportTasks = "";	
+		
+		List<Task> tasks = taskDao.findAll();
+		for (Task task : tasks) {
+			exportTasks += "insert into task(name, comment, finished, flags, taskOrder, syncKey, lastUpdated, projectId) select "
+					+ "'" + task.getName() + "', "
+					+ "'" + task.getComment() + "', "	
+					+ "" + (task.isFinished() ? 1 : 0) + ", "
+					+ "'" + task.getFlags() + "', "
+					+ "" + task.getOrder() + ", "
+					+ "'" + task.getSyncKey() + "', "
+					+ "'" + sdf.format(task.getLastUpdated()) + "', "
+					+ "select p.project_id from project where p.name='" + task.getProject().getName() + "'"
+					+ ";\n";				
+		}
+		
+		return "# Tasks Export\n" + exportTasks;
 	}
 }
