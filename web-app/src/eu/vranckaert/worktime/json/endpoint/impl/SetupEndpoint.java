@@ -208,7 +208,7 @@ public class SetupEndpoint {
 						+ "" + task.getOrder() + ", "
 						+ "'" + task.getSyncKey() + "', "
 						+ "'" + sdf.format(task.getLastUpdated()) + "', "
-						+ "select p.project_id from project where p.name='" + task.getProject().getName() + "'"
+						+ "p.project_id from project p where p.name='" + task.getProject().getName() + "' and p.userId='" + task.getProject().getUser().getEmail() + "'"
 						+ ";\n";
 			}
 			
@@ -222,7 +222,7 @@ public class SetupEndpoint {
 			}
 		}
 		
-		return "# Tasks Export\n (Start at " + startAt + ", ended at " + endAt + ", all done? " + allDone +")" + exportTasks;
+		return "# Tasks Export (Start at " + startAt + ", ended at " + endAt + ", all done? " + allDone +")\n" + exportTasks;
 	}
 	
 	@GET
@@ -271,7 +271,7 @@ public class SetupEndpoint {
 			}
 		}
 		
-		return "# Time Registrations Export\n (Start at " + startAt + ", ended at " + endAt + ", all done? " + allDone +")" + exportTasks;
+		return "# Time Registrations Export (Start at " + startAt + ", ended at " + endAt + ", all done? " + allDone +")\n" + exportTasks;
 	}
 	
 	private boolean isOperationRunningForTooLong(long startTime) {
