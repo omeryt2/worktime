@@ -213,7 +213,7 @@ public class SetupEndpoint {
 				exportTasks += "" + task.getOrder() + ", ";
 				exportTasks += "'" + (StringUtils.isNotBlank(task.getSyncKey()) ? task.getSyncKey().replaceAll("'", "\\'") : "") + "', ";
 				exportTasks += "'" + sdf.format(task.getLastUpdated()) + "', ";
-				exportTasks += "p.project_id from project p where p.name='" + task.getProject().getName() + "' and p.userId='" + task.getProject().getUser().getEmail() + "'";
+				exportTasks += "p.project_id from project p where p.name like '" + task.getProject().getName() + "' and p.userId='" + task.getProject().getUser().getEmail() + "'";
 				exportTasks += ";\n";
 			}
 			
