@@ -1,6 +1,8 @@
 package eu.vranckaert.worktime.json.endpoint.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -175,7 +177,9 @@ public class SetupEndpoint {
 	@GET
 	@Path("exportTasks")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String exportTasks(@QueryParam("serviceKey") String serviceKey) {
+	public String exportTasks(@QueryParam("serviceKey") String serviceKey, @QueryParam("startAt") int startAt) {
+		long startTime = new Date().getTime();
+		
 		final String format = "yyyy-MM-dd hh:mm:ss.SSS";
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		
@@ -188,10 +192,12 @@ public class SetupEndpoint {
 			return "Cannot export...";
 		}
 
-		String exportTasks = "";	
+		String exportTasks = "";
+		int endAt = startAt;
 		
 		List<Task> tasks = taskDao.findAll();
-		for (Task task : tasks) {
+		for (int i=startAt; i<tasks.size(); i++) {
+			Task task = tasks.get(i);
 			exportTasks += "insert into task(name, comment, finished, flags, taskOrder, syncKey, lastUpdated, projectId) select "
 					+ "'" + task.getName() + "', "
 					+ "'" + task.getComment() + "', "	
@@ -201,9 +207,29 @@ public class SetupEndpoint {
 					+ "'" + task.getSyncKey() + "', "
 					+ "'" + sdf.format(task.getLastUpdated()) + "', "
 					+ "select p.project_id from project where p.name='" + task.getProject().getName() + "'"
-					+ ";\n";				
+					+ ";\n";
+			
+			if (isOperationRunningForTooLong(startTime)) {
+				endAt = i;
+				break;
+			}
 		}
 		
-		return "# Tasks Export\n" + exportTasks;
+		return "# Tasks Export\n (Start at " + startAt + ", ended at " + endAt + ")" + exportTasks;
+	}
+	
+	private boolean isOperationRunningForTooLong(long startTime) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(startTime);
+		cal.add(Calendar.SECOND, 20);
+		
+		long timeout = cal.getTimeInMillis();
+		long now = new Date().getTime();
+		
+		if (now >= timeout) {
+			return true;
+		}
+		
+		return false;		
 	}
 }
