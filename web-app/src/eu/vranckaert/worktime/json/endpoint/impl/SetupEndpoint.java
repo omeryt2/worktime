@@ -248,7 +248,7 @@ public class SetupEndpoint {
 			return "Cannot export...";
 		}
 
-		String exportTasks = "";
+		String exportTimeRegistrations = "";
 		int endAt = startAt;
 		boolean allDone = false;
 		
@@ -256,15 +256,15 @@ public class SetupEndpoint {
 		for (int i=startAt; i<timeRegistrations.size(); i++) {
 			TimeRegistration timeRegistration = timeRegistrations.get(i);
 			if (timeRegistration != null && timeRegistration.getTask() != null && timeRegistration.getTask().getProject() != null && !getIgnoredAccounts().contains(timeRegistration.getTask().getProject().getUser().getEmail())) {
-				exportTasks += "insert into timeRegistration(startTime, endTime, comment, flags, syncKey, lastUpdated, taskId) select ";
-				exportTasks += "'" + sdf.format(timeRegistration.getStartTime()) + "', ";
-				exportTasks += "'" + (timeRegistration.getEndTime() != null ? sdf.format(timeRegistration.getEndTime()) : "") + "', ";
-				exportTasks += "'" + (StringUtils.isNotBlank(timeRegistration.getComment()) ? timeRegistration.getComment().replaceAll("'", "\\'") : "") + "', ";
-				exportTasks += "'" + (StringUtils.isNotBlank(timeRegistration.getFlags()) ? timeRegistration.getFlags().replaceAll("'", "\\'") : "") + "', ";
-				exportTasks += "'" + (StringUtils.isNotBlank(timeRegistration.getSyncKey()) ? timeRegistration.getSyncKey().replaceAll("'", "\\'") : "") + "', ";
-				exportTasks += "'" + sdf.format(timeRegistration.getLastUpdated()) + "', ";
-				exportTasks += "t.task_id from task t, project p where t.projectId = p.project_id and t.name like " + timeRegistration.getTask().getName() + " COLLATE utf8_bin and p.name like " + timeRegistration.getTask().getProject().getName() + " COLLATE utf8_bin and p.userId='" + timeRegistration.getTask().getProject().getUser().getEmail() + "'";
-				exportTasks += ";\n";
+				exportTimeRegistrations += "insert into timeRegistration(startTime, endTime, comment, flags, syncKey, lastUpdated, taskId) select ";
+				exportTimeRegistrations += "'" + sdf.format(timeRegistration.getStartTime()) + "', ";
+				exportTimeRegistrations += "'" + (timeRegistration.getEndTime() != null ? sdf.format(timeRegistration.getEndTime()) : "") + "', ";
+				exportTimeRegistrations += "'" + (StringUtils.isNotBlank(timeRegistration.getComment()) ? timeRegistration.getComment().replaceAll("'", "\\'") : "") + "', ";
+				exportTimeRegistrations += "'" + (StringUtils.isNotBlank(timeRegistration.getFlags()) ? timeRegistration.getFlags().replaceAll("'", "\\'") : "") + "', ";
+				exportTimeRegistrations += "'" + (StringUtils.isNotBlank(timeRegistration.getSyncKey()) ? timeRegistration.getSyncKey().replaceAll("'", "\\'") : "") + "', ";
+				exportTimeRegistrations += "'" + sdf.format(timeRegistration.getLastUpdated()) + "', ";
+				exportTimeRegistrations += "t.task_id from task t, project p where t.projectId = p.project_id and t.name like '" + timeRegistration.getTask().getName() + "' COLLATE utf8_bin and p.name like " + timeRegistration.getTask().getProject().getName() + " COLLATE utf8_bin and p.userId='" + timeRegistration.getTask().getProject().getUser().getEmail() + "'";
+				exportTimeRegistrations += ";\n";
 			}
 			
 			if (isOperationRunningForTooLong(startTime)) {
@@ -277,7 +277,7 @@ public class SetupEndpoint {
 			}
 		}
 		
-		return "# Time Registrations Export (Start at " + startAt + ", ended at " + endAt + ", all done? " + allDone +")\n" + exportTasks;
+		return "# Time Registrations Export (Start at " + startAt + ", ended at " + endAt + ", all done? " + allDone +")\n" + exportTimeRegistrations;
 	}
 	
 	private List<String> getIgnoredAccounts() {
