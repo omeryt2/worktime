@@ -194,6 +194,7 @@ public class SetupEndpoint {
 
 		String exportTasks = "";
 		int endAt = startAt;
+		boolean allDone = false;
 		
 		List<Task> tasks = taskDao.findAll();
 		for (int i=startAt; i<tasks.size(); i++) {
@@ -213,9 +214,13 @@ public class SetupEndpoint {
 				endAt = i;
 				break;
 			}
+			
+			if (i==(tasks.size()-1)) {
+				allDone = true;
+			}
 		}
 		
-		return "# Tasks Export\n (Start at " + startAt + ", ended at " + endAt + ")" + exportTasks;
+		return "# Tasks Export\n (Start at " + startAt + ", ended at " + endAt + ", all done? " + allDone +")" + exportTasks;
 	}
 	
 	private boolean isOperationRunningForTooLong(long startTime) {
