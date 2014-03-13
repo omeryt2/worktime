@@ -1,6 +1,7 @@
 package eu.vranckaert.worktime.json.endpoint.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -158,17 +159,19 @@ public class SetupEndpoint {
 		
 		List<Project> projects = projectDao.findAll();
 		for (Project project : projects) {
-			exportProjects += "insert into project(name, comment, defaultValue, finished, flags, projectOrder, syncKey, lastUpdated, userId) values("
-					+ "'" + project.getName() + "', "
-					+ "'" + project.getComment() + "', "
-					+ "" + (project.isDefaultValue() ? 1 : 0) + ", "	
-					+ "" + (project.isFinished() ? 1 : 0) + ", "
-					+ "'" + project.getFlags() + "', "
-					+ "" + project.getOrder() + ", "
-					+ "'" + project.getSyncKey() + "', "
-					+ "'" + sdf.format(project.getLastUpdated()) + "', "
-					+ "'" + project.getUser().getEmail() + "'"
-					+ ");\n";
+			if (!getIgnoredAccounts().contains(project.getUser().getEmail())) {
+				exportProjects += "insert into project(name, comment, defaultValue, finished, flags, projectOrder, syncKey, lastUpdated, userId) values("
+						+ "'" + project.getName() + "', "
+						+ "'" + project.getComment() + "', "
+						+ "" + (project.isDefaultValue() ? 1 : 0) + ", "	
+						+ "" + (project.isFinished() ? 1 : 0) + ", "
+						+ "'" + project.getFlags() + "', "
+						+ "" + project.getOrder() + ", "
+						+ "'" + project.getSyncKey() + "', "
+						+ "'" + sdf.format(project.getLastUpdated()) + "', "
+						+ "'" + project.getUser().getEmail() + "'"
+						+ ");\n";
+			}
 		}
 		
 		return "# Projects Export\n" + exportProjects;
@@ -199,17 +202,17 @@ public class SetupEndpoint {
 		List<Task> tasks = taskDao.findAll();
 		for (int i=startAt; i<tasks.size(); i++) {
 			Task task = tasks.get(i);
-			if (task != null && task.getProject() != null) {
-				exportTasks += "insert into task(name, comment, finished, flags, taskOrder, syncKey, lastUpdated, projectId) select "
-						+ "'" + task.getName().replaceAll("'", "") + "', "
-						+ "'" + task.getComment() != null ? task.getComment().replaceAll("'", "") : "" + "', "	
-						+ "" + (task.isFinished() ? 1 : 0) + ", "
-						+ "'" + task.getFlags() != null ? task.getFlags().replaceAll("'", "") : "" + "', "
-						+ "" + task.getOrder() + ", "
-						+ "'" + task.getSyncKey() != null ? task.getSyncKey().replaceAll("'", "") : "" + "', "
-						+ "'" + sdf.format(task.getLastUpdated()) + "', "
-						+ "p.project_id from project p where p.name='" + task.getProject().getName() + "' and p.userId='" + task.getProject().getUser().getEmail() + "'"
-						+ ";\n";
+			if (task != null && task.getProject() != null && !getIgnoredAccounts().contains(task.getProject().getUser().getEmail())) {
+				exportTasks += "insert into task(name, comment, finished, flags, taskOrder, syncKey, lastUpdated, projectId) select ";
+				exportTasks += "'" + task.getName() != null ? task.getName().replaceAll("'", "") : "" + "', ";
+				exportTasks += "'" + task.getComment() != null ? task.getComment().replaceAll("'", "\\'") : "" + "', ";	
+				exportTasks += "" + (task.isFinished() ? 1 : 0) + ", ";
+				exportTasks += "'" + task.getFlags() != null ? task.getFlags().replaceAll("'", "\\'") : "" + "', ";
+				exportTasks += "" + task.getOrder() + ", ";
+				exportTasks += "'" + task.getSyncKey() != null ? task.getSyncKey().replaceAll("'", "\\'") : "" + "', ";
+				exportTasks += "'" + sdf.format(task.getLastUpdated()) + "', ";
+				exportTasks += "p.project_id from project p where p.name='" + task.getProject().getName() + "' and p.userId='" + task.getProject().getUser().getEmail() + "'";
+				exportTasks += ";\n";
 			}
 			
 			if (isOperationRunningForTooLong(startTime)) {
@@ -272,6 +275,15 @@ public class SetupEndpoint {
 		}
 		
 		return "# Time Registrations Export (Start at " + startAt + ", ended at " + endAt + ", all done? " + allDone +")\n" + exportTasks;
+	}
+	
+	private List<String> getIgnoredAccounts() {
+		List<String> ignoredEmails = new ArrayList<String>();
+		ignoredEmails.add("dirkvranckaert@gmail.com");
+		ignoredEmails.add("test@mail.com");
+		ignoredEmails.add("irving@mordormx.net");
+		ignoredEmails.add("shay_nahum@yahoo.com");
+		return ignoredEmails;
 	}
 	
 	private boolean isOperationRunningForTooLong(long startTime) {
