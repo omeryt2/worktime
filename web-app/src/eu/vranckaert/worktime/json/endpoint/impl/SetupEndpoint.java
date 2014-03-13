@@ -315,7 +315,7 @@ public class SetupEndpoint {
 				exportSessions += "'" + sdf.format(session.getCreationDate()) + "', ";
 				exportSessions += "'" + session.getSessionKey() + "', ";
 				exportSessions += session.getTimesUsed() + ", ";
-				exportSessions += "'" + sdf.format(session.getLastTimeUsed()) + "', ";
+				exportSessions += "'" + (session.getLastTimeUsed() != null ? sdf.format(session.getLastTimeUsed()) : "null") + "', ";
 				exportSessions += "'" + (session.getPlatform() != null ? session.getPlatform().toString() : "") + "', ";
 				exportSessions += "'" + session.getUser().getEmail() + "'";
 				exportSessions += ";\n";
