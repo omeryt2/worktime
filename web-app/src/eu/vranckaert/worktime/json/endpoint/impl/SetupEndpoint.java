@@ -258,7 +258,7 @@ public class SetupEndpoint {
 			if (timeRegistration != null && timeRegistration.getTask() != null && timeRegistration.getTask().getProject() != null && !getIgnoredAccounts().contains(timeRegistration.getTask().getProject().getUser().getEmail())) {
 				exportTimeRegistrations += "insert into timeRegistration(startTime, endTime, comment, flags, syncKey, lastUpdated, taskId) select ";
 				exportTimeRegistrations += "'" + sdf.format(timeRegistration.getStartTime()) + "', ";
-				exportTimeRegistrations += "'" + (timeRegistration.getEndTime() != null ? sdf.format(timeRegistration.getEndTime()) : "") + "', ";
+				exportTimeRegistrations += (timeRegistration.getEndTime() != null ? "'" + sdf.format(timeRegistration.getEndTime()) + "'" : "null") + ", ";
 				exportTimeRegistrations += "'" + (StringUtils.isNotBlank(timeRegistration.getComment()) ? timeRegistration.getComment().replaceAll("'", "\\'") : "") + "', ";
 				exportTimeRegistrations += "'" + (StringUtils.isNotBlank(timeRegistration.getFlags()) ? timeRegistration.getFlags().replaceAll("'", "\\'") : "") + "', ";
 				exportTimeRegistrations += "'" + (StringUtils.isNotBlank(timeRegistration.getSyncKey()) ? timeRegistration.getSyncKey().replaceAll("'", "\\'") : "") + "', ";
