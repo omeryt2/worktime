@@ -13,6 +13,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.inject.Inject;
 
 import eu.vranckaert.worktime.dao.ProjectDao;
@@ -204,12 +206,12 @@ public class SetupEndpoint {
 			Task task = tasks.get(i);
 			if (task != null && task.getProject() != null && !getIgnoredAccounts().contains(task.getProject().getUser().getEmail())) {
 				exportTasks += "insert into task(name, comment, finished, flags, taskOrder, syncKey, lastUpdated, projectId) select ";
-				exportTasks += "'" + task.getName() != null ? task.getName().replaceAll("'", "") : "" + "', ";
-				exportTasks += "'" + task.getComment() != null ? task.getComment().replaceAll("'", "\\'") : "" + "', ";	
+				exportTasks += "'" + task.getName().replaceAll("'", "") + "', ";
+				exportTasks += "'" + (StringUtils.isNotBlank(task.getComment()) ? task.getComment().replaceAll("'", "\\'") : "") + "', ";	
 				exportTasks += "" + (task.isFinished() ? 1 : 0) + ", ";
-				exportTasks += "'" + task.getFlags() != null ? task.getFlags().replaceAll("'", "\\'") : "" + "', ";
+				exportTasks += "'" + (StringUtils.isNotBlank(task.getFlags()) ? task.getFlags().replaceAll("'", "\\'") : "") + "', ";
 				exportTasks += "" + task.getOrder() + ", ";
-				exportTasks += "'" + task.getSyncKey() != null ? task.getSyncKey().replaceAll("'", "\\'") : "" + "', ";
+				exportTasks += "'" + (StringUtils.isNotBlank(task.getSyncKey()) ? task.getSyncKey().replaceAll("'", "\\'") : "") + "', ";
 				exportTasks += "'" + sdf.format(task.getLastUpdated()) + "', ";
 				exportTasks += "p.project_id from project p where p.name='" + task.getProject().getName() + "' and p.userId='" + task.getProject().getUser().getEmail() + "'";
 				exportTasks += ";\n";
