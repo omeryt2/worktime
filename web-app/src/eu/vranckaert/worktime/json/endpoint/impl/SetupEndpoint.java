@@ -24,10 +24,12 @@ import eu.vranckaert.worktime.json.base.request.RegisteredServiceRequest;
 import eu.vranckaert.worktime.model.Project;
 import eu.vranckaert.worktime.model.Service;
 import eu.vranckaert.worktime.model.ServicePlatform;
+import eu.vranckaert.worktime.model.Session;
 import eu.vranckaert.worktime.model.Task;
 import eu.vranckaert.worktime.model.TimeRegistration;
 import eu.vranckaert.worktime.model.User;
 import eu.vranckaert.worktime.security.dao.ServiceDao;
+import eu.vranckaert.worktime.security.dao.SessionDao;
 import eu.vranckaert.worktime.security.dao.UserDao;
 import eu.vranckaert.worktime.security.exception.ServiceNotAllowedException;
 import eu.vranckaert.worktime.security.service.SecurityChecker;
@@ -46,6 +48,9 @@ public class SetupEndpoint {
 	
 	@Inject
 	private TaskDao taskDao;
+	
+	@Inject
+	private SessionDao sessionDao;
 	
 	@Inject
 	private TimeRegistrationDao timeRegistrationDao;
@@ -278,6 +283,55 @@ public class SetupEndpoint {
 		}
 		
 		return "# Time Registrations Export (Start at " + startAt + ", ended at " + endAt + ", all done? " + allDone +")\n" + exportTimeRegistrations;
+	}
+	
+	@GET
+	@Path("exportSessions")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String exportSessions(@QueryParam("serviceKey") String serviceKey, @QueryParam("startAt") int startAt) {
+		long startTime = new Date().getTime();
+		
+		final String format = "yyyy-MM-dd hh:mm:ss.SSS";
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		
+		RegisteredServiceRequest request = new RegisteredServiceRequest() {};
+		request.setServiceKey(serviceKey);
+		
+		try {
+			securityChecker.checkService(request);
+		} catch (ServiceNotAllowedException e) {
+			return "Cannot export...";
+		}
+
+		String exportSessions = "";
+		int endAt = startAt;
+		boolean allDone = false;
+		
+		List<Session> sessions = sessionDao.findAll();
+		for (int i=startAt; i<sessions.size(); i++) {
+			Session session = sessions.get(i);
+			if (session != null && !getIgnoredAccounts().contains(session.getUser().getEmail())) {
+				exportSessions += "insert into session(creationDate, sessionKey, timesUsed, lastTimeUsed, platform, userId) select ";
+				exportSessions += "'" + sdf.format(session.getCreationDate()) + "', ";
+				exportSessions += "'" + session.getSessionKey() + "', ";
+				exportSessions += session.getTimesUsed() + ", ";
+				exportSessions += "'" + sdf.format(session.getLastTimeUsed()) + "', ";
+				exportSessions += "'" + (session.getPlatform() != null ? session.getPlatform().toString() : "") + "', ";
+				exportSessions += "'" + session.getUser().getEmail() + "'";
+				exportSessions += ";\n";
+			}
+			
+			if (isOperationRunningForTooLong(startTime)) {
+				endAt = i;
+				break;
+			}
+			
+			if (i==(sessions.size()-1)) {
+				allDone = true;
+			}
+		}
+		
+		return "# Session Export (Start at " + startAt + ", ended at " + endAt + ", all done? " + allDone +")\n" + exportSessions;
 	}
 	
 	private List<String> getIgnoredAccounts() {
