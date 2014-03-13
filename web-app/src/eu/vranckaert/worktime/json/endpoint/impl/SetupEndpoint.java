@@ -263,7 +263,7 @@ public class SetupEndpoint {
 				exportTimeRegistrations += "'" + (StringUtils.isNotBlank(timeRegistration.getFlags()) ? timeRegistration.getFlags().replaceAll("'", "\\'") : "") + "', ";
 				exportTimeRegistrations += "'" + (StringUtils.isNotBlank(timeRegistration.getSyncKey()) ? timeRegistration.getSyncKey().replaceAll("'", "\\'") : "") + "', ";
 				exportTimeRegistrations += "'" + sdf.format(timeRegistration.getLastUpdated()) + "', ";
-				exportTimeRegistrations += "t.task_id from task t, project p where t.projectId = p.project_id and t.name like '" + timeRegistration.getTask().getName() + "' COLLATE utf8_bin and p.name like " + timeRegistration.getTask().getProject().getName() + " COLLATE utf8_bin and p.userId='" + timeRegistration.getTask().getProject().getUser().getEmail() + "'";
+				exportTimeRegistrations += "t.task_id from task t, project p where t.projectId = p.project_id and t.name like '" + timeRegistration.getTask().getName() + "' COLLATE utf8_bin and p.name like '" + timeRegistration.getTask().getProject().getName() + "' COLLATE utf8_bin and p.userId='" + timeRegistration.getTask().getProject().getUser().getEmail() + "'";
 				exportTimeRegistrations += ";\n";
 			}
 			
