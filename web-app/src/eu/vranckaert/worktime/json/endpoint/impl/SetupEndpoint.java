@@ -336,10 +336,11 @@ public class SetupEndpoint {
 	
 	private List<String> getIgnoredAccounts() {
 		List<String> ignoredEmails = new ArrayList<String>();
+		ignoredEmails.add("cjmbranco@yahoo.co.uk");
 		ignoredEmails.add("dirkvranckaert@gmail.com");
-		ignoredEmails.add("test@mail.com");
 		ignoredEmails.add("irving@mordormx.net");
 		ignoredEmails.add("shay_nahum@yahoo.com");
+		ignoredEmails.add("test@mail.com");
 		return ignoredEmails;
 	}
 	
