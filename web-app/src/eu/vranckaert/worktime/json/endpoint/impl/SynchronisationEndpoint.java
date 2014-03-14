@@ -32,7 +32,7 @@ import eu.vranckaert.worktime.security.exception.UserNotLoggedInException;
 import eu.vranckaert.worktime.security.service.SecurityChecker;
 import eu.vranckaert.worktime.service.SyncService;
 
-@Path("sync")
+//@Path("sync")
 public class SynchronisationEndpoint {
 	@Inject
 	private SecurityChecker securityChecker;
@@ -40,10 +40,10 @@ public class SynchronisationEndpoint {
 	@Inject
 	private SyncService syncService;
 	
-	@POST
-	@Path("all")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	//@POST
+	//@Path("all")
+	//@Consumes(MediaType.APPLICATION_JSON)
+	//@Produces(MediaType.APPLICATION_JSON)
 	public WorkTimeSyncResponse syncAll(WorkTimeSyncRequest request) {
 		WorkTimeSyncResponse response = new WorkTimeSyncResponse();
 		
